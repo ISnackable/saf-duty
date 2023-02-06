@@ -1,0 +1,24 @@
+{
+  "name": "duty-roster",
+  "version": "1.0.0",
+  "description": "A duty roster",
+  "author": "Tommy",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "init": "lerna init",
+    "build": "lerna run build --parallel",
+    "dev": "lerna run dev --parallel",
+    "format": "lerna run format",
+    "build-studio": "lerna bootstrap && cd studio && yarn run build",
+    "build-web": "lerna bootstrap && (cd web && yarn run build)",
+    "lint": "lerna run lint"
+  },
+  "devDependencies": {
+    "@sanity/cli": "^3.2.6",
+    "lerna": "^6.4.1"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}
