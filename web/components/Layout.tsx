@@ -8,6 +8,7 @@ import {
   XCircleIcon,
 } from "@heroicons/react/24/outline";
 import { ArrowsUpDownIcon } from "@heroicons/react/24/solid";
+import { useSession, signOut } from "next-auth/react";
 
 const navigation = [
   { name: "Quick view", href: "#", icon: HomeIcon, current: true },
@@ -25,6 +26,8 @@ function classNames(...classes: string[]) {
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const { data, status } = useSession();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -179,10 +182,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       />
                       <span className="flex-1 flex flex-col min-w-0">
                         <span className="text-gray-900 text-sm font-medium truncate">
-                          First Name + Last Name
+                          {data?.user?.name}
                         </span>
                         <span className="text-gray-500 text-sm truncate">
-                          @username
+                          {data?.user?.email}
                         </span>
                       </span>
                     </span>
@@ -248,6 +251,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                               : "text-gray-700",
                             "block px-4 py-2 text-sm"
                           )}
+                          onClick={() => signOut({ redirect: false })}
                         >
                           Logout
                         </a>
@@ -402,6 +406,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                                   : "text-gray-700",
                                 "block px-4 py-2 text-sm"
                               )}
+                              onClick={() => signOut({ redirect: false })}
                             >
                               Logout
                             </a>

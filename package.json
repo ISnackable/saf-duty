@@ -17,8 +17,5 @@
   "devDependencies": {
     "@sanity/cli": "^3.2.6",
     "lerna": "^6.4.1"
-  },
-  "workspaces": [
-    "packages/*"
-  ]
+  }
 }
