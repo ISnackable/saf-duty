@@ -128,3 +128,5 @@ dist
 
 # lerna
 packages
+
+.vscode
