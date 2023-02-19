@@ -7,8 +7,8 @@ export default defineConfig({
   name: 'default',
   title: 'Duty Roster',
 
-  projectId: 'lryaljny',
-  dataset: 'production',
+  projectId: import.meta.env.SANITY_STUDIO_PROJECT_ID,
+  dataset: import.meta.env.SANITY_STUDIO_DATASET,
 
   plugins: [deskTool(), visionTool()],
 

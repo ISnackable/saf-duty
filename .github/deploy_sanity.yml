@@ -1,0 +1,39 @@
+name: Deploy Sanity application
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "studio/**"
+
+defaults:
+  run:
+    working-directory: studio
+
+concurrency:
+  group: sanity-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy Sanity application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js environment 💻
+        uses: actions/setup-node@v2
+        with:
+          node-version: "19"
+
+      - name: Install dependencies 📦
+        run: yarn install
+
+      - name: Deploy Sanity application 🚀
+        run: "./node_modules/.bin/sanity deploy"
+        env:
+          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+          SANITY_STUDIO_PROJECT_ID: ${{ secrets.SANITY_STUDIO_PROJECT_ID }}
+          SANITY_STUDIO_DATASET: ${{ secrets.SANITY_STUDIO_DATASET }}
