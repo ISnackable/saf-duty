@@ -15,7 +15,7 @@ export default defineType({
       name: 'email',
       title: 'Email',
       type: 'string',
-      hidden: true,
+      readOnly: true,
     }),
     defineField({
       name: 'image',
@@ -32,6 +32,8 @@ export default defineType({
           {title: 'Admin', value: 'admin'},
           {title: 'User', value: 'user'},
         ],
+        layout: 'radio',
+        direction: 'horizontal',
       },
       initialValue: 'user',
     }),
@@ -40,11 +42,7 @@ export default defineType({
       name: 'password',
       type: 'string',
       hidden: true,
-    }),
-    defineField({
-      name: 'picture',
-      title: 'Picture',
-      type: 'image',
+      readOnly: true,
     }),
     defineField({
       name: 'weekdayPoints',
@@ -63,6 +61,12 @@ export default defineType({
       title: 'Extra',
       type: 'number',
       validation: (Rule) => Rule.integer(),
+    }),
+    defineField({
+      name: 'blockouts',
+      title: 'Blockout Days',
+      type: 'array',
+      of: [{type: 'date'}],
     }),
   ],
 })

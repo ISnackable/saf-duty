@@ -630,18 +630,18 @@
   dependencies:
     tslib "^2.4.0"
 
-"@tabler/icons-react@^2.4.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@tabler/icons-react/-/icons-react-2.4.0.tgz#07d51950b6b6aa326d1dee107018f151e509ef69"
-  integrity sha512-U04bSknpXPdZP8soAnMPiz4g6PXPfWHfMoe2qhDoRlnS8UJ8JHHE/k4Lx4rw2Tfy9a2QJeoPV5HQIeKXrNPHGA==
+"@tabler/icons-react@^2.5.0":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@tabler/icons-react/-/icons-react-2.5.0.tgz#db847043e632d94e501129ef5c6b1c0dcafbfa86"
+  integrity sha512-RP5gOEis5QPArMkAuOomMEvT4+nDWF2CBNv2SCGVYFC8mXEz5tYzjPoaBQDpyWO7vB6IeJvvk7feOaLBvD2zRA==
   dependencies:
-    "@tabler/icons" "2.4.0"
+    "@tabler/icons" "2.5.0"
     prop-types "^15.7.2"
 
-"@tabler/icons@2.4.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@tabler/icons/-/icons-2.4.0.tgz#34b1b0d818dc00926b956c3424bff48b89a5b439"
-  integrity sha512-JZY9Kk3UsQoqp7Rw/BuWw1PrkRwv5h0psjJBbj+Cn9UVyhdzr5vztg2mywXBAJ+jFBUL/pjnVcIvOzKFw4CXng==
+"@tabler/icons@2.5.0":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@tabler/icons/-/icons-2.5.0.tgz#d212de4953c8fad778571c5da2a4d4bb5b23abe0"
+  integrity sha512-gQceaW6itR2Wna2Kqcrxz3gm2cNxwg/DCgT17W1N9la4Iri1r9g681uO2LryDskGXfs71Trhd3CtrED/T6dzUQ==
 
 "@types/event-source-polyfill@^1.0.1":
   version "1.0.1"
@@ -653,10 +653,10 @@
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
 
-"@types/node@18.14.0":
-  version "18.14.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.14.0.tgz#94c47b9217bbac49d4a67a967fdcdeed89ebb7d0"
-  integrity sha512-5EWrvLmglK+imbCJY0+INViFWUHg1AHel1sq4ZVSfdcNqGy9Edv3UB9IIzzg+xPaUcAgZYcfVs2fBcwDeZzU0A==
+"@types/node@18.14.1":
+  version "18.14.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.14.1.tgz#90dad8476f1e42797c49d6f8b69aaf9f876fc69f"
+  integrity sha512-QH+37Qds3E0eDlReeboBxfHbX9omAcBCXEzswCu6jySP642jiM3cYSIkU/REqwhCUqXdonHFuBfJDiAJxMNhaQ==
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"

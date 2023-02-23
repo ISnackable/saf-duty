@@ -1,8 +1,6 @@
 import {
   createStyles,
   Navbar,
-  TextInput,
-  Code,
   UnstyledButton,
   Badge,
   Text,
