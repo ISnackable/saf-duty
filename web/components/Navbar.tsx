@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { useSession } from "next-auth/react";
 import {
   createStyles,
   Navbar,
@@ -5,15 +7,13 @@ import {
   Badge,
   Text,
   Group,
-  ActionIcon,
-  Tooltip,
 } from "@mantine/core";
 import {
   IconBulb,
   IconUser,
   IconCheckbox,
-  IconPlus,
   IconSelector,
+  IconFingerprint,
 } from "@tabler/icons-react";
 import { UserButtonMenu } from "@/components/UserButton";
 import { SegmentedToggle } from "@/components/ThemeToggle";
@@ -122,32 +122,32 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const links = [
-  { icon: IconBulb, label: "Activity", notifications: 3 },
-  { icon: IconCheckbox, label: "Tasks", notifications: 4 },
-  { icon: IconUser, label: "Contacts" },
+  { icon: IconBulb, label: "Duty Roster", link: "/" },
+  {
+    icon: IconCheckbox,
+    label: "Upcoming Duties",
+    notifications: 4,
+    link: "/upcoming-duties",
+  },
+  { icon: IconUser, label: "Teams", link: "/teams" },
 ];
 
 const collections = [
-  { emoji: "👍", label: "Sales" },
-  { emoji: "🚚", label: "Deliveries" },
-  { emoji: "💸", label: "Discounts" },
-  { emoji: "💰", label: "Profits" },
-  { emoji: "✨", label: "Reports" },
-  { emoji: "🛒", label: "Orders" },
-  { emoji: "📅", label: "Events" },
-  { emoji: "🙈", label: "Debts" },
-  { emoji: "💁‍♀️", label: "Customers" },
+  { emoji: "💰", label: "Pay Day", link: "/collections/pay-day" },
+  { emoji: "✨", label: "IPPT", link: "/collections/ippt" },
+  { emoji: "📅", label: "ORD", link: "/collections/ord" },
 ];
 
 export function NavbarMin() {
+  const { data: session } = useSession();
   const { classes } = useStyles();
 
   const mainLinks = links.map((link) => (
     <UnstyledButton key={link.label} className={classes.mainLink}>
-      <div className={classes.mainLinkInner}>
+      <Link href={link.link} key={link.label} className={classes.mainLinkInner}>
         <link.icon size={20} className={classes.mainLinkIcon} stroke={1.5} />
         <span>{link.label}</span>
-      </div>
+      </Link>
       {link.notifications && (
         <Badge size="sm" variant="filled" className={classes.mainLinkBadge}>
           {link.notifications}
@@ -157,15 +157,15 @@ export function NavbarMin() {
   ));
 
   const collectionLinks = collections.map((collection) => (
-    <a
-      href="/"
+    <Link
+      href={collection.link}
       onClick={(event) => event.preventDefault()}
       key={collection.label}
       className={classes.collectionLink}
     >
       <span style={{ marginRight: 9, fontSize: 16 }}>{collection.emoji}</span>{" "}
       {collection.label}
-    </a>
+    </Link>
   ));
 
   return (
@@ -179,6 +179,28 @@ export function NavbarMin() {
         />
       </Navbar.Section>
 
+      {session && session.user?.role === "admin" && (
+        <Navbar.Section className={classes.section}>
+          <Group className={classes.collectionsHeader}>
+            <Text size="xs" weight={500} color="dimmed">
+              Admin
+            </Text>
+          </Group>
+          <div className={classes.mainLinks}>
+            <UnstyledButton className={classes.mainLink}>
+              <Link href="/admin" className={classes.mainLinkInner}>
+                <IconFingerprint
+                  size={20}
+                  className={classes.mainLinkIcon}
+                  stroke={1.5}
+                />
+                <span>Secret Admin Panel</span>
+              </Link>
+            </UnstyledButton>
+          </div>
+        </Navbar.Section>
+      )}
+
       <Navbar.Section className={classes.section}>
         <div className={classes.mainLinks}>{mainLinks}</div>
       </Navbar.Section>
@@ -188,11 +210,6 @@ export function NavbarMin() {
           <Text size="xs" weight={500} color="dimmed">
             Collections
           </Text>
-          <Tooltip label="Create collection" withArrow position="right">
-            <ActionIcon variant="default" size={18}>
-              <IconPlus size={12} stroke={1.5} />
-            </ActionIcon>
-          </Tooltip>
         </Group>
         <div className={classes.collections}>{collectionLinks}</div>
       </Navbar.Section>

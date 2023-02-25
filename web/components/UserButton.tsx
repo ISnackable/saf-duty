@@ -1,21 +1,11 @@
 import { forwardRef } from "react";
-import {
-  Group,
-  Avatar,
-  Text,
-  Menu,
-  UnstyledButton,
-  useMantineTheme,
-} from "@mantine/core";
+import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
+import { Group, Avatar, Text, Menu, UnstyledButton } from "@mantine/core";
 import {
   IconChevronRight,
   IconSettings,
-  IconTrash,
   IconLogout,
-  IconHeart,
-  IconStar,
-  IconMessage,
-  IconPlayerPause,
   IconSwitchHorizontal,
 } from "@tabler/icons-react";
 
@@ -67,61 +57,41 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
 
 export function UserButtonMenu(props: UserButtonProps) {
   const { image, name, email, icon } = props;
-  const theme = useMantineTheme();
+  const { data: session } = useSession();
 
   return (
     <Group position="center">
       <Menu withArrow width={260} transition="pop-top-right">
         <Menu.Target>
-          <UserButton image={image} name={name} email={email} icon={icon} />
+          <UserButton
+            image={image}
+            name={session?.user?.name || "name"}
+            email={session?.user?.email || "email"}
+            icon={icon}
+          />
         </Menu.Target>
 
         <Menu.Dropdown>
-          <Menu.Item
-            icon={
-              <IconHeart size={14} color={theme.colors.red[6]} stroke={1.5} />
-            }
-          >
-            Liked posts
-          </Menu.Item>
-          <Menu.Item
-            icon={
-              <IconStar size={14} color={theme.colors.yellow[6]} stroke={1.5} />
-            }
-          >
-            Saved posts
-          </Menu.Item>
-          <Menu.Item
-            icon={
-              <IconMessage
-                size={14}
-                color={theme.colors.blue[6]}
-                stroke={1.5}
-              />
-            }
-          >
-            Your comments
-          </Menu.Item>
-
           <Menu.Label>Settings</Menu.Label>
-          <Menu.Item icon={<IconSettings size={14} stroke={1.5} />}>
+          <Menu.Item
+            icon={<IconSettings size={14} stroke={1.5} />}
+            component={Link}
+            href="/profile"
+          >
             Account settings
           </Menu.Item>
-          <Menu.Item icon={<IconSwitchHorizontal size={14} stroke={1.5} />}>
+          <Menu.Item
+            icon={<IconSwitchHorizontal size={14} stroke={1.5} />}
+            onClick={() => signOut()}
+          >
             Change account
           </Menu.Item>
-          <Menu.Item icon={<IconLogout size={14} stroke={1.5} />}>
+          <Menu.Item
+            color="red"
+            icon={<IconLogout size={14} stroke={1.5} />}
+            onClick={() => signOut()}
+          >
             Logout
-          </Menu.Item>
-
-          <Menu.Divider />
-
-          <Menu.Label>Danger zone</Menu.Label>
-          <Menu.Item icon={<IconPlayerPause size={14} stroke={1.5} />}>
-            Pause subscription
-          </Menu.Item>
-          <Menu.Item color="red" icon={<IconTrash size={14} stroke={1.5} />}>
-            Delete account
           </Menu.Item>
         </Menu.Dropdown>
       </Menu>
