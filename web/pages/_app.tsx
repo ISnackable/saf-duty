@@ -45,7 +45,7 @@ export default function App({
             }}
           >
             <NotificationsProvider>
-              {router.pathname === "/login" ? (
+              {router.pathname === "/login" || router.pathname === "/404" ? (
                 <Component {...pageProps} />
               ) : (
                 <Layout>

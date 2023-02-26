@@ -1,7 +1,11 @@
 import { useState } from "react";
+import type { GetServerSidePropsContext } from "next";
+import type { User } from "next-auth";
 import { createStyles, Text } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
-import { useSession } from "next-auth/react";
+import { getServerSession } from "next-auth/next";
+
+import { authOptions } from "./api/auth/[...nextauth]";
 
 const useStyles = createStyles((theme) => ({
   outside: {
@@ -17,9 +21,8 @@ const useStyles = createStyles((theme) => ({
 
 const names = ["JW", "WX", "JO", "JK", "LU", "JS", "JE"];
 
-export default function Index() {
+export default function Index({ user }: { user: User }) {
   const { classes, cx } = useStyles();
-  const { data: session } = useSession();
 
   const [month, onMonthChange] = useState(new Date());
   const [value, setValue] = useState<Date[]>([]);
@@ -28,7 +31,7 @@ export default function Index() {
     return null;
   }
 
-  console.log(session);
+  console.log(user);
 
   return (
     <Calendar
@@ -92,4 +95,29 @@ export default function Index() {
       }}
     />
   );
+}
+
+// Export the `session` prop to use sessions with Server Side Rendering
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  const { user } = session;
+  if (user) {
+    Object.keys(user).forEach(
+      (key) =>
+        user[key as keyof User] === undefined && delete user[key as keyof User]
+    );
+  }
+  return {
+    props: { user },
+  };
 }
