@@ -238,8 +238,11 @@ function calculateWeekdayAllocation(
 
 console.log(dutyRoster);
 
-export default async (_req: NextApiRequest, res: NextApiResponse) => {
+export default async function handler(
+  _req: NextApiRequest,
+  res: NextApiResponse
+) {
   res.send({
     message: monthDates,
   });
-};
+}

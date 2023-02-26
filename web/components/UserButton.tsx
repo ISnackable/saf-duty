@@ -55,6 +55,8 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
   )
 );
 
+UserButton.displayName = "UserButton";
+
 export function UserButtonMenu(props: UserButtonProps) {
   const { image, name, email, icon } = props;
 
