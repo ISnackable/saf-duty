@@ -12,7 +12,6 @@ import {
   PasswordInput,
   Paper,
   Group,
-  PaperProps,
   Button,
   Anchor,
   Stack,
@@ -59,7 +58,17 @@ export function checkPasswordValidation(value: string) {
   return null;
 }
 
+// Function that checks if the name is valid, returns an error message if not
+export function checkNameValidation(value: string) {
+  const isName = /^[a-zA-Z '.-]*$/;
+  if (!isName.test(value)) {
+    return "Name is not valid.";
+  }
+  return null;
+}
+
 type NextAuthSanityResponse = {
+  error?: string;
   status?: "error" | "success";
   message?: string;
 } & User;
@@ -76,10 +85,7 @@ export default function AuthenticationForm() {
     },
 
     validate: {
-      name: (value) =>
-        type === "register" && value.length < 2
-          ? "Name must have at least 2 letters"
-          : null,
+      name: (value) => type === "register" && checkNameValidation(value),
       email: isEmail("Invalid email"),
       password: (value) =>
         type === "register" && checkPasswordValidation(value),
@@ -121,15 +127,27 @@ export default function AuthenticationForm() {
             color: "red",
             icon: <IconX />,
           });
-          return;
-        }
 
-        showNotification({
-          title: "Success",
-          message: "Account has been created",
-          color: "teal",
-          icon: <IconCheck />,
-        });
+          setIsSubmitting(false);
+          return;
+        } else if (response?.error) {
+          showNotification({
+            title: "Error",
+            message: response?.error || "Something went wrong",
+            color: "red",
+            icon: <IconX />,
+          });
+
+          setIsSubmitting(false);
+          return;
+        } else {
+          showNotification({
+            title: "Success",
+            message: "Account has been created",
+            color: "teal",
+            icon: <IconCheck />,
+          });
+        }
       }
 
       const loginStatus = await signIn("sanity-login", {

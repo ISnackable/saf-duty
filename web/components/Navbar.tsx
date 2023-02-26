@@ -159,7 +159,6 @@ export function NavbarMin() {
   const collectionLinks = collections.map((collection) => (
     <Link
       href={collection.link}
-      onClick={(event) => event.preventDefault()}
       key={collection.label}
       className={classes.collectionLink}
     >
