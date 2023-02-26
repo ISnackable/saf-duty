@@ -65,7 +65,7 @@ export default defineType({
       name: 'extraPoints',
       title: 'Extra',
       type: 'number',
-      validation: (Rule) => Rule.integer(),
+      validation: (Rule) => Rule.integer().positive(),
     }),
     defineField({
       name: 'blockouts',
