@@ -1,9 +1,43 @@
-import { useSession } from "next-auth/react";
+import type { GetServerSidePropsContext } from "next";
+import type { User } from "next-auth";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "./api/auth/[...nextauth]";
 
-export default function AdminDashboard() {
-  const { data: session } = useSession();
-  // session is always non-null inside this page, all the way down the React tree.
-  return "Some super secret dashboard";
+export default function AdminDashboard({ user }: { user: User }) {
+  return JSON.stringify(user);
 }
 
-AdminDashboard.auth = true;
+// Export the `session` prop to use sessions with Server Side Rendering
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  const { user } = session;
+
+  if (user?.role !== "admin") {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  if (user) {
+    Object.keys(user).forEach(
+      (key) =>
+        user[key as keyof User] === undefined && delete user[key as keyof User]
+    );
+  }
+  return {
+    props: { user },
+  };
+}

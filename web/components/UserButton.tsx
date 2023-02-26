@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { Group, Avatar, Text, Menu, UnstyledButton } from "@mantine/core";
 import {
   IconChevronRight,
@@ -57,18 +57,12 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
 
 export function UserButtonMenu(props: UserButtonProps) {
   const { image, name, email, icon } = props;
-  const { data: session } = useSession();
 
   return (
     <Group position="center">
       <Menu withArrow width={260} transition="pop-top-right">
         <Menu.Target>
-          <UserButton
-            image={image}
-            name={session?.user?.name || "name"}
-            email={session?.user?.email || "email"}
-            icon={icon}
-          />
+          <UserButton image={image} name={name} email={email} icon={icon} />
         </Menu.Target>
 
         <Menu.Dropdown>
@@ -78,7 +72,7 @@ export function UserButtonMenu(props: UserButtonProps) {
             component={Link}
             href="/profile"
           >
-            Account settings
+            Profile
           </Menu.Item>
           <Menu.Item
             icon={<IconSwitchHorizontal size={14} stroke={1.5} />}

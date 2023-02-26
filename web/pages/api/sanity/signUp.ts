@@ -4,7 +4,7 @@ import { signUpHandler } from "next-auth-sanity";
 import { client } from "@/lib/sanity.client";
 
 // Function that checks if the password is valid, returns an error message if not
-function checkPasswordValidation(value: string) {
+export function checkPasswordValidation(value: string) {
   const isWhitespace = /^(?=.*\s)/;
   if (isWhitespace.test(value)) {
     return "Password must not contain Whitespaces.";
@@ -38,7 +38,7 @@ function checkPasswordValidation(value: string) {
 }
 
 // Function that checks if the email is valid, returns an error message if not
-function checkEmailValidation(value: string) {
+export function checkEmailValidation(value: string) {
   const isEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
   if (!isEmail.test(value)) {
     return "Email is not valid.";
@@ -47,7 +47,7 @@ function checkEmailValidation(value: string) {
 }
 
 // Function that checks if the name is valid, returns an error message if not
-function checkNameValidation(value: string) {
+export function checkNameValidation(value: string) {
   const isName = /^[a-zA-Z '.-]*$/;
   if (!isName.test(value)) {
     return "Name is not valid.";
@@ -116,8 +116,15 @@ export const hcaptcha: Middleware = async (req, res, next) => {
 };
 
 export const addRole: Middleware = async (req, _res, next) => {
+  const { name } = req.body;
+
+  const seed = (Math.random() + 1).toString(36).substring(7);
+
   req.body["role"] = "user";
-  console.log("adding role", req.body);
+  req.body["image"] = `https://api.dicebear.com/5.x/pixel-art/jpg?seed=${
+    name ?? seed
+  }`;
+  console.log("adding role and image", req.body);
   return await next();
 };
 

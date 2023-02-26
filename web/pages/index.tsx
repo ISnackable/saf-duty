@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createStyles } from "@mantine/core";
+import { createStyles, Text } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import { useSession } from "next-auth/react";
 
@@ -7,7 +7,15 @@ const useStyles = createStyles((theme) => ({
   outside: {
     opacity: 0,
   },
+
+  weekend: {
+    color: `${
+      theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.colors.gray[7]
+    } !important`,
+  },
 }));
+
+const names = ["JW", "WX", "JO", "JK", "LU", "JS", "JE"];
 
 export default function Index() {
   const { classes, cx } = useStyles();
@@ -37,10 +45,15 @@ export default function Index() {
       dayClassName={(_date, modifiers) =>
         cx({
           [classes.outside]: modifiers.outside,
+          [classes.weekend]: modifiers.weekend,
         })
       }
       styles={(theme) => ({
         cell: {
+          // backgroundColor:
+          //   theme.colorScheme === "dark"
+          //     ? theme.colors.dark[5]
+          //     : theme.colors.gray[0],
           border: `1px solid ${
             theme.colorScheme === "dark"
               ? theme.colors.dark[4]
@@ -63,6 +76,20 @@ export default function Index() {
           height: 90,
         },
       })}
+      renderDay={(date) => {
+        const day = date.getDate();
+
+        const randomName = names[Math.floor(Math.random() * names.length)];
+
+        return (
+          <>
+            <div>{day}</div>
+            <Text size="xs" ta="right" mr="sm">
+              {/* {randomName} ({randomName}) */}
+            </Text>
+          </>
+        );
+      }}
     />
   );
 }

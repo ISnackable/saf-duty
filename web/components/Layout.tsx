@@ -1,6 +1,8 @@
 import { NavbarMin } from "@/components/Navbar";
-import { createStyles, AppShell, Header, Container, Text } from "@mantine/core";
+import { createStyles, AppShell, Header, Text, Burger } from "@mantine/core";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { IconBulb } from "@tabler/icons-react";
+import { useEffect } from "react";
 
 const useStyles = createStyles((theme) => ({
   inner: {
@@ -20,14 +22,24 @@ const useStyles = createStyles((theme) => ({
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { classes } = useStyles();
+  const [opened, { open, close, toggle }] = useDisclosure(true);
+  const matches = useMediaQuery("(min-width: 900px)");
+
+  useEffect(() => {
+    if (matches) {
+      open();
+    } else {
+      close();
+    }
+  }, [matches, open, close]);
 
   return (
     <AppShell
       padding="md"
-      navbar={<NavbarMin />}
+      navbar={opened ? <NavbarMin /> : undefined}
       header={
         <Header height={60} p="xs">
-          <Container className={classes.inner}>
+          <div className={classes.inner}>
             <div className={classes.innerTwo}>
               <IconBulb size={38} />
               <Text
@@ -39,7 +51,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 Duty Roster
               </Text>
             </div>
-          </Container>
+            <Burger onClick={toggle} opened={opened} />
+          </div>
         </Header>
       }
       styles={(theme) => ({

@@ -21,7 +21,6 @@ export default defineType({
       name: 'image',
       title: 'Image',
       type: 'url',
-      hidden: true,
     }),
     defineField({
       name: 'role',
@@ -36,6 +35,12 @@ export default defineType({
         direction: 'horizontal',
       },
       initialValue: 'user',
+    }),
+    defineField({
+      name: 'ord',
+      title: 'ORD Date',
+      type: 'date',
+      readOnly: true,
     }),
     defineField({
       // this is only if you use credentials provider

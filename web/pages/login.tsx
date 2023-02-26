@@ -1,6 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import type { GetServerSidePropsContext } from "next";
 import Router from "next/router";
-import { useSession, signIn } from "next-auth/react";
+import { getServerSession } from "next-auth/next";
+import { signIn } from "next-auth/react";
 import type { User } from "next-auth";
 import { signUp } from "next-auth-sanity/client";
 import { useToggle, upperFirst } from "@mantine/hooks";
@@ -21,12 +23,10 @@ import { showNotification } from "@mantine/notifications";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { IconCheck, IconX } from "@tabler/icons-react";
 
-type NextAuthSanityResponse = {
-  status?: "error" | "success";
-  message?: string;
-} & User;
+import { authOptions } from "./api/auth/[...nextauth]";
 
-function checkPasswordValidation(value: string) {
+// Function that checks if the password is valid, returns an error message if not
+export function checkPasswordValidation(value: string) {
   const isWhitespace = /^(?=.*\s)/;
   if (isWhitespace.test(value)) {
     return "Password must not contain Whitespaces.";
@@ -59,16 +59,20 @@ function checkPasswordValidation(value: string) {
   return null;
 }
 
-export default function AuthenticationForm(props: PaperProps) {
-  const { status } = useSession();
+type NextAuthSanityResponse = {
+  status?: "error" | "success";
+  message?: string;
+} & User;
 
+export default function AuthenticationForm() {
   const hcaptchaRef = useRef<HCaptcha>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [type, toggle] = useToggle(["login", "register"]);
   const form = useForm({
     initialValues: {
-      name: "Testing Account 5",
-      email: "testing5@email.com",
-      password: "Password123",
+      name: "testuser",
+      email: "testuser@email.com",
+      password: "$00pU*2KE1X3",
     },
 
     validate: {
@@ -77,7 +81,8 @@ export default function AuthenticationForm(props: PaperProps) {
           ? "Name must have at least 2 letters"
           : null,
       email: isEmail("Invalid email"),
-      password: (val) => checkPasswordValidation(val),
+      password: (value) =>
+        type === "register" && checkPasswordValidation(value),
     },
 
     validateInputOnChange: ["password"],
@@ -98,15 +103,7 @@ export default function AuthenticationForm(props: PaperProps) {
       return;
     }
 
-    if (checkPasswordValidation(password) !== null) {
-      showNotification({
-        title: "Error",
-        message: "Invalid password",
-        color: "red",
-        icon: <IconX />,
-      });
-      return;
-    }
+    setIsSubmitting(true);
 
     try {
       if (type === "register") {
@@ -135,15 +132,24 @@ export default function AuthenticationForm(props: PaperProps) {
         });
       }
 
-      await signIn(
-        "sanity-login",
-        {
-          redirect: false,
-          email,
-          password,
-        },
-        { callbackUrl: "/" }
-      );
+      const loginStatus = await signIn("sanity-login", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      // If the user is not authenticated, it will return an object with the ok property set to false
+      if (!loginStatus?.ok) {
+        showNotification({
+          title: "Error",
+          message: "Invalid credentials",
+          color: "red",
+          icon: <IconX />,
+        });
+      } else {
+        // If the user is authenticated, redirect to the home page
+        Router.push("/");
+      }
     } catch (error) {
       showNotification({
         title: "Error",
@@ -151,16 +157,10 @@ export default function AuthenticationForm(props: PaperProps) {
         color: "red",
         icon: <IconX />,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      Router.push("/");
-    }
-  }, [status]);
-
-  if (status === "loading") return <p>Loading...</p>;
 
   return (
     <Container size={420} my={40}>
@@ -174,11 +174,12 @@ export default function AuthenticationForm(props: PaperProps) {
         Welcome back!
       </Title>
 
-      <Paper radius="md" p="xl" mt={30} withBorder {...props}>
+      <Paper radius="md" p="xl" mt={30} withBorder>
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack>
             {type === "register" && (
               <TextInput
+                required={type === "register"}
                 label="Name"
                 placeholder="Your name"
                 {...form.getInputProps("name")}
@@ -212,7 +213,9 @@ export default function AuthenticationForm(props: PaperProps) {
                 ? "Already have an account? Login"
                 : "Don't have an account? Register"}
             </Anchor>
-            <Button type="submit">{upperFirst(type)}</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {upperFirst(type)}
+            </Button>
           </Group>
 
           <HCaptcha
@@ -238,4 +241,17 @@ export default function AuthenticationForm(props: PaperProps) {
       </Paper>
     </Container>
   );
+}
+
+// Export the `session` prop to use sessions with Server Side Rendering
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  if (session) {
+    return { redirect: { destination: "/" } };
+  }
+
+  return {
+    props: {},
+  };
 }

@@ -2,12 +2,19 @@ import { withAuth } from "next-auth/middleware";
 
 const PUBLIC_FILE_REGEX = /\.(.*)$/;
 const anonymousRoutes = [""]; // The whitelisted routes
+const protectedPaths = ["/admin"];
 
 export default withAuth({
   callbacks: {
-    authorized: ({ req }) => {
+    authorized: ({ req, token }) => {
       const { pathname } = req.nextUrl;
+      const matchesProtectedPath = protectedPaths.some((path) =>
+        pathname.startsWith(path)
+      );
 
+      if (matchesProtectedPath) {
+        return token?.role === "admin";
+      }
       // Important! The below only checks if there exists a token. The token is not validated! This means
       // unauthenticated users can set a next-auth.session-token cookie and appear authorized to this
       // middleware. This is not a big deal because we do validate this cookie in the backend and load

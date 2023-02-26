@@ -172,9 +172,9 @@ export function NavbarMin() {
     <Navbar width={{ sm: 300 }} p="md" className={classes.navbar}>
       <Navbar.Section className={classes.section}>
         <UserButtonMenu
-          image="https://i.imgur.com/fGxgcDF.png"
-          name="Bob Rulebreaker"
-          email="Product owner"
+          image={session?.user?.image || "https://i.imgur.com/fGxgcDF.png"}
+          name={session?.user?.name || "Test Name"}
+          email={session?.user?.email || "Test Email"}
           icon={<IconSelector size={14} stroke={1.5} />}
         />
       </Navbar.Section>
