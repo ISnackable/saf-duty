@@ -32,7 +32,7 @@ jobs:
         run: yarn install
 
       - name: Deploy Sanity application 🚀
-        run: "./node_modules/.bin/sanity deploy"
+        run: "npx sanity deploy"
         env:
           SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
           SANITY_STUDIO_PROJECT_ID: ${{ secrets.SANITY_STUDIO_PROJECT_ID }}
