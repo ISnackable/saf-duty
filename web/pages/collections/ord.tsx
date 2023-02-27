@@ -1,10 +1,10 @@
 import type { GetServerSidePropsContext } from "next";
 import type { User } from "next-auth";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "./api/auth/[...nextauth]";
+import { authOptions } from "../api/auth/[...nextauth]";
 
-export default function AdminPage({ user }: { user: User }) {
-  return JSON.stringify(user);
+export default function OrdPage({ user }: { user: User }) {
+  return "Ord Page";
 }
 
 // Export the `session` prop to use sessions with Server Side Rendering
@@ -21,15 +21,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   const { user } = session;
-
-  if (user?.role !== "admin") {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
 
   if (user) {
     Object.keys(user).forEach(

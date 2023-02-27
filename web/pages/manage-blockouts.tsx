@@ -4,19 +4,14 @@ import type { User } from "next-auth";
 import { Container, createStyles, Divider, Text, Title } from "@mantine/core";
 import { Calendar, isSameMonth } from "@mantine/dates";
 import { getServerSession } from "next-auth/next";
-import { IconCalendarEvent } from "@tabler/icons-react";
+import { IconEdit } from "@tabler/icons-react";
+import dayjs from "dayjs";
 
 import { authOptions } from "./api/auth/[...nextauth]";
 
 const useStyles = createStyles((theme) => ({
   outside: {
     opacity: 0,
-  },
-
-  weekend: {
-    color: `${
-      theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.colors.gray[7]
-    } !important`,
   },
 
   title: {
@@ -35,43 +30,43 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export default function IndexPage({ user }: { user: User }) {
+export default function ManageBlockoutPage({ user }: { user: User }) {
   const { classes, cx } = useStyles();
 
-  const [month, onMonthChange] = useState(new Date());
-  const value: Date[] = [];
-  const setValue = () => null;
+  const [value, setValue] = useState<Date[]>([]);
 
-  console.log(user);
+  console.log(value);
 
   return (
     <Container mt="lg">
       <div className={classes.titleWrapper}>
-        <IconCalendarEvent size={48} />
-        <Title className={classes.title}>Duty Roster</Title>
+        <IconEdit size={48} />
+        <Title className={classes.title}>Manage Blockouts</Title>
       </div>
+
       <Text color="dimmed" mt="md">
-        View the duty roster
+        View and manage your blockouts. To add a blockout, click on the date you
+        want to block out. To remove a blockout, click on the date again. The
+        day you selected will be highlighted. You are only able to block out
+        dates within the current month and next month.
       </Text>
       <Divider mt="sm" />
 
       <Calendar
         mt="lg"
         multiple
+        disableOutsideEvents
         allowLevelChange={false}
         value={value}
         onChange={setValue}
         fullWidth
-        hideOutsideDates
         size="xl"
         firstDayOfWeek="sunday"
-        month={month}
-        onMonthChange={onMonthChange}
-        excludeDate={(date) => !isSameMonth(date, month)}
+        minDate={dayjs(new Date()).startOf("month").toDate()}
+        maxDate={dayjs(new Date()).endOf("month").add(1, "month").toDate()}
         dayClassName={(_date, modifiers) =>
           cx({
             [classes.outside]: modifiers.outside,
-            [classes.weekend]: modifiers.weekend,
           })
         }
         styles={(theme) => ({
@@ -82,17 +77,7 @@ export default function IndexPage({ user }: { user: User }) {
                 : theme.colors.gray[2]
             }`,
           },
-          day: {
-            borderRadius: 0,
-            height: 90,
-            fontSize: theme.fontSizes.lg,
-            "&[data-weekend]": {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[6]
-                  : theme.colors.gray[2],
-            },
-          },
+          day: { borderRadius: 0, height: 90, fontSize: theme.fontSizes.lg },
           weekday: { fontSize: theme.fontSizes.lg },
           weekdayCell: {
             fontSize: theme.fontSizes.xl,
@@ -111,11 +96,13 @@ export default function IndexPage({ user }: { user: User }) {
         renderDay={(date) => {
           const day = date.getDate();
 
+          // const randomName = names[Math.floor(Math.random() * names.length)];
+
           return (
             <>
               <div>{day}</div>
               <Text size="xs" ta="right" mr="sm">
-                WX (JW)
+                {/* {randomName} ({randomName}) */}
               </Text>
             </>
           );

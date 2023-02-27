@@ -9,11 +9,12 @@ import {
   Group,
 } from "@mantine/core";
 import {
-  IconBulb,
-  IconUser,
+  IconUsers,
   IconCheckbox,
   IconSelector,
   IconFingerprint,
+  IconCalendarEvent,
+  IconEdit,
 } from "@tabler/icons-react";
 import { UserButtonMenu } from "@/components/UserButton";
 import { SegmentedToggle } from "@/components/ThemeToggle";
@@ -122,14 +123,15 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const links = [
-  { icon: IconBulb, label: "Duty Roster", link: "/" },
+  { icon: IconCalendarEvent, label: "Duty Roster", link: "/" },
+  { icon: IconEdit, label: "Manage Blockouts", link: "/manage-blockouts" },
   {
     icon: IconCheckbox,
     label: "Upcoming Duties",
     notifications: 4,
     link: "/upcoming-duties",
   },
-  { icon: IconUser, label: "Teams", link: "/teams" },
+  { icon: IconUsers, label: "Teams", link: "/teams" },
 ];
 
 const collections = [

@@ -96,8 +96,49 @@ export default function AuthenticationForm() {
 
   const handleSubmit = async () => {
     // Execute the hCaptcha when the form is submitted
-    if (hcaptchaRef.current !== null) {
+    if (type === "register" && hcaptchaRef.current !== null) {
       hcaptchaRef.current.execute();
+    }
+
+    // If type is login then execute the signIn function
+    else if (type === "login") {
+      const { email, password } = form.values;
+      setIsSubmitting(true);
+      try {
+        const response = await signIn("sanity-login", {
+          email,
+          password,
+          redirect: false,
+        });
+
+        if (!response?.ok) {
+          showNotification({
+            title: "Error",
+            message: "Invalid credentials",
+            color: "red",
+            icon: <IconX />,
+          });
+        } else {
+          showNotification({
+            title: "Success",
+            message: "Successfully logged in",
+            color: "green",
+            icon: <IconCheck />,
+          });
+
+          // If the user is authenticated, redirect to the home page
+          Router.push("/");
+        }
+      } catch (error) {
+        showNotification({
+          title: "Error",
+          message: "Something went wrong",
+          color: "red",
+          icon: <IconX />,
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -127,9 +168,6 @@ export default function AuthenticationForm() {
             color: "red",
             icon: <IconX />,
           });
-
-          setIsSubmitting(false);
-          return;
         } else if (response?.error) {
           showNotification({
             title: "Error",
@@ -137,9 +175,6 @@ export default function AuthenticationForm() {
             color: "red",
             icon: <IconX />,
           });
-
-          setIsSubmitting(false);
-          return;
         } else {
           showNotification({
             title: "Success",
@@ -148,25 +183,6 @@ export default function AuthenticationForm() {
             icon: <IconCheck />,
           });
         }
-      }
-
-      const loginStatus = await signIn("sanity-login", {
-        email,
-        password,
-        redirect: false,
-      });
-
-      // If the user is not authenticated, it will return an object with the ok property set to false
-      if (!loginStatus?.ok) {
-        showNotification({
-          title: "Error",
-          message: "Invalid credentials",
-          color: "red",
-          icon: <IconX />,
-        });
-      } else {
-        // If the user is authenticated, redirect to the home page
-        Router.push("/");
       }
     } catch (error) {
       showNotification({
