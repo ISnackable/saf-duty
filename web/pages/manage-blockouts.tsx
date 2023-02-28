@@ -1,8 +1,15 @@
 import { useState } from "react";
 import type { GetServerSidePropsContext } from "next";
 import type { User } from "next-auth";
-import { Container, createStyles, Divider, Text, Title } from "@mantine/core";
-import { Calendar, isSameMonth } from "@mantine/dates";
+import {
+  Container,
+  createStyles,
+  Divider,
+  List,
+  Text,
+  Title,
+} from "@mantine/core";
+import { Calendar } from "@mantine/dates";
 import { getServerSession } from "next-auth/next";
 import { IconEdit } from "@tabler/icons-react";
 import dayjs from "dayjs";
@@ -50,6 +57,18 @@ export default function ManageBlockoutPage({ user }: { user: User }) {
         day you selected will be highlighted. You are only able to block out
         dates within the current month and next month.
       </Text>
+      <List mt="lg">
+        <List.Item>Unless you have a valid reason;</List.Item>
+        <List.Item>
+          Only a maximum of 8 blockouts date per month (subject to change)
+        </List.Item>
+        <List.Item>
+          Inform the person-in-charge of the duty roster your reason
+        </List.Item>
+        <List.Item>
+          You are not allowed to blockout every weekend of the month
+        </List.Item>
+      </List>
       <Divider mt="sm" />
 
       <Calendar

@@ -43,6 +43,12 @@ export default defineType({
       readOnly: true,
     }),
     defineField({
+      name: 'enlistment',
+      title: 'enlistment Date',
+      type: 'date',
+      readOnly: true,
+    }),
+    defineField({
       // this is only if you use credentials provider
       name: 'password',
       type: 'string',

@@ -20,9 +20,16 @@ import {
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
-import { IconCheck, IconX } from "@tabler/icons-react";
+import {
+  IconAt,
+  IconCheck,
+  IconLock,
+  IconSignature,
+  IconX,
+} from "@tabler/icons-react";
 
 import { authOptions } from "./api/auth/[...nextauth]";
+import { PasswordStrength } from "@/components/PasswordRequirement";
 
 // Function that checks if the password is valid, returns an error message if not
 export function checkPasswordValidation(value: string) {
@@ -62,7 +69,7 @@ export function checkPasswordValidation(value: string) {
 export function checkNameValidation(value: string) {
   const isName = /^[a-zA-Z '.-]*$/;
   if (!isName.test(value)) {
-    return "Name is not valid.";
+    return "Name is not valid. Only letters, spaces, apostrophes, dashes and periods are allowed.";
   }
   return null;
 }
@@ -76,7 +83,8 @@ type NextAuthSanityResponse = {
 export default function AuthenticationForm() {
   const hcaptchaRef = useRef<HCaptcha>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [type, toggle] = useToggle(["login", "register"]);
+  const [formType, setFormType] = useToggle(["login", "register"]);
+
   const form = useForm({
     initialValues: {
       name: "testuser",
@@ -85,10 +93,10 @@ export default function AuthenticationForm() {
     },
 
     validate: {
-      name: (value) => type === "register" && checkNameValidation(value),
+      name: (value) => formType === "register" && checkNameValidation(value),
       email: isEmail("Invalid email"),
       password: (value) =>
-        type === "register" && checkPasswordValidation(value),
+        formType === "register" && checkPasswordValidation(value),
     },
 
     validateInputOnChange: ["password"],
@@ -96,12 +104,12 @@ export default function AuthenticationForm() {
 
   const handleSubmit = async () => {
     // Execute the hCaptcha when the form is submitted
-    if (type === "register" && hcaptchaRef.current !== null) {
+    if (formType === "register" && hcaptchaRef.current !== null) {
       hcaptchaRef.current.execute();
     }
 
     // If type is login then execute the signIn function
-    else if (type === "login") {
+    else if (formType === "login") {
       const { email, password } = form.values;
       setIsSubmitting(true);
       try {
@@ -137,7 +145,9 @@ export default function AuthenticationForm() {
           icon: <IconX />,
         });
       } finally {
-        setIsSubmitting(false);
+        setTimeout(() => {
+          setIsSubmitting(false);
+        }, 1500);
       }
     }
   };
@@ -146,14 +156,19 @@ export default function AuthenticationForm() {
     const { name, email, password } = form.values;
     // If the hCaptcha code is null or undefined indicating that
     // the hCaptcha was expired then return early
-    if (!captchaCode || (type === "register" && !name) || !email || !password) {
+    if (
+      !captchaCode ||
+      (formType === "register" && !name) ||
+      !email ||
+      !password
+    ) {
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      if (type === "register") {
+      if (formType === "register") {
         const response: NextAuthSanityResponse = await signUp({
           email,
           password,
@@ -211,11 +226,13 @@ export default function AuthenticationForm() {
       <Paper radius="md" p="xl" mt={30} withBorder>
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack>
-            {type === "register" && (
+            {formType === "register" && (
               <TextInput
-                required={type === "register"}
+                data-autofocus
+                required
                 label="Name"
                 placeholder="Your name"
+                icon={<IconSignature size={16} stroke={1.5} />}
                 {...form.getInputProps("name")}
               />
             )}
@@ -224,15 +241,27 @@ export default function AuthenticationForm() {
               required
               label="Email"
               placeholder="your@email.com"
+              icon={<IconAt size={16} stroke={1.5} />}
               {...form.getInputProps("email")}
             />
 
-            <PasswordInput
-              required
-              label="Password"
-              placeholder="Your password"
-              {...form.getInputProps("password")}
-            />
+            {formType === "register" ? (
+              <PasswordStrength
+                required
+                label="Password"
+                placeholder="Your password"
+                icon={<IconLock size={16} stroke={1.5} />}
+                {...form.getInputProps("password")}
+              />
+            ) : (
+              <PasswordInput
+                required
+                label="Password"
+                placeholder="Your password"
+                icon={<IconLock size={16} stroke={1.5} />}
+                {...form.getInputProps("password")}
+              />
+            )}
           </Stack>
 
           <Group position="apart" mt="xl">
@@ -240,15 +269,15 @@ export default function AuthenticationForm() {
               component="button"
               type="button"
               color="dimmed"
-              onClick={() => toggle()}
+              onClick={() => setFormType()}
               size="xs"
             >
-              {type === "register"
+              {formType === "register"
                 ? "Already have an account? Login"
                 : "Don't have an account? Register"}
             </Anchor>
             <Button type="submit" disabled={isSubmitting}>
-              {upperFirst(type)}
+              {upperFirst(formType)}
             </Button>
           </Group>
 

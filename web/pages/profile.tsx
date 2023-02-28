@@ -8,6 +8,7 @@ import { isEmail, useForm } from "@mantine/form";
 import {
   createStyles,
   Card,
+  Text,
   Title,
   SimpleGrid,
   TextInput,
@@ -15,10 +16,13 @@ import {
   Group,
   Container,
   PasswordInput,
+  AspectRatio,
+  FileButton,
 } from "@mantine/core";
 
 import { authOptions } from "./api/auth/[...nextauth]";
 import { showNotification } from "@mantine/notifications";
+import { IconSettings } from "@tabler/icons-react";
 
 // Function that checks if the password is valid, returns an error message if not
 export function checkPasswordValidation(value: string) {
@@ -59,6 +63,15 @@ const useStyles = createStyles((theme) => ({
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
     color: theme.colorScheme === "dark" ? theme.white : theme.black,
     lineHeight: 1,
+    textTransform: "uppercase",
+  },
+
+  titleWrapper: {
+    display: "flex",
+    alignItems: "center",
+    "& > *:not(:last-child)": {
+      marginRight: theme.spacing.sm,
+    },
   },
 
   form: {
@@ -74,6 +87,7 @@ const useStyles = createStyles((theme) => ({
 
 export default function ProfilePage({ user }: { user: User }) {
   const { classes } = useStyles();
+  const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm({
@@ -82,7 +96,6 @@ export default function ProfilePage({ user }: { user: User }) {
       email: user?.email || "",
       password: "",
       confirmPassword: "",
-      ord: new Date(),
     },
 
     validate: {
@@ -130,30 +143,49 @@ export default function ProfilePage({ user }: { user: User }) {
     setIsSubmitting(false);
   };
 
+  const imageUrl = file ? URL.createObjectURL(file) : user?.image;
+
   // As this page uses Server Side Rendering, the `session` will be already
   // populated on render without needing to go through a loading stage.
   return (
     <Container mt="lg">
+      <div className={classes.titleWrapper}>
+        <IconSettings size={48} />
+        <Title className={classes.title}>Profile Settings</Title>
+      </div>
+
+      <Text color="dimmed" mt="md">
+        Update your profile information and settings here. You can also change
+        your password. Enlistment and ORD are optional but recommended.
+      </Text>
+
       <SimpleGrid
         cols={2}
         spacing={50}
         breakpoints={[{ maxWidth: "sm", cols: 1 }]}
+        mt="xl"
       >
         <div>
-          <Title className={classes.title}>Profile Settings</Title>
-
           <Card shadow="sm" p="xl" mt="lg">
             <Card.Section>
-              <Image
-                src={user?.image || "/images/avatars/avatar-1.jpg"}
-                alt="User avatar"
-                width={450}
-                height={450}
-                className="rounded-full"
-                style={{ objectFit: "cover" }}
-              />
+              <AspectRatio ratio={350 / 350} sx={{ maxWidth: 350 }} mx="auto">
+                <Image
+                  src={imageUrl || "/images/avatars/avatar-1.jpg"}
+                  alt="User avatar"
+                  width={350}
+                  height={350}
+                  className="rounded-full"
+                  style={{ objectFit: "cover" }}
+                />
+              </AspectRatio>
             </Card.Section>
           </Card>
+
+          <Group position="left" mt="lg">
+            <FileButton onChange={setFile} accept="image/png,image/jpeg">
+              {(props) => <Button {...props}>Upload image</Button>}
+            </FileButton>
+          </Group>
         </div>
         <div className={classes.form}>
           <form onSubmit={form.onSubmit(handleSubmit)}>
@@ -186,13 +218,21 @@ export default function ProfilePage({ user }: { user: User }) {
 
             <DatePicker
               mt="sm"
+              label="Enlistment date"
+              placeholder="Pick date"
+              firstDayOfWeek="sunday"
+              {...form.getInputProps("enlistment")}
+            />
+
+            <DatePicker
+              mt="sm"
               label="ORD date"
               placeholder="Pick date"
               firstDayOfWeek="sunday"
               {...form.getInputProps("ord")}
             />
 
-            <Group position="right" mt={50}>
+            <Group position="right" mt="lg">
               <Button type="submit" disabled={isSubmitting}>
                 Submit
               </Button>

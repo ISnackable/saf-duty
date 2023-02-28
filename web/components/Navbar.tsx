@@ -131,12 +131,12 @@ const links = [
     notifications: 4,
     link: "/upcoming-duties",
   },
-  { icon: IconUsers, label: "Teams", link: "/teams" },
+  { icon: IconUsers, label: "Duty Personnels", link: "/duty-personnels" },
 ];
 
 const collections = [
-  { emoji: "💰", label: "Pay Day", link: "/collections/pay-day" },
   { emoji: "✨", label: "IPPT", link: "/collections/ippt" },
+  { emoji: "💰", label: "Pay Day", link: "/collections/pay-day" },
   { emoji: "📅", label: "ORD", link: "/collections/ord" },
 ];
 

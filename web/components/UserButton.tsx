@@ -6,7 +6,6 @@ import {
   IconChevronRight,
   IconSettings,
   IconLogout,
-  IconSwitchHorizontal,
 } from "@tabler/icons-react";
 
 interface UserButtonProps extends React.ComponentPropsWithoutRef<"button"> {
@@ -75,12 +74,6 @@ export function UserButtonMenu(props: UserButtonProps) {
             href="/profile"
           >
             Profile
-          </Menu.Item>
-          <Menu.Item
-            icon={<IconSwitchHorizontal size={14} stroke={1.5} />}
-            onClick={() => signOut()}
-          >
-            Change account
           </Menu.Item>
           <Menu.Item
             color="red"
