@@ -61,7 +61,7 @@ export default defineType({
     }),
     defineField({
       name: 'enlistment',
-      title: 'enlistment Date',
+      title: 'Enlistment Date',
       type: 'date',
       readOnly: true,
     }),
