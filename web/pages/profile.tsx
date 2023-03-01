@@ -19,10 +19,16 @@ import {
   AspectRatio,
   FileButton,
 } from "@mantine/core";
+import { openConfirmModal } from "@mantine/modals";
+import { showNotification } from "@mantine/notifications";
+import {
+  IconCheck,
+  IconSettings,
+  IconUpload,
+  IconX,
+} from "@tabler/icons-react";
 
 import { authOptions } from "./api/auth/[...nextauth]";
-import { showNotification } from "@mantine/notifications";
-import { IconSettings } from "@tabler/icons-react";
 
 // Function that checks if the password is valid, returns an error message if not
 export function checkPasswordValidation(value: string) {
@@ -90,12 +96,28 @@ export default function ProfilePage({ user }: { user: User }) {
   const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const openDeleteModal = () =>
+    openConfirmModal({
+      title: "Delete your profile",
+      centered: true,
+      children: (
+        <Text size="sm">
+          Are you sure you want to delete your profile? This action is
+          destructive and you will have to contact support to restore your data.
+        </Text>
+      ),
+      labels: { confirm: "Delete account", cancel: "No don't delete it" },
+      confirmProps: { color: "red" },
+      onCancel: () => console.log("Cancel"),
+      onConfirm: () => console.log("Confirmed"),
+    });
+
   const form = useForm({
     initialValues: {
       name: user?.name || "",
       email: user?.email || "",
+      oldPassword: "",
       password: "",
-      confirmPassword: "",
     },
 
     validate: {
@@ -103,8 +125,7 @@ export default function ProfilePage({ user }: { user: User }) {
         value.length < 2 ? "Name must have at least 2 letters" : null,
       email: isEmail("Invalid email"),
       password: (value) => checkPasswordValidation(value),
-      confirmPassword: (value, values) =>
-        value !== values.password ? "Passwords did not match" : null,
+      oldPassword: (value) => checkPasswordValidation(value),
     },
   });
 
@@ -112,7 +133,7 @@ export default function ProfilePage({ user }: { user: User }) {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch("/api/sanity/updatePersonnel", {
+      const res = await fetch("/api/sanity/updateUser", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -120,20 +141,24 @@ export default function ProfilePage({ user }: { user: User }) {
         body: JSON.stringify({
           ...values,
         }),
+        cache: "no-cache",
       });
       const data = await res.json();
 
-      if (data.error) {
-        console.error(data.error);
+      if (data?.status === "error") {
         showNotification({
           title: "Error",
-          message: "Cannot update profile, something went wrong",
+          message:
+            data?.message || "Cannot update profile, something went wrong",
+          color: "red",
+          icon: <IconX />,
         });
-        return;
       } else {
         showNotification({
           title: "Success",
           message: "Profile updated successfully",
+          color: "green",
+          icon: <IconCheck />,
         });
       }
     } catch (error) {
@@ -170,6 +195,7 @@ export default function ProfilePage({ user }: { user: User }) {
             <Card.Section>
               <AspectRatio ratio={350 / 350} sx={{ maxWidth: 350 }} mx="auto">
                 <Image
+                  priority
                   src={imageUrl || "/images/avatars/avatar-1.jpg"}
                   alt="User avatar"
                   width={350}
@@ -183,7 +209,11 @@ export default function ProfilePage({ user }: { user: User }) {
 
           <Group position="left" mt="lg">
             <FileButton onChange={setFile} accept="image/png,image/jpeg">
-              {(props) => <Button {...props}>Upload image</Button>}
+              {(props) => (
+                <Button {...props} leftIcon={<IconUpload size={14} />}>
+                  Upload image
+                </Button>
+              )}
             </FileButton>
           </Group>
         </div>
@@ -204,16 +234,16 @@ export default function ProfilePage({ user }: { user: User }) {
 
             <PasswordInput
               mt="sm"
-              label="Password"
-              placeholder="Password"
-              {...form.getInputProps("password")}
+              label="Old password"
+              placeholder="Old password"
+              {...form.getInputProps("oldPassword")}
             />
 
             <PasswordInput
               mt="sm"
-              label="Confirm password"
-              placeholder="Confirm password"
-              {...form.getInputProps("confirmPassword")}
+              label="New Password"
+              placeholder="New Password"
+              {...form.getInputProps("password")}
             />
 
             <DatePicker
@@ -232,7 +262,10 @@ export default function ProfilePage({ user }: { user: User }) {
               {...form.getInputProps("ord")}
             />
 
-            <Group position="right" mt="lg">
+            <Group position="apart" mt="lg">
+              <Button onClick={openDeleteModal} color="red">
+                Delete account
+              </Button>
               <Button type="submit" disabled={isSubmitting}>
                 Submit
               </Button>

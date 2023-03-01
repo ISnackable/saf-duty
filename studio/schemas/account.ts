@@ -1,9 +1,11 @@
 import {defineType, defineField} from 'sanity'
+import {LockIcon} from '@sanity/icons'
 
 export default defineType({
   name: 'account',
   title: 'Account',
   type: 'document',
+  icon: LockIcon,
   fields: [
     defineField({
       name: 'providerType',
@@ -33,7 +35,7 @@ export default defineType({
       name: 'user',
       title: 'User',
       type: 'reference',
-      to: {type: 'personnel'},
+      to: {type: 'user'},
     }),
   ],
 })

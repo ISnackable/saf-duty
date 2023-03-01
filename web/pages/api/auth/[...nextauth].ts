@@ -4,18 +4,12 @@ import { client } from "@/lib/sanity.client";
 
 export const authOptions: NextAuthOptions = {
   // @ts-ignore different api client type than next-auth-sanity
-  providers: [SanityCredentials(client, "personnel")],
+  providers: [SanityCredentials(client)],
   session: {
     strategy: "jwt",
   },
   // @ts-ignore different api client type than next-auth-sanity
-  adapter: SanityAdapter(client, {
-    schemas: {
-      verificationToken: "verification-request",
-      account: "account",
-      user: "personnel",
-    },
-  }),
+  adapter: SanityAdapter(client),
   pages: {
     signIn: "/login",
     error: "/login",

@@ -7,6 +7,7 @@ import {
   Badge,
   Text,
   Group,
+  type NavbarProps,
 } from "@mantine/core";
 import {
   IconUsers,
@@ -18,6 +19,8 @@ import {
 } from "@tabler/icons-react";
 import { UserButtonMenu } from "@/components/UserButton";
 import { SegmentedToggle } from "@/components/ThemeToggle";
+
+type NavbarMinProps = Omit<NavbarProps, "children">;
 
 const useStyles = createStyles((theme) => ({
   navbar: {
@@ -140,7 +143,7 @@ const collections = [
   { emoji: "📅", label: "ORD", link: "/collections/ord" },
 ];
 
-export function NavbarMin() {
+export function NavbarMin(props: NavbarMinProps) {
   const { data: session } = useSession();
   const { classes } = useStyles();
 
@@ -170,7 +173,7 @@ export function NavbarMin() {
   ));
 
   return (
-    <Navbar width={{ sm: 300 }} p="md" className={classes.navbar}>
+    <Navbar className={classes.navbar} {...props}>
       <Navbar.Section className={classes.section}>
         <UserButtonMenu
           image={session?.user?.image || "https://i.imgur.com/fGxgcDF.png"}

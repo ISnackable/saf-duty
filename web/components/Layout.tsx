@@ -32,24 +32,26 @@ const useStyles = createStyles((theme) => ({
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { classes } = useStyles();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const [opened, { open, close, toggle }] = useDisclosure(true);
-  const matches = useMediaQuery("(min-width: 900px)");
+  const [opened, { close, toggle }] = useDisclosure(true);
   const { asPath } = useRouter();
 
   const dark = colorScheme === "dark";
 
   useEffect(() => {
-    if (matches) {
-      open();
-    } else {
-      close();
-    }
-  }, [matches, open, close, asPath]);
+    close();
+  }, [close, asPath]);
 
   return (
     <AppShell
       padding="md"
-      navbar={opened ? <NavbarMin /> : undefined}
+      navbar={
+        <NavbarMin
+          width={{ sm: 300 }}
+          p="md"
+          hiddenBreakpoint="sm"
+          hidden={!opened}
+        />
+      }
       header={
         <Header height={60} p="xs">
           <div className={classes.inner}>

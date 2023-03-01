@@ -2,7 +2,7 @@ import {defineField, defineType, NumberInputProps, useFormValue} from 'sanity'
 import {getDaysInMonth} from 'date-fns'
 import {format} from 'date-fns-tz'
 
-const dateInput = (props: NumberInputProps) => {
+const DateInput = (props: NumberInputProps) => {
   const {schemaType, renderDefault} = props
   const {options} = schemaType
 
@@ -40,7 +40,7 @@ export default defineType({
             list: [...Array(getDaysInMonth(new Date())).keys()].map((day) => day + 1),
           },
           components: {
-            input: dateInput,
+            input: DateInput,
           },
           validation: (Rule) => Rule.positive().integer().required(),
         }),
@@ -48,14 +48,14 @@ export default defineType({
           name: 'dutyPersonnel',
           title: 'Duty Personnel',
           type: 'reference',
-          to: [{type: 'personnel'}],
+          to: [{type: 'user'}],
           validation: (Rule) => Rule.required(),
         }),
         defineField({
           name: 'dutyPersonnelStandIn',
           title: 'Duty Personnel Stand In',
           type: 'reference',
-          to: [{type: 'personnel'}],
+          to: [{type: 'user'}],
         }),
       ],
       preview: {

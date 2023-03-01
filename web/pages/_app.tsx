@@ -11,6 +11,7 @@ import {
   ColorScheme,
 } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
+import { ModalsProvider } from "@mantine/modals";
 import { getCookie, setCookie } from "cookies-next";
 
 import Layout from "@/components/Layout";
@@ -57,13 +58,15 @@ export default function MyApp(props: AppProps & { colorScheme: ColorScheme }) {
             }}
           >
             <NotificationsProvider>
-              {router.pathname === "/login" || router.pathname === "/404" ? (
-                <Component {...pageProps} />
-              ) : (
-                <Layout>
+              <ModalsProvider>
+                {router.pathname === "/login" || router.pathname === "/404" ? (
                   <Component {...pageProps} />
-                </Layout>
-              )}
+                ) : (
+                  <Layout>
+                    <Component {...pageProps} />
+                  </Layout>
+                )}
+              </ModalsProvider>
             </NotificationsProvider>
           </MantineProvider>
         </ColorSchemeProvider>

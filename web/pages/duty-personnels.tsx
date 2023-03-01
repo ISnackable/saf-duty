@@ -36,10 +36,6 @@ interface RowData {
   totalDutyDone: string;
 }
 
-interface TableSortProps {
-  data: RowData[];
-}
-
 interface ThProps {
   children: React.ReactNode;
   reversed: boolean;
@@ -217,7 +213,7 @@ export default function DutyPersonnelsPage({ user }: { user: User }) {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
-    console.log(value);
+
     setSearch(value);
     setSortedData(
       sortData(data, { sortBy, reversed: reverseSortDirection, search: value })

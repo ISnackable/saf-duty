@@ -42,7 +42,6 @@ const useStyles = createStyles((theme) => ({
     overflow: "visible",
     padding: theme.spacing.xl,
     paddingTop: theme.spacing.xl * 1.5 + ICON_SIZE / 3,
-    margin: 80,
   },
 
   icon: {
@@ -79,7 +78,7 @@ export default function ORDPage({ user }: { user: User }) {
       </Text>
       <Divider mt="sm" />
 
-      <Paper radius="md" withBorder className={classes.card}>
+      <Paper radius="md" withBorder className={classes.card} mt={80}>
         <ThemeIcon className={classes.icon} size={ICON_SIZE} radius={ICON_SIZE}>
           <IconRun size={34} stroke={1.5} />
         </ThemeIcon>
@@ -99,7 +98,7 @@ export default function ORDPage({ user }: { user: User }) {
           </Text>
         </Group>
 
-        <Progress value={ordProgress} mt={5} />
+        <Progress value={ordProgress} mt={5} animate color="teal" />
 
         <Group position="apart" mt="md">
           <Text size="sm">

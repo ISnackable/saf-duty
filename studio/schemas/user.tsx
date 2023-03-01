@@ -1,9 +1,26 @@
 import {defineType, defineField} from 'sanity'
+import {UsersIcon, UserIcon} from '@sanity/icons'
+
+const MediaPreview = ({value}: {value: string}) => {
+  return (
+    <img
+      alt="User media preview"
+      src={value}
+      style={{
+        width: '100%',
+        height: '100%',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    />
+  )
+}
 
 export default defineType({
-  name: 'personnel',
-  title: 'Personnel',
+  name: 'user',
+  title: 'User',
   type: 'document',
+  icon: UsersIcon,
   fields: [
     defineField({
       name: 'name',
@@ -80,4 +97,16 @@ export default defineType({
       of: [{type: 'date'}],
     }),
   ],
+  preview: {
+    select: {
+      title: 'name',
+      media: 'image',
+    },
+    prepare({title, media}) {
+      return {
+        title,
+        media: media?.startsWith('http') ? <MediaPreview value={media} /> : UserIcon,
+      }
+    },
+  },
 })

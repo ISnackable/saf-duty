@@ -152,5 +152,5 @@ export default use(
   validateFields,
   addRole,
   // @ts-ignore different api client type than next-auth-sanity
-  signUpHandler(client, "personnel")
+  signUpHandler(client)
 );

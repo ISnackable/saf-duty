@@ -87,8 +87,8 @@ export default function AuthenticationForm() {
 
   const form = useForm({
     initialValues: {
-      name: "testuser",
-      email: "testuser@email.com",
+      name: "demo",
+      email: "demo@email.com",
       password: "$00pU*2KE1X3",
     },
 
@@ -197,6 +197,15 @@ export default function AuthenticationForm() {
             color: "teal",
             icon: <IconCheck />,
           });
+
+          await signIn("sanity-login", {
+            email,
+            password,
+            redirect: false,
+          });
+
+          // If the user is authenticated, redirect to the home page
+          Router.push("/");
         }
       }
     } catch (error) {

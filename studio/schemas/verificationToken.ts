@@ -1,9 +1,11 @@
-import { defineType, defineField } from "sanity";
+import {defineType, defineField} from 'sanity'
+import {TokenIcon} from '@sanity/icons'
 
 export default defineType({
   name: 'verification-token',
   title: 'Verification Token',
   type: 'document',
+  icon: TokenIcon,
   fields: [
     defineField({
       name: 'identifier',
