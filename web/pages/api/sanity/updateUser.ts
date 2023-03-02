@@ -26,11 +26,19 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
       .json({ status: "error", message: "You must be logged in" });
   }
 
-  if (!session?.user?.id)
+  if (!session?.user?.id) {
     return res.status(422).json({
       status: "error",
       message: "Unproccesable request, user id not found",
     });
+  }
+  // Demo user
+  else if (session?.user?.id === "user.fdf11aae-d142-450b-87a4-559bc6e27f05") {
+    return res.status(401).json({
+      status: "error",
+      message: "Unauthorized, you are not allowed to update this user",
+    });
+  }
 
   const user = await client.fetch(getUserByIdQuery, {
     userSchema: "user",
