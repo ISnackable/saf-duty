@@ -19,6 +19,7 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
   console.log("Reached update user handler");
 
   const session = await getServerSession(req, res, authOptions);
+  const userId = session?.user?.id?.replace("drafts.", "");
 
   if (!session) {
     return res
@@ -33,7 +34,7 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
     });
   }
   // Demo user
-  else if (session?.user?.id === "user.fdf11aae-d142-450b-87a4-559bc6e27f05") {
+  else if (userId === "user.fdf11aae-d142-450b-87a4-559bc6e27f05") {
     return res.status(401).json({
       status: "error",
       message: "Unauthorized, you are not allowed to update this user",
@@ -42,7 +43,7 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
 
   const user = await client.fetch(getUserByIdQuery, {
     userSchema: "user",
-    id: session?.user?.id,
+    id: userId,
   });
 
   const { name, email, password, oldPassword, enlistment, ord } = req.body;

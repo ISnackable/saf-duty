@@ -15,6 +15,7 @@ export default async function deleteUserHandler(
   console.log("Reached delete user handler");
 
   const session = await getServerSession(req, res, authOptions);
+  const userId = session?.user?.id?.replace("drafts.", "");
 
   if (!session) {
     return res
@@ -22,15 +23,23 @@ export default async function deleteUserHandler(
       .json({ status: "error", message: "You must be logged in" });
   }
 
-  if (!session?.user?.id)
+  if (!session?.user?.id) {
     return res.status(422).json({
       status: "error",
       message: "Unproccesable request, user id not found",
     });
+  }
+  // Demo user
+  else if (userId === "user.fdf11aae-d142-450b-87a4-559bc6e27f05") {
+    return res.status(401).json({
+      status: "error",
+      message: "Unauthorized, you are not allowed to update this user",
+    });
+  }
 
   const user = await client.fetch(getUserByIdQuery, {
     userSchema: "user",
-    id: session?.user?.id,
+    id: userId,
   });
 
   const { name, email, password, oldPassword, enlistment, ord } = req.body;
@@ -45,19 +54,9 @@ export default async function deleteUserHandler(
     });
   }
 
-  const hashedPassword = await argon2.hash(password);
-  const clonedUser = {
-    ...user,
-    name,
-    email,
-    password: hashedPassword,
-    enlistment,
-    ord,
-  };
-
   try {
-    const newUser = await client.patch(user._id).set(clonedUser).commit();
-    console.log(newUser);
+    const response = await client.delete(user?._id);
+    console.log(response);
 
     return res
       .status(200)

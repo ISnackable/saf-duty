@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import App from "next/app";
 import type { AppContext, AppProps } from "next/app";
 import Head from "next/head";
@@ -9,6 +9,7 @@ import {
   MantineProvider,
   ColorSchemeProvider,
   ColorScheme,
+  LoadingOverlay,
 } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
 import { ModalsProvider } from "@mantine/modals";
@@ -19,10 +20,10 @@ import Layout from "@/components/Layout";
 import "@/styles/globals.css";
 
 export default function MyApp(props: AppProps & { colorScheme: ColorScheme }) {
-  const router = useRouter();
   const { Component, pageProps } = props;
   const { session } = pageProps;
 
+  const [loading, setLoading] = useState(true);
   const [colorScheme, setColorScheme] = useState<ColorScheme>(
     props.colorScheme
   );
@@ -35,6 +36,11 @@ export default function MyApp(props: AppProps & { colorScheme: ColorScheme }) {
       maxAge: 60 * 60 * 24 * 30,
     });
   };
+
+  const router = useRouter();
+  useEffect(() => {
+    router.isReady && setLoading(false);
+  }, [router.isReady]);
 
   return (
     <>
@@ -59,6 +65,8 @@ export default function MyApp(props: AppProps & { colorScheme: ColorScheme }) {
           >
             <NotificationsProvider>
               <ModalsProvider>
+                <LoadingOverlay visible={loading} overlayBlur={2} />
+
                 {router.pathname === "/login" || router.pathname === "/404" ? (
                   <Component {...pageProps} />
                 ) : (
