@@ -8,6 +8,7 @@ import {
   Text,
   Group,
   type NavbarProps,
+  NavLink,
 } from "@mantine/core";
 import {
   IconUsers,
@@ -16,6 +17,8 @@ import {
   IconFingerprint,
   IconCalendarEvent,
   IconEdit,
+  IconApps,
+  IconChessKnight,
 } from "@tabler/icons-react";
 import { UserButtonMenu } from "@/components/UserButton";
 import { SegmentedToggle } from "@/components/ThemeToggle";
@@ -137,6 +140,15 @@ const links = [
   { icon: IconUsers, label: "Duty Personnels", link: "/duty-personnels" },
 ];
 
+const adminLinks = [
+  { icon: IconApps, label: "Overview", link: "/admin" },
+  {
+    icon: IconChessKnight,
+    label: "Generate duty",
+    link: "/admin/generate-duty",
+  },
+];
+
 const collections = [
   { emoji: "✨", label: "IPPT", link: "/collections/ippt" },
   { emoji: "💰", label: "Pay Day", link: "/collections/pay-day" },
@@ -159,6 +171,23 @@ export function NavbarMin(props: NavbarMinProps) {
         </Badge>
       )}
     </UnstyledButton>
+  ));
+
+  const secondaryLinks = adminLinks.map((link) => (
+    <NavLink
+      key={link.label}
+      styles={(theme) => ({
+        label: {
+          fontSize: theme.fontSizes.xs,
+        },
+      })}
+      component={Link}
+      label={link.label}
+      href={link.link}
+      icon={
+        <link.icon size={22} className={classes.mainLinkIcon} stroke={1.5} />
+      }
+    />
   ));
 
   const collectionLinks = collections.map((collection) => (
@@ -191,16 +220,23 @@ export function NavbarMin(props: NavbarMinProps) {
             </Text>
           </Group>
           <div className={classes.mainLinks}>
-            <UnstyledButton className={classes.mainLink}>
-              <Link href="/admin" className={classes.mainLinkInner}>
+            <NavLink
+              styles={(theme) => ({
+                label: {
+                  fontSize: theme.fontSizes.xs,
+                },
+              })}
+              icon={
                 <IconFingerprint
-                  size={20}
+                  size={22}
                   className={classes.mainLinkIcon}
                   stroke={1.5}
                 />
-                <span>Secret Admin Panel</span>
-              </Link>
-            </UnstyledButton>
+              }
+              label="Admin Panel"
+            >
+              {secondaryLinks}
+            </NavLink>
           </div>
         </Navbar.Section>
       )}

@@ -1,7 +1,7 @@
 import type { GetServerSidePropsContext } from "next";
 import type { User } from "next-auth";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "./api/auth/[...nextauth]";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 export default function AdminPage({ user }: { user: User }) {
   return JSON.stringify(user);
