@@ -1,46 +1,63 @@
-import { useState } from "react";
 import type { GetServerSidePropsContext } from "next";
 import type { User } from "next-auth";
-import { Container, createStyles, Divider, Text, Title } from "@mantine/core";
-import { Calendar, isSameMonth } from "@mantine/dates";
+import {
+  Container,
+  createStyles,
+  Divider,
+  Text,
+  Title,
+  MantineSize,
+  getSize,
+  Flex,
+} from "@mantine/core";
+import { Calendar } from "@mantine/dates";
 import { getServerSession } from "next-auth/next";
 import { IconCalendarEvent } from "@tabler/icons-react";
 
 import { authOptions } from "./api/auth/[...nextauth]";
 
-const useStyles = createStyles((theme) => ({
-  outside: {
-    opacity: 0,
-  },
+interface CalendarBaseStyles {
+  size: MantineSize;
+  fullWidth: boolean;
+  amountOfMonths: number;
+}
 
-  weekend: {
-    color: `${
-      theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.colors.gray[7]
-    } !important`,
-  },
+export const DAY_SIZES = {
+  xs: 34,
+  sm: 38,
+  md: 46,
+  lg: 58,
+  xl: 66,
+};
 
-  title: {
-    fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-    color: theme.colorScheme === "dark" ? theme.white : theme.black,
-    lineHeight: 1,
-    textTransform: "uppercase",
-  },
-
-  titleWrapper: {
-    display: "flex",
-    alignItems: "center",
-    "& > *:not(:last-child)": {
-      marginRight: theme.spacing.sm,
+const useStyles = createStyles((theme) => {
+  return {
+    calendarBase: {
+      boxSizing: "border-box",
+      display: "flex",
+      gap: theme.spacing.md,
+      maxWidth: "100%",
     },
-  },
-}));
+
+    title: {
+      fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+      color: theme.colorScheme === "dark" ? theme.white : theme.black,
+      lineHeight: 1,
+      textTransform: "uppercase",
+    },
+
+    titleWrapper: {
+      display: "flex",
+      alignItems: "center",
+      "& > *:not(:last-child)": {
+        marginRight: theme.spacing.sm,
+      },
+    },
+  };
+});
 
 export default function IndexPage({ user }: { user: User }) {
-  const { classes, cx } = useStyles();
-
-  const [month, onMonthChange] = useState(new Date());
-  const value: Date[] = [];
-  const setValue = () => null;
+  const { classes } = useStyles();
 
   console.log(user);
 
@@ -56,45 +73,36 @@ export default function IndexPage({ user }: { user: User }) {
       <Divider mt="sm" />
 
       <Calendar
+        static
         mt="lg"
-        multiple
-        allowLevelChange={false}
-        value={value}
-        onChange={setValue}
-        fullWidth
+        maxLevel="month"
+        // fullWidth
         hideOutsideDates
         size="xl"
-        firstDayOfWeek="sunday"
-        month={month}
-        onMonthChange={onMonthChange}
-        excludeDate={(date) => !isSameMonth(date, month)}
-        dayClassName={(_date, modifiers) =>
-          cx({
-            [classes.outside]: modifiers.outside,
-            [classes.weekend]: modifiers.weekend,
-          })
-        }
         styles={(theme) => ({
-          cell: {
+          calendar: {
+            maxWidth: "100%",
+          },
+          calendarHeader: {
+            maxWidth: "100%",
+          },
+          monthCell: {
             border: `1px solid ${
               theme.colorScheme === "dark"
                 ? theme.colors.dark[4]
                 : theme.colors.gray[2]
             }`,
           },
+          month: {
+            width: "100%",
+          },
           day: {
             borderRadius: 0,
+            width: "100%",
             height: 90,
             fontSize: theme.fontSizes.lg,
-            "&[data-weekend]": {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[6]
-                  : theme.colors.gray[2],
-            },
           },
-          weekday: { fontSize: theme.fontSizes.lg },
-          weekdayCell: {
+          weekday: {
             fontSize: theme.fontSizes.xl,
             backgroundColor:
               theme.colorScheme === "dark"
@@ -112,12 +120,10 @@ export default function IndexPage({ user }: { user: User }) {
           const day = date.getDate();
 
           return (
-            <>
+            <Flex mih={50} justify="center" align="center" direction="column">
               <div>{day}</div>
-              <Text size="xs" ta="right" mr="sm">
-                WX (JW)
-              </Text>
-            </>
+              <Text size="xs">WX (JW)</Text>
+            </Flex>
           );
         }}
       />

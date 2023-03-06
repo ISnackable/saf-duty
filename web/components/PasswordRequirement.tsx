@@ -73,7 +73,7 @@ export function PasswordStrength(props: PasswordInputStrengthProps) {
         opened={popoverOpened}
         position="bottom"
         width="target"
-        transition="pop"
+        transitionProps={{ transition: "pop" }}
       >
         <Popover.Target>
           <div

@@ -47,7 +47,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       navbar={
         <NavbarMin
           width={{ sm: 300 }}
-          p="md"
+          pt="md"
           hiddenBreakpoint="sm"
           hidden={!opened}
         />

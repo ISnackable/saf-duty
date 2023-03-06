@@ -669,10 +669,10 @@
   dependencies:
     esquery "^1.0.1"
 
-"@sanity/cli@^3.5.0":
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/@sanity/cli/-/cli-3.5.0.tgz#c610be91ec523dfec76dc5936a59de10ecb34ba4"
-  integrity sha512-8a+4HDc2b1qdAq2OkG5rTMrwUKLiidv2M8IYyQNW4RwwaTGK9wi84QDt1kQD0qqsHE25daye6LnWIUeqPJI9Rw==
+"@sanity/cli@^3.5.1":
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/@sanity/cli/-/cli-3.5.1.tgz#e32e918244958807c702c55174767fbce2d9dd9f"
+  integrity sha512-OIVW82qc+lipcofNHW0BDeA4cq9eKl8n8kTlCOHgDioZyVSRkpC7Khxcd0tA6hEW/nX2hzoTrYKK7eDd5Cb9IQ==
   dependencies:
     "@babel/traverse" "^7.19.0"
     chalk "^4.1.2"

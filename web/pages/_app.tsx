@@ -9,9 +9,13 @@ import {
   MantineProvider,
   ColorSchemeProvider,
   ColorScheme,
-  LoadingOverlay,
 } from "@mantine/core";
-import { NotificationsProvider } from "@mantine/notifications";
+import {
+  DatesProvider,
+  MonthPickerInput,
+  DatePickerInput,
+} from "@mantine/dates";
+import { Notifications } from "@mantine/notifications";
 import { ModalsProvider } from "@mantine/modals";
 import { getCookie, setCookie } from "cookies-next";
 
@@ -23,7 +27,6 @@ export default function MyApp(props: AppProps & { colorScheme: ColorScheme }) {
   const { Component, pageProps } = props;
   const { session } = pageProps;
 
-  const [loading, setLoading] = useState(true);
   const [colorScheme, setColorScheme] = useState<ColorScheme>(
     props.colorScheme
   );
@@ -38,9 +41,6 @@ export default function MyApp(props: AppProps & { colorScheme: ColorScheme }) {
   };
 
   const router = useRouter();
-  useEffect(() => {
-    router.isReady && setLoading(false);
-  }, [router.isReady]);
 
   return (
     <>
@@ -63,9 +63,9 @@ export default function MyApp(props: AppProps & { colorScheme: ColorScheme }) {
               colorScheme,
             }}
           >
-            <NotificationsProvider>
+            <DatesProvider settings={{ firstDayOfWeek: 0 }}>
               <ModalsProvider>
-                <LoadingOverlay visible={loading} overlayBlur={2} />
+                <Notifications />
 
                 {router.pathname === "/login" || router.pathname === "/404" ? (
                   <Component {...pageProps} />
@@ -75,7 +75,7 @@ export default function MyApp(props: AppProps & { colorScheme: ColorScheme }) {
                   </Layout>
                 )}
               </ModalsProvider>
-            </NotificationsProvider>
+            </DatesProvider>
           </MantineProvider>
         </ColorSchemeProvider>
       </SessionProvider>

@@ -9,7 +9,7 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { Calendar } from "@mantine/dates";
+import { DatePicker } from "@mantine/dates";
 import { getServerSession } from "next-auth/next";
 import { IconEdit } from "@tabler/icons-react";
 import dayjs from "dayjs";
@@ -17,10 +17,6 @@ import dayjs from "dayjs";
 import { authOptions } from "./api/auth/[...nextauth]";
 
 const useStyles = createStyles((theme) => ({
-  outside: {
-    opacity: 0,
-  },
-
   title: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
     color: theme.colorScheme === "dark" ? theme.white : theme.black,
@@ -37,12 +33,34 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+const MAXIMUM_BLOCKOUTS = 8;
+
 export default function ManageBlockoutPage({ user }: { user: User }) {
-  const { classes, cx } = useStyles();
+  const { classes } = useStyles();
 
-  const [value, setValue] = useState<Date[]>([]);
+  const [selected, setSelected] = useState<Date[]>([]);
 
-  console.log(value);
+  const handleSelect = (date: Date) => {
+    const isSelected = selected.some((s) => dayjs(date).isSame(s, "date"));
+    const currentMonthSelected = selected.filter((d) =>
+      dayjs(d).isSame(date, "month")
+    );
+
+    if (isSelected) {
+      setSelected((current) =>
+        current.filter((d) => !dayjs(d).isSame(date, "date"))
+      );
+    } else if (
+      currentMonthSelected.length !== MAXIMUM_BLOCKOUTS &&
+      !currentMonthSelected.includes(date)
+    ) {
+      setSelected((current) =>
+        current.includes(date)
+          ? current.filter((d) => !dayjs(d).isSame(date, "date"))
+          : [...current, date]
+      );
+    }
+  };
 
   return (
     <Container mt="lg">
@@ -71,34 +89,46 @@ export default function ManageBlockoutPage({ user }: { user: User }) {
       </List>
       <Divider mt="sm" />
 
-      <Calendar
+      <DatePicker
         mt="lg"
-        multiple
-        disableOutsideEvents
-        allowLevelChange={false}
-        value={value}
-        onChange={setValue}
-        fullWidth
+        type="multiple"
+        maxLevel="month"
+        withCellSpacing={false}
+        hideOutsideDates
         size="xl"
-        firstDayOfWeek="sunday"
         minDate={dayjs(new Date()).startOf("month").toDate()}
         maxDate={dayjs(new Date()).endOf("month").add(1, "month").toDate()}
-        dayClassName={(_date, modifiers) =>
-          cx({
-            [classes.outside]: modifiers.outside,
-          })
-        }
+        getDayProps={(date) => ({
+          selected: selected.some((s) => dayjs(date).isSame(s, "date")),
+          onClick: () => handleSelect(date),
+        })}
         styles={(theme) => ({
-          cell: {
+          calendar: {
+            maxWidth: "100%",
+          },
+          calendarHeader: {
+            maxWidth: "100%",
+          },
+          monthCell: {
             border: `1px solid ${
               theme.colorScheme === "dark"
                 ? theme.colors.dark[4]
                 : theme.colors.gray[2]
             }`,
+            "[data-selected]": {
+              borderRadius: 0,
+            },
           },
-          day: { borderRadius: 0, height: 90, fontSize: theme.fontSizes.lg },
-          weekday: { fontSize: theme.fontSizes.lg },
-          weekdayCell: {
+          month: {
+            width: "100%",
+          },
+          day: {
+            borderRadius: 0,
+            width: "100%",
+            height: 90,
+            fontSize: theme.fontSizes.lg,
+          },
+          weekday: {
             fontSize: theme.fontSizes.xl,
             backgroundColor:
               theme.colorScheme === "dark"
@@ -112,20 +142,6 @@ export default function ManageBlockoutPage({ user }: { user: User }) {
             height: 90,
           },
         })}
-        renderDay={(date) => {
-          const day = date.getDate();
-
-          // const randomName = names[Math.floor(Math.random() * names.length)];
-
-          return (
-            <>
-              <div>{day}</div>
-              <Text size="xs" ta="right" mr="sm">
-                {/* {randomName} ({randomName}) */}
-              </Text>
-            </>
-          );
-        }}
       />
     </Container>
   );

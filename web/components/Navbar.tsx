@@ -45,8 +45,8 @@ const useStyles = createStyles((theme) => ({
   },
 
   mainLinks: {
-    paddingLeft: theme.spacing.md - theme.spacing.xs,
-    paddingRight: theme.spacing.md - theme.spacing.xs,
+    paddingLeft: `calc(${theme.spacing.md} - ${theme.spacing.xs})`,
+    paddingRight: `calc(${theme.spacing.md} - ${theme.spacing.xs})`,
     paddingBottom: theme.spacing.md,
   },
 
@@ -55,7 +55,7 @@ const useStyles = createStyles((theme) => ({
     alignItems: "center",
     width: "100%",
     fontSize: theme.fontSizes.xs,
-    padding: `8px ${theme.spacing.xs}px`,
+    padding: `8px ${theme.spacing.xs}`,
     borderRadius: theme.radius.sm,
     fontWeight: 500,
     color:
@@ -94,20 +94,20 @@ const useStyles = createStyles((theme) => ({
   },
 
   collections: {
-    paddingLeft: theme.spacing.md - 6,
-    paddingRight: theme.spacing.md - 6,
+    paddingLeft: `calc(${theme.spacing.md} - 6px)`,
+    paddingRight: `calc(${theme.spacing.md} - 6px)`,
     paddingBottom: theme.spacing.md,
   },
 
   collectionsHeader: {
-    paddingLeft: theme.spacing.md + 2,
+    paddingLeft: `calc(${theme.spacing.md} + 2px)`,
     paddingRight: theme.spacing.md,
     marginBottom: 5,
   },
 
   collectionLink: {
     display: "block",
-    padding: `8px ${theme.spacing.xs}px`,
+    padding: `8px ${theme.spacing.xs}`,
     textDecoration: "none",
     borderRadius: theme.radius.sm,
     fontSize: theme.fontSizes.xs,

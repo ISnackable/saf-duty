@@ -3,17 +3,17 @@ import {
   Checkbox,
   Container,
   createStyles,
+  Flex,
   Group,
   Select,
   Text,
-  TextInput,
   Title,
   TransferList,
   TransferListData,
   TransferListItemComponent,
   TransferListItemComponentProps,
 } from "@mantine/core";
-import { Calendar, DatePicker, isSameMonth } from "@mantine/dates";
+import { Calendar, DatePicker, MonthPickerInput } from "@mantine/dates";
 import { openConfirmModal } from "@mantine/modals";
 import { IconChessKnight } from "@tabler/icons-react";
 import type { GetServerSidePropsContext } from "next";
@@ -50,16 +50,6 @@ export function shuffleArray<T>(array: T[]): T[] {
 }
 
 const useStyles = createStyles((theme) => ({
-  outside: {
-    opacity: 0,
-  },
-
-  weekend: {
-    color: `${
-      theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.colors.gray[7]
-    } !important`,
-  },
-
   title: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
     color: theme.colorScheme === "dark" ? theme.white : theme.black,
@@ -109,12 +99,12 @@ const ItemComponent: TransferListItemComponent = ({
 );
 
 export default function GenerateDutyPage({ user }: { user: User }) {
-  const { classes, cx } = useStyles();
+  const { classes } = useStyles();
 
   const [data, setData] = useState<TransferListData>(initialValue);
-  const [month, onMonthChange] = useState(new Date());
+  const [month, onMonthChange] = useState<Date | null>(new Date());
 
-  const openModal = (date: Date[]) =>
+  const openModal = (date: Date) =>
     openConfirmModal({
       title: date.toLocaleString(),
       centered: true,
@@ -138,9 +128,6 @@ export default function GenerateDutyPage({ user }: { user: User }) {
       onConfirm: () => console.log("Confirmed"),
     });
 
-  const value: Date[] = [];
-  const setValue = (date: Date[]) => openModal(date);
-
   // const month: MonthName = "March";
   const year: number = 2023;
   const timeZone = "Asia/Singapore";
@@ -157,14 +144,11 @@ export default function GenerateDutyPage({ user }: { user: User }) {
         personnels.
       </Text>
 
-      {/* // TODO: Change to MonthPickerInput */}
-      <DatePicker
+      <MonthPickerInput
         mt="sm"
         label="Duty date"
         placeholder="Pick date"
-        firstDayOfWeek="sunday"
         value={month}
-        // @ts-ignore idk instrict stuff
         onChange={onMonthChange}
       />
 
@@ -182,44 +166,43 @@ export default function GenerateDutyPage({ user }: { user: User }) {
 
       <Calendar
         mt="lg"
-        multiple
-        allowLevelChange={false}
-        value={value}
-        onChange={setValue}
-        fullWidth
+        maxLevel="month"
+        date={month || new Date()}
         hideOutsideDates
         size="xl"
-        firstDayOfWeek="sunday"
-        month={month}
-        onMonthChange={onMonthChange}
-        excludeDate={(date) => !isSameMonth(date, month)}
-        dayClassName={(_date, modifiers) =>
-          cx({
-            [classes.outside]: modifiers.outside,
-            [classes.weekend]: modifiers.weekend,
-          })
-        }
+        getDayProps={(date) => ({
+          onClick: () => openModal(date),
+        })}
         styles={(theme) => ({
-          cell: {
+          calendar: {
+            maxWidth: "100%",
+          },
+          calendarHeader: {
+            maxWidth: "100%",
+          },
+          calendarHeaderControl: {
+            display: "none",
+          },
+          monthCell: {
             border: `1px solid ${
               theme.colorScheme === "dark"
                 ? theme.colors.dark[4]
                 : theme.colors.gray[2]
             }`,
+            "[data-selected]": {
+              borderRadius: 0,
+            },
+          },
+          month: {
+            width: "100%",
           },
           day: {
             borderRadius: 0,
+            width: "100%",
             height: 90,
             fontSize: theme.fontSizes.lg,
-            "&[data-weekend]": {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[6]
-                  : theme.colors.gray[2],
-            },
           },
-          weekday: { fontSize: theme.fontSizes.lg },
-          weekdayCell: {
+          weekday: {
             fontSize: theme.fontSizes.xl,
             backgroundColor:
               theme.colorScheme === "dark"
@@ -233,18 +216,6 @@ export default function GenerateDutyPage({ user }: { user: User }) {
             height: 90,
           },
         })}
-        renderDay={(date) => {
-          const day = date.getDate();
-
-          return (
-            <>
-              <div>{day}</div>
-              <Text size="xs" ta="right" mr="sm">
-                WX (JW)
-              </Text>
-            </>
-          );
-        }}
       />
     </Container>
   );

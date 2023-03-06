@@ -3,7 +3,7 @@ import type { GetServerSidePropsContext } from "next";
 import type { User } from "next-auth";
 import Image from "next/image";
 import { getServerSession } from "next-auth/next";
-import { DatePicker } from "@mantine/dates";
+import { DatePickerInput } from "@mantine/dates";
 import { isEmail, useForm } from "@mantine/form";
 import {
   createStyles,
@@ -191,7 +191,7 @@ export default function ProfilePage({ user }: { user: User }) {
         mt="xl"
       >
         <div>
-          <Card shadow="sm" p="xl" mt="lg">
+          <Card shadow="sm" mt="lg">
             <Card.Section>
               <AspectRatio ratio={350 / 350} sx={{ maxWidth: 350 }} mx="auto">
                 <Image
@@ -246,19 +246,19 @@ export default function ProfilePage({ user }: { user: User }) {
               {...form.getInputProps("password")}
             />
 
-            <DatePicker
+            <DatePickerInput
+              clearable
               mt="sm"
               label="Enlistment date"
               placeholder="Pick date"
-              firstDayOfWeek="sunday"
               {...form.getInputProps("enlistment")}
             />
 
-            <DatePicker
+            <DatePickerInput
+              clearable
               mt="sm"
               label="ORD date"
               placeholder="Pick date"
-              firstDayOfWeek="sunday"
               {...form.getInputProps("ord")}
             />
 
