@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Checkbox,
   Container,
   createStyles,
   Flex,
@@ -8,19 +7,21 @@ import {
   Select,
   Text,
   Title,
-  TransferList,
-  TransferListData,
-  TransferListItemComponent,
-  TransferListItemComponentProps,
+  MultiSelect,
+  NumberInput,
+  ActionIcon,
+  NumberInputHandlers,
+  rem,
 } from "@mantine/core";
-import { Calendar, DatePicker, MonthPickerInput } from "@mantine/dates";
+import { Calendar, MonthPickerInput } from "@mantine/dates";
 import { openConfirmModal } from "@mantine/modals";
 import { IconChessKnight } from "@tabler/icons-react";
 import type { GetServerSidePropsContext } from "next";
 import type { User } from "next-auth";
 import { getServerSession } from "next-auth/next";
-import { useState } from "react";
+import { forwardRef, useRef, useState } from "react";
 
+import { personnels } from "@/lib/demo.data";
 import { authOptions } from "../api/auth/[...nextauth]";
 
 export const MONTH_NAMES = [
@@ -38,7 +39,7 @@ export const MONTH_NAMES = [
   "December",
 ] as const;
 
-export type MonthName = typeof MONTH_NAMES[number];
+export type MonthName = (typeof MONTH_NAMES)[number];
 
 export function shuffleArray<T>(array: T[]): T[] {
   const arrayCopy = [...array];
@@ -66,43 +67,44 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const initialValue: TransferListData = [
-  [{ value: "JE", label: "Jin Er" }],
-  [
-    { value: "JX", label: "Jin Xiang" },
-    { value: "JW", label: "Jin Wei" },
-    { value: "JA", label: "Jin An" },
-  ],
-];
+interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
+  label: string;
+  avatar?: string;
+  description?: string;
+}
 
-const ItemComponent: TransferListItemComponent = ({
-  data,
-  selected,
-}: TransferListItemComponentProps) => (
-  <Group noWrap>
-    <Avatar src="" radius="xl" size="lg" />
-    <div style={{ flex: 1 }}>
-      <Text size="sm" weight={500}>
-        {data.label}
-      </Text>
-      <Text size="xs" color="dimmed" weight={400}>
-        {data.description}
-      </Text>
+const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
+  ({ avatar, label, description, ...others }: ItemProps, ref) => (
+    <div ref={ref} {...others}>
+      <Group noWrap>
+        <Avatar src={avatar} />
+
+        <div>
+          <Text>{label}</Text>
+          <Text size="xs" color="dimmed">
+            {description}
+          </Text>
+        </div>
+      </Group>
     </div>
-    <Checkbox
-      checked={selected}
-      onChange={() => {}}
-      tabIndex={-1}
-      sx={{ pointerEvents: "none" }}
-    />
-  </Group>
+  )
 );
 
+SelectItem.displayName = "SelectItem";
+
 export default function GenerateDutyPage({ user }: { user: User }) {
+  // if no data, use demo data
+  const data = personnels.map((personnel) => ({
+    label: personnel.name,
+    value: personnel.name,
+    ...personnel,
+  }));
   const { classes } = useStyles();
 
-  const [data, setData] = useState<TransferListData>(initialValue);
+  const [value, setValue] = useState<string[]>([]);
+  const [number, setNumber] = useState<number | "">(0);
   const [month, onMonthChange] = useState<Date | null>(new Date());
+  const handlers = useRef<NumberInputHandlers>();
 
   const openModal = (date: Date) =>
     openConfirmModal({
@@ -113,13 +115,13 @@ export default function GenerateDutyPage({ user }: { user: User }) {
           <Select
             label="Duty personnel"
             searchable
-            data={initialValue[1].map((value) => value.label)}
+            data={data.map((value) => value.label)}
           />
           <Select
             my="sm"
             label="Stand in"
             searchable
-            data={initialValue[1].map((value) => value.label)}
+            data={data.map((value) => value.label)}
           />
         </>
       ),
@@ -152,17 +154,60 @@ export default function GenerateDutyPage({ user }: { user: User }) {
         onChange={onMonthChange}
       />
 
-      <TransferList
-        mt="xl"
-        value={data}
-        onChange={setData}
-        searchPlaceholder="Search personnels..."
-        nothingFound="No one here"
-        titles={["Personnels not on duty", "Personnels on duty"]}
-        listHeight={300}
-        breakpoint="md"
-        itemComponent={ItemComponent}
+      <MultiSelect
+        value={value}
+        onChange={setValue}
+        data={data}
+        label="Choose personnel doing duties"
+        placeholder="Pick all you like"
+        itemComponent={SelectItem}
+        searchable
+        nothingFound="Nobody here"
+        maxDropdownHeight={400}
+        clearButtonProps={{ "aria-label": "Clear selection" }}
+        clearable
+        filter={(value, selected, item) =>
+          !selected &&
+          (item?.label?.toLowerCase().includes(value.toLowerCase().trim()) ||
+            item?.description
+              ?.toLowerCase()
+              .includes(value.toLowerCase().trim()))
+        }
       />
+
+      {value.map((person) => {
+        return (
+          <Group spacing={5} key={person}>
+            <Text>{person}&apos;s Weekend Points</Text>
+            <ActionIcon
+              size={42}
+              variant="default"
+              onClick={() => handlers?.current?.decrement()}
+            >
+              –
+            </ActionIcon>
+
+            <NumberInput
+              hideControls
+              value={number}
+              onChange={(val) => setNumber(val)}
+              handlersRef={handlers}
+              max={10}
+              min={0}
+              step={2}
+              styles={{ input: { width: rem(54), textAlign: "center" } }}
+            />
+
+            <ActionIcon
+              size={42}
+              variant="default"
+              onClick={() => handlers?.current?.decrement()}
+            >
+              +
+            </ActionIcon>
+          </Group>
+        );
+      })}
 
       <Calendar
         mt="lg"

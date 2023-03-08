@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import type { GetServerSidePropsContext } from "next";
 import Router from "next/router";
+import Link from "next/link";
 import { getServerSession } from "next-auth/next";
 import { signIn } from "next-auth/react";
 import type { User } from "next-auth";
@@ -17,6 +18,7 @@ import {
   Stack,
   Container,
   Title,
+  Checkbox,
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
@@ -92,6 +94,7 @@ export default function AuthenticationForm() {
       name: "demo",
       email: "demo@email.com",
       password: "$00pU*2KE1X3",
+      termsOfService: true,
     },
 
     validate: {
@@ -99,6 +102,8 @@ export default function AuthenticationForm() {
       email: isEmail("Invalid email"),
       password: (value) =>
         formType === "register" && checkPasswordValidation(value),
+      termsOfService: (value) =>
+        value ? null : "You must agree to the terms of service",
     },
 
     validateInputOnChange: ["password"],
@@ -271,6 +276,25 @@ export default function AuthenticationForm() {
                 placeholder="Your password"
                 icon={<IconLock size={16} stroke={1.5} />}
                 {...form.getInputProps("password")}
+              />
+            )}
+
+            {formType === "register" && (
+              <Checkbox
+                label={
+                  <>
+                    I accept{" "}
+                    <Anchor
+                      component={Link}
+                      href="/terms"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      terms and conditions
+                    </Anchor>
+                  </>
+                }
+                {...form.getInputProps("termsOfService", { type: "checkbox" })}
               />
             )}
           </Stack>

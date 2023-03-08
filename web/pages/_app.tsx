@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import App from "next/app";
 import type { AppContext, AppProps } from "next/app";
 import Head from "next/head";
@@ -20,7 +20,7 @@ import RouterTransition from "@/components/RouterTransition";
 
 import "@/styles/globals.css";
 
-const pagesWithoutLayout = ["/login", "/404", "/500", "/privacy"];
+const pagesWithoutLayout = ["/login", "/404", "/500", "/privacy", "/terms"];
 
 export default function MyApp(props: AppProps & { colorScheme: ColorScheme }) {
   const { Component, pageProps } = props;

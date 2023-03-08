@@ -13,13 +13,15 @@ export default function PrivacyPage() {
           <Text size="md" mb="xl">
             <em>Last updated: March 8, 2023</em>
           </Text>
-          <Image
-            src={svgImage}
-            width={600}
-            height={500}
-            alt="Undraw personal information logo"
-            priority
-          />
+          <div style={{ position: "relative", height: "30vh" }}>
+            <Image
+              src={svgImage}
+              fill={true}
+              alt="Undraw personal information logo"
+              priority
+              style={{ objectFit: "cover" }}
+            />
+          </div>
           <Title order={2} my="lg">
             In short
           </Title>

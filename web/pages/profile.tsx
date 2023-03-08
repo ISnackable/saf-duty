@@ -8,6 +8,7 @@ import { isEmail, useForm } from "@mantine/form";
 import {
   createStyles,
   Card,
+  Tabs,
   Text,
   Title,
   SimpleGrid,
@@ -23,6 +24,8 @@ import { modals } from "@mantine/modals";
 import { showNotification } from "@mantine/notifications";
 import {
   IconCheck,
+  IconInfoCircle,
+  IconPhoto,
   IconSettings,
   IconUpload,
   IconX,
@@ -176,7 +179,7 @@ export default function ProfilePage({ user }: { user: User }) {
     <Container mt="lg">
       <div className={classes.titleWrapper}>
         <IconSettings size={48} />
-        <Title className={classes.title}>Profile Settings</Title>
+        <Title className={classes.title}>Profile</Title>
       </div>
 
       <Text color="dimmed" mt="md">
@@ -184,66 +187,27 @@ export default function ProfilePage({ user }: { user: User }) {
         your password. Enlistment and ORD are optional but recommended.
       </Text>
 
-      <SimpleGrid
-        cols={2}
-        spacing={50}
-        breakpoints={[{ maxWidth: "sm", cols: 1 }]}
-        mt="xl"
-      >
-        <div>
-          <Card shadow="sm" mt="lg">
-            <Card.Section>
-              <AspectRatio ratio={350 / 350} sx={{ maxWidth: 350 }} mx="auto">
-                <Image
-                  priority
-                  src={imageUrl || "/images/avatars/avatar-1.jpg"}
-                  alt="User avatar"
-                  width={350}
-                  height={350}
-                  className="rounded-full"
-                  style={{ objectFit: "cover" }}
-                />
-              </AspectRatio>
-            </Card.Section>
-          </Card>
+      <Tabs keepMounted={false} defaultValue="general" mt="xl">
+        <Tabs.List>
+          <Tabs.Tab value="general" icon={<IconInfoCircle size="0.8rem" />}>
+            General
+          </Tabs.Tab>
+          <Tabs.Tab value="avatar" icon={<IconPhoto size="0.8rem" />}>
+            Avatar
+          </Tabs.Tab>
+          <Tabs.Tab value="settings" icon={<IconSettings size="0.8rem" />}>
+            Account Settings
+          </Tabs.Tab>
+        </Tabs.List>
 
-          <Group position="left" mt="lg">
-            <FileButton onChange={setFile} accept="image/png,image/jpeg">
-              {(props) => (
-                <Button {...props} leftIcon={<IconUpload size={14} />}>
-                  Upload image
-                </Button>
-              )}
-            </FileButton>
-          </Group>
-        </div>
-        <div className={classes.form}>
-          <form onSubmit={form.onSubmit(handleSubmit)}>
+        <Tabs.Panel value="general" pt="xs">
+          <div className={classes.form}>
             <TextInput
               mt="sm"
               label="Name"
               placeholder="Name"
+              description="Your name as it is on your NRIC"
               {...form.getInputProps("name")}
-            />
-            <TextInput
-              mt="sm"
-              label="Email"
-              placeholder="Email"
-              {...form.getInputProps("email")}
-            />
-
-            <PasswordInput
-              mt="sm"
-              label="Old password"
-              placeholder="Old password"
-              {...form.getInputProps("oldPassword")}
-            />
-
-            <PasswordInput
-              mt="sm"
-              label="New Password"
-              placeholder="New Password"
-              {...form.getInputProps("password")}
             />
 
             <DatePickerInput
@@ -262,17 +226,83 @@ export default function ProfilePage({ user }: { user: User }) {
               {...form.getInputProps("ord")}
             />
 
-            <Group position="apart" mt="lg">
-              <Button onClick={openDeleteModal} color="red">
-                Delete account
-              </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                Submit
-              </Button>
+            <Group position="right" mt="lg">
+              <Button color="gray">Cancel</Button>
+              <Button type="submit">Save</Button>
             </Group>
-          </form>
-        </div>
-      </SimpleGrid>
+          </div>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="avatar" pt="xs">
+          <div className={classes.form}>
+            <Card shadow="sm" mt="lg">
+              <Card.Section>
+                <AspectRatio ratio={350 / 350} sx={{ maxWidth: 350 }} mx="auto">
+                  <Image
+                    priority
+                    src={imageUrl || "/images/avatars/avatar-1.jpg"}
+                    alt="User avatar"
+                    width={350}
+                    height={350}
+                    className="rounded-full"
+                    style={{ objectFit: "cover" }}
+                  />
+                </AspectRatio>
+              </Card.Section>
+            </Card>
+
+            <Group position="left" mt="lg">
+              <FileButton onChange={setFile} accept="image/png,image/jpeg">
+                {(props) => (
+                  <Button {...props} leftIcon={<IconUpload size={14} />}>
+                    Upload image
+                  </Button>
+                )}
+              </FileButton>
+            </Group>
+            <Group position="right">
+              <Button color="gray">Cancel</Button>
+              <Button type="submit">Save</Button>
+            </Group>
+          </div>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="settings" pt="xs">
+          <div className={classes.form}>
+            <form onSubmit={form.onSubmit(handleSubmit)}>
+              <TextInput
+                mt="sm"
+                label="Email"
+                placeholder="Email"
+                {...form.getInputProps("email")}
+              />
+
+              <PasswordInput
+                mt="sm"
+                label="Old password"
+                placeholder="Old password"
+                {...form.getInputProps("oldPassword")}
+              />
+
+              <PasswordInput
+                mt="sm"
+                label="New Password"
+                placeholder="New Password"
+                {...form.getInputProps("password")}
+              />
+
+              <Group position="apart" mt="lg">
+                <Button onClick={openDeleteModal} color="red">
+                  Delete account
+                </Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  Save
+                </Button>
+              </Group>
+            </form>
+          </div>
+        </Tabs.Panel>
+      </Tabs>
     </Container>
   );
 }

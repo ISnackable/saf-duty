@@ -3,6 +3,8 @@ import { use } from "next-api-route-middleware";
 import { signUpHandler } from "next-auth-sanity";
 import { client } from "@/lib/sanity.client";
 
+import { rateLimitMiddleware } from "../rateLimitMiddleware";
+
 // Function that checks if the password is valid, returns an error message if not
 export function checkPasswordValidation(value: string) {
   const isWhitespace = /^(?=.*\s)/;
@@ -148,6 +150,7 @@ export const validateFields: Middleware = async (req, res, next) => {
 };
 
 export default use(
+  rateLimitMiddleware,
   hcaptcha,
   validateFields,
   addRole,

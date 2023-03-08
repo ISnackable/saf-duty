@@ -12,6 +12,7 @@ import {
   checkPasswordValidation,
 } from "@/pages/api/sanity/signUp";
 import { authOptions } from "../auth/[...nextauth]";
+import { rateLimitMiddleware } from "../rateLimitMiddleware";
 
 async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "PUT") return res.status(404).send("Not found");
@@ -108,4 +109,4 @@ export const validateFields: Middleware = async (req, res, next) => {
   }
 };
 
-export default use(validateFields, updateUserHandler);
+export default use(rateLimitMiddleware, validateFields, updateUserHandler);
