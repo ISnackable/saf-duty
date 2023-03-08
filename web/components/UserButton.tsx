@@ -63,7 +63,7 @@ export function UserButtonMenu(props: UserButtonProps) {
     <Group position="center">
       <Menu
         withArrow
-        width={260}
+        width="95%"
         transitionProps={{ transition: "pop-top-right" }}
       >
         <Menu.Target>

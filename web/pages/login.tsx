@@ -31,6 +31,8 @@ import {
 import { authOptions } from "./api/auth/[...nextauth]";
 import { PasswordStrength } from "@/components/PasswordRequirement";
 
+import config from "../../site.config";
+
 // Function that checks if the password is valid, returns an error message if not
 export function checkPasswordValidation(value: string) {
   const isWhitespace = /^(?=.*\s)/;
@@ -229,7 +231,7 @@ export default function AuthenticationForm() {
           fontWeight: 900,
         })}
       >
-        Welcome back to AFPN-CDO!
+        Welcome back to {config.title || ""}!
       </Title>
 
       <Paper radius="md" p="xl" mt={30} withBorder>

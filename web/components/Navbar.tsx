@@ -20,6 +20,7 @@ import {
   IconEdit,
   IconApps,
   IconChessKnight,
+  IconCloudLock,
 } from "@tabler/icons-react";
 import { UserButtonMenu } from "@/components/UserButton";
 import { SegmentedToggle } from "@/components/ThemeToggle";
@@ -253,6 +254,26 @@ export function NavbarMin(props: NavbarMinProps) {
           </Text>
         </Group>
         <div className={classes.collections}>{collectionLinks}</div>
+      </Navbar.Section>
+
+      <Navbar.Section className={classes.section}>
+        <Group className={classes.collectionsHeader} position="apart">
+          <Text size="xs" weight={500} color="dimmed">
+            Others
+          </Text>
+        </Group>
+        <div className={classes.mainLinks}>
+          <UnstyledButton className={classes.mainLink}>
+            <Link href="/privacy" className={classes.mainLinkInner}>
+              <IconCloudLock
+                size={20}
+                stroke={1.5}
+                style={{ marginRight: 9, fontSize: 16 }}
+              />
+              Privacy
+            </Link>
+          </UnstyledButton>
+        </div>
       </Navbar.Section>
 
       <Navbar.Section>

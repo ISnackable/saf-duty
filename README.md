@@ -27,6 +27,8 @@ In SAF, soldiers are required to do duties, be it guard duty or 24hr ops duty. T
 6. Personnel should be shuffled to avoid the first person always having the most number of duties
 7. Personnel can have block out dates where they should not have duties on the date they have blocked out.
 
+![preview](./images/preview.jpg)
+
 ## Dependencies
 
 To get started, the following tools/account should be installed/created:
@@ -43,10 +45,9 @@ To get a local copy up and running follow these simple example steps.
 
 You should update npm to the latest version to improve the functionality or be obligatory for security purposes and install yarn as the package manager.
 
-- npm
+- yarn
 
 ```sh
-npm install -g npm@latest
 npm install -g yarn
 ```
 
@@ -63,6 +64,7 @@ yarn install
 ```
 
 5. Once the enviroment variables are set, and dependencies are installed. You can start the app in development mode.
+6. Change the title of the app in `site.config.ts` (optional)
 
 ```sh
 yarn dev

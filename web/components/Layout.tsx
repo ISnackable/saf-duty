@@ -8,15 +8,14 @@ import {
   Burger,
   ActionIcon,
   useMantineColorScheme,
-  Group,
-  Footer,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconMathFunctionY, IconMoonStars, IconSun } from "@tabler/icons-react";
 import { NavbarMin } from "@/components/Navbar";
-import Link from "next/link";
 
-const useStyles = createStyles((theme) => ({
+import config from "../../site.config";
+
+const useStyles = createStyles(() => ({
   innerHeader: {
     display: "flex",
     justifyContent: "space-between",
@@ -29,12 +28,6 @@ const useStyles = createStyles((theme) => ({
     alignItems: "center",
     marginLeft: "auto",
     marginRight: "auto",
-  },
-
-  innerFooter: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
   },
 }));
 
@@ -74,7 +67,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 fz="xl"
                 ml="sm"
               >
-                Duty Roster
+                {config.title || "Duty Roster"}
               </Text>
             </div>
             <ActionIcon
@@ -88,17 +81,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </ActionIcon>
           </div>
         </Header>
-      }
-      footer={
-        <Footer height={60} p="md">
-          <div className={classes.innerFooter}>
-            <IconMathFunctionY size={28} />
-            <Group>
-              <Link href="/">Home</Link>
-              <Link href="/privacy">Privacy</Link>
-            </Group>
-          </div>
-        </Footer>
       }
       styles={(theme) => ({
         main: {
