@@ -8,13 +8,16 @@ import {
   Burger,
   ActionIcon,
   useMantineColorScheme,
+  Group,
+  Footer,
 } from "@mantine/core";
-import { useDisclosure, useMediaQuery } from "@mantine/hooks";
-import { IconBulb, IconMoonStars, IconSun } from "@tabler/icons-react";
+import { useDisclosure } from "@mantine/hooks";
+import { IconMathFunctionY, IconMoonStars, IconSun } from "@tabler/icons-react";
 import { NavbarMin } from "@/components/Navbar";
+import Link from "next/link";
 
 const useStyles = createStyles((theme) => ({
-  inner: {
+  innerHeader: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -26,6 +29,12 @@ const useStyles = createStyles((theme) => ({
     alignItems: "center",
     marginLeft: "auto",
     marginRight: "auto",
+  },
+
+  innerFooter: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 }));
 
@@ -47,22 +56,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       navbar={
         <NavbarMin
           width={{ sm: 300 }}
-          pt="md"
+          p="md"
           hiddenBreakpoint="sm"
           hidden={!opened}
         />
       }
       header={
         <Header height={60} p="xs">
-          <div className={classes.inner}>
+          <div className={classes.innerHeader}>
             <Burger onClick={toggle} opened={opened} />
             <div className={classes.innerTwo}>
-              <IconBulb size={38} />
+              <IconMathFunctionY size={38} />
               <Text
                 span
                 variant="gradient"
                 gradient={{ from: "indigo", to: "cyan", deg: 45 }}
                 fz="xl"
+                ml="sm"
               >
                 Duty Roster
               </Text>
@@ -78,6 +88,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </ActionIcon>
           </div>
         </Header>
+      }
+      footer={
+        <Footer height={60} p="md">
+          <div className={classes.innerFooter}>
+            <IconMathFunctionY size={28} />
+            <Group>
+              <Link href="/">Home</Link>
+              <Link href="/privacy">Privacy</Link>
+            </Group>
+          </div>
+        </Footer>
       }
       styles={(theme) => ({
         main: {

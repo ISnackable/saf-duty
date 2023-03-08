@@ -9,6 +9,7 @@ import {
   Group,
   type NavbarProps,
   NavLink,
+  rem,
 } from "@mantine/core";
 import {
   IconUsers,
@@ -31,12 +32,12 @@ const useStyles = createStyles((theme) => ({
   },
 
   section: {
-    marginLeft: -theme.spacing.md,
-    marginRight: -theme.spacing.md,
+    marginLeft: `calc(${theme.spacing.md} * -1)`,
+    marginRight: `calc(${theme.spacing.md} * -1)`,
     marginBottom: theme.spacing.md,
 
     "&:not(:last-of-type)": {
-      borderBottom: `1px solid ${
+      borderBottom: `${rem(1)} solid ${
         theme.colorScheme === "dark"
           ? theme.colors.dark[4]
           : theme.colors.gray[3]
@@ -55,7 +56,7 @@ const useStyles = createStyles((theme) => ({
     alignItems: "center",
     width: "100%",
     fontSize: theme.fontSizes.xs,
-    padding: `8px ${theme.spacing.xs}`,
+    padding: `${rem(8)} ${theme.spacing.xs}`,
     borderRadius: theme.radius.sm,
     fontWeight: 500,
     color:
@@ -88,26 +89,26 @@ const useStyles = createStyles((theme) => ({
 
   mainLinkBadge: {
     padding: 0,
-    width: 20,
-    height: 20,
+    width: rem(20),
+    height: rem(20),
     pointerEvents: "none",
   },
 
   collections: {
-    paddingLeft: `calc(${theme.spacing.md} - 6px)`,
-    paddingRight: `calc(${theme.spacing.md} - 6px)`,
+    paddingLeft: `calc(${theme.spacing.md} - ${rem(6)})`,
+    paddingRight: `calc(${theme.spacing.md} - ${rem(6)})`,
     paddingBottom: theme.spacing.md,
   },
 
   collectionsHeader: {
-    paddingLeft: `calc(${theme.spacing.md} + 2px)`,
+    paddingLeft: `calc(${theme.spacing.md} + ${rem(2)})`,
     paddingRight: theme.spacing.md,
-    marginBottom: 5,
+    marginBottom: rem(5),
   },
 
   collectionLink: {
     display: "block",
-    padding: `8px ${theme.spacing.xs}`,
+    padding: `${rem(8)} ${theme.spacing.xs}`,
     textDecoration: "none",
     borderRadius: theme.radius.sm,
     fontSize: theme.fontSizes.xs,
@@ -208,7 +209,7 @@ export function NavbarMin(props: NavbarMinProps) {
           image={session?.user?.image || "https://i.imgur.com/fGxgcDF.png"}
           name={session?.user?.name || "Test Name"}
           email={session?.user?.email || "Test Email"}
-          icon={<IconSelector size={14} stroke={1.5} />}
+          icon={<IconSelector size="0.9rem" stroke={1.5} />}
         />
       </Navbar.Section>
 

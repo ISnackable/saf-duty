@@ -19,7 +19,7 @@ import {
   AspectRatio,
   FileButton,
 } from "@mantine/core";
-import { openConfirmModal } from "@mantine/modals";
+import { modals } from "@mantine/modals";
 import { showNotification } from "@mantine/notifications";
 import {
   IconCheck,
@@ -97,7 +97,7 @@ export default function ProfilePage({ user }: { user: User }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const openDeleteModal = () =>
-    openConfirmModal({
+    modals.openConfirmModal({
       title: "Delete your profile",
       centered: true,
       children: (

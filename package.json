@@ -5,9 +5,12 @@
   "author": "Tommy",
   "license": "MIT",
   "private": true,
+  "workspaces": [
+    "studio",
+    "web"
+  ],
   "scripts": {
     "init": "lerna init",
-    "install": "lerna run install",
     "build": "lerna run build --parallel",
     "dev": "lerna run dev --parallel",
     "format": "lerna run format",

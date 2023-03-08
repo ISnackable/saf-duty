@@ -221,7 +221,7 @@ export default function AuthenticationForm() {
   };
 
   return (
-    <Container size={420} my={40}>
+    <Container size={420} my={80}>
       <Title
         align="center"
         sx={(theme) => ({
@@ -229,7 +229,7 @@ export default function AuthenticationForm() {
           fontWeight: 900,
         })}
       >
-        Welcome back!
+        Welcome back to AFPN-CDO!
       </Title>
 
       <Paper radius="md" p="xl" mt={30} withBorder>

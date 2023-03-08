@@ -98,10 +98,27 @@ export default function ManageBlockoutPage({ user }: { user: User }) {
         size="xl"
         minDate={dayjs(new Date()).startOf("month").toDate()}
         maxDate={dayjs(new Date()).endOf("month").add(1, "month").toDate()}
-        getDayProps={(date) => ({
-          selected: selected.some((s) => dayjs(date).isSame(s, "date")),
-          onClick: () => handleSelect(date),
-        })}
+        getDayProps={(date) => {
+          const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+
+          return {
+            selected: selected.some((s) => dayjs(date).isSame(s, "date")),
+            onClick: () => handleSelect(date),
+            ...(isWeekend && {
+              sx: (theme) => ({
+                color: `${
+                  theme.colorScheme === "dark"
+                    ? theme.colors.pink[2]
+                    : theme.colors.pink[4]
+                } !important`,
+                backgroundColor:
+                  theme.colorScheme === "dark"
+                    ? theme.colors.dark[6]
+                    : theme.colors.gray[2],
+              }),
+            }),
+          };
+        }}
         styles={(theme) => ({
           calendar: {
             maxWidth: "100%",

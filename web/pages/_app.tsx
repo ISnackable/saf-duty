@@ -10,18 +10,17 @@ import {
   ColorSchemeProvider,
   ColorScheme,
 } from "@mantine/core";
-import {
-  DatesProvider,
-  MonthPickerInput,
-  DatePickerInput,
-} from "@mantine/dates";
+import { DatesProvider } from "@mantine/dates";
 import { Notifications } from "@mantine/notifications";
 import { ModalsProvider } from "@mantine/modals";
 import { getCookie, setCookie } from "cookies-next";
 
 import Layout from "@/components/Layout";
+import RouterTransition from "@/components/RouterTransition";
 
 import "@/styles/globals.css";
+
+const pagesWithoutLayout = ["/login", "/404", "/500", "/privacy"];
 
 export default function MyApp(props: AppProps & { colorScheme: ColorScheme }) {
   const { Component, pageProps } = props;
@@ -59,15 +58,14 @@ export default function MyApp(props: AppProps & { colorScheme: ColorScheme }) {
           <MantineProvider
             withGlobalStyles
             withNormalizeCSS
-            theme={{
-              colorScheme,
-            }}
+            theme={{ colorScheme }}
           >
             <DatesProvider settings={{ firstDayOfWeek: 0 }}>
               <ModalsProvider>
+                <RouterTransition />
                 <Notifications />
 
-                {router.pathname === "/login" || router.pathname === "/404" ? (
+                {pagesWithoutLayout.includes(router.pathname) ? (
                   <Component {...pageProps} />
                 ) : (
                   <Layout>

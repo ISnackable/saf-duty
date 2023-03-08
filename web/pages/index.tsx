@@ -116,13 +116,35 @@ export default function IndexPage({ user }: { user: User }) {
             height: 90,
           },
         })}
+        getDayProps={(date) => {
+          // Check if date isWeekend
+          const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+          if (isWeekend) {
+            return {
+              sx: (theme) => ({
+                color: `${
+                  theme.colorScheme === "dark"
+                    ? theme.colors.pink[2]
+                    : theme.colors.pink[4]
+                } !important`,
+                backgroundColor:
+                  theme.colorScheme === "dark"
+                    ? theme.colors.dark[6]
+                    : theme.colors.gray[2],
+              }),
+            };
+          }
+          return {};
+        }}
         renderDay={(date) => {
           const day = date.getDate();
 
           return (
             <Flex mih={50} justify="center" align="center" direction="column">
               <div>{day}</div>
-              <Text size="xs">WX (JW)</Text>
+              <Text size="xs" align="center">
+                WX (JW)
+              </Text>
             </Flex>
           );
         }}
