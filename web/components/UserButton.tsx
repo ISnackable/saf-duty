@@ -6,7 +6,9 @@ import {
   IconChevronRight,
   IconSettings,
   IconLogout,
+  IconApps,
 } from "@tabler/icons-react";
+import InstallPWA from "@/components/InstallPWA";
 
 interface UserButtonProps extends React.ComponentPropsWithoutRef<"button"> {
   image: string;
@@ -71,7 +73,7 @@ export function UserButtonMenu(props: UserButtonProps) {
         </Menu.Target>
 
         <Menu.Dropdown>
-          <Menu.Label>Settings</Menu.Label>
+          <Menu.Label>Application</Menu.Label>
           <Menu.Item
             icon={<IconSettings size={14} stroke={1.5} />}
             component={Link}
@@ -79,6 +81,11 @@ export function UserButtonMenu(props: UserButtonProps) {
           >
             Profile
           </Menu.Item>
+
+          <InstallPWA icon={<IconApps size={14} stroke={1.5} />} />
+
+          <Menu.Divider />
+
           <Menu.Item
             color="red"
             icon={<IconLogout size={14} stroke={1.5} />}
