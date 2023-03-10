@@ -11,7 +11,6 @@ import {
   Tabs,
   Text,
   Title,
-  SimpleGrid,
   TextInput,
   Button,
   Group,
@@ -93,6 +92,8 @@ const useStyles = createStyles((theme) => ({
     boxShadow: theme.shadows.lg,
   },
 }));
+
+ProfilePage.title = "Profile";
 
 export default function ProfilePage({ user }: { user: User }) {
   const { classes } = useStyles();
@@ -195,8 +196,8 @@ export default function ProfilePage({ user }: { user: User }) {
           <Tabs.Tab value="avatar" icon={<IconPhoto size="0.8rem" />}>
             Avatar
           </Tabs.Tab>
-          <Tabs.Tab value="settings" icon={<IconSettings size="0.8rem" />}>
-            Account Settings
+          <Tabs.Tab value="setting" icon={<IconSettings size="0.8rem" />}>
+            Account Setting
           </Tabs.Tab>
         </Tabs.List>
 
@@ -267,7 +268,7 @@ export default function ProfilePage({ user }: { user: User }) {
           </div>
         </Tabs.Panel>
 
-        <Tabs.Panel value="settings" pt="xs">
+        <Tabs.Panel value="setting" pt="xs">
           <div className={classes.form}>
             <form onSubmit={form.onSubmit(handleSubmit)}>
               <TextInput

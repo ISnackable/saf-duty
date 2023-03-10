@@ -1,15 +1,13 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import { SanityAdapter, SanityCredentials } from "next-auth-sanity";
-import { client } from "@/lib/sanity.client";
+import { writeClient } from "@/lib/sanity.client";
 
 export const authOptions: NextAuthOptions = {
-  // @ts-ignore different api client type than next-auth-sanity
-  providers: [SanityCredentials(client)],
+  providers: [SanityCredentials(writeClient)],
   session: {
     strategy: "jwt",
   },
-  // @ts-ignore different api client type than next-auth-sanity
-  adapter: SanityAdapter(client),
+  adapter: SanityAdapter(writeClient),
   pages: {
     signIn: "/login",
     error: "/login",

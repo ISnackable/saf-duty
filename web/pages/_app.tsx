@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { NextPage } from "next";
 import App from "next/app";
 import type { AppContext, AppProps } from "next/app";
 import Head from "next/head";
@@ -17,12 +18,23 @@ import { getCookie, setCookie } from "cookies-next";
 
 import Layout from "@/components/Layout";
 import RouterTransition from "@/components/RouterTransition";
+import config from "../../site.config";
 
 import "@/styles/globals.css";
 
+export type NextPageWithTitle<P = object, IP = P> = NextPage<P, IP> & {
+  title?: string;
+};
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithTitle;
+};
+
 const pagesWithoutLayout = ["/login", "/404", "/500", "/privacy", "/terms"];
 
-export default function MyApp(props: AppProps & { colorScheme: ColorScheme }) {
+export default function MyApp(
+  props: AppPropsWithLayout & { colorScheme: ColorScheme }
+) {
   const { Component, pageProps } = props;
   const { session } = pageProps;
 
@@ -44,6 +56,12 @@ export default function MyApp(props: AppProps & { colorScheme: ColorScheme }) {
   return (
     <>
       <Head>
+        {Component?.title && typeof Component?.title === "string" && (
+          <title>{`${Component.title} - ${
+            config.title || "Duty Roster"
+          }`}</title>
+        )}
+
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"

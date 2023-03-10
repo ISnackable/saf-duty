@@ -149,14 +149,16 @@ function Th({ children, reversed, sorted, onSort }: ThProps) {
   );
 }
 
+DutyPersonnelsPage.title = "Duty Personnels";
+
 // q: What formula do I use calculate the progress between today and an end date?
 // a: https://stackoverflow.com/a/2627493/104380
 
-export default function DutyPersonnelsPage({ user }: { user: User }) {
+export default function DutyPersonnelsPage() {
   // if no data, use demo data
   const data = personnels;
 
-  const { classes, theme } = useStyles();
+  const { classes } = useStyles();
   const [search, setSearch] = useState("");
   const [sortedData, setSortedData] = useState(data);
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
@@ -309,6 +311,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     );
   }
   return {
-    props: { user },
+    props: {},
   };
 }

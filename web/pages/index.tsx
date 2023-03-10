@@ -6,8 +6,6 @@ import {
   Divider,
   Text,
   Title,
-  MantineSize,
-  getSize,
   Flex,
 } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
@@ -15,12 +13,8 @@ import { getServerSession } from "next-auth/next";
 import { IconCalendarEvent } from "@tabler/icons-react";
 
 import { authOptions } from "./api/auth/[...nextauth]";
-
-interface CalendarBaseStyles {
-  size: MantineSize;
-  fullWidth: boolean;
-  amountOfMonths: number;
-}
+import { writeClient } from "@/lib/sanity.client";
+import { getAllUsersQuery } from "@/lib/sanity.queries";
 
 export const DAY_SIZES = {
   xs: 34,
@@ -56,10 +50,12 @@ const useStyles = createStyles((theme) => {
   };
 });
 
-export default function IndexPage({ user }: { user: User }) {
+IndexPage.title = "Duty Roster";
+
+export default function IndexPage({ users }: { users: User[] }) {
   const { classes } = useStyles();
 
-  console.log(user);
+  console.table(users);
 
   return (
     <Container mt="lg">
@@ -68,7 +64,9 @@ export default function IndexPage({ user }: { user: User }) {
         <Title className={classes.title}>Duty Roster</Title>
       </div>
       <Text color="dimmed" mt="md">
-        View the duty roster
+        View the duty roster, below the date indicate the duty personnel while
+        the circle bracket indicates the duty stand in personnel. The names are
+        the initials of the personnel.
       </Text>
       <Divider mt="sm" />
 
@@ -166,14 +164,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  const { user } = session;
-  if (user) {
-    Object.keys(user).forEach(
-      (key) =>
-        user[key as keyof User] === undefined && delete user[key as keyof User]
-    );
-  }
+  // We use `writeClient` here as the Users document is not publicly available. It requires authentication.
+  const users = await writeClient.fetch<User[]>(getAllUsersQuery);
+
   return {
-    props: { user },
+    props: { users },
   };
 }

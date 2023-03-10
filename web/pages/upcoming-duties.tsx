@@ -36,6 +36,8 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+UpcomingDutiesPage.title = "Upcoming Duties";
+
 export default function UpcomingDutiesPage({ user }: { user: User }) {
   const { classes } = useStyles();
 
@@ -60,7 +62,7 @@ export default function UpcomingDutiesPage({ user }: { user: User }) {
             <Text variant="link" component="span" inherit>
               fix-notifications
             </Text>{" "}
-            from master
+            {user?.name}
           </Text>
           <Text size="xs" mt={4}>
             2 hours ago

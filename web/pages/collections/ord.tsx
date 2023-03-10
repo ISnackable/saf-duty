@@ -51,6 +51,8 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+ORDPage.title = "ORD Progress";
+
 export default function ORDPage({ user }: { user: User }) {
   const { classes } = useStyles();
   const today = dayjs();
@@ -87,7 +89,9 @@ export default function ORDPage({ user }: { user: User }) {
           ORD
         </Text>
 
-        <Blockquote cite="– Some NSF">ORD loh!!</Blockquote>
+        <Blockquote cite={`– ${user?.name || "Some NSF"}`}>
+          ORD loh!!
+        </Blockquote>
 
         <Group position="apart" mt="xs">
           <Text size="sm" color="dimmed">

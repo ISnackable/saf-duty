@@ -49,6 +49,8 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+FourOFourPage.title = "Not Found";
+
 export default function FourOFourPage() {
   const { classes } = useStyles();
 

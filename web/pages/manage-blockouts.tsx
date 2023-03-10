@@ -35,6 +35,8 @@ const useStyles = createStyles((theme) => ({
 
 const MAXIMUM_BLOCKOUTS = 8;
 
+ManageBlockoutPage.title = "Manage Blockouts";
+
 export default function ManageBlockoutPage({ user }: { user: User }) {
   const { classes } = useStyles();
 
@@ -88,6 +90,8 @@ export default function ManageBlockoutPage({ user }: { user: User }) {
         </List.Item>
       </List>
       <Divider mt="sm" />
+
+      <Text>{user?.name}</Text>
 
       <DatePicker
         mt="lg"

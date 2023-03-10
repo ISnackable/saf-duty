@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * @fileoverview
  * This file contains the code for generating a duty roster for a given set of people.
@@ -31,7 +32,7 @@ export const MONTH_NAMES = [
   "December",
 ] as const;
 
-export type MonthName = typeof MONTH_NAMES[number];
+export type MonthName = (typeof MONTH_NAMES)[number];
 
 interface Personnel {
   id: number;
@@ -43,7 +44,7 @@ interface Personnel {
 }
 
 const month: MonthName = "March";
-const year: number = 2023;
+const year = 2023;
 const timeZone = "Asia/Singapore";
 
 /**
@@ -159,8 +160,8 @@ const personnel = [
  */
 function sortByKey(array: any[], key: string | number) {
   return array.sort(function (a, b) {
-    var x = a[key];
-    var y = b[key];
+    const x = a[key];
+    const y = b[key];
     return x < y ? -1 : x > y ? 1 : 0;
   });
 }

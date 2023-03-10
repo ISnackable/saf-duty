@@ -78,6 +78,8 @@ const data = [
 
 const diff = 18;
 
+PayDayPage.title = "Pay Day";
+
 export default function PayDayPage({ user }: { user: User }) {
   const { classes } = useStyles();
 
@@ -147,6 +149,7 @@ export default function PayDayPage({ user }: { user: User }) {
 
         <Text color="dimmed" size="sm">
           IDK What to put for now
+          {user?.name}
         </Text>
 
         <Progress

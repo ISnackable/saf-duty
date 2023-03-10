@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import type { GetServerSidePropsContext } from "next";
 import Router from "next/router";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { getServerSession } from "next-auth/next";
 import { signIn } from "next-auth/react";
 import type { User } from "next-auth";
@@ -31,9 +32,12 @@ import {
 } from "@tabler/icons-react";
 
 import { authOptions } from "./api/auth/[...nextauth]";
-import { PasswordStrength } from "@/components/PasswordRequirement";
 
 import config from "../../site.config";
+
+const PasswordStrength = dynamic(() =>
+  import("@/components/PasswordRequirement").then((mod) => mod.PasswordStrength)
+);
 
 // Function that checks if the password is valid, returns an error message if not
 export function checkPasswordValidation(value: string) {
@@ -83,6 +87,8 @@ type NextAuthSanityResponse = {
   status?: "error" | "success";
   message?: string;
 } & User;
+
+AuthenticationForm.title = "Login";
 
 export default function AuthenticationForm() {
   const hcaptchaRef = useRef<HCaptcha>(null);
@@ -322,7 +328,7 @@ export default function AuthenticationForm() {
             sitekey={
               process.env.NODE_ENV === "development"
                 ? "10000000-ffff-ffff-ffff-000000000001"
-                : process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY!
+                : process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ""
             }
             onVerify={onHCaptchaChange}
             onExpire={() => onHCaptchaChange(null)}

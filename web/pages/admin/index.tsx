@@ -3,6 +3,8 @@ import type { User } from "next-auth";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 
+AdminPage.title = "Admin";
+
 export default function AdminPage({ user }: { user: User }) {
   return JSON.stringify(user);
 }

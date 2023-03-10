@@ -23,28 +23,30 @@
     "@mantine/next": "^6.0.1",
     "@mantine/notifications": "^6.0.1",
     "@mantine/nprogress": "^6.0.1",
-    "@tabler/icons-react": "^2.7.0",
-    "@types/node": "18.14.6",
-    "@types/react": "18.0.28",
-    "@types/react-dom": "18.0.11",
+    "@tabler/icons-react": "^2.9.0",
     "argon2": "^0.30.3",
     "cookies-next": "^2.1.1",
     "date-fns": "^2.29.3",
     "date-fns-tz": "^2.0.0",
     "dayjs": "^1.11.7",
-    "eslint": "8.35.0",
-    "eslint-config-next": "13.2.3",
     "lru-cache": "^7.18.3",
-    "next": "13.2.3",
+    "next": "13.2.4",
     "next-api-route-middleware": "^1.0.2",
     "next-auth": "^4.20.1",
     "next-auth-sanity": "^1.4.7",
+    "next-pwa": "^5.6.0",
     "next-sanity": "^4.1.5",
     "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "typescript": "4.9.5"
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.13"
+    "@types/node": "18.15.0",
+    "@types/react": "18.0.28",
+    "@types/react-dom": "18.0.11",
+    "eslint": "8.35.0",
+    "eslint-config-next": "13.2.4",
+    "@sanity/cli": "^3.6.0",
+    "autoprefixer": "^10.4.14",
+    "typescript": "4.9.5"
   }
 }

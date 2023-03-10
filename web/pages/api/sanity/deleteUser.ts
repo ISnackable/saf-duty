@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { getUserByIdQuery } from "next-auth-sanity/queries";
 import * as argon2 from "argon2";
 
-import { client } from "@/lib/sanity.client";
+import { writeClient } from "@/lib/sanity.client";
 import { authOptions } from "../auth/[...nextauth]";
 
 export default async function deleteUserHandler(
@@ -37,12 +37,12 @@ export default async function deleteUserHandler(
     });
   }
 
-  const user = await client.fetch(getUserByIdQuery, {
+  const user = await writeClient.fetch(getUserByIdQuery, {
     userSchema: "user",
     id: userId,
   });
 
-  const { name, email, password, oldPassword, enlistment, ord } = req.body;
+  const { oldPassword } = req.body;
 
   // Check if old password is correct
   const isOldPasswordCorrect = await argon2.verify(user?.password, oldPassword);
@@ -55,7 +55,7 @@ export default async function deleteUserHandler(
   }
 
   try {
-    const response = await client.delete(user?._id);
+    const response = await writeClient.delete(user?._id);
     console.log(response);
 
     return res

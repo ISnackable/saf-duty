@@ -1,7 +1,7 @@
 import type { Middleware } from "next-api-route-middleware";
 import { use } from "next-api-route-middleware";
 import { signUpHandler } from "next-auth-sanity";
-import { client } from "@/lib/sanity.client";
+import { writeClient } from "@/lib/sanity.client";
 
 import { rateLimitMiddleware } from "../rateLimitMiddleware";
 
@@ -154,6 +154,5 @@ export default use(
   hcaptcha,
   validateFields,
   addRole,
-  // @ts-ignore different api client type than next-auth-sanity
-  signUpHandler(client)
+  signUpHandler(writeClient)
 );

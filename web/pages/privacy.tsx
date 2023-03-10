@@ -1,6 +1,17 @@
+import Link from "next/link";
 import Image from "next/image";
-import { Anchor, Container, Title, Text, List } from "@mantine/core";
+import {
+  Anchor,
+  Container,
+  Title,
+  Text,
+  List,
+  Button,
+  Group,
+} from "@mantine/core";
 import svgImage from "@/public/undraw_personal_information.svg";
+
+PrivacyPage.title = "Privacy Policy";
 
 export default function PrivacyPage() {
   return (
@@ -150,6 +161,11 @@ export default function PrivacyPage() {
             I may update this policy as needed to comply with relevant
             regulations and reflect any new practices.
           </Text>
+          <Group position="center">
+            <Button variant="subtle" size="md" component={Link} href="/">
+              Take me back to home page
+            </Button>
+          </Group>
         </Container>
       </section>
     </>

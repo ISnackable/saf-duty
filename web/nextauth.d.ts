@@ -1,5 +1,5 @@
 // nextauth.d.ts
-import { DefaultSession, DefaultUser } from "next-auth";
+import {  DefaultUser } from "next-auth";
 // Define a role enum
 export enum Role {
   user = "user",
@@ -8,13 +8,17 @@ export enum Role {
 // common interface for JWT and Session
 interface IUser extends DefaultUser {
   role?: Role;
+  blockouts?: Date[];
+  weekdayPoints?: number;
+  weekendPoints?: number;
+  extraPoints?: number;
 }
 declare module "next-auth" {
-  interface User extends IUser {}
+  type User = IUser;
   interface Session {
     user?: User;
   }
 }
 declare module "next-auth/jwt" {
-  interface JWT extends IUser {}
+  type JWT = IUser;
 }

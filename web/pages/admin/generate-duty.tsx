@@ -2,7 +2,6 @@ import {
   Avatar,
   Container,
   createStyles,
-  Flex,
   Group,
   Select,
   Text,
@@ -91,8 +90,9 @@ const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
 );
 
 SelectItem.displayName = "SelectItem";
+GenerateDutyPage.title = "Generate Duty";
 
-export default function GenerateDutyPage({ user }: { user: User }) {
+export default function GenerateDutyPage() {
   // if no data, use demo data
   const data = personnels.map((personnel) => ({
     label: personnel.name,
@@ -131,8 +131,8 @@ export default function GenerateDutyPage({ user }: { user: User }) {
     });
 
   // const month: MonthName = "March";
-  const year: number = 2023;
-  const timeZone = "Asia/Singapore";
+  // const year = 2023;
+  // const timeZone = "Asia/Singapore";
 
   return (
     <Container>
@@ -297,6 +297,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     );
   }
   return {
-    props: { user },
+    props: {},
   };
 }

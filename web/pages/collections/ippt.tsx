@@ -31,7 +31,9 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export default function IpptPage({ user }: { user: User }) {
+IpptPage.title = "IPPT Calculator";
+
+export default function IpptPage() {
   const { classes } = useStyles();
 
   return (
@@ -98,6 +100,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     );
   }
   return {
-    props: { user },
+    props: {},
   };
 }
