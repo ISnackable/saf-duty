@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-empty-interface */
 // nextauth.d.ts
-import {  DefaultUser } from "next-auth";
+import { DefaultUser } from "next-auth";
 // Define a role enum
 export enum Role {
   user = "user",
@@ -14,11 +15,11 @@ interface IUser extends DefaultUser {
   extraPoints?: number;
 }
 declare module "next-auth" {
-  type User = IUser;
+  interface User extends IUser {}
   interface Session {
     user?: User;
   }
 }
 declare module "next-auth/jwt" {
-  type JWT = IUser;
+  interface JWT extends IUser {}
 }
