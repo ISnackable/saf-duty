@@ -1,6 +1,8 @@
 import type { GetServerSidePropsContext } from "next";
 import dayjs, { Dayjs } from 'dayjs';
 import type { User } from "next-auth";
+import { Table } from '@mantine/core';
+
 import {
   createStyles,
   Progress,
@@ -106,6 +108,11 @@ const data = [
   },
 ];
 
+const elements = [
+  { rankStarting: 'Recruit or Private', rankaAllowance: '$580'},
+  { rankStarting: 'Lance Corporal', rankaAllowance:'$600'},
+]
+
 PayDayPage.title = "Pay Day";
 
 export default function PayDayPage() {
@@ -139,6 +146,13 @@ export default function PayDayPage() {
         </Text>
       </Group>
     </Box>
+  ));
+
+  const rows = elements.map((element) => (
+    <tr key={element.rankStarting}>
+      <td>{element.rankStarting}</td>
+      <td>{element.rankaAllowance}</td>
+    </tr>
   ));
 
   return (
@@ -176,6 +190,31 @@ export default function PayDayPage() {
             <Badge size="sm">{daysLeft} days left</Badge>
         </Group>
       </Paper>
+
+      <Paper withBorder p="md" radius="md" mt="xl">
+      <Group position="apart">
+          <Group align="flex-end" spacing="xs">
+            <Text size="xl" weight={700}>
+             Monthly rank allowance
+            </Text>
+          </Group>
+          <IconDeviceAnalytics
+            size={20}
+            className={classes.icon}
+            stroke={1.5}
+          />
+        </Group>
+
+        <Table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Starting Rank Allowance</th>
+        </tr>
+      </thead>
+      <tbody>{rows}</tbody>
+    </Table>
+          </Paper>
     </Container>
   );
 }
