@@ -67,8 +67,6 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
     name,
     email,
     password: hashedPassword,
-    enlistment,
-    ord,
   };
 
   try {

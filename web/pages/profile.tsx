@@ -122,6 +122,8 @@ export default function ProfilePage({ user }: { user: User }) {
       email: user?.email || "",
       oldPassword: "",
       password: "",
+      enlistment:user?.enlistment||"",
+      ord: user?.ord ||"",
     },
 
     validate: {
@@ -133,11 +135,50 @@ export default function ProfilePage({ user }: { user: User }) {
     },
   });
 
-  const handleSubmit = async (values: typeof form.values) => {
+  const handlePasswordSubmit = async (values: typeof form.values) => {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch("/api/sanity/updateUser", {
+      const res = await fetch("/api/sanity/updateUserAccount", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...values,
+        }),
+        cache: "no-cache",
+      });
+      const data = await res.json();
+
+      if (data?.status === "error") {
+        showNotification({
+          title: "Error",
+          message:
+            data?.message || "Cannot update profile, something went wrong",
+          color: "red",
+          icon: <IconX />,
+        });
+      } else {
+        showNotification({
+          title: "Success",
+          message: "Profile updated successfully",
+          color: "green",
+          icon: <IconCheck />,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    setIsSubmitting(false);
+  };
+
+  const handleUserDetailSubmit = async (values: typeof form.values) => {
+    setIsSubmitting(true);
+
+    try {
+      const res = await fetch("/api/sanity/updateUserDetails", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -203,6 +244,7 @@ export default function ProfilePage({ user }: { user: User }) {
 
         <Tabs.Panel value="general" pt="xs">
           <div className={classes.form}>
+          <form onSubmit={form.onSubmit(handleUserDetailSubmit)}>
             <TextInput
               mt="sm"
               label="Name"
@@ -229,8 +271,9 @@ export default function ProfilePage({ user }: { user: User }) {
 
             <Group position="right" mt="lg">
               <Button color="gray">Cancel</Button>
-              <Button type="submit">Save</Button>
+              <Button type="submit" disabled={isSubmitting}>Save</Button>
             </Group>
+            </form>
           </div>
         </Tabs.Panel>
 
@@ -270,7 +313,7 @@ export default function ProfilePage({ user }: { user: User }) {
 
         <Tabs.Panel value="settings" pt="xs">
           <div className={classes.form}>
-            <form onSubmit={form.onSubmit(handleSubmit)}>
+            <form onSubmit={form.onSubmit(handlePasswordSubmit)}>
               <TextInput
                 mt="sm"
                 label="Email"
