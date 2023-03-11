@@ -1,4 +1,5 @@
 import type { GetServerSidePropsContext } from "next";
+import dayjs, { Dayjs } from 'dayjs';
 import type { User } from "next-auth";
 import {
   createStyles,
@@ -7,19 +8,19 @@ import {
   Text,
   Group,
   Paper,
-  SimpleGrid,
+  Badge,
   Divider,
   Title,
   Container,
 } from "@mantine/core";
 import { getServerSession } from "next-auth/next";
 import {
-  IconArrowUpRight,
   IconDeviceAnalytics,
   IconEdit,
 } from "@tabler/icons-react";
 
 import { authOptions } from "../api/auth/[...nextauth]";
+
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -67,16 +68,43 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+
+
+// Set the payday date to the 10th of every month
+const paydayDay = 10;
+
+// Get the current date
+const today: Dayjs = dayjs();
+
+// Calculate the next payday date
+let nextPayday: Dayjs;
+if (today.date() < paydayDay) {
+  nextPayday = today.date(paydayDay);
+} else {
+  if (today.month() === 11) {
+    nextPayday = today.add(1, 'year').startOf('year').date(paydayDay);
+  } else {
+    nextPayday = today.add(1, 'month').startOf('month').date(paydayDay);
+  }
+}
+
+// Calculate the progress towards the next payday as a percentage
+const progress: number = Math.floor((today.valueOf() - today.startOf('month').date(paydayDay).valueOf()) / (nextPayday.valueOf() - today.startOf('month').date(paydayDay).valueOf()) * 100);
+// Calculate the number of days left until the next payday
+const daysLeft: number = nextPayday.diff(today, 'day');
+// Calculate the total number of days until the next payday
+const daysTotal: number = nextPayday.diff(today.startOf('month').date(paydayDay), 'day');
+
+const currentdate = daysTotal- daysLeft
+
 const data = [
   {
     label: "Total earned",
     count: "204,001",
-    part: 59,
+    part: progress,
     color: "#47d6ab",
   },
 ];
-
-const diff = 18;
 
 PayDayPage.title = "Pay Day";
 
@@ -120,24 +148,12 @@ export default function PayDayPage() {
         <Title className={classes.title}>Pay Day</Title>
       </div>
 
-      <Text color="dimmed" mt="md">
-        Coming soon!
-      </Text>
       <Divider mt="sm" />
-
       <Paper withBorder p="md" radius="md" mt="xl">
         <Group position="apart">
           <Group align="flex-end" spacing="xs">
             <Text size="xl" weight={700}>
               Next Pay Day
-            </Text>
-            <Text color="teal" className={classes.diff} size="sm" weight={700}>
-              <span>{diff}%</span>
-              <IconArrowUpRight
-                size={16}
-                style={{ marginBottom: 4 }}
-                stroke={1.5}
-              />
             </Text>
           </Group>
           <IconDeviceAnalytics
@@ -147,23 +163,18 @@ export default function PayDayPage() {
           />
         </Group>
 
-        <Text color="dimmed" size="sm">
-          IDK What to put for now
-        </Text>
-
         <Progress
           sections={segments}
           size={34}
           classNames={{ label: classes.progressLabel }}
           mt={40}
         />
-        <SimpleGrid
-          cols={3}
-          breakpoints={[{ maxWidth: "xs", cols: 1 }]}
-          mt="xl"
-        >
-          {descriptions}
-        </SimpleGrid>
+       <Group position="apart" mt="md">
+          <Text size="sm">
+            {currentdate} / {daysTotal}
+          </Text>
+            <Badge size="sm">{daysLeft} days left</Badge>
+        </Group>
       </Paper>
     </Container>
   );
