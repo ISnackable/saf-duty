@@ -23,5 +23,19 @@
   "background_color": "#1A1B1E",
   "start_url": "/",
   "display": "standalone",
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "shortcuts": [
+    {
+      "name": "View Duty Roster",
+      "short_name": "Duty Roster",
+      "description": "View the duty roster for the current month",
+      "url": "/"
+    },
+    {
+      "name": "Manage Blockouts",
+      "short_name": "Blockouts",
+      "description": "View and manage your blockouts",
+      "url": "/manage-blockouts"
+    }
+  ]
 }
