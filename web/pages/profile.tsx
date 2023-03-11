@@ -122,22 +122,20 @@ export default function ProfilePage({ user }: { user: User }) {
       email: user?.email || "",
       oldPassword: "",
       password: "",
-      enlistment:user?.enlistment||"",
-      ord: user?.ord ||"",
+      
     },
-
+/*
     validate: {
       name: (value) =>
         value.length < 2 ? "Name must have at least 2 letters" : null,
       email: isEmail("Invalid email"),
       password: (value) => checkPasswordValidation(value),
       oldPassword: (value) => checkPasswordValidation(value),
-    },
+    },*/
   });
 
   const handlePasswordSubmit = async (values: typeof form.values) => {
     setIsSubmitting(true);
-
     try {
       const res = await fetch("/api/sanity/updateUserAccount", {
         method: "PUT",
@@ -176,7 +174,7 @@ export default function ProfilePage({ user }: { user: User }) {
 
   const handleUserDetailSubmit = async (values: typeof form.values) => {
     setIsSubmitting(true);
-
+    console.log("change user detail")
     try {
       const res = await fetch("/api/sanity/updateUserDetails", {
         method: "PUT",
