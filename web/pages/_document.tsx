@@ -34,7 +34,7 @@ export default class _Document extends Document {
           <meta
             name="theme-color"
             media="(prefers-color-scheme: light)"
-            content="#f8f9fa"
+            content="#ffffff"
           />
           <meta
             name="theme-color"

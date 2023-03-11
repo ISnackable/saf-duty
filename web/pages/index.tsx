@@ -15,6 +15,7 @@ import { IconCalendarEvent } from "@tabler/icons-react";
 import { authOptions } from "./api/auth/[...nextauth]";
 import { writeClient } from "@/lib/sanity.client";
 import { getAllUsersQuery } from "@/lib/sanity.queries";
+import * as demo from "@/lib/demo.data";
 
 export const DAY_SIZES = {
   xs: 34,
@@ -164,10 +165,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  // We use `writeClient` here as the Users document is not publicly available. It requires authentication.
-  const users = await writeClient.fetch<User[]>(getAllUsersQuery);
+  let users = demo.users;
+  if (session?.user?.name !== "demo") {
+    // We use `writeClient` here as the Users document is not publicly available. It requires authentication.
+    users = await writeClient.fetch<User[]>(getAllUsersQuery);
+  }
 
   return {
-    props: { users },
+    props: { users: JSON.parse(JSON.stringify(users)) },
   };
 }

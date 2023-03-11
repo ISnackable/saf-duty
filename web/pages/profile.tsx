@@ -189,15 +189,15 @@ export default function ProfilePage({ user }: { user: User }) {
       </Text>
 
       <Tabs keepMounted={false} defaultValue="general" mt="xl">
-        <Tabs.List>
+        <Tabs.List grow>
           <Tabs.Tab value="general" icon={<IconInfoCircle size="0.8rem" />}>
             General
           </Tabs.Tab>
           <Tabs.Tab value="avatar" icon={<IconPhoto size="0.8rem" />}>
             Avatar
           </Tabs.Tab>
-          <Tabs.Tab value="setting" icon={<IconSettings size="0.8rem" />}>
-            Account Setting
+          <Tabs.Tab value="settings" icon={<IconSettings size="0.8rem" />}>
+            Account Settings
           </Tabs.Tab>
         </Tabs.List>
 
@@ -268,7 +268,7 @@ export default function ProfilePage({ user }: { user: User }) {
           </div>
         </Tabs.Panel>
 
-        <Tabs.Panel value="setting" pt="xs">
+        <Tabs.Panel value="settings" pt="xs">
           <div className={classes.form}>
             <form onSubmit={form.onSubmit(handleSubmit)}>
               <TextInput
@@ -322,13 +322,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   const { user } = session;
-  if (user) {
-    Object.keys(user).forEach(
-      (key) =>
-        user[key as keyof User] === undefined && delete user[key as keyof User]
-    );
-  }
+
   return {
-    props: { user },
+    props: { user: JSON.parse(JSON.stringify(user)) },
   };
 }

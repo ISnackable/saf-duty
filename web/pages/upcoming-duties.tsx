@@ -130,13 +130,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   const { user } = session;
-  if (user) {
-    Object.keys(user).forEach(
-      (key) =>
-        user[key as keyof User] === undefined && delete user[key as keyof User]
-    );
-  }
+
   return {
-    props: { user },
+    props: { user: JSON.parse(JSON.stringify(user)) },
   };
 }

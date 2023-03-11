@@ -27,15 +27,10 @@ import {
 } from "@tabler/icons-react";
 import dayjs from "dayjs";
 
-import { personnels } from "@/lib/demo.data";
+import * as demo from "@/lib/demo.data";
 import { authOptions } from "./api/auth/[...nextauth]";
 
-interface RowData {
-  name: string;
-  avatar: string;
-  ord: string;
-  totalDutyDone: string;
-}
+type RowData = Pick<User, "name" | "image" | "ord" | "totalDutyDone">;
 
 interface ThProps {
   children: React.ReactNode;
@@ -94,7 +89,7 @@ const useStyles = createStyles((theme) => ({
 function filterData(data: RowData[], search: string) {
   const query = search.toLowerCase().trim();
   return data.filter((item) =>
-    keys(data[0]).some((key) => item[key].toLowerCase().includes(query))
+    keys(data[0]).some((key) => String(item[key]).toLowerCase().includes(query))
   );
 }
 
@@ -111,13 +106,13 @@ function sortData(
   return filterData(
     [...data].sort((a, b) => {
       if (payload.reversed) {
-        return b[sortBy].localeCompare(a[sortBy], undefined, {
+        return String(b[sortBy]).localeCompare(String(a[sortBy]), undefined, {
           numeric: true,
           sensitivity: "base",
         });
       }
 
-      return a[sortBy].localeCompare(b[sortBy], undefined, {
+      return String(a[sortBy]).localeCompare(String(b[sortBy]), undefined, {
         numeric: true,
         sensitivity: "base",
       });
@@ -156,7 +151,7 @@ DutyPersonnelsPage.title = "Duty Personnels";
 
 export default function DutyPersonnelsPage() {
   // if no data, use demo data
-  const data = personnels;
+  const data: RowData[] = demo.users;
 
   const { classes } = useStyles();
   const [search, setSearch] = useState("");
@@ -183,7 +178,7 @@ export default function DutyPersonnelsPage() {
   const rows = sortedData.map((row) => {
     const today = dayjs();
     const enlist = dayjs(`2022-06-05`);
-    const ord = dayjs(`${row.ord}-06-05`);
+    const ord = dayjs(row.ord);
     // Calculate number of days between dates
     const total = ord.diff(enlist, "day");
     const current = today.diff(enlist, "day");
@@ -194,14 +189,14 @@ export default function DutyPersonnelsPage() {
       <tr key={row.name}>
         <td>
           <Group spacing="sm">
-            <Avatar size={26} src={row.avatar} radius={26} />
+            <Avatar size={26} src={row.image} radius={26} />
             <Text size="sm" weight={500}>
               {row.name}
             </Text>
           </Group>
         </td>
         <td>{row.totalDutyDone}</td>
-        <td>01/01/{row.ord}</td>
+        <td>{dayjs(row.ord).format("DD/MM/YYYY")}</td>
         <td>
           <Progress
             classNames={{ bar: classes.progressBar }}
@@ -304,13 +299,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   const { user } = session;
-  if (user) {
-    Object.keys(user).forEach(
-      (key) =>
-        user[key as keyof User] === undefined && delete user[key as keyof User]
-    );
-  }
+
   return {
-    props: {},
+    props: { user: JSON.parse(JSON.stringify(user)) },
   };
 }

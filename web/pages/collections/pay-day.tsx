@@ -80,7 +80,7 @@ const diff = 18;
 
 PayDayPage.title = "Pay Day";
 
-export default function PayDayPage({ user }: { user: User }) {
+export default function PayDayPage() {
   const { classes } = useStyles();
 
   const segments = data.map((segment) => ({
@@ -149,7 +149,6 @@ export default function PayDayPage({ user }: { user: User }) {
 
         <Text color="dimmed" size="sm">
           IDK What to put for now
-          {user?.name}
         </Text>
 
         <Progress
@@ -183,14 +182,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  const { user } = session;
-  if (user) {
-    Object.keys(user).forEach(
-      (key) =>
-        user[key as keyof User] === undefined && delete user[key as keyof User]
-    );
-  }
   return {
-    props: { user },
+    props: {},
   };
 }

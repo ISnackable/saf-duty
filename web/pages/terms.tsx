@@ -74,12 +74,7 @@ export default function TermsPage() {
         </Title>
         <Text size="md" my="md">
           You may want to also read the{" "}
-          <Anchor
-            component={Link}
-            href="/privacy"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <Anchor component={Link} href="/privacy">
             privacy policy
           </Anchor>{" "}
           page.

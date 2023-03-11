@@ -1,5 +1,4 @@
 import type { GetServerSidePropsContext } from "next";
-import type { User } from "next-auth";
 import { getServerSession } from "next-auth/next";
 import { Container, createStyles, Divider, Text, Title } from "@mantine/core";
 import { IconSparkles } from "@tabler/icons-react";
@@ -91,14 +90,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  const { user } = session;
-
-  if (user) {
-    Object.keys(user).forEach(
-      (key) =>
-        user[key as keyof User] === undefined && delete user[key as keyof User]
-    );
-  }
   return {
     props: {},
   };

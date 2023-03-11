@@ -21,9 +21,9 @@ import {
   IconApps,
   IconChessKnight,
   IconCloudLock,
+  IconCe,
 } from "@tabler/icons-react";
 import { UserButtonMenu } from "@/components/UserButton";
-import { SegmentedToggle } from "@/components/ThemeToggle";
 
 type NavbarMinProps = Omit<NavbarProps, "children">;
 
@@ -273,11 +273,17 @@ export function NavbarMin(props: NavbarMinProps) {
               Privacy
             </Link>
           </UnstyledButton>
+          <UnstyledButton className={classes.mainLink}>
+            <Link href="/terms" className={classes.mainLinkInner}>
+              <IconCe
+                size={20}
+                stroke={1.5}
+                style={{ marginRight: 9, fontSize: 16 }}
+              />
+              Terms and Conditions
+            </Link>
+          </UnstyledButton>
         </div>
-      </Navbar.Section>
-
-      <Navbar.Section>
-        <SegmentedToggle />
       </Navbar.Section>
     </Navbar>
   );

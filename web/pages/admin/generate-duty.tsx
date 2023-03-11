@@ -20,7 +20,7 @@ import type { User } from "next-auth";
 import { getServerSession } from "next-auth/next";
 import { forwardRef, useRef, useState } from "react";
 
-import { personnels } from "@/lib/demo.data";
+import { users } from "@/lib/demo.data";
 import { authOptions } from "../api/auth/[...nextauth]";
 
 export const MONTH_NAMES = [
@@ -94,10 +94,10 @@ GenerateDutyPage.title = "Generate Duty";
 
 export default function GenerateDutyPage() {
   // if no data, use demo data
-  const data = personnels.map((personnel) => ({
-    label: personnel.name,
-    value: personnel.name,
-    ...personnel,
+  const data = users.map((user) => ({
+    label: user.name || "Default",
+    value: user.name || "default",
+    ...user,
   }));
   const { classes } = useStyles();
 
@@ -290,13 +290,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  if (user) {
-    Object.keys(user).forEach(
-      (key) =>
-        user[key as keyof User] === undefined && delete user[key as keyof User]
-    );
-  }
   return {
-    props: {},
+    props: { user: JSON.parse(JSON.stringify(user)) },
   };
 }
