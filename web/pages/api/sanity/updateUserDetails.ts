@@ -9,7 +9,7 @@ import { writeClient } from "@/lib/sanity.client";
 import { checkNameValidation } from "@/pages/api/sanity/signUp";
 import { authOptions } from "../auth/[...nextauth]";
 import { rateLimitMiddleware } from "../rateLimitMiddleware";
-import { validateEnlistmentDate, validateOrdDate } from "@/pages/profile";
+//import { validateEnlistmentDate, validateOrdDate } from "@/pages/profile";
 
 async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "PUT") return res.status(404).send("Not found");
@@ -72,13 +72,13 @@ export const validateFields: Middleware = async (req, res, next) => {
   const { name, enlistment, ord } = req.body;
 
   console.log(checkNameValidation(name));
-  console.log(validateEnlistmentDate(enlistment, ord));
-  console.log(validateOrdDate(enlistment, ord));
+  //console.log(validateEnlistmentDate(enlistment, ord));
+  //console.log(validateOrdDate(enlistment, ord));
 
   if (
-    checkNameValidation(name) === null &&
-    validateEnlistmentDate(enlistment, ord) === null &&
-    validateOrdDate(enlistment, ord) === null
+    checkNameValidation(name) === null
+    //validateEnlistmentDate(enlistment, ord) === null &&
+    // validateOrdDate(enlistment, ord) === null
   ) {
     return await next();
   } else {
