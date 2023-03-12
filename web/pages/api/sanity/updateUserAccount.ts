@@ -47,7 +47,7 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
     id: userId,
   });
 
-  const { name, email, password, oldPassword, enlistment, ord } = req.body;
+  const { name, email, password, oldPassword } = req.body;
 
   // Check if old password is correct
   const isOldPasswordCorrect = await argon2.verify(user?.password, oldPassword);
