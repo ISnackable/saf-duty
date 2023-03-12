@@ -7,9 +7,7 @@ import * as argon2 from "argon2";
 
 import { writeClient } from "@/lib/sanity.client";
 import {
-  checkEmailValidation,
   checkNameValidation,
-  checkPasswordValidation,
 } from "@/pages/api/sanity/signUp";
 import { authOptions } from "../auth/[...nextauth]";
 import { rateLimitMiddleware } from "../rateLimitMiddleware";
