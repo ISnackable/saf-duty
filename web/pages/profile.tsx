@@ -5,7 +5,7 @@ import Image from "next/image";
 import { getServerSession } from "next-auth/next";
 import { DatePickerInput } from "@mantine/dates";
 import { isEmail, useForm } from "@mantine/form";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 import {
   createStyles,
   Card,
@@ -117,26 +117,24 @@ export default function ProfilePage({ user }: { user: User }) {
       onConfirm: () => console.log("Confirmed"),
     });
 
-    //userDetail form
-    const userDetailForm = useForm({
-      initialValues: {
-        name: user?.name || "",
-        enlistment: user?.enlistment || "",
-        ord: user?.ord ||"",
-      },
-      validate: {
-        name: (value) =>
-          value.length < 2 ? "Name must have at least 2 letters" : null,
-  
-      },
-    });
-//user account form
+  //userDetail form
+  const userDetailForm = useForm({
+    initialValues: {
+      name: user?.name || "",
+      enlistment: user?.enlistment || "",
+      ord: user?.ord || "",
+    },
+    validate: {
+      name: (value) =>
+        value.length < 2 ? "Name must have at least 2 letters" : null,
+    },
+  });
+  //user account form
   const userAccountForm = useForm({
     initialValues: {
       email: user?.email || "",
       oldPassword: "",
       password: "",
-      
     },
     validate: {
       email: isEmail("Invalid email"),
@@ -145,10 +143,12 @@ export default function ProfilePage({ user }: { user: User }) {
     },
   });
 
-//update user detail to backend
-  const handleUserDetailSubmit = async (values: typeof userDetailForm.values) => {
+  //update user detail to backend
+  const handleUserDetailSubmit = async (
+    values: typeof userDetailForm.values
+  ) => {
     setIsSubmitting(true);
-    console.log(values)
+    console.log(values);
     try {
       const res = await fetch("/api/sanity/updateUserDetails", {
         method: "PUT",
@@ -185,8 +185,10 @@ export default function ProfilePage({ user }: { user: User }) {
     setIsSubmitting(false);
   };
 
-//update user account to backend
-  const handlePasswordSubmit = async (values: typeof userAccountForm.values) => {
+  //update user account to backend
+  const handlePasswordSubmit = async (
+    values: typeof userAccountForm.values
+  ) => {
     setIsSubmitting(true);
     try {
       const res = await fetch("/api/sanity/updateUserAccount", {
@@ -255,35 +257,37 @@ export default function ProfilePage({ user }: { user: User }) {
 
         <Tabs.Panel value="general" pt="xs">
           <div className={classes.form}>
-          <form onSubmit={userDetailForm.onSubmit(handleUserDetailSubmit)}>
-            <TextInput
-              mt="sm"
-              label="Name"
-              placeholder="Name"
-              description="Your name as it is on your NRIC"
-              {...userDetailForm.getInputProps("name")}
-            />
+            <form onSubmit={userDetailForm.onSubmit(handleUserDetailSubmit)}>
+              <TextInput
+                mt="sm"
+                label="Name"
+                placeholder="Name"
+                description="Your name as it is on your NRIC"
+                {...userDetailForm.getInputProps("name")}
+              />
 
-            <DatePickerInput
-              clearable
-              mt="sm"
-              label="Enlistment date"
-              placeholder="Pick date"
-              {...userDetailForm.getInputProps("enlistment")}
-            />
+              <DatePickerInput
+                clearable
+                mt="sm"
+                label="Enlistment date"
+                placeholder="Pick date"
+                {...userDetailForm.getInputProps("enlistment")}
+              />
 
-            <DatePickerInput
-              clearable
-              mt="sm"
-              label="ORD date"
-              placeholder="Pick date"
-              {...userDetailForm.getInputProps("ord")}
-            />
+              <DatePickerInput
+                clearable
+                mt="sm"
+                label="ORD date"
+                placeholder="Pick date"
+                {...userDetailForm.getInputProps("ord")}
+              />
 
-            <Group position="right" mt="lg">
-              <Button color="gray">Cancel</Button>
-              <Button type="submit" disabled={isSubmitting}>Save</Button>
-            </Group>
+              <Group position="right" mt="lg">
+                <Button color="gray">Cancel</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  Save
+                </Button>
+              </Group>
             </form>
           </div>
         </Tabs.Panel>
