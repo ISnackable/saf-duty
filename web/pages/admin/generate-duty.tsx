@@ -1,3 +1,5 @@
+import { forwardRef, useState } from "react";
+import type { GetServerSidePropsContext } from "next";
 import {
   Avatar,
   Container,
@@ -8,20 +10,22 @@ import {
   Title,
   MultiSelect,
   NumberInput,
-  ActionIcon,
-  NumberInputHandlers,
   rem,
+  Button,
+  Flex,
+  Table,
 } from "@mantine/core";
 import { Calendar, MonthPickerInput } from "@mantine/dates";
 import { openConfirmModal } from "@mantine/modals";
-import { IconChessKnight } from "@tabler/icons-react";
-import type { GetServerSidePropsContext } from "next";
-import type { User } from "next-auth";
+import { IconChessKnight, IconDatabase } from "@tabler/icons-react";
 import { getServerSession } from "next-auth/next";
-import { forwardRef, useRef, useState } from "react";
+import type { User } from "next-auth";
 
-import { users } from "@/lib/demo.data";
+import * as demo from "@/lib/demo.data";
+import { createDutyRoster, DutyDate } from "@/utils/dutyRoster";
 import { authOptions } from "../api/auth/[...nextauth]";
+// import { writeClient } from "@/lib/sanity.client";
+// import { getAllUsersQuery } from "@/lib/sanity.queries";
 
 export const MONTH_NAMES = [
   "January",
@@ -92,19 +96,17 @@ const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
 SelectItem.displayName = "SelectItem";
 GenerateDutyPage.title = "Generate Duty";
 
-export default function GenerateDutyPage() {
+export default function GenerateDutyPage({ users }: { users: User[] }) {
+  const [dutyRoster, setDutyRoster] = useState<false | DutyDate[]>();
   // if no data, use demo data
   const data = users.map((user) => ({
     label: user.name || "Default",
     value: user.name || "default",
-    ...user,
   }));
   const { classes } = useStyles();
 
   const [value, setValue] = useState<string[]>([]);
-  const [number, setNumber] = useState<number | "">(0);
   const [month, onMonthChange] = useState<Date | null>(new Date());
-  const handlers = useRef<NumberInputHandlers>();
 
   const openModal = (date: Date) =>
     openConfirmModal({
@@ -134,6 +136,18 @@ export default function GenerateDutyPage() {
   // const year = 2023;
   // const timeZone = "Asia/Singapore";
 
+  const handleClick = () => {
+    // @ts-expect-error //TODO: fix this type error
+    setDutyRoster(createDutyRoster(users, month));
+
+    if (dutyRoster) {
+      console.log(dutyRoster);
+      dutyRoster.forEach((duty) =>
+        console.log(`${duty.personnel} (${duty.standby})`)
+      );
+    }
+  };
+
   return (
     <Container>
       <div className={classes.titleWrapper}>
@@ -155,6 +169,7 @@ export default function GenerateDutyPage() {
       />
 
       <MultiSelect
+        mt="sm"
         value={value}
         onChange={setValue}
         data={data}
@@ -175,39 +190,52 @@ export default function GenerateDutyPage() {
         }
       />
 
-      {value.map((person) => {
-        return (
-          <Group spacing={5} key={person}>
-            <Text>{person}&apos;s Weekend Points</Text>
-            <ActionIcon
-              size={42}
-              variant="default"
-              onClick={() => handlers?.current?.decrement()}
-            >
-              –
-            </ActionIcon>
-
-            <NumberInput
-              hideControls
-              value={number}
-              onChange={(val) => setNumber(val)}
-              handlersRef={handlers}
-              max={10}
-              min={0}
-              step={2}
-              styles={{ input: { width: rem(54), textAlign: "center" } }}
-            />
-
-            <ActionIcon
-              size={42}
-              variant="default"
-              onClick={() => handlers?.current?.decrement()}
-            >
-              +
-            </ActionIcon>
-          </Group>
-        );
-      })}
+      {value.length > 0 && (
+        <Table mt="xl" withBorder withColumnBorders>
+          <thead>
+            <tr>
+              <th>Personnel</th>
+              <th>Weekday Points</th>
+              <th>Weekend Points</th>
+              <th>Extras</th>
+            </tr>
+          </thead>
+          <tbody>
+            {" "}
+            {value.map((person) => {
+              return (
+                <tr key={person}>
+                  <td>{person}</td>
+                  <td>
+                    {" "}
+                    <NumberInput
+                      styles={{
+                        input: { width: rem(54), textAlign: "center" },
+                      }}
+                    />
+                  </td>
+                  <td>
+                    {" "}
+                    <NumberInput
+                      styles={{
+                        input: { width: rem(54), textAlign: "center" },
+                      }}
+                    />
+                  </td>
+                  <td>
+                    {" "}
+                    <NumberInput
+                      styles={{
+                        input: { width: rem(54), textAlign: "center" },
+                      }}
+                    />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      )}
 
       <Calendar
         mt="lg"
@@ -261,7 +289,40 @@ export default function GenerateDutyPage() {
             height: 90,
           },
         })}
+        renderDay={(date) => {
+          const day = date.getDate();
+
+          if (dutyRoster) {
+            const personnelInitial = dutyRoster[day - 1]?.personnel
+              ?.split(" ")
+              .map((n) => n[0])
+              .join("");
+            const standbyInitial = dutyRoster[day - 1]?.standby
+              ?.split(" ")
+              .map((n) => n[0])
+              .join("");
+
+            return (
+              <Flex mih={50} justify="center" align="center" direction="column">
+                <div>{day}</div>
+                <Text size="xs" align="center">
+                  {personnelInitial} ({standbyInitial})
+                </Text>
+              </Flex>
+            );
+          }
+        }}
       />
+
+      <Group position="right">
+        <Button
+          mt="xl"
+          onClick={handleClick}
+          leftIcon={<IconDatabase size="1rem" />}
+        >
+          Generate
+        </Button>
+      </Group>
     </Container>
   );
 }
@@ -290,7 +351,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
+  const users = demo.users;
+  // if (session?.user?.name !== "demo") {
+  //   // We use `writeClient` here as the Users document is not publicly available. It requires authentication.
+  //   users = await writeClient.fetch<User[]>(getAllUsersQuery);
+  // }
+
   return {
-    props: { user: JSON.parse(JSON.stringify(user)) },
+    props: { users: JSON.parse(JSON.stringify(users)) },
   };
 }

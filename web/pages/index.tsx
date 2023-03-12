@@ -17,14 +17,6 @@ import { writeClient } from "@/lib/sanity.client";
 import { getAllUsersQuery } from "@/lib/sanity.queries";
 import * as demo from "@/lib/demo.data";
 
-export const DAY_SIZES = {
-  xs: 34,
-  sm: 38,
-  md: 46,
-  lg: 58,
-  xl: 66,
-};
-
 const useStyles = createStyles((theme) => {
   return {
     calendarBase: {
