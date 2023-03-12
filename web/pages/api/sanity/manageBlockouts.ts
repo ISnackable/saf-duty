@@ -1,9 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
-import type { Middleware } from "next-api-route-middleware";
 import { use } from "next-api-route-middleware";
-import { getUserByIdQuery } from "next-auth-sanity/queries";
-import * as argon2 from "argon2";
 
 import { writeClient } from "@/lib/sanity.client";
 import { authOptions } from "../auth/[...nextauth]";
@@ -26,7 +23,7 @@ async function updateBlockoutHandler(
       .json({ status: "error", message: "You must be logged in" });
   }
 
-  if (!session?.user?.id) {
+  if (!userId) {
     return res.status(422).json({
       status: "error",
       message: "Unproccesable request, user id not found",
@@ -44,12 +41,6 @@ async function updateBlockoutHandler(
   const { blockoutDates } = req.body;
 
   try {
-    if (!userId) {
-      return res.status(422).json({
-        status: "error",
-        message: "Unproccesable request, user id not found",
-      });
-    }
     await writeClient.patch(userId).set({ blockouts: blockoutDates }).commit();
     console.log(blockoutDates);
     return res
@@ -63,4 +54,5 @@ async function updateBlockoutHandler(
   }
 }
 
+// TODO: Add validation for blockoutDates
 export default use(rateLimitMiddleware, updateBlockoutHandler);

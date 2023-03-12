@@ -28,7 +28,7 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
       .json({ status: "error", message: "You must be logged in" });
   }
 
-  if (!session?.user?.id) {
+  if (!userId) {
     return res.status(422).json({
       status: "error",
       message: "Unproccesable request, user id not found",

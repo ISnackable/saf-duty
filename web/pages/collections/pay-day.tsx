@@ -1,12 +1,10 @@
 import type { GetServerSidePropsContext } from "next";
-import dayjs, { Dayjs } from "dayjs";
-import type { User } from "next-auth";
+import dayjs from "dayjs";
 import { Table } from "@mantine/core";
 
 import {
   createStyles,
   Progress,
-  Box,
   Text,
   Group,
   Paper,
@@ -70,10 +68,10 @@ const useStyles = createStyles((theme) => ({
 const paydayDay = 10;
 
 // Get the current date
-const today: Dayjs = dayjs();
+const today = dayjs();
 
 // Calculate the next payday date
-let nextPayday: Dayjs;
+let nextPayday;
 if (today.date() < paydayDay) {
   nextPayday = today.date(paydayDay);
 } else {
@@ -138,30 +136,6 @@ export default function PayDayPage() {
     color: segment.color,
     label: segment.part > 10 ? `${segment.part}%` : undefined,
   }));
-
-  const descriptions = data.map((stat) => (
-    <Box
-      key={stat.label}
-      sx={{ borderBottomColor: stat.color }}
-      className={classes.stat}
-    >
-      <Text transform="uppercase" size="xs" color="dimmed" weight={700}>
-        {stat.label}
-      </Text>
-
-      <Group position="apart" align="flex-end" spacing={0}>
-        <Text weight={700}>{stat.count}</Text>
-        <Text
-          color={stat.color}
-          weight={700}
-          size="sm"
-          className={classes.statCount}
-        >
-          {stat.part}%
-        </Text>
-      </Group>
-    </Box>
-  ));
 
   const rows = elements.map((element) => (
     <tr key={element.rankStarting}>

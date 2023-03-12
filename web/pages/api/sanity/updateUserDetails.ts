@@ -2,8 +2,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import type { Middleware } from "next-api-route-middleware";
 import { use } from "next-api-route-middleware";
-import { getUserByIdQuery } from "next-auth-sanity/queries";
-import * as argon2 from "argon2";
 
 import { writeClient } from "@/lib/sanity.client";
 import { checkNameValidation } from "@/pages/api/sanity/signUp";
@@ -25,7 +23,7 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
       .json({ status: "error", message: "You must be logged in" });
   }
 
-  if (!session?.user?.id) {
+  if (!userId) {
     return res.status(422).json({
       status: "error",
       message: "Unproccesable request, user id not found",
@@ -39,22 +37,13 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
     });
   }
 
-  const user = await writeClient.fetch(getUserByIdQuery, {
-    userSchema: "user",
-    id: userId,
-  });
-
   const { name, enlistment, ord } = req.body;
 
-  const clonedUser = {
-    ...user,
-    name,
-    enlistment,
-    ord,
-  };
-
   try {
-    const newUser = await writeClient.patch(user._id).set(clonedUser).commit();
+    const newUser = await writeClient
+      .patch(userId)
+      .set({ name, enlistment, ord })
+      .commit();
     console.log(newUser);
 
     return res
@@ -69,7 +58,7 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
 }
 
 export const validateFields: Middleware = async (req, res, next) => {
-  const { name, enlistment, ord } = req.body;
+  const { name } = req.body;
 
   console.log(checkNameValidation(name));
   //console.log(validateEnlistmentDate(enlistment, ord));

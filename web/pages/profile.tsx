@@ -5,7 +5,6 @@ import Image from "next/image";
 import { getServerSession } from "next-auth/next";
 import { DatePickerInput } from "@mantine/dates";
 import { isEmail, useForm } from "@mantine/form";
-import { format } from "date-fns";
 import {
   createStyles,
   Card,
