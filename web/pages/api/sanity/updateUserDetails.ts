@@ -6,11 +6,10 @@ import { getUserByIdQuery } from "next-auth-sanity/queries";
 import * as argon2 from "argon2";
 
 import { writeClient } from "@/lib/sanity.client";
-import {
-  checkNameValidation,
-} from "@/pages/api/sanity/signUp";
+import { checkNameValidation } from "@/pages/api/sanity/signUp";
 import { authOptions } from "../auth/[...nextauth]";
 import { rateLimitMiddleware } from "../rateLimitMiddleware";
+import { validateEnlistmentDate, validateOrdDate } from "@/pages/profile";
 
 async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "PUT") return res.status(404).send("Not found");
@@ -47,7 +46,6 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
 
   const { name, enlistment, ord } = req.body;
 
- 
   const clonedUser = {
     ...user,
     name,
@@ -58,7 +56,6 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const newUser = await writeClient.patch(user._id).set(clonedUser).commit();
     console.log(newUser);
-    
 
     return res
       .status(200)
@@ -72,12 +69,16 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
 }
 
 export const validateFields: Middleware = async (req, res, next) => {
-  const { name, enlistment,ord } = req.body;
+  const { name, enlistment, ord } = req.body;
 
   console.log(checkNameValidation(name));
+  console.log(validateEnlistmentDate(enlistment, ord));
+  console.log(validateOrdDate(enlistment, ord));
 
   if (
-    checkNameValidation(name) === null
+    checkNameValidation(name) === null &&
+    validateEnlistmentDate(enlistment, ord) === null &&
+    validateOrdDate(enlistment, ord) === null
   ) {
     return await next();
   } else {

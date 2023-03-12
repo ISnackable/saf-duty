@@ -66,6 +66,28 @@ export function checkPasswordValidation(value: string) {
   }
   return null;
 }
+// Function that checks if the date is valid, returns an error message if not
+export function validateEnlistmentDate(enlistmentDate?: Date, ordDate?: Date) {
+  if (!enlistmentDate || !ordDate) return "Dates cannot be empty";
+  /*
+  const minMonths = 22; // 1 year and 10 months in months
+  const maxMonths = 24; // 2 years in months
+  const timeDiff = ordDate.getTime() - enlistmentDate.getTime();
+  const monthsDiff = timeDiff / (1000 * 3600 * 24 * 30);
+
+  if (monthsDiff >= minMonths && monthsDiff <= maxMonths) {
+    return "Enlistment date must be between 1 year and 10 months and 2 years after ORD date";
+  }
+  */
+}
+export function validateOrdDate(enlistmentDate?: Date, ordDate?: Date) {
+  if (!enlistmentDate || !ordDate) return "Dates cannot be empty";
+  /*
+  if (ordDate < enlistmentDate) {
+    return "ORD date cannot be less than enlistment date";
+  }
+  */
+}
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -121,12 +143,14 @@ export default function ProfilePage({ user }: { user: User }) {
   const userDetailForm = useForm({
     initialValues: {
       name: user?.name || "",
-      enlistment: user?.enlistment || "",
-      ord: user?.ord || "",
+      enlistment: user?.enlistment,
+      ord: user?.ord,
     },
     validate: {
       name: (value) =>
         value.length < 2 ? "Name must have at least 2 letters" : null,
+      enlistment: (value, values) => validateEnlistmentDate(value, values.ord),
+      ord: (value, values) => validateOrdDate(values.enlistment, value),
     },
   });
   //user account form
