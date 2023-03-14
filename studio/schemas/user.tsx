@@ -40,6 +40,11 @@ export default defineType({
       type: 'url',
     }),
     defineField({
+      name: 'avatar',
+      title: 'Avatar',
+      type: 'image',
+    }),
+    defineField({
       name: 'role',
       title: 'Role',
       type: 'string',
@@ -57,13 +62,11 @@ export default defineType({
       name: 'ord',
       title: 'ORD Date',
       type: 'date',
-      readOnly: true,
     }),
     defineField({
       name: 'enlistment',
       title: 'Enlistment Date',
       type: 'date',
-      readOnly: true,
     }),
     defineField({
       // this is only if you use credentials provider
@@ -85,14 +88,14 @@ export default defineType({
       validation: (Rule) => Rule.integer(),
     }),
     defineField({
-      name: 'extraPoints',
-      title: 'Extra',
+      name: 'extra',
+      title: 'No. of Extra',
       type: 'number',
       validation: (Rule) => Rule.integer().positive(),
     }),
     defineField({
       name: 'blockouts',
-      title: 'Blockout Days',
+      title: 'Blockout Dates',
       type: 'array',
       of: [{type: 'date'}],
     }),
