@@ -118,9 +118,7 @@ export const hcaptcha: Middleware = async (req, res, next) => {
 };
 
 export const addRole: Middleware = async (req, _res, next) => {
-  const { name } = req.body;
-
-  const seed = name ? name : (Math.random() + 1).toString(36).substring(7);
+  const seed = (Math.random() + 1).toString(36).substring(7);
 
   req.body["role"] = "user";
   req.body["image"] = `https://api.dicebear.com/5.x/pixel-art/jpg?seed=${seed}`;
