@@ -27,9 +27,9 @@ export type MonthName = (typeof MONTH_NAMES)[number];
 export interface Personnel {
   id: number;
   name: string;
-  weekdaysPTS: number;
-  weekendsPTS: number;
-  extras: number;
+  weekdayPoints: number;
+  weekendPoints: number;
+  extra: number;
   blockouts?: Date[];
   WD_RM: number; // Weekday Remaining
   SBWD_RM: number; // Stand In/Stand By weekend
@@ -84,6 +84,19 @@ function isWeekend(date: Date) {
 }
 
 /**
+ * The method returns true if the date is in the array
+ * @param array
+ * @param value
+ * @returns true if the date is in the array, false otherwise
+ * @example isDateInArray([new Date(2021, 0, 1)], new Date(2021, 0, 1))
+ */
+function isDateInArray(array: Date[], value: Date) {
+  return !!array.find((d) => {
+    return d.getTime() == value.getTime();
+  });
+}
+
+/**
  * The method shuffles an array
  * @param array
  * @returns a shuffled array
@@ -105,41 +118,37 @@ function shuffleArray<T>(array: T[]): T[] {
  * @example sortByKey(personnel, 'id')
  * @example sortByKey(personnel, 'id', true)
  */
-function sortByKey(array: any[], key: string | number, reversed = false) {
+function sortByKey<T>(array: T[], key: keyof T, reversed = false) {
   return array.sort(function (a, b) {
     let x = a[key];
     let y = b[key];
     if (reversed) {
       [x, y] = [y, x];
     }
+    // TODO: Sort not working as expected
     return x < y ? -1 : x > y ? 1 : 0;
   });
 }
 
-// const month: MonthName = "March";
-// const year = 2023;
-// const timeZone = "Asia/Singapore";
-// const date = new Date(year, getMonthCount(month));
-
 /**
  * @param personnel
  * @returns a new array of personnel with extra details for the duty roster
-   @example { id: 1, name: "John", weekdaysPTS: 0, weekendsPTS: 0, extras: 0, blockoutDates: [] },
+   @example { id: 1, name: "John", weekdayPoints: 0, weekendPoints: 0, extra: 0, blockoutDates: [] },
  */
 function createDutyPersonnel(personnel: Personnel[]): Personnel[] {
   return personnel.map((person) => ({
+    // weekdayPoints: 0, // Weekday Pts next month
+    // weekendPoints: 0, // Weekend Pts next month
+    // extra: 0, // Extra Remaining
     ...person,
     WD_RM: 0, // Weekday Remaining
     SBWD_RM: 0, // Stand In/Stand By weekend
     WD_DONE: 0, // No. Weekdays duty assigned
-    // weekdaysPTS: 0, // Weekday Pts next month
     WE_RM: 0, // Weekend Remaining
     SBWE_RM: 0, // Stand In/Stand By weekend
     WE_DONE: 0, // No. Weekends duty assigned
-    // weekendsPTS: 0, // Weekend Pts next month
     SB_COUNT: 0, // Total stand in count
-    // extras: 0, // Extra Remaining
-    EX_DONE: 0, // Extras Cleared,
+    EX_DONE: 0, // Extra Cleared,
   }));
 }
 
@@ -147,7 +156,11 @@ function createDutyPersonnel(personnel: Personnel[]): Personnel[] {
  * @param date An array of dates in the month
  * @returns An array of objects with the date, isWeekend and isBlockout properties
  */
-function createDutyDate(personnel: Personnel[], date: Date[], extraDates: Date[]): DutyDate[] {
+function createDutyDate(
+  personnel: Personnel[],
+  date: Date[],
+  extraDates: Date[]
+): DutyDate[] {
   return date.map((date) => {
     const blockouts = personnel
       .filter((person) => {
@@ -155,13 +168,9 @@ function createDutyDate(personnel: Personnel[], date: Date[], extraDates: Date[]
       })
       .map((person) => person.name);
 
-      // TODO: FIX THIS BUG
-      console.log("extra", extraDates.map((day) => day.getTime()))
-      console.log("normal", date.getTime())
-
     return {
       date: date,
-      isExtra: extraDates.includes(date),
+      isExtra: isDateInArray(extraDates, date),
       isWeekend: isWeekend(date),
       blockout: blockouts,
       personnel: null,
@@ -173,8 +182,15 @@ function createDutyDate(personnel: Personnel[], date: Date[], extraDates: Date[]
 
 function calculateWeekdayShift(personnel: Personnel[], dutyDates: DutyDate[]) {
   // total_wd = total_days - total_we - len(extradates) + non_allocated_extras
-  const totalWeekdayDays = dutyDates.filter((date) => !date.isWeekend).length;
+  const totalWeekendDays = dutyDates.filter((date) => date.isWeekend).length;
+  const totalExtraDays = dutyDates.filter((date) => date.isExtra).length;
   const totalPersonnel = personnel.length;
+
+  // We assume that all extra dates are allocated to personnel
+  const nonAllocatedExtra = totalWeekendDays - totalExtraDays;
+
+  const totalWeekdayDays =
+    dutyDates.length - totalWeekendDays - totalExtraDays + nonAllocatedExtra;
 
   // Calculate normal WD per personnel
   const weekdayAllocation = Math.floor(totalWeekdayDays / totalPersonnel);
@@ -187,14 +203,14 @@ function calculateWeekdayShift(personnel: Personnel[], dutyDates: DutyDate[]) {
 
 function calculateWeekendShift(personnel: Personnel[], dutyDates: DutyDate[]) {
   const totalWeekendDays = dutyDates.filter((date) => date.isWeekend).length;
-  const totalExtraDays = dutyDates.filter((date) => date.isExtra).length;
+
   const totalPersonnel = personnel.length;
 
   // Calculate normal weekend per personnel
-  const weekendAllocation = Math.floor((totalWeekendDays - totalExtraDays) / totalPersonnel);
+  const weekendAllocation = Math.floor(totalWeekendDays / totalPersonnel);
   // Number of people doing an additional weekday
   const additionalWeekendAllocation =
-    (totalWeekendDays - totalExtraDays) - totalPersonnel * weekendAllocation;
+    totalWeekendDays - totalPersonnel * weekendAllocation;
 
   return { weekendAllocation, additionalWeekendAllocation };
 }
@@ -205,7 +221,7 @@ function allocateWeekdayShift(
   additionalWeekdayAllocation: number
 ) {
   let shuffledDutyPersonnel = shuffleArray(personnel);
-  shuffledDutyPersonnel = sortByKey(shuffledDutyPersonnel, "weekdaysPTS");
+  shuffledDutyPersonnel = sortByKey(shuffledDutyPersonnel, "weekdayPoints");
 
   // Allocate normal weekdays
   for (let person of shuffledDutyPersonnel.slice(
@@ -213,16 +229,16 @@ function allocateWeekdayShift(
     additionalWeekdayAllocation
   )) {
     person.WD_RM = weekdayAllocation + 1;
-    person.weekdaysPTS += 1;
+    person.weekdayPoints += 1;
   }
 
   // Allocate additional weekdays
   for (let person of shuffledDutyPersonnel.slice(additionalWeekdayAllocation)) {
     person.WD_RM = weekdayAllocation;
-    person.weekdaysPTS -= 1;
+    person.weekdayPoints -= 1;
   }
 
-  return shuffledDutyPersonnel;
+  return true;
 }
 
 function allocateWeekendShift(
@@ -239,17 +255,17 @@ function allocateWeekendShift(
     additionalWeekendAllocation
   )) {
     person.WE_RM = weekendAllocation + 1;
-    person.weekendsPTS += 1;
+    person.weekendPoints += 1;
   }
 
   // Allocate additional weekends
 
   for (let person of shuffledDutyPersonnel.slice(additionalWeekendAllocation)) {
     person.WE_RM = weekendAllocation;
-    person.weekendsPTS -= 1;
+    person.weekendPoints -= 1;
   }
 
-  return shuffledDutyPersonnel;
+  return true;
 }
 
 function assignPersonnelShift(personnel: Personnel[], dutyDates: DutyDate[]) {
@@ -266,7 +282,7 @@ function assignPersonnelShift(personnel: Personnel[], dutyDates: DutyDate[]) {
       ) {
         j += 1;
         if (j === personnel.length) {
-          console.log(`Unable to assign personnel on ${i + 1}`);
+          console.log(`Weekday: Unable to assign personnel on ${i + 1}`);
           return false;
         }
       }
@@ -310,31 +326,31 @@ function assignPersonnelShift(personnel: Personnel[], dutyDates: DutyDate[]) {
 
       let j = 0;
       while (
-        dutyDates[i]["blockout"].includes(personnel[j]["name"]) ||
-        personnel[j]["WE_RM"] == 0
+        dutyDates[i].blockout.includes(personnel[j].name) ||
+        personnel[j].WE_RM == 0
       ) {
         j += 1;
         if (j == personnel.length - 1) {
-          console.log(`Unable to assign personnel on ${i + 1}`);
+          console.log(`Weekend: Unable to assign personnel on ${i + 1}`);
           return false;
         }
       }
-      dutyDates[i]["personnel"] = personnel[j]["name"];
-      personnel[j]["WE_RM"] -= 1;
-      personnel[j]["WE_DONE"] += 1;
+      dutyDates[i].personnel = personnel[j].name;
+      personnel[j].WE_RM -= 1;
+      personnel[j].WE_DONE += 1;
       if (i >= 0 && i < dutyDates.length - 1) {
-        dutyDates[i + 1]["blockout"].push(personnel[j]["name"]);
+        dutyDates[i + 1].blockout.push(personnel[j].name);
       }
       if (i > 0 && i <= dutyDates.length - 1) {
-        dutyDates[i - 1]["blockout"].push(personnel[j]["name"]);
+        dutyDates[i - 1].blockout.push(personnel[j].name);
       }
       personnel = shuffleArray(personnel);
       personnel = sortByKey(personnel, "SB_COUNT");
 
       j = 0;
       while (
-        dutyDates[i]["blockout"].includes(personnel[j]["name"]) ||
-        personnel[j]["name"] == dutyDates[i]["personnel"]
+        dutyDates[i].blockout.includes(personnel[j].name) ||
+        personnel[j].name == dutyDates[i].personnel
       ) {
         j += 1;
         if (j == personnel.length - 1) {
@@ -342,12 +358,12 @@ function assignPersonnelShift(personnel: Personnel[], dutyDates: DutyDate[]) {
           return false;
         }
       }
-      dutyDates[i]["standby"] = personnel[j]["name"];
+      dutyDates[i].standby = personnel[j].name;
       if (i >= 0 && i < dutyDates.length - 1) {
-        dutyDates[i + 1]["blockout"].push(personnel[j]["name"]);
+        dutyDates[i + 1].blockout.push(personnel[j].name);
       }
       if (i > 0 && i <= dutyDates.length - 1) {
-        dutyDates[i - 1]["blockout"].push(personnel[j]["name"]);
+        dutyDates[i - 1].blockout.push(personnel[j].name);
       }
       personnel[j].SB_COUNT += 1;
     }
@@ -356,18 +372,72 @@ function assignPersonnelShift(personnel: Personnel[], dutyDates: DutyDate[]) {
   return true;
 }
 
-function allocateExtraShift(personnel: Personnel[], dutyDates: DutyDate[]) {
-    let shuffledDutyPersonnel = shuffleArray(personnel);
-  shuffledDutyPersonnel = sortByKey(shuffledDutyPersonnel, "extras", true);
+function assignExtraShift(personnel: Personnel[], dutyDates: DutyDate[]) {
+  for (let i = 1; i < dutyDates.length; ++i) {
+    if (!dutyDates?.[i - 1].isExtra) continue;
 
- 
+    personnel = shuffleArray(personnel);
+    personnel = sortByKey(personnel, "extra", true);
+
+    let j = 0;
+    while (
+      dutyDates[i - 1].blockout.includes(personnel[j].name) ||
+      personnel[j].extra == 0
+    ) {
+      j += 1;
+      if (j == personnel.length - 1) return false;
+    }
+
+    // Assign Extra shift to person who has worked the least Extras
+    dutyDates[i - 1].personnel = `${personnel[j].name} EX`;
+
+    personnel[j].extra -= 1;
+    personnel[j].EX_DONE += 1;
+
+    if (i - 1 >= 0 && i - 1 < dutyDates.length - 1) {
+      // Prevent person from working two Extra shifts in a row
+      dutyDates[i].blockout.push(personnel[j].name);
+    }
+    if (i - 1 > 0 && i - 1 <= dutyDates.length - 1) {
+      // Prevent person from working two Extra shifts in a row
+      dutyDates[i - 2].blockout.push(personnel[j].name);
+    }
+
+    personnel = shuffleArray(personnel);
+    personnel = sortByKey(personnel, "SB_COUNT");
+
+    j = 0;
+    while (
+      dutyDates[i - 1].blockout.includes(personnel[j].name) ||
+      dutyDates[i - 1].personnel?.includes(personnel[j].name)
+    ) {
+      j += 1;
+    }
+    // Assign Standby shift to person who has worked the least Standby shifts
+    dutyDates[i - 1].standby = personnel[j].name;
+    personnel[j].SB_COUNT += 1;
+    if (i - 1 >= 0 && i - 1 < dutyDates.length - 1) {
+      // Prevent person from working two Standby shifts in a row
+      dutyDates[i].blockout.push(personnel[j].name);
+    }
+    if (i - 1 > 0 && i - 1 <= dutyDates.length - 1) {
+      // Prevent person from working two Standby shifts in a row
+      dutyDates[i - 2].blockout.push(personnel[j].name);
+    }
+
+    dutyDates[i - 1].allocated = true;
+  }
+  return true;
 }
 
 // This function creates the duty roster, returns a boolean value to indicate if the roster is created successfully
-export function createDutyRoster(users: Personnel[], month: Date, extraDates: Date[]) {
+export function createDutyRoster(
+  users: Personnel[],
+  month: Date,
+  extraDates: Date[]
+) {
   const dutyDates = createDutyDate(users, getDatesInMonth(month), extraDates);
-  console.log(dutyDates)
-  let dutyPersonnel = createDutyPersonnel(users);
+  const dutyPersonnel = createDutyPersonnel(users);
 
   // Calculate WD and WE allocation
   const { weekdayAllocation, additionalWeekdayAllocation } =
@@ -376,17 +446,20 @@ export function createDutyRoster(users: Personnel[], month: Date, extraDates: Da
     calculateWeekendShift(dutyPersonnel, dutyDates);
 
   // Allocate WD and WE to personnel
-  dutyPersonnel = allocateWeekdayShift(
+  allocateWeekdayShift(
     dutyPersonnel,
     weekdayAllocation,
     additionalWeekdayAllocation
   );
-  dutyPersonnel = allocateWeekendShift(
+  allocateWeekendShift(
     dutyPersonnel,
     weekendAllocation,
     additionalWeekendAllocation
   );
+  // Assign Extra shift
+  assignExtraShift(dutyPersonnel, dutyDates);
 
+  // Assign WD and WE to dutyDates
   if (assignPersonnelShift(dutyPersonnel, dutyDates)) return dutyDates;
   else return false;
 }

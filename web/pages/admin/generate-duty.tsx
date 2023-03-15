@@ -111,10 +111,20 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
   const { classes } = useStyles();
 
   const [value, setValue] = useState<string[]>([]);
+  const [modalDPValue, setModalDPValue] = useState<string | null>(null);
+  const [modalSBValue, setModalSBValue] = useState<string | null>(null);
   const [extraDate, setExtraDate] = useState<Date[]>([]);
   const [month, onMonthChange] = useState<Date | null>(new Date());
 
-  const openModal = (date: Date) =>
+  const openModal = (date: Date) => {
+    const day = date.getDate();
+
+    if (dutyRoster) {
+      setModalDPValue(dutyRoster?.[day - 1].personnel);
+      setModalSBValue(dutyRoster?.[day - 1].standby);
+    }
+
+    // TODO: FIX state not updating before modal opens
     openConfirmModal({
       title: date.toLocaleString(),
       centered: true,
@@ -123,12 +133,16 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
           <Select
             label="Duty personnel"
             searchable
+            value={modalDPValue}
+            onChange={setModalDPValue}
             data={data.map((value) => value.label)}
           />
           <Select
             my="sm"
             label="Stand in"
             searchable
+            value={modalSBValue}
+            onChange={setModalSBValue}
             data={data.map((value) => value.label)}
           />
         </>
@@ -137,19 +151,16 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
       onCancel: () => console.log("Cancel"),
       onConfirm: () => console.log("Confirmed"),
     });
+  };
 
   // const month: MonthName = "March";
   // const year = 2023;
   // const timeZone = "Asia/Singapore";
 
-  // Make sure extraDates is changed whenever new month is selected
+  // Make sure extraDates is cleared whenever new month is selected
   useEffect(() => {
     if (month) {
-      const newExtraDate = extraDate.map((date) => {
-        date.setMonth(month?.getMonth());
-        return date;
-      });
-      setExtraDate(newExtraDate);
+      setExtraDate([]);
     }
   }, [month]);
 
@@ -158,10 +169,10 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
     setDutyRoster(createDutyRoster(users, month, extraDate));
 
     if (dutyRoster) {
-      // console.log(dutyRoster);
-      dutyRoster.forEach((duty) =>
-        console.log(`${duty.personnel} (${duty.standby})`)
-      );
+      console.log(dutyRoster);
+      // dutyRoster.forEach((duty) =>
+      //   console.log(`${duty.personnel} (${duty.standby})`)
+      // );
     }
   };
 
@@ -238,13 +249,11 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
             </tr>
           </thead>
           <tbody>
-            {" "}
             {value.map((person) => {
               return (
                 <tr key={person}>
                   <td>{person}</td>
                   <td>
-                    {" "}
                     <NumberInput
                       styles={{
                         input: { width: rem(54), textAlign: "center" },
@@ -252,7 +261,6 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
                     />
                   </td>
                   <td>
-                    {" "}
                     <NumberInput
                       styles={{
                         input: { width: rem(54), textAlign: "center" },
@@ -260,7 +268,6 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
                     />
                   </td>
                   <td>
-                    {" "}
                     <NumberInput
                       styles={{
                         input: { width: rem(54), textAlign: "center" },
@@ -330,20 +337,12 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
           const day = date.getDate();
 
           if (dutyRoster) {
-            const personnelInitial = dutyRoster[day - 1]?.personnel
-              ?.split(" ")
-              .map((n) => n[0])
-              .join("");
-            const standbyInitial = dutyRoster[day - 1]?.standby
-              ?.split(" ")
-              .map((n) => n[0])
-              .join("");
-
             return (
               <Flex mih={50} justify="center" align="center" direction="column">
                 <div>{day}</div>
                 <Text size="xs" align="center">
-                  {personnelInitial} ({standbyInitial})
+                  {dutyRoster?.[day - 1]?.personnel} (
+                  {dutyRoster?.[day - 1]?.standby})
                 </Text>
               </Flex>
             );
