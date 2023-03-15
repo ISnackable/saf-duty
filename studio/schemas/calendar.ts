@@ -4,17 +4,23 @@ import {MONTH_NAMES} from '../constants'
 import {CustomValidatorResult, ValidationContext} from 'sanity'
 // https://www.sanity.io/schemas/is-your-microcopy-unique-c7b3785e
 const uniqueMicrocopyKeyQuery =
-  '!defined(*[_type==$type && month==$value && year==$year && !(_id in [$draftId, $publishedId])][0]._id)'
+  '!defined(*[_type==$type && date >= $firstDayOfTheMonth && date <= $lastDayOfTheMonth && !(_id in [$draftId, $publishedId])][0]._id)'
 
 const executeQuery = async (ctx: ValidationContext, query: string, value?: string) => {
   const {document} = ctx
-  if (!value || !document || !document.year) return true
+  if (!value || !document) return true
   const id = document._id.replace('drafts.', '')
+
+  const year = new Date(value).getFullYear()
+  const month = new Date(value).getMonth()
+
+  const firstDayOfTheMonth = new Date(year, month, 1).toLocaleDateString('sv-SE')
+  const lastDayOfTheMonth = new Date(year, month + 1, 0).toLocaleDateString('sv-SE')
 
   const params = {
     type: 'calendar',
-    value,
-    year: document.year,
+    firstDayOfTheMonth,
+    lastDayOfTheMonth,
     draftId: `drafts.${id}`,
     publishedId: id,
   }
@@ -37,21 +43,15 @@ export default defineType({
   icon: CalendarIcon,
   fields: [
     defineField({
-      name: 'year',
-      title: 'Year',
-      type: 'number',
-      initialValue: new Date().getFullYear(),
-      validation: (Rule) =>
-        Rule.integer().min(1900).max(2100).required().error('Must be a valid year'),
-    }),
-    defineField({
-      name: 'month',
-      title: 'Month',
-      type: 'string',
+      name: 'date',
+      title: 'Date',
+      type: 'date',
+      initialValue: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toLocaleDateString(
+        'sv-SE'
+      ),
       options: {
-        list: MONTH_NAMES.map((month) => month),
+        dateFormat: 'MMMM, YYYY',
       },
-      initialValue: MONTH_NAMES[new Date().getMonth()],
       validation: (Rule) => [
         Rule.required(),
         Rule.custom(isUniqueMicrocopyKey).error(
@@ -59,6 +59,29 @@ export default defineType({
         ),
       ],
     }),
+    // defineField({
+    //   name: 'year',
+    //   title: 'Year',
+    //   type: 'number',
+    //   initialValue: new Date().getFullYear(),
+    //   validation: (Rule) =>
+    //     Rule.integer().min(1900).max(2100).required().error('Must be a valid year'),
+    // }),
+    // defineField({
+    //   name: 'month',
+    //   title: 'Month',
+    //   type: 'string',
+    //   options: {
+    //     list: MONTH_NAMES.map((month) => month),
+    //   },
+    //   initialValue: MONTH_NAMES[new Date().getMonth()],
+    //   validation: (Rule) => [
+    //     Rule.required(),
+    //     Rule.custom(isUniqueMicrocopyKey).error(
+    //       'A document with this month and year already exists'
+    //     ),
+    //   ],
+    // }),
     defineField({
       name: 'roster',
       title: 'Roster',
@@ -67,15 +90,15 @@ export default defineType({
   ],
   preview: {
     select: {
-      title: 'month',
-      subtitle: 'year',
+      title: 'date',
     },
-    prepare({title, subtitle}) {
-      const titleAndYear = `${title}, ${subtitle}`
+    prepare({title}) {
+      const year = new Date(title).getFullYear()
+      const month = MONTH_NAMES[new Date(title).getMonth()]
 
       return {
-        title: titleAndYear,
-        subtitle,
+        title: `${month}, ${year}`,
+        subtitle: `${year}`,
       }
     },
   },
