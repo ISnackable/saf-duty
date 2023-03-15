@@ -1,4 +1,4 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import type { GetServerSidePropsContext } from "next";
 import {
   Avatar,
@@ -15,7 +15,12 @@ import {
   Flex,
   Table,
 } from "@mantine/core";
-import { Calendar, MonthPickerInput } from "@mantine/dates";
+import {
+  Calendar,
+  MonthPickerInput,
+  DatePickerInput,
+  isSameMonth,
+} from "@mantine/dates";
 import { openConfirmModal } from "@mantine/modals";
 import { IconChessKnight, IconDatabase } from "@tabler/icons-react";
 import { getServerSession } from "next-auth/next";
@@ -106,6 +111,7 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
   const { classes } = useStyles();
 
   const [value, setValue] = useState<string[]>([]);
+  const [extraDate, setExtraDate] = useState<Date[]>([]);
   const [month, onMonthChange] = useState<Date | null>(new Date());
 
   const openModal = (date: Date) =>
@@ -136,12 +142,23 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
   // const year = 2023;
   // const timeZone = "Asia/Singapore";
 
+  // Make sure extraDates is changed whenever new month is selected
+  useEffect(() => {
+    if (month) {
+      const newExtraDate = extraDate.map((date) => {
+        date.setMonth(month?.getMonth());
+        return date;
+      });
+      setExtraDate(newExtraDate);
+    }
+  }, [month]);
+
   const handleClick = () => {
     // @ts-expect-error //TODO: fix this type error
-    setDutyRoster(createDutyRoster(users, month));
+    setDutyRoster(createDutyRoster(users, month, extraDate));
 
     if (dutyRoster) {
-      console.log(dutyRoster);
+      // console.log(dutyRoster);
       dutyRoster.forEach((duty) =>
         console.log(`${duty.personnel} (${duty.standby})`)
       );
@@ -160,13 +177,33 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
         personnels.
       </Text>
 
-      <MonthPickerInput
-        mt="sm"
-        label="Duty date"
-        placeholder="Pick date"
-        value={month}
-        onChange={onMonthChange}
-      />
+      <Group grow>
+        <MonthPickerInput
+          mt="sm"
+          label="Duty date"
+          placeholder="Pick date"
+          value={month}
+          onChange={onMonthChange}
+        />
+        <DatePickerInput
+          mt="sm"
+          date={month || new Date()}
+          value={extraDate}
+          onChange={setExtraDate}
+          clearable
+          hideOutsideDates
+          maxLevel="month"
+          type="multiple"
+          label="Extra date(s)"
+          placeholder="Pick date"
+          excludeDate={(date) => {
+            if (month && !isSameMonth(date, month)) return true;
+            else if (date.getDay() === 0 || date.getDay() === 6) return false;
+
+            return true;
+          }}
+        />
+      </Group>
 
       <MultiSelect
         mt="sm"
