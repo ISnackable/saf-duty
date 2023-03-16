@@ -22,13 +22,21 @@ import {
   isSameMonth,
 } from "@mantine/dates";
 import { openConfirmModal } from "@mantine/modals";
-import { IconChessKnight, IconDatabase } from "@tabler/icons-react";
+import {
+  IconAlertCircle,
+  IconCheck,
+  IconChessKnight,
+  IconDatabase,
+  IconUpload,
+  IconX,
+} from "@tabler/icons-react";
 import { getServerSession } from "next-auth/next";
 import type { User } from "next-auth";
 
 import * as demo from "@/lib/demo.data";
 import { createDutyRoster, DutyDate } from "@/utils/dutyRoster";
 import { authOptions } from "../api/auth/[...nextauth]";
+import { showNotification } from "@mantine/notifications";
 // import { writeClient } from "@/lib/sanity.client";
 // import { getAllUsersQuery } from "@/lib/sanity.queries";
 
@@ -77,21 +85,17 @@ const useStyles = createStyles((theme) => ({
 
 interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
   label: string;
-  avatar?: string;
-  description?: string;
+  image: string;
 }
 
 const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
-  ({ avatar, label, description, ...others }: ItemProps, ref) => (
+  ({ image, label, ...others }: ItemProps, ref) => (
     <div ref={ref} {...others}>
       <Group noWrap>
-        <Avatar src={avatar} />
+        <Avatar src={image} />
 
         <div>
           <Text>{label}</Text>
-          <Text size="xs" color="dimmed">
-            {description}
-          </Text>
         </div>
       </Group>
     </div>
@@ -103,10 +107,14 @@ GenerateDutyPage.title = "Generate Duty";
 
 export default function GenerateDutyPage({ users }: { users: User[] }) {
   const [dutyRoster, setDutyRoster] = useState<false | DutyDate[]>();
+
+  // Object.freeze(users);
+
   // if no data, use demo data
   const data = users.map((user) => ({
     label: user.name || "Default",
     value: user.name || "default",
+    image: user.image || "",
   }));
   const { classes } = useStyles();
 
@@ -153,31 +161,54 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
     });
   };
 
-  // const month: MonthName = "March";
-  // const year = 2023;
   // const timeZone = "Asia/Singapore";
 
   // Make sure extraDates is cleared whenever new month is selected
   useEffect(() => {
     if (month) {
+      setDutyRoster(false);
       setExtraDate([]);
     }
   }, [month]);
 
   const handleClick = () => {
-    // @ts-expect-error //TODO: fix this type error
-    setDutyRoster(createDutyRoster(users, month, extraDate));
+    const personnel = [...users].filter((user) =>
+      value.includes(user.name || "")
+    );
 
-    if (dutyRoster) {
-      console.log(dutyRoster);
-      // dutyRoster.forEach((duty) =>
-      //   console.log(`${duty.personnel} (${duty.standby})`)
-      // );
+    let dutyRosterValue: typeof dutyRoster = false;
+    if (personnel.length > 3) {
+      // @ts-expect-error //TODO: fix this type error
+      dutyRosterValue = createDutyRoster(personnel, month, extraDate);
+      setDutyRoster(dutyRosterValue);
+
+      if (!dutyRosterValue) {
+        showNotification({
+          title: "Error",
+          message: "Unable to assign personnel on some day, try again",
+          color: "red",
+          icon: <IconX />,
+        });
+      } else {
+        showNotification({
+          title: "Success",
+          message: "Successfully generated duty roster",
+          color: "green",
+          icon: <IconCheck />,
+        });
+      }
+    } else {
+      showNotification({
+        title: "Warning",
+        message: "You need to select at least 4 personnels",
+        color: "yellow",
+        icon: <IconAlertCircle />,
+      });
     }
   };
 
   return (
-    <Container>
+    <Container my="xl">
       <div className={classes.titleWrapper}>
         <IconChessKnight size={48} />
         <Title className={classes.title}>Generate Duty</Title>
@@ -237,49 +268,6 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
               .includes(value.toLowerCase().trim()))
         }
       />
-
-      {value.length > 0 && (
-        <Table mt="xl" withBorder withColumnBorders>
-          <thead>
-            <tr>
-              <th>Personnel</th>
-              <th>Weekday Points</th>
-              <th>Weekend Points</th>
-              <th>Extras</th>
-            </tr>
-          </thead>
-          <tbody>
-            {value.map((person) => {
-              return (
-                <tr key={person}>
-                  <td>{person}</td>
-                  <td>
-                    <NumberInput
-                      styles={{
-                        input: { width: rem(54), textAlign: "center" },
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <NumberInput
-                      styles={{
-                        input: { width: rem(54), textAlign: "center" },
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <NumberInput
-                      styles={{
-                        input: { width: rem(54), textAlign: "center" },
-                      }}
-                    />
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
-      )}
 
       <Calendar
         mt="lg"
@@ -358,7 +346,60 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
         >
           Generate
         </Button>
+        <Button mt="xl">Save</Button>
       </Group>
+
+      {value.length > 0 && (
+        <Table mt="xl" withBorder withColumnBorders>
+          <thead>
+            <tr>
+              <th>Personnel</th>
+              <th>Weekday Points</th>
+              <th>Weekend Points</th>
+              <th>Extras</th>
+            </tr>
+          </thead>
+          <tbody>
+            {value.map((person) => {
+              return (
+                <tr key={person}>
+                  <td>{person}</td>
+                  <td>
+                    <NumberInput
+                      value={
+                        users.find((user) => user?.name === person)
+                          ?.weekdayPoints
+                      }
+                      styles={{
+                        input: { width: rem(54), textAlign: "center" },
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <NumberInput
+                      value={
+                        users.find((user) => user?.name === person)
+                          ?.weekendPoints
+                      }
+                      styles={{
+                        input: { width: rem(54), textAlign: "center" },
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <NumberInput
+                      value={users.find((user) => user?.name === person)?.extra}
+                      styles={{
+                        input: { width: rem(54), textAlign: "center" },
+                      }}
+                    />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      )}
     </Container>
   );
 }
