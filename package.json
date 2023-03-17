@@ -14,8 +14,6 @@
     "build": "lerna run build --parallel",
     "dev": "lerna run dev --parallel",
     "format": "lerna run format",
-    "build-studio": "lerna bootstrap && cd studio && yarn run build",
-    "build-web": "lerna bootstrap && (cd web && yarn run build)",
     "lint": "lerna run lint"
   },
   "devDependencies": {

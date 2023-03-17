@@ -5,7 +5,7 @@ import {ConfigContext} from 'sanity'
 interface CalendarQuery {
   _id: string
   _type: string
-  year: number
+  date: Date
 }
 
 interface Years {
@@ -37,14 +37,14 @@ export const myStructure = (S: StructureBuilder, context: ConfigContext) => {
             .child(() => {
               const typeDef = 'calendar'
               return client
-                .fetch('*[_type == $type && defined(year)]{_id, _type, year}', {
+                .fetch('*[_type == $type && defined(date)]{_id, _type, date}', {
                   type: typeDef,
                 })
                 .then((docs: CalendarQuery[]) => {
                   // Create a map of years
                   const years: Years = {}
                   docs.forEach((d) => {
-                    const date = new Date(d.year, 0)
+                    const date = new Date(d.date)
                     const year = date.getFullYear()
                     if (!years[year]) {
                       years[year] = []
