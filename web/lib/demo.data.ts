@@ -1,6 +1,7 @@
 // All the demo data that used as fallbacks when there's nothing in the dataset yet
 
 import type { User } from 'next-auth'
+import { Role } from '@/nextauth.d'
 
 export const title = 'Blog.'
 
@@ -10,6 +11,7 @@ export const users: User[] = [
   {
     id: '5eda9aac-bfc1-11ed-afa1-0242ac120002',
     name: 'Jun Jie',
+    role: Role.user,
     image:
       'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     ord: new Date(2024, 1, 1),
@@ -22,6 +24,7 @@ export const users: User[] = [
   {
     id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
     name: 'Zhi Hao',
+    role: Role.user,
     image:
       'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     ord: new Date(2024, 2, 28),
@@ -34,6 +37,7 @@ export const users: User[] = [
   {
     id: '5edaa132-bfc1-11ed-afa1-0242ac120002',
     name: 'Jia Hui',
+    role: Role.user,
     image:
       'https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     ord: new Date(2025, 5, 10),
@@ -46,6 +50,7 @@ export const users: User[] = [
   {
     id: '5edaa2cc-bfc1-11ed-afa1-0242ac120002',
     name: 'Jia Hao',
+    role: Role.user,
     image:
       'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     ord: new Date(2023, 3, 1),
@@ -58,6 +63,7 @@ export const users: User[] = [
   {
     id: '5edaa416-bfc1-11ed-afa1-0242ac120002',
     name: 'Jun Kai',
+    role: Role.user,
     image:
       'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     ord: new Date(2024, 4, 1),
@@ -80,6 +86,7 @@ export const users: User[] = [
   {
     id: '78c9dc16-bfc1-11ed-afa1-0242ac120002',
     name: 'Wang Li',
+    role: Role.user,
     image:
       'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     ord: new Date(2024, 9, 29),
@@ -92,6 +99,7 @@ export const users: User[] = [
   {
     id: '9d658fae-c343-11ed-afa1-0242ac120002',
     name: 'Darryl Koh',
+    role: Role.user,
     image:
       'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     ord: new Date(2024, 2, 13),
@@ -121,6 +129,7 @@ export const users: User[] = [
   {
     id: 'a1196c88-c343-11ed-afa1-0242ac120002',
     name: 'Elliot Tan',
+    role: Role.user,
     image:
       'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     ord: new Date(2024, 6, 23),

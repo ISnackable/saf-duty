@@ -27,7 +27,7 @@ export const MONTH_NAMES = [
 export type MonthName = (typeof MONTH_NAMES)[number]
 export interface Personnel extends User {
   id: string
-  name: string
+  // name: string
   weekdayPoints: number
   weekendPoints: number
   extra: number
@@ -136,12 +136,12 @@ function sortByKey<T>(array: T[], key: keyof T, reversed = false) {
  * @returns a new array of personnel with extra details for the duty roster
    @example { id: 1, name: "John", weekdayPoints: 0, weekendPoints: 0, extra: 0, blockoutDates: [] },
  */
-function createDutyPersonnel(personnel: Personnel[]): Personnel[] {
+function createDutyPersonnel(personnel: User[]): Personnel[] {
   return personnel.map((person) => ({
-    // weekdayPoints: 0, // Weekday Pts next month
-    // weekendPoints: 0, // Weekend Pts next month
-    // extra: 0, // Extra Remaining
     ...person,
+    weekdayPoints: person.weekdayPoints ?? 0, // Weekday Pts next month
+    weekendPoints: person.weekendPoints ?? 0, // Weekend Pts next month
+    extra: person.extra ?? 0, // Extra Remaining
     WD_RM: 0, // Weekday Remaining
     SBWD_RM: 0, // Stand In/Stand By weekend
     WD_DONE: 0, // No. Weekdays duty assigned
@@ -267,8 +267,9 @@ function assignPersonnelShift(personnel: Personnel[], dutyDates: DutyDate[]) {
       while (dutyDates[i].blockout.includes(personnel[j].name) || personnel[j].WD_RM == 0) {
         j += 1
         if (j === personnel.length) {
-          console.log(`Weekday: Unable to assign personnel on ${i + 1}`)
-          return false
+          throw new Error(
+            `Unable to assign personnel on ${dutyDates[i + 1].date.toLocaleDateString()}`
+          )
         }
       }
 
@@ -292,8 +293,9 @@ function assignPersonnelShift(personnel: Personnel[], dutyDates: DutyDate[]) {
       ) {
         j += 1
         if (j == personnel.length - 1) {
-          console.log(`Unable to assign stand in on ${i + 1}`)
-          return false
+          throw new Error(
+            `Unable to assign stand in on ${dutyDates[i + 1].date.toLocaleDateString()}`
+          )
         }
       }
       dutyDates[i].standby = personnel[j].name
@@ -313,8 +315,9 @@ function assignPersonnelShift(personnel: Personnel[], dutyDates: DutyDate[]) {
       while (dutyDates[i].blockout.includes(personnel[j].name) || personnel[j].WE_RM == 0) {
         j += 1
         if (j == personnel.length - 1) {
-          console.log(`Weekend: Unable to assign personnel on ${i + 1}`)
-          return false
+          throw new Error(
+            `Unable to assign personnel on ${dutyDates[i + 1].date.toLocaleDateString()}`
+          )
         }
       }
       dutyDates[i].personnel = personnel[j].name
@@ -336,8 +339,9 @@ function assignPersonnelShift(personnel: Personnel[], dutyDates: DutyDate[]) {
       ) {
         j += 1
         if (j == personnel.length - 1) {
-          console.log(`Unable to assign stand in on ${i + 1}`)
-          return false
+          throw new Error(
+            `Unable to assign stand in on ${dutyDates[i + 1].date.toLocaleDateString()}`
+          )
         }
       }
       dutyDates[i].standby = personnel[j].name
@@ -351,7 +355,7 @@ function assignPersonnelShift(personnel: Personnel[], dutyDates: DutyDate[]) {
     }
   }
 
-  return true
+  return { dutyDates, dutyPersonnel: personnel }
 }
 
 function assignExtraShift(personnel: Personnel[], dutyDates: DutyDate[]) {
@@ -388,7 +392,7 @@ function assignExtraShift(personnel: Personnel[], dutyDates: DutyDate[]) {
     j = 0
     while (
       dutyDates[i - 1].blockout.includes(personnel[j].name) ||
-      dutyDates[i - 1].personnel?.includes(personnel[j].name)
+      dutyDates[i - 1].personnel === personnel[j].name
     ) {
       j += 1
     }
@@ -410,9 +414,9 @@ function assignExtraShift(personnel: Personnel[], dutyDates: DutyDate[]) {
 }
 
 // This function creates the duty roster, returns a boolean value to indicate if the roster is created successfully
-export function createDutyRoster(users: Personnel[], month: Date, extraDates: Date[]) {
-  const dutyDates = createDutyDate(users, getDatesInMonth(month), extraDates)
+export function createDutyRoster(users: User[], month: Date, extraDates: Date[]) {
   const dutyPersonnel = createDutyPersonnel(users)
+  const dutyDates = createDutyDate(dutyPersonnel, getDatesInMonth(month), extraDates)
 
   // Calculate WD and WE allocation
   const { weekdayAllocation, additionalWeekdayAllocation } = calculateWeekdayShift(
@@ -431,6 +435,5 @@ export function createDutyRoster(users: Personnel[], month: Date, extraDates: Da
   assignExtraShift(dutyPersonnel, dutyDates)
 
   // Assign WD and WE to dutyDates
-  if (assignPersonnelShift(dutyPersonnel, dutyDates)) return dutyDates
-  else return false
+  return assignPersonnelShift(dutyPersonnel, dutyDates)
 }

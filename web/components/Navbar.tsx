@@ -18,7 +18,6 @@ import {
   IconFingerprint,
   IconCalendarEvent,
   IconEdit,
-  IconApps,
   IconChessKnight,
   IconCloudLock,
   IconCe,
@@ -126,7 +125,7 @@ const links = [
 ]
 
 const adminLinks = [
-  { icon: IconApps, label: 'Overview', link: '/admin' },
+  { icon: IconUsers, label: 'Users overview', link: '/admin' },
   {
     icon: IconChessKnight,
     label: 'Generate duty',

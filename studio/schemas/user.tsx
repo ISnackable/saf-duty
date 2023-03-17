@@ -79,18 +79,21 @@ export default defineType({
       name: 'weekdayPoints',
       title: 'Weekday Points',
       type: 'number',
+      initialValue: 0,
       validation: (Rule) => Rule.integer(),
     }),
     defineField({
       name: 'weekendPoints',
       title: 'Weekday Points',
       type: 'number',
+      initialValue: 0,
       validation: (Rule) => Rule.integer(),
     }),
     defineField({
       name: 'extra',
       title: 'No. of Extra',
       type: 'number',
+      initialValue: 0,
       validation: (Rule) => Rule.integer().positive(),
     }),
     defineField({
