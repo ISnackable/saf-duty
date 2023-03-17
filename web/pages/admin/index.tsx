@@ -1,39 +1,39 @@
-import type { GetServerSidePropsContext } from "next";
-import type { User } from "next-auth";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../api/auth/[...nextauth]";
+import type { GetServerSidePropsContext } from 'next'
+import type { User } from 'next-auth'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '../api/auth/[...nextauth]'
 
-AdminPage.title = "Admin";
+AdminPage.title = 'Admin'
 
 export default function AdminPage({ user }: { user: User }) {
-  return JSON.stringify(user);
+  return JSON.stringify(user)
 }
 
 // Export the `session` prop to use sessions with Server Side Rendering
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions);
+  const session = await getServerSession(context.req, context.res, authOptions)
 
   if (!session) {
     return {
       redirect: {
-        destination: "/login",
+        destination: '/login',
         permanent: false,
       },
-    };
+    }
   }
 
-  const { user } = session;
+  const { user } = session
 
-  if (user?.role !== "admin") {
+  if (user?.role !== 'admin') {
     return {
       redirect: {
-        destination: "/",
+        destination: '/',
         permanent: false,
       },
-    };
+    }
   }
 
   return {
-    props: { user: JSON.parse(JSON.stringify(user)) },
-  };
+    props: { user },
+  }
 }

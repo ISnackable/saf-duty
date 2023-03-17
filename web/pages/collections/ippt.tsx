@@ -1,39 +1,36 @@
-import type { GetServerSidePropsContext } from "next";
-import { getServerSession } from "next-auth/next";
-import { Container, createStyles, Divider, Text, Title } from "@mantine/core";
-import { IconSparkles } from "@tabler/icons-react";
+import type { GetServerSidePropsContext } from 'next'
+import { getServerSession } from 'next-auth/next'
+import { Container, createStyles, Divider, Text, Title } from '@mantine/core'
+import { IconSparkles } from '@tabler/icons-react'
 
-import { authOptions } from "../api/auth/[...nextauth]";
-import Link from "next/link";
+import { authOptions } from '../api/auth/[...nextauth]'
+import Link from 'next/link'
 
 const useStyles = createStyles((theme) => ({
   title: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-    color: theme.colorScheme === "dark" ? theme.white : theme.black,
+    color: theme.colorScheme === 'dark' ? theme.white : theme.black,
     lineHeight: 1,
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
   },
 
   titleWrapper: {
-    display: "flex",
-    alignItems: "center",
-    "& > *:not(:last-child)": {
+    display: 'flex',
+    alignItems: 'center',
+    '& > *:not(:last-child)': {
       marginRight: theme.spacing.sm,
     },
   },
 
   link: {
-    color:
-      theme.colorScheme === "dark"
-        ? theme.colors.blue[3]
-        : theme.colors.blue[9],
+    color: theme.colorScheme === 'dark' ? theme.colors.blue[3] : theme.colors.blue[9],
   },
-}));
+}))
 
-IpptPage.title = "IPPT Calculator";
+IpptPage.title = 'IPPT Calculator'
 
 export default function IpptPage() {
-  const { classes } = useStyles();
+  const { classes } = useStyles()
 
   return (
     <>
@@ -44,7 +41,7 @@ export default function IpptPage() {
         </div>
 
         <Text color="dimmed" mt="md">
-          This is an embed of{" "}
+          This is an embed of{' '}
           <Link
             href="https://ippt.yctay.com"
             className={classes.link}
@@ -53,8 +50,7 @@ export default function IpptPage() {
           >
             ippt.yctay.com
           </Link>
-          . If you&apos;re exempted from any of the stations, check out the
-          official{" "}
+          . If you&apos;re exempted from any of the stations, check out the official{' '}
           <Link
             href="https://www.ns.sg/web/portal/nsmen/home/nstopics/ippt-nsfit/ippt/ippt-stations-and-scoring-system/scoring-calculation"
             className={classes.link}
@@ -70,27 +66,27 @@ export default function IpptPage() {
         src="https://ippt.yctay.com/?age=20&situpReps=33&pushupReps=20&runMins=12&runSecs=30"
         width="100%"
         height="100%"
-        style={{ border: "none" }}
+        style={{ border: 'none' }}
         sandbox="allow-scripts allow-same-origin"
       />
     </>
-  );
+  )
 }
 
 // Export the `session` prop to use sessions with Server Side Rendering
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions);
+  const session = await getServerSession(context.req, context.res, authOptions)
 
   if (!session) {
     return {
       redirect: {
-        destination: "/login",
+        destination: '/login',
         permanent: false,
       },
-    };
+    }
   }
 
   return {
     props: {},
-  };
+  }
 }

@@ -35,7 +35,11 @@ export default defineType({
       name: 'user',
       title: 'User',
       type: 'reference',
+      weak: true,
       to: {type: 'user'},
+      options: {
+        disableNew: true,
+      },
     }),
   ],
 })

@@ -4,26 +4,6 @@ import advancedFormat from 'dayjs/plugin/advancedFormat'
 
 dayjs.extend(advancedFormat)
 
-// import {getDaysInMonth} from 'date-fns'
-// import {format} from 'date-fns-tz'
-
-// const DateInput = (props: NumberInputProps) => {
-//   const {schemaType, renderDefault} = props
-//   const {options} = schemaType
-
-//   const {list} = options || {}
-//   const month = useFormValue(['month'])
-
-//   const listItems = month
-//     ? [...Array(getDaysInMonth(new Date(`${month} 1`))).keys()].map((day) => day + 1)
-//     : list
-
-//   return renderDefault({
-//     ...props,
-//     schemaType: {...schemaType, options: {...options, list: listItems}},
-//   })
-// }
-
 interface Duty {
   date?: number
   dutyPersonnel?: string
@@ -72,14 +52,22 @@ export default defineType({
           name: 'dutyPersonnel',
           title: 'Duty Personnel',
           type: 'reference',
+          weak: true,
           to: [{type: 'user'}],
+          options: {
+            disableNew: true,
+          },
           validation: (Rule) => Rule.required(),
         }),
         defineField({
           name: 'dutyPersonnelStandIn',
           title: 'Duty Personnel Stand In',
+          weak: true,
           type: 'reference',
           to: [{type: 'user'}],
+          options: {
+            disableNew: true,
+          },
         }),
       ],
       preview: {

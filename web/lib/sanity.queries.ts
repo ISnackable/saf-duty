@@ -1,4 +1,4 @@
-import {groq} from 'next-sanity'
+import { groq } from 'next-sanity'
 
 export const getAllUsersQuery = groq`*[_type == "user"]{
     name,
@@ -18,7 +18,14 @@ export const getUserQuery = groq`*[_type == "user" && _id == $id]{
     weekdayPoints,
     weekendPoints,
     extra,
+    ord,
+    enlistment,
     "upcomingDuties": *[_type == 'calendar']{
         roster[dutyPersonnel._ref == $id]{date, dutyPersonnel->{name}}
     }.roster[]
 }`
+
+export const getUserUpcomingDutiesQuery = groq`*[_type == 'calendar']{
+    roster[dutyPersonnel._ref == $id]{date, dutyPersonnel->{name}}
+}.roster[]
+`

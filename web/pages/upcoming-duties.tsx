@@ -1,45 +1,38 @@
-import type { GetServerSidePropsContext } from "next";
-import type { User } from "next-auth";
-import {
-  Container,
-  createStyles,
-  Divider,
-  Text,
-  Title,
-  Timeline,
-} from "@mantine/core";
-import { getServerSession } from "next-auth/next";
+import type { GetServerSidePropsContext } from 'next'
+import type { User } from 'next-auth'
+import { Container, createStyles, Divider, Text, Title, Timeline } from '@mantine/core'
+import { getServerSession } from 'next-auth/next'
 import {
   IconEdit,
   IconGitBranch,
   IconGitPullRequest,
   IconGitCommit,
   IconMessageDots,
-} from "@tabler/icons-react";
+} from '@tabler/icons-react'
 
-import { authOptions } from "./api/auth/[...nextauth]";
+import { authOptions } from './api/auth/[...nextauth]'
 
 const useStyles = createStyles((theme) => ({
   title: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-    color: theme.colorScheme === "dark" ? theme.white : theme.black,
+    color: theme.colorScheme === 'dark' ? theme.white : theme.black,
     lineHeight: 1,
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
   },
 
   titleWrapper: {
-    display: "flex",
-    alignItems: "center",
-    "& > *:not(:last-child)": {
+    display: 'flex',
+    alignItems: 'center',
+    '& > *:not(:last-child)': {
       marginRight: theme.spacing.sm,
     },
   },
-}));
+}))
 
-UpcomingDutiesPage.title = "Upcoming Duties";
+UpcomingDutiesPage.title = 'Upcoming Duties'
 
 export default function UpcomingDutiesPage({ user }: { user: User }) {
-  const { classes } = useStyles();
+  const { classes } = useStyles()
 
   return (
     <Container mt="lg">
@@ -49,19 +42,18 @@ export default function UpcomingDutiesPage({ user }: { user: User }) {
       </div>
 
       <Text color="dimmed" mt="md">
-        View the list of upcoming duties you have been assigned to. You can
-        filter the list by date range. You can also view the list of upcoming
-        duties for a specific member.
+        View the list of upcoming duties you have been assigned to. You can filter the list by date
+        range. You can also view the list of upcoming duties for a specific member.
       </Text>
       <Divider mt="sm" />
 
       <Timeline active={1} bulletSize={24} lineWidth={2} mt="xl">
         <Timeline.Item bullet={<IconGitBranch size={12} />} title="New branch">
           <Text color="dimmed" size="sm">
-            You&apos;ve created new branch{" "}
+            You&apos;ve created new branch{' '}
             <Text variant="link" component="span" inherit>
               fix-notifications
-            </Text>{" "}
+            </Text>{' '}
             {user?.name}
           </Text>
           <Text size="xs" mt={4}>
@@ -97,14 +89,11 @@ export default function UpcomingDutiesPage({ user }: { user: User }) {
           </Text>
         </Timeline.Item>
 
-        <Timeline.Item
-          title="Code review"
-          bullet={<IconMessageDots size={12} />}
-        >
+        <Timeline.Item title="Code review" bullet={<IconMessageDots size={12} />}>
           <Text color="dimmed" size="sm">
             <Text variant="link" component="span" inherit>
               Robert Gluesticker
-            </Text>{" "}
+            </Text>{' '}
             left a code review on your pull request
           </Text>
           <Text size="xs" mt={4}>
@@ -113,25 +102,25 @@ export default function UpcomingDutiesPage({ user }: { user: User }) {
         </Timeline.Item>
       </Timeline>
     </Container>
-  );
+  )
 }
 
 // Export the `session` prop to use sessions with Server Side Rendering
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions);
+  const session = await getServerSession(context.req, context.res, authOptions)
 
   if (!session) {
     return {
       redirect: {
-        destination: "/login",
+        destination: '/login',
         permanent: false,
       },
-    };
+    }
   }
 
-  const { user } = session;
+  const { user } = session
 
   return {
-    props: { user: JSON.parse(JSON.stringify(user)) },
-  };
+    props: { user },
+  }
 }

@@ -59,29 +59,6 @@ export default defineType({
         ),
       ],
     }),
-    // defineField({
-    //   name: 'year',
-    //   title: 'Year',
-    //   type: 'number',
-    //   initialValue: new Date().getFullYear(),
-    //   validation: (Rule) =>
-    //     Rule.integer().min(1900).max(2100).required().error('Must be a valid year'),
-    // }),
-    // defineField({
-    //   name: 'month',
-    //   title: 'Month',
-    //   type: 'string',
-    //   options: {
-    //     list: MONTH_NAMES.map((month) => month),
-    //   },
-    //   initialValue: MONTH_NAMES[new Date().getMonth()],
-    //   validation: (Rule) => [
-    //     Rule.required(),
-    //     Rule.custom(isUniqueMicrocopyKey).error(
-    //       'A document with this month and year already exists'
-    //     ),
-    //   ],
-    // }),
     defineField({
       name: 'roster',
       title: 'Roster',

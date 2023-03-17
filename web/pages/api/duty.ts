@@ -6,7 +6,7 @@
  * It uses the Round-robin algorithm algorithm to generate the roster.
  */
 
-import type { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from 'next'
 import {
   startOfMonth,
   endOfMonth,
@@ -14,38 +14,38 @@ import {
   eachDayOfInterval,
   isWeekend,
   // format,
-} from "date-fns";
-import { utcToZonedTime } from "date-fns-tz";
+} from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
 
 export const MONTH_NAMES = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-] as const;
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+] as const
 
-export type MonthName = (typeof MONTH_NAMES)[number];
+export type MonthName = (typeof MONTH_NAMES)[number]
 
 interface Personnel {
-  id: number;
-  name: string;
-  weekdaysPTS: number;
-  weekendsPTS: number;
-  extras: number;
-  blockoutDates: Date[];
+  id: number
+  name: string
+  weekdaysPTS: number
+  weekendsPTS: number
+  extras: number
+  blockoutDates: Date[]
 }
 
-const month: MonthName = "March";
-const year = 2023;
-const timeZone = "Asia/Singapore";
+const month: MonthName = 'March'
+const year = 2023
+const timeZone = 'Asia/Singapore'
 
 /**
  *
@@ -54,7 +54,7 @@ const timeZone = "Asia/Singapore";
  * @returns integer representing the month number (0-11)
  */
 function getMonthCount(month: MonthName) {
-  return getMonth(new Date(`${month} 1`));
+  return getMonth(new Date(`${month} 1`))
 }
 
 /**
@@ -63,31 +63,31 @@ function getMonthCount(month: MonthName) {
  * @returns a shuffled array
  */
 export function shuffleArray<T>(array: T[]): T[] {
-  const arrayCopy = [...array];
+  const arrayCopy = [...array]
   for (let i = arrayCopy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arrayCopy[i], arrayCopy[j]] = [arrayCopy[j], arrayCopy[i]];
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[arrayCopy[i], arrayCopy[j]] = [arrayCopy[j], arrayCopy[i]]
   }
-  return arrayCopy;
+  return arrayCopy
 }
 
-const monthCount = getMonthCount(month);
-const date = new Date(year, monthCount);
-const zonedDate = utcToZonedTime(date, timeZone);
+const monthCount = getMonthCount(month)
+const date = new Date(year, monthCount)
+const zonedDate = utcToZonedTime(date, timeZone)
 
 // get the starting date of the month
-const startDate = startOfMonth(zonedDate);
+const startDate = startOfMonth(zonedDate)
 // create an array of dates for the month
 const monthDates = eachDayOfInterval({
   start: startDate,
   end: endOfMonth(startDate),
-});
+})
 
 // List of people to be assigned duties
 const personnel = [
   {
     id: 1,
-    name: "John",
+    name: 'John',
     weekdaysPTS: 0,
     weekendsPTS: 0,
     extras: 0,
@@ -95,7 +95,7 @@ const personnel = [
   },
   {
     id: 2,
-    name: "Jane",
+    name: 'Jane',
     weekdaysPTS: 0,
     weekendsPTS: 0,
     extras: 0,
@@ -103,7 +103,7 @@ const personnel = [
   },
   {
     id: 3,
-    name: "Joe",
+    name: 'Joe',
     weekdaysPTS: 0,
     weekendsPTS: 0,
     extras: 0,
@@ -111,7 +111,7 @@ const personnel = [
   },
   {
     id: 4,
-    name: "Jill",
+    name: 'Jill',
     weekdaysPTS: 0,
     weekendsPTS: 0,
     extras: 0,
@@ -119,7 +119,7 @@ const personnel = [
   },
   {
     id: 5,
-    name: "Jack",
+    name: 'Jack',
     weekdaysPTS: 0,
     weekendsPTS: 0,
     extras: 0,
@@ -127,7 +127,7 @@ const personnel = [
   },
   {
     id: 6,
-    name: "Jenny",
+    name: 'Jenny',
     weekdaysPTS: 0,
     weekendsPTS: 0,
     extras: 0,
@@ -135,7 +135,7 @@ const personnel = [
   },
   {
     id: 7,
-    name: "Jen",
+    name: 'Jen',
     weekdaysPTS: 0,
     weekendsPTS: 0,
     extras: 0,
@@ -143,13 +143,13 @@ const personnel = [
   },
   {
     id: 8,
-    name: "Jenny",
+    name: 'Jenny',
     weekdaysPTS: 0,
     weekendsPTS: 0,
     extras: 0,
     blockoutDates: [],
   },
-];
+]
 
 /**
  *
@@ -160,90 +160,75 @@ const personnel = [
  */
 function sortByKey(array: any[], key: string | number) {
   return array.sort(function (a, b) {
-    const x = a[key];
-    const y = b[key];
-    return x < y ? -1 : x > y ? 1 : 0;
-  });
+    const x = a[key]
+    const y = b[key]
+    return x < y ? -1 : x > y ? 1 : 0
+  })
 }
 
 // This function creates the duty roster
 function createDutyRoster(personnel: Personnel[], monthDates: Date[]) {
-  const roster: { [date: string]: Personnel } = {};
+  const roster: { [date: string]: Personnel } = {}
 
-  const weekendAllocation = calculateWeekendAllocation(personnel, monthDates);
-  const weekdayAllocation = calculateWeekdayAllocation(personnel, monthDates);
+  const weekendAllocation = calculateWeekendAllocation(personnel, monthDates)
+  const weekdayAllocation = calculateWeekdayAllocation(personnel, monthDates)
 
-  allocateExtraDuty(personnel, monthDates);
+  allocateExtraDuty(personnel, monthDates)
 
-  let startIndex = 0;
+  let startIndex = 0
 
   monthDates.forEach((date) => {
     if (isWeekend(date)) {
-      const weekendPersonnel = personnel.slice(
-        startIndex,
-        startIndex + weekendAllocation
-      );
-      startIndex += weekendAllocation;
+      const weekendPersonnel = personnel.slice(startIndex, startIndex + weekendAllocation)
+      startIndex += weekendAllocation
       weekendPersonnel.forEach((person) => {
-        roster[date.toDateString()] = person;
-        person.weekendsPTS += 1;
-      });
+        roster[date.toDateString()] = person
+        person.weekendsPTS += 1
+      })
     } else {
-      const weekdayPersonnel = personnel.slice(
-        startIndex,
-        startIndex + weekdayAllocation
-      );
-      startIndex += weekdayAllocation;
+      const weekdayPersonnel = personnel.slice(startIndex, startIndex + weekdayAllocation)
+      startIndex += weekdayAllocation
       weekdayPersonnel.forEach((person) => {
-        roster[date.toDateString()] = person;
-        person.weekdaysPTS += 1;
-      });
+        roster[date.toDateString()] = person
+        person.weekdaysPTS += 1
+      })
     }
-  });
+  })
 
-  return roster;
+  return roster
 }
 
-const dutyRoster = createDutyRoster(personnel, monthDates);
+const dutyRoster = createDutyRoster(personnel, monthDates)
 
 // This function allocates the extra duties
 function allocateExtraDuty(personnel: Personnel[], monthDates: Date[]) {
-  let personnelShuffled = shuffleArray(personnel);
-  personnelShuffled = sortByKey(personnelShuffled, "extras").reverse();
+  let personnelShuffled = shuffleArray(personnel)
+  personnelShuffled = sortByKey(personnelShuffled, 'extras').reverse()
 }
 
-function calculateWeekendAllocation(
-  personnel: Personnel[],
-  monthDates: Date[]
-) {
-  const totalWeekendDays = monthDates.filter((date) => isWeekend(date)).length;
-  const totalPersonnel = personnel.length;
+function calculateWeekendAllocation(personnel: Personnel[], monthDates: Date[]) {
+  const totalWeekendDays = monthDates.filter((date) => isWeekend(date)).length
+  const totalPersonnel = personnel.length
 
-  const weekendAllocation = Math.floor(totalWeekendDays / totalPersonnel);
+  const weekendAllocation = Math.floor(totalWeekendDays / totalPersonnel)
 
-  return weekendAllocation;
+  return weekendAllocation
 }
 
-function calculateWeekdayAllocation(
-  personnel: Personnel[],
-  monthDates: Date[]
-) {
+function calculateWeekdayAllocation(personnel: Personnel[], monthDates: Date[]) {
   // total_wd = total_days - total_we - len(extradates) + non_allocated_extras
-  const totalWeekdayDays = monthDates.filter((date) => !isWeekend(date)).length;
-  const totalPersonnel = personnel.length;
+  const totalWeekdayDays = monthDates.filter((date) => !isWeekend(date)).length
+  const totalPersonnel = personnel.length
 
-  const weekdayAllocation = Math.floor(totalWeekdayDays / totalPersonnel);
+  const weekdayAllocation = Math.floor(totalWeekdayDays / totalPersonnel)
 
-  return weekdayAllocation;
+  return weekdayAllocation
 }
 
-console.log(dutyRoster);
+console.log(dutyRoster)
 
-export default async function handler(
-  _req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(_req: NextApiRequest, res: NextApiResponse) {
   res.send({
     message: monthDates,
-  });
+  })
 }
