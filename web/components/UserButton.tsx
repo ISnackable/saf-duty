@@ -1,20 +1,15 @@
-import { forwardRef } from "react";
-import Link from "next/link";
-import { signOut } from "next-auth/react";
-import { Group, Avatar, Text, Menu, UnstyledButton } from "@mantine/core";
-import {
-  IconChevronRight,
-  IconSettings,
-  IconLogout,
-  IconApps,
-} from "@tabler/icons-react";
-import InstallPWA from "@/components/InstallPWA";
+import { forwardRef } from 'react'
+import Link from 'next/link'
+import { signOut } from 'next-auth/react'
+import { Group, Avatar, Text, Menu, UnstyledButton } from '@mantine/core'
+import { IconChevronRight, IconSettings, IconLogout, IconApps } from '@tabler/icons-react'
+import InstallPWA from '@/components/InstallPWA'
 
-interface UserButtonProps extends React.ComponentPropsWithoutRef<"button"> {
-  image: string;
-  name: string;
-  email: string;
-  icon?: React.ReactNode;
+interface UserButtonProps extends React.ComponentPropsWithoutRef<'button'> {
+  image: string
+  name: string
+  email: string
+  icon?: React.ReactNode
 }
 
 const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
@@ -22,17 +17,14 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
     <UnstyledButton
       ref={ref}
       sx={(theme) => ({
-        display: "block",
-        width: "100%",
+        display: 'block',
+        width: '100%',
         padding: theme.spacing.md,
-        color:
-          theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+        color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
 
-        "&:hover": {
+        '&:hover': {
           backgroundColor:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[8]
-              : theme.colors.gray[0],
+            theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
         },
       })}
       {...others}
@@ -54,20 +46,16 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
       </Group>
     </UnstyledButton>
   )
-);
+)
 
-UserButton.displayName = "UserButton";
+UserButton.displayName = 'UserButton'
 
 export function UserButtonMenu(props: UserButtonProps) {
-  const { image, name, email, icon } = props;
+  const { image, name, email, icon } = props
 
   return (
     <Group position="center">
-      <Menu
-        withArrow
-        width="95%"
-        transitionProps={{ transition: "pop-top-right" }}
-      >
+      <Menu withArrow width="95%" transitionProps={{ transition: 'pop-top-right' }}>
         <Menu.Target>
           <UserButton image={image} name={name} email={email} icon={icon} />
         </Menu.Target>
@@ -96,5 +84,5 @@ export function UserButtonMenu(props: UserButtonProps) {
         </Menu.Dropdown>
       </Menu>
     </Group>
-  );
+  )
 }

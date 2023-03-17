@@ -1,6 +1,6 @@
-import type { GetServerSidePropsContext } from "next";
-import type { User } from "next-auth";
-import { getServerSession } from "next-auth/next";
+import type { GetServerSidePropsContext } from 'next'
+import type { User } from 'next-auth'
+import { getServerSession } from 'next-auth/next'
 import {
   Badge,
   Blockquote,
@@ -13,57 +13,57 @@ import {
   Text,
   ThemeIcon,
   Title,
-} from "@mantine/core";
-import { IconCalendarStats, IconRun } from "@tabler/icons-react";
-import dayjs from "dayjs";
+} from '@mantine/core'
+import { IconCalendarStats, IconRun } from '@tabler/icons-react'
+import dayjs from 'dayjs'
 
-import { authOptions } from "../api/auth/[...nextauth]";
+import { authOptions } from '../api/auth/[...nextauth]'
 
-const ICON_SIZE = 60;
+const ICON_SIZE = 60
 
 const useStyles = createStyles((theme) => ({
   title: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-    color: theme.colorScheme === "dark" ? theme.white : theme.black,
+    color: theme.colorScheme === 'dark' ? theme.white : theme.black,
     lineHeight: 1,
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
   },
 
   titleWrapper: {
-    display: "flex",
-    alignItems: "center",
-    "& > *:not(:last-child)": {
+    display: 'flex',
+    alignItems: 'center',
+    '& > *:not(:last-child)': {
       marginRight: theme.spacing.sm,
     },
   },
 
   card: {
-    position: "relative",
-    overflow: "visible",
+    position: 'relative',
+    overflow: 'visible',
     padding: theme.spacing.xl,
     paddingTop: `calc(${theme.spacing.xl} * 1.5 + ${ICON_SIZE / 3}px)`,
   },
 
   icon: {
-    position: "absolute",
+    position: 'absolute',
     top: -ICON_SIZE / 3,
     left: `calc(50% - ${ICON_SIZE / 2}px)`,
   },
-}));
+}))
 
-ORDPage.title = "ORD Progress";
+ORDPage.title = 'ORD Progress'
 
 export default function ORDPage({ user }: { user: User }) {
-  const { classes } = useStyles();
-  const today = dayjs();
-  const enlist = dayjs(`2022-06-05`);
-  const ord = dayjs(`2024-06-05`);
+  const { classes } = useStyles()
+  const today = dayjs()
+  const enlist = dayjs(`2022-06-05`)
+  const ord = dayjs(`2024-06-05`)
   // Calculate number of days between dates
-  const diff = ord.diff(today, "day");
-  const total = ord.diff(enlist, "day");
-  const current = today.diff(enlist, "day");
+  const diff = ord.diff(today, 'day')
+  const total = ord.diff(enlist, 'day')
+  const current = today.diff(enlist, 'day')
 
-  const ordProgress = Math.round((current / total) * 100);
+  const ordProgress = Math.round((current / total) * 100)
 
   return (
     <Container mt="lg">
@@ -73,10 +73,9 @@ export default function ORDPage({ user }: { user: User }) {
       </div>
 
       <Text color="dimmed" mt="md">
-        ORD is the date when full-time national servicemen (Singaporean Males)
-        complete their 2 years (previously 2.5 years) compulsory stint in the
-        Singapore Army, Navy, Police or Civil Defence Force. Stop looking at
-        this page as it is depressing.
+        ORD is the date when full-time national servicemen (Singaporean Males) complete their 2
+        years (previously 2.5 years) compulsory stint in the Singapore Army, Navy, Police or Civil
+        Defence Force. Stop looking at this page as it is depressing.
       </Text>
       <Divider mt="sm" />
 
@@ -89,9 +88,7 @@ export default function ORDPage({ user }: { user: User }) {
           ORD
         </Text>
 
-        <Blockquote cite={`– ${user?.name || "Some NSF"}`}>
-          ORD loh!!
-        </Blockquote>
+        <Blockquote cite={`– ${user?.name || 'Some NSF'}`}>ORD loh!!</Blockquote>
 
         <Group position="apart" mt="xs">
           <Text size="sm" color="dimmed">
@@ -112,25 +109,25 @@ export default function ORDPage({ user }: { user: User }) {
         </Group>
       </Paper>
     </Container>
-  );
+  )
 }
 
 // Export the `session` prop to use sessions with Server Side Rendering
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions);
+  const session = await getServerSession(context.req, context.res, authOptions)
 
   if (!session) {
     return {
       redirect: {
-        destination: "/login",
+        destination: '/login',
         permanent: false,
       },
-    };
+    }
   }
 
-  const { user } = session;
+  const { user } = session
 
   return {
-    props: { user: JSON.parse(JSON.stringify(user)) },
-  };
+    props: { user },
+  }
 }

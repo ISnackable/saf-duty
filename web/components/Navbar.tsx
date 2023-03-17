@@ -1,16 +1,16 @@
-import Link from "next/link";
-import { useSession } from "next-auth/react";
+import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 import {
   createStyles,
   Navbar,
   UnstyledButton,
-  Badge,
+  // Badge,
   Text,
   Group,
   type NavbarProps,
   NavLink,
   rem,
-} from "@mantine/core";
+} from '@mantine/core'
 import {
   IconUsers,
   IconCheckbox,
@@ -22,10 +22,10 @@ import {
   IconChessKnight,
   IconCloudLock,
   IconCe,
-} from "@tabler/icons-react";
-import { UserButtonMenu } from "@/components/UserButton";
+} from '@tabler/icons-react'
+import { UserButtonMenu } from '@/components/UserButton'
 
-type NavbarMinProps = Omit<NavbarProps, "children">;
+type NavbarMinProps = Omit<NavbarProps, 'children'>
 
 const useStyles = createStyles((theme) => ({
   navbar: {
@@ -37,11 +37,9 @@ const useStyles = createStyles((theme) => ({
     marginRight: `calc(${theme.spacing.md} * -1)`,
     marginBottom: theme.spacing.md,
 
-    "&:not(:last-of-type)": {
+    '&:not(:last-of-type)': {
       borderBottom: `${rem(1)} solid ${
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[4]
-          : theme.colors.gray[3]
+        theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]
       }`,
     },
   },
@@ -53,47 +51,38 @@ const useStyles = createStyles((theme) => ({
   },
 
   mainLink: {
-    display: "flex",
-    alignItems: "center",
-    width: "100%",
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
     fontSize: theme.fontSizes.xs,
     padding: `${rem(8)} ${theme.spacing.xs}`,
     borderRadius: theme.radius.sm,
     fontWeight: 500,
-    color:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[0]
-        : theme.colors.gray[7],
+    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
 
-    "&:hover": {
-      backgroundColor:
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[6]
-          : theme.colors.gray[0],
-      color: theme.colorScheme === "dark" ? theme.white : theme.black,
+    '&:hover': {
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+      color: theme.colorScheme === 'dark' ? theme.white : theme.black,
     },
   },
 
   mainLinkInner: {
-    display: "flex",
-    alignItems: "center",
+    display: 'flex',
+    alignItems: 'center',
     flex: 1,
   },
 
   mainLinkIcon: {
     marginRight: theme.spacing.sm,
-    color:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[2]
-        : theme.colors.gray[6],
+    color: theme.colorScheme === 'dark' ? theme.colors.dark[2] : theme.colors.gray[6],
   },
 
-  mainLinkBadge: {
-    padding: 0,
-    width: rem(20),
-    height: rem(20),
-    pointerEvents: "none",
-  },
+  // mainLinkBadge: {
+  //   padding: 0,
+  //   width: rem(20),
+  //   height: rem(20),
+  //   pointerEvents: 'none',
+  // },
 
   collections: {
     paddingLeft: `calc(${theme.spacing.md} - ${rem(6)})`,
@@ -108,58 +97,52 @@ const useStyles = createStyles((theme) => ({
   },
 
   collectionLink: {
-    display: "block",
+    display: 'block',
     padding: `${rem(8)} ${theme.spacing.xs}`,
-    textDecoration: "none",
+    textDecoration: 'none',
     borderRadius: theme.radius.sm,
     fontSize: theme.fontSizes.xs,
-    color:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[0]
-        : theme.colors.gray[7],
+    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
     lineHeight: 1,
     fontWeight: 500,
 
-    "&:hover": {
-      backgroundColor:
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[6]
-          : theme.colors.gray[0],
-      color: theme.colorScheme === "dark" ? theme.white : theme.black,
+    '&:hover': {
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+      color: theme.colorScheme === 'dark' ? theme.white : theme.black,
     },
   },
-}));
+}))
 
 const links = [
-  { icon: IconCalendarEvent, label: "Duty Roster", link: "/" },
-  { icon: IconEdit, label: "Manage Blockouts", link: "/manage-blockouts" },
+  { icon: IconCalendarEvent, label: 'Duty Roster', link: '/' },
+  { icon: IconEdit, label: 'Manage Blockouts', link: '/manage-blockouts' },
   {
     icon: IconCheckbox,
-    label: "Upcoming Duties",
+    label: 'Upcoming Duties',
     notifications: 4,
-    link: "/upcoming-duties",
+    link: '/upcoming-duties',
   },
-  { icon: IconUsers, label: "Duty Personnels", link: "/duty-personnels" },
-];
+  { icon: IconUsers, label: 'Duty Personnels', link: '/duty-personnels' },
+]
 
 const adminLinks = [
-  { icon: IconApps, label: "Overview", link: "/admin" },
+  { icon: IconApps, label: 'Overview', link: '/admin' },
   {
     icon: IconChessKnight,
-    label: "Generate duty",
-    link: "/admin/generate-duty",
+    label: 'Generate duty',
+    link: '/admin/generate-duty',
   },
-];
+]
 
 const collections = [
-  { emoji: "✨", label: "IPPT", link: "/collections/ippt" },
-  { emoji: "💰", label: "Pay Day", link: "/collections/pay-day" },
-  { emoji: "📅", label: "ORD", link: "/collections/ord" },
-];
+  { emoji: '✨', label: 'IPPT', link: '/collections/ippt' },
+  { emoji: '💰', label: 'Pay Day', link: '/collections/pay-day' },
+  { emoji: '📅', label: 'ORD', link: '/collections/ord' },
+]
 
 export function NavbarMin(props: NavbarMinProps) {
-  const { data: session } = useSession();
-  const { classes } = useStyles();
+  const { data: session } = useSession()
+  const { classes } = useStyles()
 
   const mainLinks = links.map((link) => (
     <UnstyledButton key={link.label} className={classes.mainLink}>
@@ -167,13 +150,13 @@ export function NavbarMin(props: NavbarMinProps) {
         <link.icon size={20} className={classes.mainLinkIcon} stroke={1.5} />
         <span>{link.label}</span>
       </Link>
-      {link.notifications && (
+      {/* {link.notifications && (
         <Badge size="sm" variant="filled" className={classes.mainLinkBadge}>
           {link.notifications}
         </Badge>
-      )}
+      )} */}
     </UnstyledButton>
-  ));
+  ))
 
   const secondaryLinks = adminLinks.map((link) => (
     <NavLink
@@ -186,35 +169,28 @@ export function NavbarMin(props: NavbarMinProps) {
       component={Link}
       label={link.label}
       href={link.link}
-      icon={
-        <link.icon size={22} className={classes.mainLinkIcon} stroke={1.5} />
-      }
+      icon={<link.icon size={22} className={classes.mainLinkIcon} stroke={1.5} />}
     />
-  ));
+  ))
 
   const collectionLinks = collections.map((collection) => (
-    <Link
-      href={collection.link}
-      key={collection.label}
-      className={classes.collectionLink}
-    >
-      <span style={{ marginRight: 9, fontSize: 16 }}>{collection.emoji}</span>{" "}
-      {collection.label}
+    <Link href={collection.link} key={collection.label} className={classes.collectionLink}>
+      <span style={{ marginRight: 9, fontSize: 16 }}>{collection.emoji}</span> {collection.label}
     </Link>
-  ));
+  ))
 
   return (
     <Navbar className={classes.navbar} {...props}>
       <Navbar.Section className={classes.section}>
         <UserButtonMenu
-          image={session?.user?.image || "https://i.imgur.com/fGxgcDF.png"}
-          name={session?.user?.name || "Test Name"}
-          email={session?.user?.email || "Test Email"}
+          image={session?.user?.image || 'https://i.imgur.com/fGxgcDF.png'}
+          name={session?.user?.name || 'Test Name'}
+          email={session?.user?.email || 'Test Email'}
           icon={<IconSelector size="0.9rem" stroke={1.5} />}
         />
       </Navbar.Section>
 
-      {session && session.user?.role === "admin" && (
+      {session && session.user?.role === 'admin' && (
         <Navbar.Section className={classes.section}>
           <Group className={classes.collectionsHeader}>
             <Text size="xs" weight={500} color="dimmed">
@@ -228,13 +204,7 @@ export function NavbarMin(props: NavbarMinProps) {
                   fontSize: theme.fontSizes.xs,
                 },
               })}
-              icon={
-                <IconFingerprint
-                  size={22}
-                  className={classes.mainLinkIcon}
-                  stroke={1.5}
-                />
-              }
+              icon={<IconFingerprint size={22} className={classes.mainLinkIcon} stroke={1.5} />}
               label="Admin Panel"
             >
               {secondaryLinks}
@@ -265,26 +235,18 @@ export function NavbarMin(props: NavbarMinProps) {
         <div className={classes.mainLinks}>
           <UnstyledButton className={classes.mainLink}>
             <Link href="/privacy" className={classes.mainLinkInner}>
-              <IconCloudLock
-                size={20}
-                stroke={1.5}
-                style={{ marginRight: 9, fontSize: 16 }}
-              />
+              <IconCloudLock size={20} stroke={1.5} style={{ marginRight: 9, fontSize: 16 }} />
               Privacy
             </Link>
           </UnstyledButton>
           <UnstyledButton className={classes.mainLink}>
             <Link href="/terms" className={classes.mainLinkInner}>
-              <IconCe
-                size={20}
-                stroke={1.5}
-                style={{ marginRight: 9, fontSize: 16 }}
-              />
+              <IconCe size={20} stroke={1.5} style={{ marginRight: 9, fontSize: 16 }} />
               Terms and Conditions
             </Link>
           </UnstyledButton>
         </div>
       </Navbar.Section>
     </Navbar>
-  );
+  )
 }

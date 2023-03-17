@@ -1,6 +1,6 @@
-import { useState } from "react";
-import type { GetServerSidePropsContext } from "next";
-import type { User } from "next-auth";
+import { useState } from 'react'
+import type { GetServerSidePropsContext } from 'next'
+import type { User } from 'next-auth'
 import {
   Avatar,
   Center,
@@ -15,67 +15,62 @@ import {
   TextInput,
   Title,
   UnstyledButton,
-} from "@mantine/core";
-import { keys } from "@mantine/utils";
-import { getServerSession } from "next-auth/next";
+} from '@mantine/core'
+import { keys } from '@mantine/utils'
+import { getServerSession } from 'next-auth/next'
 import {
   IconChevronDown,
   IconChevronUp,
   IconEdit,
   IconSearch,
   IconSelector,
-} from "@tabler/icons-react";
-import dayjs from "dayjs";
+} from '@tabler/icons-react'
+import dayjs from 'dayjs'
 
-import * as demo from "@/lib/demo.data";
-import { authOptions } from "./api/auth/[...nextauth]";
+import * as demo from '@/lib/demo.data'
+import { authOptions } from './api/auth/[...nextauth]'
 
-type RowData = Pick<User, "name" | "image" | "ord" | "totalDutyDone">;
+type RowData = Pick<User, 'name' | 'image' | 'ord' | 'totalDutyDone'>
 
 interface ThProps {
-  children: React.ReactNode;
-  reversed: boolean;
-  sorted: boolean;
-  onSort(): void;
+  children: React.ReactNode
+  reversed: boolean
+  sorted: boolean
+  onSort(): void
 }
 
 const useStyles = createStyles((theme) => ({
   title: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-    color: theme.colorScheme === "dark" ? theme.white : theme.black,
+    color: theme.colorScheme === 'dark' ? theme.white : theme.black,
     lineHeight: 1,
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
   },
 
   titleWrapper: {
-    display: "flex",
-    alignItems: "center",
-    "& > *:not(:last-child)": {
+    display: 'flex',
+    alignItems: 'center',
+    '& > *:not(:last-child)': {
       marginRight: theme.spacing.sm,
     },
   },
 
   progressBar: {
-    "&:not(:first-of-type)": {
-      borderLeft: `3px solid ${
-        theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white
-      }`,
+    '&:not(:first-of-type)': {
+      borderLeft: `3px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white}`,
     },
   },
 
   th: {
-    padding: "0 !important",
+    padding: '0 !important',
   },
 
   control: {
-    width: "100%",
+    width: '100%',
     padding: `${theme.spacing.xs} ${theme.spacing.md}`,
 
-    "&:hover": {
-      backgroundColor:
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[6]
-          : theme.colors.gray[0],
+    '&:hover': {
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
     },
   },
 
@@ -84,23 +79,23 @@ const useStyles = createStyles((theme) => ({
     height: 21,
     borderRadius: 21,
   },
-}));
+}))
 
 function filterData(data: RowData[], search: string) {
-  const query = search.toLowerCase().trim();
+  const query = search.toLowerCase().trim()
   return data.filter((item) =>
     keys(data[0]).some((key) => String(item[key]).toLowerCase().includes(query))
-  );
+  )
 }
 
 function sortData(
   data: RowData[],
   payload: { sortBy: keyof RowData | null; reversed: boolean; search: string }
 ) {
-  const { sortBy } = payload;
+  const { sortBy } = payload
 
   if (!sortBy) {
-    return filterData(data, payload.search);
+    return filterData(data, payload.search)
   }
 
   return filterData(
@@ -108,26 +103,22 @@ function sortData(
       if (payload.reversed) {
         return String(b[sortBy]).localeCompare(String(a[sortBy]), undefined, {
           numeric: true,
-          sensitivity: "base",
-        });
+          sensitivity: 'base',
+        })
       }
 
       return String(a[sortBy]).localeCompare(String(b[sortBy]), undefined, {
         numeric: true,
-        sensitivity: "base",
-      });
+        sensitivity: 'base',
+      })
     }),
     payload.search
-  );
+  )
 }
 
 function Th({ children, reversed, sorted, onSort }: ThProps) {
-  const { classes } = useStyles();
-  const Icon = sorted
-    ? reversed
-      ? IconChevronUp
-      : IconChevronDown
-    : IconSelector;
+  const { classes } = useStyles()
+  const Icon = sorted ? (reversed ? IconChevronUp : IconChevronDown) : IconSelector
   return (
     <th className={classes.th}>
       <UnstyledButton onClick={onSort} className={classes.control}>
@@ -141,49 +132,47 @@ function Th({ children, reversed, sorted, onSort }: ThProps) {
         </Group>
       </UnstyledButton>
     </th>
-  );
+  )
 }
 
-DutyPersonnelsPage.title = "Duty Personnels";
+DutyPersonnelsPage.title = 'Duty Personnels'
 
 // q: What formula do I use calculate the progress between today and an end date?
 // a: https://stackoverflow.com/a/2627493/104380
 
 export default function DutyPersonnelsPage() {
   // if no data, use demo data
-  const data: RowData[] = demo.users;
+  const data: RowData[] = demo.users
 
-  const { classes } = useStyles();
-  const [search, setSearch] = useState("");
-  const [sortedData, setSortedData] = useState(data);
-  const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
-  const [reverseSortDirection, setReverseSortDirection] = useState(false);
+  const { classes } = useStyles()
+  const [search, setSearch] = useState('')
+  const [sortedData, setSortedData] = useState(data)
+  const [sortBy, setSortBy] = useState<keyof RowData | null>(null)
+  const [reverseSortDirection, setReverseSortDirection] = useState(false)
 
   const setSorting = (field: keyof RowData) => {
-    const reversed = field === sortBy ? !reverseSortDirection : false;
-    setReverseSortDirection(reversed);
-    setSortBy(field);
-    setSortedData(sortData(data, { sortBy: field, reversed, search }));
-  };
+    const reversed = field === sortBy ? !reverseSortDirection : false
+    setReverseSortDirection(reversed)
+    setSortBy(field)
+    setSortedData(sortData(data, { sortBy: field, reversed, search }))
+  }
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.currentTarget;
+    const { value } = event.currentTarget
 
-    setSearch(value);
-    setSortedData(
-      sortData(data, { sortBy, reversed: reverseSortDirection, search: value })
-    );
-  };
+    setSearch(value)
+    setSortedData(sortData(data, { sortBy, reversed: reverseSortDirection, search: value }))
+  }
 
   const rows = sortedData.map((row) => {
-    const today = dayjs();
-    const enlist = dayjs(`2022-06-05`);
-    const ord = dayjs(row.ord);
+    const today = dayjs()
+    const enlist = dayjs(`2022-06-05`)
+    const ord = dayjs(row.ord)
     // Calculate number of days between dates
-    const total = ord.diff(enlist, "day");
-    const current = today.diff(enlist, "day");
+    const total = ord.diff(enlist, 'day')
+    const current = today.diff(enlist, 'day')
 
-    const ordProgress = Math.round((current / total) * 100);
+    const ordProgress = Math.round((current / total) * 100)
 
     return (
       <tr key={row.name}>
@@ -196,17 +185,13 @@ export default function DutyPersonnelsPage() {
           </Group>
         </td>
         <td>{row.totalDutyDone}</td>
-        <td>{dayjs(row.ord).format("DD/MM/YYYY")}</td>
+        <td>{dayjs(row.ord).format('DD/MM/YYYY')}</td>
         <td>
-          <Progress
-            classNames={{ bar: classes.progressBar }}
-            color="teal"
-            value={ordProgress}
-          />
+          <Progress classNames={{ bar: classes.progressBar }} color="teal" value={ordProgress} />
         </td>
       </tr>
-    );
-  });
+    )
+  })
 
   return (
     <Container mt="lg">
@@ -228,39 +213,34 @@ export default function DutyPersonnelsPage() {
           value={search}
           onChange={handleSearchChange}
         />
-        <Table
-          highlightOnHover
-          sx={{ minWidth: 700 }}
-          horizontalSpacing="md"
-          verticalSpacing="sm"
-        >
+        <Table highlightOnHover sx={{ minWidth: 700 }} horizontalSpacing="md" verticalSpacing="sm">
           <thead>
             <tr>
               <Th
-                sorted={sortBy === "name"}
+                sorted={sortBy === 'name'}
                 reversed={reverseSortDirection}
-                onSort={() => setSorting("name")}
+                onSort={() => setSorting('name')}
               >
                 Name
               </Th>
               <Th
-                sorted={sortBy === "totalDutyDone"}
+                sorted={sortBy === 'totalDutyDone'}
                 reversed={reverseSortDirection}
-                onSort={() => setSorting("totalDutyDone")}
+                onSort={() => setSorting('totalDutyDone')}
               >
                 Total duties done
               </Th>
               <Th
-                sorted={sortBy === "ord"}
+                sorted={sortBy === 'ord'}
                 reversed={reverseSortDirection}
-                onSort={() => setSorting("ord")}
+                onSort={() => setSorting('ord')}
               >
                 ORD
               </Th>
               <Th
-                sorted={sortBy === "ord"}
+                sorted={sortBy === 'ord'}
                 reversed={reverseSortDirection}
-                onSort={() => setSorting("ord")}
+                onSort={() => setSorting('ord')}
               >
                 ORD Progress
               </Th>
@@ -282,25 +262,25 @@ export default function DutyPersonnelsPage() {
         </Table>
       </ScrollArea>
     </Container>
-  );
+  )
 }
 
 // Export the `session` prop to use sessions with Server Side Rendering
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions);
+  const session = await getServerSession(context.req, context.res, authOptions)
 
   if (!session) {
     return {
       redirect: {
-        destination: "/login",
+        destination: '/login',
         permanent: false,
       },
-    };
+    }
   }
 
-  const { user } = session;
+  const { user } = session
 
   return {
-    props: { user: JSON.parse(JSON.stringify(user)) },
-  };
+    props: { user },
+  }
 }

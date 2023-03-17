@@ -1,14 +1,14 @@
-import { useRef, useState } from "react";
-import type { GetServerSidePropsContext } from "next";
-import Router from "next/router";
-import Link from "next/link";
-import dynamic from "next/dynamic";
-import { getServerSession } from "next-auth/next";
-import { signIn } from "next-auth/react";
-import type { User } from "next-auth";
-import { signUp } from "next-auth-sanity/client";
-import { useToggle, upperFirst } from "@mantine/hooks";
-import { isEmail, useForm } from "@mantine/form";
+import { useRef, useState } from 'react'
+import type { GetServerSidePropsContext } from 'next'
+import Router from 'next/router'
+import Link from 'next/link'
+import dynamic from 'next/dynamic'
+import { getServerSession } from 'next-auth/next'
+import { signIn } from 'next-auth/react'
+import type { User } from 'next-auth'
+import { signUp } from 'next-auth-sanity/client'
+import { useToggle, upperFirst } from '@mantine/hooks'
+import { isEmail, useForm } from '@mantine/form'
 import {
   TextInput,
   PasswordInput,
@@ -20,218 +20,205 @@ import {
   Container,
   Title,
   Checkbox,
-} from "@mantine/core";
-import { showNotification } from "@mantine/notifications";
-import HCaptcha from "@hcaptcha/react-hcaptcha";
-import {
-  IconAt,
-  IconCheck,
-  IconLock,
-  IconSignature,
-  IconX,
-} from "@tabler/icons-react";
+} from '@mantine/core'
+import { showNotification } from '@mantine/notifications'
+import HCaptcha from '@hcaptcha/react-hcaptcha'
+import { IconAt, IconCheck, IconLock, IconSignature, IconX } from '@tabler/icons-react'
 
-import { authOptions } from "./api/auth/[...nextauth]";
+import { authOptions } from './api/auth/[...nextauth]'
 
-import config from "../../site.config";
+import config from '../../site.config'
 
 const PasswordStrength = dynamic(() =>
-  import("@/components/PasswordRequirement").then((mod) => mod.PasswordStrength)
-);
+  import('@/components/PasswordRequirement').then((mod) => mod.PasswordStrength)
+)
 
 // Function that checks if the password is valid, returns an error message if not
 export function checkPasswordValidation(value: string) {
-  const isWhitespace = /^(?=.*\s)/;
+  const isWhitespace = /^(?=.*\s)/
   if (isWhitespace.test(value)) {
-    return "Password must not contain Whitespaces.";
+    return 'Password must not contain Whitespaces.'
   }
 
-  const isContainsUppercase = /^(?=.*[A-Z])/;
+  const isContainsUppercase = /^(?=.*[A-Z])/
   if (!isContainsUppercase.test(value)) {
-    return "Password must have at least one Uppercase Character.";
+    return 'Password must have at least one Uppercase Character.'
   }
 
-  const isContainsLowercase = /^(?=.*[a-z])/;
+  const isContainsLowercase = /^(?=.*[a-z])/
   if (!isContainsLowercase.test(value)) {
-    return "Password must have at least one Lowercase Character.";
+    return 'Password must have at least one Lowercase Character.'
   }
 
-  const isContainsNumber = /^(?=.*[0-9])/;
+  const isContainsNumber = /^(?=.*[0-9])/
   if (!isContainsNumber.test(value)) {
-    return "Password must contain at least one Digit.";
+    return 'Password must contain at least one Digit.'
   }
 
-  const isContainsSymbol = /^(?=.*[~`!@#$%^&*()--+={}\[\]|\\:;"'<>,.?/_₹])/;
+  const isContainsSymbol = /^(?=.*[~`!@#$%^&*()--+={}\[\]|\\:;"'<>,.?/_₹])/
   if (!isContainsSymbol.test(value)) {
-    return "Password must contain at least one Special Symbol.";
+    return 'Password must contain at least one Special Symbol.'
   }
 
-  const isValidLength = /^.{10,16}$/;
+  const isValidLength = /^.{10,16}$/
   if (!isValidLength.test(value)) {
-    return "Password must be 10-16 Characters Long.";
+    return 'Password must be 10-16 Characters Long.'
   }
-  return null;
+  return null
 }
 
 // Function that checks if the name is valid, returns an error message if not
 export function checkNameValidation(value: string) {
-  const isName = /^[a-zA-Z '.-]*$/;
+  const isName = /^[a-zA-Z '.-]*$/
   if (!isName.test(value)) {
-    return "Name is not valid. Only letters, spaces, apostrophes, dashes and periods are allowed.";
+    return 'Name is not valid. Only letters, spaces, apostrophes, dashes and periods are allowed.'
   }
-  return null;
+  return null
 }
 
 type NextAuthSanityResponse = {
-  error?: string;
-  status?: "error" | "success";
-  message?: string;
-} & User;
+  error?: string
+  status?: 'error' | 'success'
+  message?: string
+} & User
 
-AuthenticationForm.title = "Login";
+AuthenticationForm.title = 'Login'
 
 export default function AuthenticationForm() {
-  const hcaptchaRef = useRef<HCaptcha>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formType, setFormType] = useToggle(["login", "register"]);
+  const hcaptchaRef = useRef<HCaptcha>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [formType, setFormType] = useToggle(['login', 'register'])
 
   const form = useForm({
     initialValues: {
-      name: "demo",
-      email: "demo@email.com",
-      password: "$00pU*2KE1X3",
+      name: 'demo',
+      email: 'demo@email.com',
+      password: '$00pU*2KE1X3',
       termsOfService: true,
     },
 
     validate: {
-      name: (value) => formType === "register" && checkNameValidation(value),
-      email: isEmail("Invalid email"),
-      password: (value) =>
-        formType === "register" && checkPasswordValidation(value),
-      termsOfService: (value) =>
-        value ? null : "You must agree to the terms of service",
+      name: (value) => formType === 'register' && checkNameValidation(value),
+      email: isEmail('Invalid email'),
+      password: (value) => formType === 'register' && checkPasswordValidation(value),
+      termsOfService: (value) => (value ? null : 'You must agree to the terms of service'),
     },
 
-    validateInputOnChange: ["password"],
-  });
+    validateInputOnChange: ['password'],
+  })
 
   const handleSubmit = async () => {
     // Execute the hCaptcha when the form is submitted
-    if (formType === "register" && hcaptchaRef.current !== null) {
-      hcaptchaRef.current.execute();
+    if (formType === 'register' && hcaptchaRef.current !== null) {
+      hcaptchaRef.current.execute()
     }
 
     // If type is login then execute the signIn function
-    else if (formType === "login") {
-      const { email, password } = form.values;
-      setIsSubmitting(true);
+    else if (formType === 'login') {
+      const { email, password } = form.values
+      setIsSubmitting(true)
       try {
-        const response = await signIn("sanity-login", {
+        const response = await signIn('sanity-login', {
           email,
           password,
           redirect: false,
-        });
+        })
 
         if (!response?.ok) {
           showNotification({
-            title: "Error",
-            message: "Invalid credentials",
-            color: "red",
+            title: 'Error',
+            message: 'Invalid credentials',
+            color: 'red',
             icon: <IconX />,
-          });
+          })
         } else {
           showNotification({
-            title: "Success",
-            message: "Successfully logged in",
-            color: "green",
+            title: 'Success',
+            message: 'Successfully logged in',
+            color: 'green',
             icon: <IconCheck />,
-          });
+          })
 
           // If the user is authenticated, redirect to the home page
-          Router.push("/");
+          Router.push('/')
         }
       } catch (error) {
         showNotification({
-          title: "Error",
-          message: "Something went wrong",
-          color: "red",
+          title: 'Error',
+          message: 'Something went wrong',
+          color: 'red',
           icon: <IconX />,
-        });
+        })
       } finally {
         setTimeout(() => {
-          setIsSubmitting(false);
-        }, 1500);
+          setIsSubmitting(false)
+        }, 1500)
       }
     }
-  };
+  }
 
   const onHCaptchaChange = async (captchaCode: string | null | undefined) => {
-    const { name, email, password } = form.values;
+    const { name, email, password } = form.values
     // If the hCaptcha code is null or undefined indicating that
     // the hCaptcha was expired then return early
-    if (
-      !captchaCode ||
-      (formType === "register" && !name) ||
-      !email ||
-      !password
-    ) {
-      return;
+    if (!captchaCode || (formType === 'register' && !name) || !email || !password) {
+      return
     }
 
-    setIsSubmitting(true);
+    setIsSubmitting(true)
 
     try {
-      if (formType === "register") {
+      if (formType === 'register') {
         const response: NextAuthSanityResponse = await signUp({
           email,
           password,
           name,
           captcha: captchaCode,
-        });
+        })
 
-        if (response?.status === "error") {
+        if (response?.status === 'error') {
           showNotification({
-            title: "Error",
-            message: response?.message || "Something went wrong",
-            color: "red",
+            title: 'Error',
+            message: response?.message || 'Something went wrong',
+            color: 'red',
             icon: <IconX />,
-          });
+          })
         } else if (response?.error) {
           showNotification({
-            title: "Error",
-            message: response?.error || "Something went wrong",
-            color: "red",
+            title: 'Error',
+            message: response?.error || 'Something went wrong',
+            color: 'red',
             icon: <IconX />,
-          });
+          })
         } else {
           showNotification({
-            title: "Success",
-            message: "Account has been created",
-            color: "teal",
+            title: 'Success',
+            message: 'Account has been created',
+            color: 'teal',
             icon: <IconCheck />,
-          });
+          })
 
-          await signIn("sanity-login", {
+          await signIn('sanity-login', {
             email,
             password,
             redirect: false,
-          });
+          })
 
           // If the user is authenticated, redirect to the home page
-          Router.push("/");
+          Router.push('/')
         }
       }
     } catch (error) {
       showNotification({
-        title: "Error",
-        message: "Something went wrong",
-        color: "red",
+        title: 'Error',
+        message: 'Something went wrong',
+        color: 'red',
         icon: <IconX />,
-      });
+      })
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   return (
     <Container size={420} my={80}>
@@ -242,20 +229,20 @@ export default function AuthenticationForm() {
           fontWeight: 900,
         })}
       >
-        Welcome back to {config.title || ""}!
+        Welcome back to {config.title || ''}!
       </Title>
 
       <Paper radius="md" p="xl" mt={30} withBorder>
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack>
-            {formType === "register" && (
+            {formType === 'register' && (
               <TextInput
                 data-autofocus
                 required
                 label="Name"
                 placeholder="Your name"
                 icon={<IconSignature size={16} stroke={1.5} />}
-                {...form.getInputProps("name")}
+                {...form.getInputProps('name')}
               />
             )}
 
@@ -264,16 +251,16 @@ export default function AuthenticationForm() {
               label="Email"
               placeholder="your@email.com"
               icon={<IconAt size={16} stroke={1.5} />}
-              {...form.getInputProps("email")}
+              {...form.getInputProps('email')}
             />
 
-            {formType === "register" ? (
+            {formType === 'register' ? (
               <PasswordStrength
                 required
                 label="Password"
                 placeholder="Your password"
                 icon={<IconLock size={16} stroke={1.5} />}
-                {...form.getInputProps("password")}
+                {...form.getInputProps('password')}
               />
             ) : (
               <PasswordInput
@@ -281,15 +268,15 @@ export default function AuthenticationForm() {
                 label="Password"
                 placeholder="Your password"
                 icon={<IconLock size={16} stroke={1.5} />}
-                {...form.getInputProps("password")}
+                {...form.getInputProps('password')}
               />
             )}
 
-            {formType === "register" && (
+            {formType === 'register' && (
               <Checkbox
                 label={
                   <>
-                    I accept{" "}
+                    I accept{' '}
                     <Anchor
                       component={Link}
                       href="/terms"
@@ -300,7 +287,7 @@ export default function AuthenticationForm() {
                     </Anchor>
                   </>
                 }
-                {...form.getInputProps("termsOfService", { type: "checkbox" })}
+                {...form.getInputProps('termsOfService', { type: 'checkbox' })}
               />
             )}
           </Stack>
@@ -313,8 +300,8 @@ export default function AuthenticationForm() {
               onClick={() => setFormType()}
               size="xs"
             >
-              {formType === "register"
-                ? "Already have an account? Login"
+              {formType === 'register'
+                ? 'Already have an account? Login'
                 : "Don't have an account? Register"}
             </Anchor>
             <Button type="submit" disabled={isSubmitting}>
@@ -326,36 +313,36 @@ export default function AuthenticationForm() {
             size="invisible"
             ref={hcaptchaRef}
             sitekey={
-              process.env.NODE_ENV === "development"
-                ? "10000000-ffff-ffff-ffff-000000000001"
-                : process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ""
+              process.env.NODE_ENV === 'development'
+                ? '10000000-ffff-ffff-ffff-000000000001'
+                : process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ''
             }
             onVerify={onHCaptchaChange}
             onExpire={() => onHCaptchaChange(null)}
             onError={(err) => {
-              onHCaptchaChange(null);
+              onHCaptchaChange(null)
               showNotification({
-                title: "Error",
-                message: "Cannot verify captcha",
-              });
-              console.error(err);
+                title: 'Error',
+                message: 'Cannot verify captcha',
+              })
+              console.error(err)
             }}
           />
         </form>
       </Paper>
     </Container>
-  );
+  )
 }
 
 // Export the `session` prop to use sessions with Server Side Rendering
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions);
+  const session = await getServerSession(context.req, context.res, authOptions)
 
   if (session) {
-    return { redirect: { destination: "/" } };
+    return { redirect: { destination: '/' } }
   }
 
   return {
     props: {},
-  };
+  }
 }
