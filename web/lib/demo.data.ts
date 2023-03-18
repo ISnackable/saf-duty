@@ -2,6 +2,7 @@
 
 import type { User } from 'next-auth'
 import { Role } from '@/nextauth.d'
+import { Calendar } from './sanity.queries'
 
 export const title = 'Blog.'
 
@@ -88,7 +89,7 @@ export const users: User[] = [
     name: 'Wang Li',
     role: Role.user,
     image:
-      'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+      'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     ord: new Date(2024, 9, 29),
     totalDutyDone: 0,
     weekdayPoints: -1,
@@ -101,7 +102,7 @@ export const users: User[] = [
     name: 'Darryl Koh',
     role: Role.user,
     image:
-      'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+      'https://images.unsplash.com/photo-1531727991582-cfd25ce79613?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
     ord: new Date(2024, 2, 13),
     totalDutyDone: 0,
     weekdayPoints: 1,
@@ -131,7 +132,7 @@ export const users: User[] = [
     name: 'Elliot Tan',
     role: Role.user,
     image:
-      'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+      'https://images.unsplash.com/photo-1614587185092-af24ed71c6e4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80',
     ord: new Date(2024, 6, 23),
     totalDutyDone: 0,
     weekdayPoints: 0,
@@ -152,6 +153,169 @@ export const users: User[] = [
       new Date(2024, 2, 12),
       new Date(2024, 2, 18),
       new Date(2024, 2, 25),
+    ],
+  },
+]
+
+export const calendar: Calendar[] = [
+  {
+    date: new Date('2023-03-01'),
+    roster: [
+      {
+        date: new Date('2023-03-01'),
+        personnel: 'Jun Kai',
+        standby: 'Jun Jie',
+      },
+      {
+        date: new Date('2023-03-02'),
+        personnel: 'Zhi Hao',
+        standby: 'Darryl Koh',
+      },
+      {
+        date: new Date('2023-03-03'),
+        personnel: 'Jun Jie',
+        standby: 'Jia Hao',
+      },
+      {
+        date: new Date('2023-03-04'),
+        personnel: 'Elliot Tan',
+        standby: 'Wang Li',
+      },
+      {
+        date: new Date('2023-03-05'),
+        personnel: 'Jun Kai',
+        standby: 'Jia Hui',
+      },
+      {
+        date: new Date('2023-03-06'),
+        personnel: 'Darryl Koh',
+        standby: 'Zhi Hao',
+      },
+      {
+        date: new Date('2023-03-07'),
+        personnel: 'Wang Li',
+        standby: 'Jun Kai',
+      },
+      {
+        date: new Date('2023-03-08'),
+        personnel: 'Jia Hui',
+        standby: 'Elliot Tan',
+      },
+      {
+        date: new Date('2023-03-09'),
+        personnel: 'Zhi Hao',
+        standby: 'Jia Hao',
+      },
+      {
+        date: new Date('2023-03-10'),
+        personnel: 'Elliot Tan',
+        standby: 'Jun Kai',
+      },
+      {
+        date: new Date('2023-03-11'),
+        personnel: 'Darryl Koh',
+        standby: 'Jun Jie',
+      },
+      {
+        date: new Date('2023-03-12'),
+        personnel: 'Wang Li',
+        standby: 'Zhi Hao',
+      },
+      {
+        date: new Date('2023-03-13'),
+        personnel: 'Jun Jie',
+        standby: 'Elliot Tan',
+      },
+      {
+        date: new Date('2023-03-14'),
+        personnel: 'Jun Kai',
+        standby: 'Wang Li',
+      },
+      {
+        date: new Date('2023-03-15'),
+        personnel: 'Darryl Koh',
+        standby: 'Jia Hui',
+      },
+      {
+        date: new Date('2023-03-16'),
+        personnel: 'Elliot Tan',
+        standby: 'Wang Li',
+      },
+      {
+        date: new Date('2023-03-17'),
+        personnel: 'Jia Hui',
+        standby: 'Darryl Koh',
+      },
+      {
+        date: new Date('2023-03-18'),
+        personnel: 'Zhi Hao',
+        standby: 'Elliot Tan',
+      },
+      {
+        date: new Date('2023-03-19'),
+        personnel: 'Jia Hui',
+        standby: 'Jun Kai',
+      },
+      {
+        date: new Date('2023-03-20'),
+        personnel: 'Wang Li',
+        standby: 'Jia Hao',
+      },
+      {
+        date: new Date('2023-03-21'),
+        personnel: 'Zhi Hao',
+        standby: 'Darryl Koh',
+      },
+      {
+        date: new Date('2023-03-22'),
+        personnel: 'Jia Hao',
+        standby: 'Jia Hui',
+      },
+      {
+        date: new Date('2023-03-23'),
+        personnel: 'Darryl Koh',
+        standby: 'Zhi Hao',
+      },
+      {
+        date: new Date('2023-03-24'),
+        personnel: 'Wang Li',
+        standby: 'Jun Jie',
+      },
+      {
+        date: new Date('2023-03-25'),
+        personnel: 'Jia Hao',
+        standby: 'Darryl Koh',
+      },
+      {
+        date: new Date('2023-03-26'),
+        personnel: 'Jun Jie',
+        standby: 'Jia Hui',
+      },
+      {
+        date: new Date('2023-03-27'),
+        personnel: 'Jia Hao',
+        standby: 'Zhi Hao',
+      },
+      {
+        date: new Date('2023-03-28'),
+        personnel: 'Jun Jie',
+        standby: 'Wang Li',
+      },
+      {
+        date: new Date('2023-03-29'),
+        personnel: 'Jun Kai',
+        standby: 'Elliot Tan',
+      },
+      {
+        date: new Date('2023-03-30'),
+        personnel: 'Jia Hui',
+        standby: 'Jia Hao',
+      },
+      {
+        date: new Date('2023-03-31'),
+        personnel: 'Elliot Tan',
+        standby: 'Jun Jie',
+      },
     ],
   },
 ]

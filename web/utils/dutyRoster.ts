@@ -7,6 +7,7 @@
  */
 import type { User } from 'next-auth'
 import dayjs from 'dayjs'
+import { type Roster } from '@/lib/sanity.queries'
 // import * as tz from "dayjs/plugin/timezone";
 
 export const MONTH_NAMES = [
@@ -42,7 +43,7 @@ export interface Personnel extends User {
   EX_DONE: number // Extras Cleared,
 }
 
-export interface DutyDate {
+export interface DutyDate extends Omit<Roster, 'personnel' | 'standby'> {
   date: Date
   isExtra: boolean
   isWeekend: boolean
@@ -80,7 +81,7 @@ export function getMonthCount(month: MonthName) {
  * @returns true if the date is a Sunday or Saturday, false otherwise
  * @example isWeekend(new Date(2021, 0, 1))
  */
-function isWeekend(date: Date) {
+export function isWeekend(date: Date) {
   return date.getDay() === 0 || date.getDay() === 6
 }
 
@@ -95,6 +96,25 @@ function isDateInArray(array: Date[], value: Date) {
   return !!array.find((d) => {
     return d.getTime() == value.getTime()
   })
+}
+
+/**
+ * The method returns true if two dates are the same
+ * @param date1
+ * @param date2
+ * @returns true if the dates are the same, false otherwise
+ * @example isSameDate(new Date(2021, 0, 1), new Date(2021, 0, 1))
+ */
+export function isSameDate(date1: Date, date2: Date) {
+  console.log(date1.getFullYear() === date2.getFullYear())
+  console.log(date1.getDate() === date2.getDate())
+  console.log(date1.getMonth() === date2.getMonth())
+
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getDate() === date2.getDate() &&
+    date1.getMonth() === date2.getMonth()
+  )
 }
 
 /**

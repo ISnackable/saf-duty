@@ -1,12 +1,13 @@
+import { useState } from 'react'
 import type { GetServerSidePropsContext } from 'next'
-import type { User } from 'next-auth'
 import { Container, createStyles, Divider, Text, Title, Flex } from '@mantine/core'
-import { Calendar } from '@mantine/dates'
+import { Calendar, isSameMonth } from '@mantine/dates'
 import { getServerSession } from 'next-auth/next'
 import { IconCalendarEvent } from '@tabler/icons-react'
 
 import { authOptions } from './api/auth/[...nextauth]'
-import { getAllUsers } from '@/lib/sanity.client'
+import { getAllCalendar } from '@/lib/sanity.client'
+import { type Calendar as CalendarType } from '@/lib/sanity.queries'
 import * as demo from '@/lib/demo.data'
 import config from '@/../site.config'
 
@@ -38,10 +39,11 @@ const useStyles = createStyles((theme) => {
 
 IndexPage.title = 'Duty Roster'
 
-export default function IndexPage({ users }: { users: User[] }) {
+export default function IndexPage({ calendar }: { calendar: CalendarType[] }) {
   const { classes } = useStyles()
 
-  console.dir(users)
+  const [month, setMonth] = useState(new Date())
+  const dutyDates = calendar.find((cal) => isSameMonth(cal.date, month))
 
   return (
     <Container mt="lg">
@@ -62,6 +64,8 @@ export default function IndexPage({ users }: { users: User[] }) {
         // fullWidth
         hideOutsideDates
         size="xl"
+        date={month}
+        onDateChange={setMonth}
         styles={(theme) => ({
           calendar: {
             maxWidth: '100%',
@@ -124,12 +128,20 @@ export default function IndexPage({ users }: { users: User[] }) {
         renderDay={(date) => {
           const day = date.getDate()
 
+          // return day if not same month
+          if (!isSameMonth(date, month)) {
+            return day
+          }
+
           return (
             <Flex mih={50} justify="center" align="center" direction="column">
               <div>{day}</div>
-              <Text size="xs" align="center">
-                WX (JW)
-              </Text>
+              {dutyDates && (
+                <Text size="xs" align="center">
+                  {dutyDates?.roster?.[day - 1]?.personnel} ({dutyDates?.roster?.[day - 1]?.standby}
+                  )
+                </Text>
+              )}
             </Flex>
           )
         }}
@@ -150,12 +162,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
   }
 
-  let users = demo.users
+  let calendar: CalendarType[] = demo.calendar
   if (session?.user?.id !== config.demoUserId) {
-    users = await getAllUsers()
+    calendar = await getAllCalendar()
   }
 
   return {
-    props: { users },
+    props: { calendar },
   }
 }

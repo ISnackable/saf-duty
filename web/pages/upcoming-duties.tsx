@@ -74,7 +74,7 @@ export default function UpcomingDutiesPage({ upcomingDuties }: { upcomingDuties:
       <Divider mt="sm" />
 
       <Grid gutter="xl" mt="xl">
-        <Grid.Col span="auto">
+        <Grid.Col md={12} lg={upcomingDuties.length > 0 ? 8 : 12}>
           <div style={{ position: 'relative', height: '40vh' }}>
             <Image
               priority
@@ -85,7 +85,7 @@ export default function UpcomingDutiesPage({ upcomingDuties }: { upcomingDuties:
             />
           </div>
         </Grid.Col>
-        <Grid.Col span={upcomingDuties.length > 0 ? 4 : 12}>
+        <Grid.Col span={upcomingDuties.length > 0 ? 'auto' : 12}>
           {upcomingDuties.length > 0 ? (
             <Timeline active={indexOfUpcomingDate} bulletSize={24} lineWidth={2} mt="xl">
               {upcomingDuties.map((date) => {

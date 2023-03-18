@@ -97,6 +97,13 @@ export default defineType({
       validation: (Rule) => Rule.integer().positive(),
     }),
     defineField({
+      name: 'totalDutyDone',
+      title: 'No. of Duties Done',
+      type: 'number',
+      initialValue: 0,
+      validation: (Rule) => Rule.integer().positive(),
+    }),
+    defineField({
       name: 'blockouts',
       title: 'Blockout Dates',
       type: 'array',

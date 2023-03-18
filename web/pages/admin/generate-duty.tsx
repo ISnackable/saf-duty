@@ -18,7 +18,8 @@ import {
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Calendar, MonthPickerInput, DatePickerInput, isSameMonth } from '@mantine/dates'
-import { showNotification } from '@mantine/notifications'
+import { notifications, showNotification } from '@mantine/notifications'
+import { modals } from '@mantine/modals'
 import {
   IconAlertCircle,
   IconCheck,
@@ -29,9 +30,10 @@ import {
 
 import * as demo from '@/lib/demo.data'
 import config from '@/../site.config'
-import { createDutyRoster, DutyDate, Personnel } from '@/utils/dutyRoster'
+import { createDutyRoster, DutyDate, isWeekend, Personnel } from '@/utils/dutyRoster'
 import { authOptions } from '../api/auth/[...nextauth]'
-import { getAllUsers } from '@/lib/sanity.client'
+import { getAllCalendar, getAllUsers } from '@/lib/sanity.client'
+import { type Calendar as CalendarType } from '@/lib/sanity.queries'
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -72,8 +74,16 @@ const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
 SelectItem.displayName = 'SelectItem'
 GenerateDutyPage.title = 'Generate Duty'
 
-export default function GenerateDutyPage({ users }: { users: User[] }) {
-  // if no data, use demo data
+const today = new Date()
+const firstDay = new Date(today.getFullYear(), today.getMonth(), 1)
+
+export default function GenerateDutyPage({
+  users,
+  calendar,
+}: {
+  users: User[]
+  calendar: CalendarType[]
+}) {
   const data = users.map((user) => ({
     label: user.name || 'Default',
     value: user.name || 'default',
@@ -81,16 +91,19 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
   }))
   const { classes } = useStyles()
 
-  const [value, setValue] = useState<string[]>([])
   const [dutyRoster, setDutyRoster] = useState<DutyDate[]>([])
   const [dutyPersonnelState, setDutyPersonnelState] = useState<Personnel[]>([])
-  const [modalDateValue, setModalDateValue] = useState<Date>(new Date())
+
+  const [modalDateValue, setModalDateValue] = useState<Date>(firstDay)
   const [modalDPValue, setModalDPValue] = useState<string | null | undefined>(null)
   const [modalSBValue, setModalSBValue] = useState<string | null | undefined>(null)
-  const [opened, { open, close }] = useDisclosure(false)
+  const [multiSelectValue, setMultiSelectValue] = useState<string[]>([])
 
   const [extraDate, setExtraDate] = useState<Date[]>([])
-  const [month, onMonthChange] = useState<Date | null>(new Date())
+  const [month, onMonthChange] = useState<Date | null>(firstDay)
+
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [opened, { open, close }] = useDisclosure(false)
 
   useEffect(() => {
     if (modalDPValue !== null && modalSBValue !== null) {
@@ -98,18 +111,94 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
     }
   }, [open, modalDPValue, modalSBValue])
 
-  // const timeZone = "Asia/Singapore";
-
   // Make sure extraDates is cleared whenever new month is selected
   useEffect(() => {
-    if (month) {
+    // if there is a calendar for the selected month, set the duty roster
+    const dutyDates = calendar.find((cal) => isSameMonth(cal.date, month || firstDay))
+    if (dutyDates) {
+      setDutyRoster(dutyDates.roster as unknown as DutyDate[])
+
+      const dutyPersonnel = users.map((user) => {
+        const WD_DONE = dutyDates.roster.filter(
+          (date) => !isWeekend(date.date) && date.personnel === user.name
+        ).length
+        const WE_DONE = dutyDates.roster.filter(
+          (date) => isWeekend(date.date) && date.personnel === user.name
+        ).length
+
+        return {
+          ...user,
+          WD_DONE,
+          WE_DONE,
+        }
+      })
+
+      setDutyPersonnelState(dutyPersonnel as unknown as Personnel[])
+      setMultiSelectValue(Array.from(new Set(dutyDates.roster.map((date) => date.personnel))))
+    } else if (month) {
       setDutyRoster([])
       setExtraDate([])
+      setDutyPersonnelState([])
     }
-  }, [month])
+  }, [calendar, month, users])
+
+  //sent blockout date to back end
+  const handleSave = async () => {
+    setIsSubmitting(true)
+
+    const dutyDates = [...dutyRoster].map((date) => ({
+      date: date.date.toLocaleDateString('sv-SE'),
+      personnel: date.personnel,
+      standby: date.standby,
+    }))
+    const dutyPersonnel = [...dutyPersonnelState].map((personnel) => ({
+      id: personnel.id,
+      name: personnel.name,
+      weekdayPoints: personnel.weekdayPoints,
+      weekendPoints: personnel.weekendPoints,
+      extra: personnel.extra,
+    }))
+
+    try {
+      const res = await fetch('/api/sanity/createCalendar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          dutyDates,
+          dutyPersonnel,
+        }),
+        cache: 'no-cache',
+      })
+      const data = await res.json()
+
+      if (data?.status === 'error') {
+        showNotification({
+          title: 'Error',
+          message: data?.message || 'Cannot update block out dates, something went wrong',
+          color: 'red',
+          icon: <IconX />,
+        })
+      } else {
+        showNotification({
+          title: 'Success',
+          message: 'Blockout updated successfully',
+          color: 'green',
+          icon: <IconCheck />,
+        })
+      }
+    } catch (error) {
+      console.error(error)
+    }
+
+    setIsSubmitting(false)
+  }
 
   const handleClick = () => {
-    const personnel = [...users].filter((user) => value.includes(user.name || ''))
+    const personnel = [...users].filter((user) => multiSelectValue.includes(user.name || ''))
+
+    notifications.clean()
 
     if (personnel.length > 3 && month) {
       try {
@@ -181,16 +270,67 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
             Cancel
           </Button>
           <Button
+            onClick={() => {
+              const newDutyRoster = [...dutyRoster]
+              const newDutyPersonnel = [...dutyPersonnelState]
+              const index = newDutyRoster.findIndex(
+                (date) => date.date.setHours(0, 0, 0) === modalDateValue.setHours(0, 0, 0)
+              )
 
-          // onClick={() => {
-          //   const newDutyPersonnel = [...dutyPersonnelState]
-          //   const index = newDutyPersonnel.findIndex(
-          //     (personnel) => personnel.name === modalDPValue
-          //   )
-          //   newDutyPersonnel[index].standIn = modalSBValue
-          //   setDutyPersonnelState(newDutyPersonnel)
-          //   close()
-          // }}
+              const newPersonnel = newDutyPersonnel.find(
+                (personnel) => personnel.name === modalDPValue
+              )
+              const oldPersonnel = newDutyPersonnel.find(
+                (personnel) => personnel.name === newDutyRoster[index]?.personnel
+              )
+
+              if (index !== -1 && newPersonnel && oldPersonnel) {
+                newDutyRoster[index].personnel = modalDPValue || ''
+                newDutyRoster[index].standby = modalSBValue || ''
+
+                if (isWeekend(modalDateValue)) {
+                  newPersonnel.WE_DONE += 1
+                  oldPersonnel.WE_DONE -= 1
+                  newPersonnel.weekendPoints += 1
+                  oldPersonnel.weekendPoints -= 1
+                } else {
+                  newPersonnel.WD_DONE += 1
+                  oldPersonnel.WD_DONE -= 1
+                  newPersonnel.weekdayPoints += 1
+                  oldPersonnel.weekdayPoints -= 1
+                }
+
+                setDutyRoster(newDutyRoster)
+                setDutyPersonnelState(newDutyPersonnel)
+
+                showNotification({
+                  title: 'Success',
+                  message: `Successfully updated ${modalDateValue?.toLocaleDateString()}`,
+                  color: 'green',
+                  icon: <IconCheck />,
+                })
+
+                // Check if the duty personnel/stand in has more than 2 consecutive days of duty/standby
+                if (
+                  (newDutyRoster[index + 1] &&
+                    newDutyRoster[index + 1].personnel === modalDPValue) ||
+                  newDutyRoster[index + 1].standby === modalSBValue ||
+                  (newDutyRoster[index - 1] &&
+                    newDutyRoster[index - 1].personnel === modalDPValue) ||
+                  newDutyRoster[index - 1].standby === modalSBValue
+                ) {
+                  showNotification({
+                    title: 'Warning',
+                    message: `The duty personnel/stand in has more than 2 consecutive days of duty/standby`,
+                    color: 'yellow',
+                    autoClose: 2000,
+                    icon: <IconAlertCircle />,
+                  })
+                }
+              }
+
+              close()
+            }}
           >
             Save
           </Button>
@@ -236,8 +376,8 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
 
         <MultiSelect
           mt="sm"
-          value={value}
-          onChange={setValue}
+          value={multiSelectValue}
+          onChange={setMultiSelectValue}
           data={data}
           label="Choose personnel doing duties"
           placeholder="Pick all you like"
@@ -337,9 +477,43 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
           >
             Generate
           </Button>
+          <Button
+            mt="xl"
+            onClick={() => {
+              const dutyDates = calendar.find((cal) => isSameMonth(cal.date, month || firstDay))
+
+              if (dutyDates) {
+                modals.openConfirmModal({
+                  title: 'Are you sure?',
+                  centered: true,
+                  children: (
+                    <Text size="sm">
+                      There are already duty generated for{' '}
+                      {month?.toLocaleString('default', { month: 'long', year: 'numeric' })}. Are
+                      you sure you want to overwrite it? This action cannot be undone.
+                    </Text>
+                  ),
+                  labels: { confirm: 'Confirm', cancel: 'Cancel' },
+                  onConfirm: () => handleSave(),
+                })
+              } else if (dutyRoster.length > 0) {
+                handleSave()
+              } else {
+                showNotification({
+                  title: 'Error',
+                  message: 'Please generate duty first',
+                  color: 'red',
+                  icon: <IconX />,
+                })
+              }
+            }}
+            loading={isSubmitting}
+          >
+            Save
+          </Button>
         </Group>
 
-        {value.length > 0 && (
+        {multiSelectValue.length > 0 && (
           <Table mt="xl" withBorder withColumnBorders>
             <thead>
               <tr>
@@ -347,10 +521,11 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
                 <th>Weekday Points</th>
                 <th>Weekend Points</th>
                 <th>Extras</th>
+                <th>No. of duties</th>
               </tr>
             </thead>
             <tbody>
-              {value.map((person) => {
+              {multiSelectValue.map((person) => {
                 const user = users.find((user) => user?.name === person)
                 const dutyPersonnel = dutyPersonnelState?.find((user) => user?.name === person)
 
@@ -364,6 +539,11 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
                       dutyPersonnel ? ' ⟶ ' + dutyPersonnel.weekendPoints : ''
                     }`}</td>
                     <td>{`${user?.extra} ${dutyPersonnel ? ' ⟶ ' + dutyPersonnel.extra : ''}`}</td>
+                    <td>{`${dutyPersonnel ? dutyPersonnel.WD_DONE : 0} weekday, ${
+                      dutyPersonnel ? dutyPersonnel.WE_DONE : 0
+                    } weekend --- Total: (${
+                      dutyPersonnel ? dutyPersonnel.WD_DONE + dutyPersonnel.WE_DONE : 0
+                    })`}</td>
                   </tr>
                 )
               })}
@@ -399,12 +579,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
   }
 
+  let calendar: CalendarType[] = demo.calendar
   let users = demo.users
   if (session?.user?.id !== config.demoUserId) {
     users = await getAllUsers()
+    calendar = await getAllCalendar()
   }
 
   return {
-    props: { users },
+    props: { users, calendar },
   }
 }
