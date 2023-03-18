@@ -10,6 +10,7 @@ import {
   type UpcomingDuties,
   type Calendar,
   getAllCalendarQuery,
+  getUserBlockoutsQuery,
 } from './sanity.queries'
 
 export const client = createClient({
@@ -40,6 +41,12 @@ export async function getUserById(id: string): Promise<User> {
 export async function getUserUpcomingDuties(id?: string): Promise<UpcomingDuties> {
   if (!id) return []
   const result = await client.fetch(getUserUpcomingDutiesQuery, { id })
+  return result
+}
+
+export async function getUserBlockouts(id?: string): Promise<string[]> {
+  if (!id) return []
+  const result = await clientWithToken.fetch(getUserBlockoutsQuery, { id })
   return result
 }
 

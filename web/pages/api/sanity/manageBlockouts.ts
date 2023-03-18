@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
-import { use } from 'next-api-route-middleware'
+import { Middleware, use } from 'next-api-route-middleware'
 
 import { clientWithToken } from '@/lib/sanity.client'
 import { authOptions } from '../auth/[...nextauth]'
@@ -33,8 +33,7 @@ async function updateBlockoutHandler(req: NextApiRequest, res: NextApiResponse) 
     })
   }
 
-  const { blockoutDates }: { blockoutDates: Date[] } = req.body
-  blockoutDates.forEach((date) => date.toLocaleDateString())
+  const { blockoutDates }: { blockoutDates: string[] } = req.body
 
   try {
     await clientWithToken.patch(userId).set({ blockouts: blockoutDates }).commit()
@@ -46,5 +45,20 @@ async function updateBlockoutHandler(req: NextApiRequest, res: NextApiResponse) 
   }
 }
 
-// TODO: Add validation for blockoutDates
-export default use(rateLimitMiddleware, updateBlockoutHandler)
+const validateFields: Middleware = async (req, res, next) => {
+  const { blockoutDates }: { blockoutDates: string[] } = req.body
+
+  // check if blockoutDates is an array and is in yyyy-mm-dd format
+  const dateRegExp = /^\d{4}-\d{2}-\d{2}$/
+
+  if (blockoutDates.length > 0 && blockoutDates.every((date) => dateRegExp.test(date))) {
+    return await next()
+  } else {
+    return res.status(422).json({
+      status: 'error',
+      message: 'Unproccesable request, fields are missing or invalid',
+    })
+  }
+}
+
+export default use(rateLimitMiddleware, validateFields, updateBlockoutHandler)

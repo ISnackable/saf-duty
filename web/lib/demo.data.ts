@@ -4,6 +4,8 @@ import type { User } from 'next-auth'
 import { Role } from '@/nextauth.d'
 import { Calendar } from './sanity.queries'
 
+const todayMonth = new Date().getMonth() + 1
+
 export const title = 'Blog.'
 
 export const description = 'Example description.'
@@ -157,162 +159,176 @@ export const users: User[] = [
   },
 ]
 
+export const blockouts = [
+  `2023-${todayMonth}-15`,
+  `2023-${todayMonth}-13`,
+  `2023-${todayMonth}-19`,
+  `2023-${todayMonth}-04`,
+]
+
+export const upcomingDuties = [
+  `2023-${todayMonth}-05`,
+  `2023-${todayMonth}-12`,
+  `2023-${todayMonth}-17`,
+  `2023-${todayMonth}-23`,
+]
+
 export const calendar: Calendar[] = [
   {
-    date: new Date('2023-03-01'),
+    date: new Date(`2023-${todayMonth}-01`),
     roster: [
       {
-        date: new Date('2023-03-01'),
+        date: new Date(`2023-${todayMonth}-01`),
         personnel: 'Jun Kai',
         standby: 'Jun Jie',
       },
       {
-        date: new Date('2023-03-02'),
+        date: new Date(`2023-${todayMonth}-02`),
         personnel: 'Zhi Hao',
         standby: 'Darryl Koh',
       },
       {
-        date: new Date('2023-03-03'),
+        date: new Date(`2023-${todayMonth}-03`),
         personnel: 'Jun Jie',
         standby: 'Jia Hao',
       },
       {
-        date: new Date('2023-03-04'),
+        date: new Date(`2023-${todayMonth}-04`),
         personnel: 'Elliot Tan',
         standby: 'Wang Li',
       },
       {
-        date: new Date('2023-03-05'),
+        date: new Date(`2023-${todayMonth}-05`),
         personnel: 'Jun Kai',
         standby: 'Jia Hui',
       },
       {
-        date: new Date('2023-03-06'),
+        date: new Date(`2023-${todayMonth}-06`),
         personnel: 'Darryl Koh',
         standby: 'Zhi Hao',
       },
       {
-        date: new Date('2023-03-07'),
+        date: new Date(`2023-${todayMonth}-07`),
         personnel: 'Wang Li',
         standby: 'Jun Kai',
       },
       {
-        date: new Date('2023-03-08'),
+        date: new Date(`2023-${todayMonth}-08`),
         personnel: 'Jia Hui',
         standby: 'Elliot Tan',
       },
       {
-        date: new Date('2023-03-09'),
+        date: new Date(`2023-${todayMonth}-09`),
         personnel: 'Zhi Hao',
         standby: 'Jia Hao',
       },
       {
-        date: new Date('2023-03-10'),
+        date: new Date(`2023-${todayMonth}-10`),
         personnel: 'Elliot Tan',
         standby: 'Jun Kai',
       },
       {
-        date: new Date('2023-03-11'),
+        date: new Date(`2023-${todayMonth}-11`),
         personnel: 'Darryl Koh',
         standby: 'Jun Jie',
       },
       {
-        date: new Date('2023-03-12'),
+        date: new Date(`2023-${todayMonth}-12`),
         personnel: 'Wang Li',
         standby: 'Zhi Hao',
       },
       {
-        date: new Date('2023-03-13'),
+        date: new Date(`2023-${todayMonth}-13`),
         personnel: 'Jun Jie',
         standby: 'Elliot Tan',
       },
       {
-        date: new Date('2023-03-14'),
+        date: new Date(`2023-${todayMonth}-14`),
         personnel: 'Jun Kai',
         standby: 'Wang Li',
       },
       {
-        date: new Date('2023-03-15'),
+        date: new Date(`2023-${todayMonth}-15`),
         personnel: 'Darryl Koh',
         standby: 'Jia Hui',
       },
       {
-        date: new Date('2023-03-16'),
+        date: new Date(`2023-${todayMonth}-16`),
         personnel: 'Elliot Tan',
         standby: 'Wang Li',
       },
       {
-        date: new Date('2023-03-17'),
+        date: new Date(`2023-${todayMonth}-17`),
         personnel: 'Jia Hui',
         standby: 'Darryl Koh',
       },
       {
-        date: new Date('2023-03-18'),
+        date: new Date(`2023-${todayMonth}-18`),
         personnel: 'Zhi Hao',
         standby: 'Elliot Tan',
       },
       {
-        date: new Date('2023-03-19'),
+        date: new Date(`2023-${todayMonth}-19`),
         personnel: 'Jia Hui',
         standby: 'Jun Kai',
       },
       {
-        date: new Date('2023-03-20'),
+        date: new Date(`2023-${todayMonth}-20`),
         personnel: 'Wang Li',
         standby: 'Jia Hao',
       },
       {
-        date: new Date('2023-03-21'),
+        date: new Date(`2023-${todayMonth}-21`),
         personnel: 'Zhi Hao',
         standby: 'Darryl Koh',
       },
       {
-        date: new Date('2023-03-22'),
+        date: new Date(`2023-${todayMonth}-22`),
         personnel: 'Jia Hao',
         standby: 'Jia Hui',
       },
       {
-        date: new Date('2023-03-23'),
+        date: new Date(`2023-${todayMonth}-23`),
         personnel: 'Darryl Koh',
         standby: 'Zhi Hao',
       },
       {
-        date: new Date('2023-03-24'),
+        date: new Date(`2023-${todayMonth}-24`),
         personnel: 'Wang Li',
         standby: 'Jun Jie',
       },
       {
-        date: new Date('2023-03-25'),
+        date: new Date(`2023-${todayMonth}-25`),
         personnel: 'Jia Hao',
         standby: 'Darryl Koh',
       },
       {
-        date: new Date('2023-03-26'),
+        date: new Date(`2023-${todayMonth}-26`),
         personnel: 'Jun Jie',
         standby: 'Jia Hui',
       },
       {
-        date: new Date('2023-03-27'),
+        date: new Date(`2023-${todayMonth}-27`),
         personnel: 'Jia Hao',
         standby: 'Zhi Hao',
       },
       {
-        date: new Date('2023-03-28'),
+        date: new Date(`2023-${todayMonth}-28`),
         personnel: 'Jun Jie',
         standby: 'Wang Li',
       },
       {
-        date: new Date('2023-03-29'),
+        date: new Date(`2023-${todayMonth}-29`),
         personnel: 'Jun Kai',
         standby: 'Elliot Tan',
       },
       {
-        date: new Date('2023-03-30'),
+        date: new Date(`2023-${todayMonth}-30`),
         personnel: 'Jia Hui',
         standby: 'Jia Hao',
       },
       {
-        date: new Date('2023-03-31'),
+        date: new Date(`2023-${todayMonth}-31`),
         personnel: 'Elliot Tan',
         standby: 'Jun Jie',
       },

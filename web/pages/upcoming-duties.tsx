@@ -12,15 +12,18 @@ import {
   Group,
   Flex,
   Grid,
+  ThemeIcon,
 } from '@mantine/core'
 import { getServerSession } from 'next-auth/next'
-import { IconEdit } from '@tabler/icons-react'
+import { IconEdit, IconBellRingingFilled } from '@tabler/icons-react'
 import { AddToCalendarButton } from 'add-to-calendar-button-react'
 import dayjs from 'dayjs'
 
 import type { UpcomingDuties } from '@/lib/sanity.queries'
 import { getUserUpcomingDuties } from '@/lib/sanity.client'
 import { authOptions } from './api/auth/[...nextauth]'
+import * as demo from '@/lib/demo.data'
+import config from '@/../site.config'
 import svgImage from '@/public/undraw_online_organizer_re_156n.svg'
 
 const useStyles = createStyles((theme) => ({
@@ -88,11 +91,26 @@ export default function UpcomingDutiesPage({ upcomingDuties }: { upcomingDuties:
         <Grid.Col span={upcomingDuties.length > 0 ? 'auto' : 12}>
           {upcomingDuties.length > 0 ? (
             <Timeline active={indexOfUpcomingDate} bulletSize={24} lineWidth={2} mt="xl">
-              {upcomingDuties.map((date) => {
+              {upcomingDuties.map((date, index) => {
                 const duration = dayjs(date).diff(new Date(), 'day')
 
                 return (
-                  <Timeline.Item key={date} title={dayjs(date).format('D MMMM, dddd')}>
+                  <Timeline.Item
+                    key={date}
+                    title={dayjs(date).format('D MMMM, dddd')}
+                    bullet={
+                      index === indexOfUpcomingDate && (
+                        <ThemeIcon
+                          size={22}
+                          variant="gradient"
+                          gradient={{ from: 'lime', to: 'yellow' }}
+                          radius="xl"
+                        >
+                          <IconBellRingingFilled size="0.8rem" />
+                        </ThemeIcon>
+                      )
+                    }
+                  >
                     <Text color="dimmed" size="sm">
                       8:00 AM
                     </Text>
@@ -150,7 +168,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   const { user } = session
-  const upcomingDuties = await getUserUpcomingDuties(user?.id)
+  let upcomingDuties = demo.upcomingDuties
+  if (user?.id !== config.demoUserId) {
+    upcomingDuties = await getUserUpcomingDuties(user?.id)
+  }
 
   return {
     props: { upcomingDuties },

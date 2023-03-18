@@ -43,6 +43,10 @@ export const getUserUpcomingDutiesQuery = groq`*[_type == 'calendar' && !(_id in
 }.roster[].date
 `
 
+export const getUserBlockoutsQuery = groq`*[_type == "user" && _id == $id && !(_id in path("drafts.**"))]{
+    blockouts
+}[0].blockouts`
+
 export const getAllCalendarQuery = groq`*[_type == 'calendar' && !(_id in path("drafts.**"))]{
   date,
   roster[]{

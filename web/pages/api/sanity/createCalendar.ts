@@ -82,9 +82,16 @@ async function createCalendarHandler(req: NextApiRequest, res: NextApiResponse) 
 }
 
 const validateFields: Middleware = async (req, res, next) => {
-  const { dutyDates, dutyPersonnel } = req.body
+  const { dutyDates, dutyPersonnel }: { dutyDates: DutyDate[]; dutyPersonnel: Personnel[] } =
+    req.body
 
-  if (!dutyDates || !dutyPersonnel) {
+  const dateRegExp = /^\d{4}-\d{2}-\d{2}$/
+
+  if (
+    dutyDates.length === 0 &&
+    dutyPersonnel.length === 0 &&
+    dutyDates.every((date) => !dateRegExp.test(`${date.date}`))
+  ) {
     return res.status(422).json({
       status: 'error',
       message: 'Missing required fields',

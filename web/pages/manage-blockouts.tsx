@@ -9,6 +9,9 @@ import dayjs from 'dayjs'
 import { IconCheck, IconX } from '@tabler/icons-react'
 
 import { authOptions } from './api/auth/[...nextauth]'
+import * as demo from '@/lib/demo.data'
+import config from '@/../site.config'
+import { getUserBlockouts } from '@/lib/sanity.client'
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -31,11 +34,11 @@ const MAXIMUM_BLOCKOUTS = 8
 
 ManageBlockoutPage.title = 'Manage Blockouts'
 
-export default function ManageBlockoutPage() {
+export default function ManageBlockoutPage({ blockouts }: { blockouts: string[] }) {
   const { classes } = useStyles()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [selected, setSelected] = useState<Date[]>([])
+  const [selected, setSelected] = useState<Date[]>(blockouts.map((d) => new Date(d)))
 
   const handleSelect = (date: Date) => {
     const isSelected = selected.some((s) => dayjs(date).isSame(s, 'date'))
@@ -59,13 +62,15 @@ export default function ManageBlockoutPage() {
   const handleClick = async () => {
     setIsSubmitting(true)
     try {
+      const blockoutDates = selected.map((date) => date.toLocaleDateString('sv-SE'))
+
       const res = await fetch('/api/sanity/manageBlockouts', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          blockoutDates: selected,
+          blockoutDates,
         }),
         cache: 'no-cache',
       })
@@ -195,7 +200,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
   }
 
+  let blockouts = demo.blockouts
+  if (session?.user?.id !== config.demoUserId) {
+    blockouts = await getUserBlockouts(session?.user?.id)
+  }
+
   return {
-    props: {},
+    props: { blockouts },
   }
 }
