@@ -2,17 +2,12 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import type { Middleware } from "next-api-route-middleware";
 import { use } from "next-api-route-middleware";
-import { getUserByIdQuery } from "next-auth-sanity/queries";
-import * as argon2 from "argon2";
 
 import { writeClient } from "@/lib/sanity.client";
-import {
-  checkEmailValidation,
-  checkNameValidation,
-  checkPasswordValidation,
-} from "@/pages/api/sanity/signUp";
+import { checkNameValidation } from "@/pages/api/sanity/signUp";
 import { authOptions } from "../auth/[...nextauth]";
 import { rateLimitMiddleware } from "../rateLimitMiddleware";
+//import { validateEnlistmentDate, validateOrdDate } from "@/pages/profile";
 
 async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "PUT") return res.status(404).send("Not found");
@@ -28,7 +23,7 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
       .json({ status: "error", message: "You must be logged in" });
   }
 
-  if (!session?.user?.id) {
+  if (!userId) {
     return res.status(422).json({
       status: "error",
       message: "Unproccesable request, user id not found",
@@ -42,37 +37,13 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
     });
   }
 
-  const user = await writeClient.fetch(getUserByIdQuery, {
-    userSchema: "user",
-    id: userId,
-  });
-
-  const { name, email, password, oldPassword, enlistment, ord } = req.body;
-
-  // Check if old password is correct
-  const isOldPasswordCorrect = await argon2.verify(user?.password, oldPassword);
-
-  console.log("isOldPasswordCorrect", isOldPasswordCorrect);
-
-  if (!isOldPasswordCorrect) {
-    return res.status(401).json({
-      status: "error",
-      message: "Unauthorized, old password is incorrect",
-    });
-  }
-
-  const hashedPassword = await argon2.hash(password);
-  const clonedUser = {
-    ...user,
-    name,
-    email,
-    password: hashedPassword,
-    enlistment,
-    ord,
-  };
+  const { name, enlistment, ord } = req.body;
 
   try {
-    const newUser = await writeClient.patch(user._id).set(clonedUser).commit();
+    const newUser = await writeClient
+      .patch(userId)
+      .set({ name, enlistment, ord })
+      .commit();
     console.log(newUser);
 
     return res
@@ -87,18 +58,16 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
 }
 
 export const validateFields: Middleware = async (req, res, next) => {
-  const { name, email, password, oldPassword } = req.body;
+  const { name } = req.body;
 
-  console.log(checkPasswordValidation(password));
-  console.log("oldPassword", checkPasswordValidation(oldPassword));
-  console.log(checkEmailValidation(email));
   console.log(checkNameValidation(name));
+  //console.log(validateEnlistmentDate(enlistment, ord));
+  //console.log(validateOrdDate(enlistment, ord));
 
   if (
-    checkPasswordValidation(password) === null &&
-    checkEmailValidation(email) === null &&
-    checkNameValidation(name) === null &&
-    checkPasswordValidation(oldPassword) === null
+    checkNameValidation(name) === null
+    //validateEnlistmentDate(enlistment, ord) === null &&
+    // validateOrdDate(enlistment, ord) === null
   ) {
     return await next();
   } else {

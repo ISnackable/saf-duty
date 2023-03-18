@@ -1,10 +1,10 @@
-import { useState } from "react";
-import type { GetServerSidePropsContext } from "next";
-import type { User } from "next-auth";
-import Image from "next/image";
-import { getServerSession } from "next-auth/next";
-import { DatePickerInput } from "@mantine/dates";
-import { isEmail, useForm } from "@mantine/form";
+import { useState } from 'react'
+import type { GetServerSidePropsContext } from 'next'
+import type { User } from 'next-auth'
+import Image from 'next/image'
+import { getServerSession } from 'next-auth/next'
+import { DatePickerInput } from '@mantine/dates'
+import { isEmail, useForm } from '@mantine/form'
 import {
   createStyles,
   Card,
@@ -18,9 +18,9 @@ import {
   PasswordInput,
   AspectRatio,
   FileButton,
-} from "@mantine/core";
-import { modals } from "@mantine/modals";
-import { showNotification } from "@mantine/notifications";
+} from '@mantine/core'
+import { modals } from '@mantine/modals'
+import { showNotification } from '@mantine/notifications'
 import {
   IconCheck,
   IconInfoCircle,
@@ -28,151 +28,220 @@ import {
   IconSettings,
   IconUpload,
   IconX,
-} from "@tabler/icons-react";
+} from '@tabler/icons-react'
 
-import { authOptions } from "./api/auth/[...nextauth]";
+import { authOptions } from './api/auth/[...nextauth]'
 
 // Function that checks if the password is valid, returns an error message if not
 export function checkPasswordValidation(value: string) {
-  const isWhitespace = /^(?=.*\s)/;
+  const isWhitespace = /^(?=.*\s)/
   if (isWhitespace.test(value)) {
-    return "Password must not contain Whitespaces.";
+    return 'Password must not contain Whitespaces.'
   }
 
-  const isContainsUppercase = /^(?=.*[A-Z])/;
+  const isContainsUppercase = /^(?=.*[A-Z])/
   if (!isContainsUppercase.test(value)) {
-    return "Password must have at least one Uppercase Character.";
+    return 'Password must have at least one Uppercase Character.'
   }
 
-  const isContainsLowercase = /^(?=.*[a-z])/;
+  const isContainsLowercase = /^(?=.*[a-z])/
   if (!isContainsLowercase.test(value)) {
-    return "Password must have at least one Lowercase Character.";
+    return 'Password must have at least one Lowercase Character.'
   }
 
-  const isContainsNumber = /^(?=.*[0-9])/;
+  const isContainsNumber = /^(?=.*[0-9])/
   if (!isContainsNumber.test(value)) {
-    return "Password must contain at least one Digit.";
+    return 'Password must contain at least one Digit.'
   }
 
-  const isContainsSymbol = /^(?=.*[~`!@#$%^&*()--+={}\[\]|\\:;"'<>,.?/_₹])/;
+  const isContainsSymbol = /^(?=.*[~`!@#$%^&*()--+={}\[\]|\\:;"'<>,.?/_₹])/
   if (!isContainsSymbol.test(value)) {
-    return "Password must contain at least one Special Symbol.";
+    return 'Password must contain at least one Special Symbol.'
   }
 
-  const isValidLength = /^.{10,16}$/;
+  const isValidLength = /^.{10,16}$/
   if (!isValidLength.test(value)) {
-    return "Password must be 10-16 Characters Long.";
+    return 'Password must be 10-16 Characters Long.'
   }
-  return null;
+  return null
 }
+/*
+// Function that checks if the date is valid, returns an error message if not
+export function validateEnlistmentDate(enlistmentDate?: Date, ordDate?: Date) {
+  if (!enlistmentDate || !ordDate) return "Dates cannot be empty";
+  /*
+  const minMonths = 22; // 1 year and 10 months in months
+  const maxMonths = 24; // 2 years in months
+  const timeDiff = ordDate.getTime() - enlistmentDate.getTime();
+  const monthsDiff = timeDiff / (1000 * 3600 * 24 * 30);
 
+  if (monthsDiff >= minMonths && monthsDiff <= maxMonths) {
+    return "Enlistment date must be between 1 year and 10 months and 2 years after ORD date";
+  }
+  
+}
+/*
+export function validateOrdDate(enlistmentDate?: Date, ordDate?: Date) {
+  if (!enlistmentDate || !ordDate) return "Dates cannot be empty";
+  
+  if (ordDate < enlistmentDate) {
+    return "ORD date cannot be less than enlistment date";
+  }
+  
+}
+*/
 const useStyles = createStyles((theme) => ({
   title: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-    color: theme.colorScheme === "dark" ? theme.white : theme.black,
+    color: theme.colorScheme === 'dark' ? theme.white : theme.black,
     lineHeight: 1,
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
   },
 
   titleWrapper: {
-    display: "flex",
-    alignItems: "center",
-    "& > *:not(:last-child)": {
+    display: 'flex',
+    alignItems: 'center',
+    '& > *:not(:last-child)': {
       marginRight: theme.spacing.sm,
     },
   },
 
   form: {
-    backgroundColor:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[8]
-        : theme.colors.gray[0],
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
     padding: theme.spacing.xl,
     borderRadius: theme.radius.md,
     boxShadow: theme.shadows.lg,
   },
-}));
+}))
 
-ProfilePage.title = "Profile";
+ProfilePage.title = 'Profile'
 
 export default function ProfilePage({ user }: { user: User }) {
-  const { classes } = useStyles();
-  const [file, setFile] = useState<File | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { classes } = useStyles()
+  const [file, setFile] = useState<File | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const openDeleteModal = () =>
     modals.openConfirmModal({
-      title: "Delete your profile",
+      title: 'Delete your profile',
       centered: true,
       children: (
         <Text size="sm">
-          Are you sure you want to delete your profile? This action is
-          destructive and you will have to contact support to restore your data.
+          Are you sure you want to delete your profile? This action is destructive and you will have
+          to contact support to restore your data.
         </Text>
       ),
-      labels: { confirm: "Delete account", cancel: "No don't delete it" },
-      confirmProps: { color: "red" },
-      onCancel: () => console.log("Cancel"),
-      onConfirm: () => console.log("Confirmed"),
-    });
+      labels: { confirm: 'Delete account', cancel: "No don't delete it" },
+      confirmProps: { color: 'red' },
+      onCancel: () => console.log('Cancel'),
+      onConfirm: () => console.log('Confirmed'),
+    })
 
-  const form = useForm({
+  //userDetail form
+  const userDetailForm = useForm({
     initialValues: {
-      name: user?.name || "",
-      email: user?.email || "",
-      oldPassword: "",
-      password: "",
+      name: user?.name || '',
+      enlistment: user?.enlistment,
+      ord: user?.ord,
     },
-
     validate: {
-      name: (value) =>
-        value.length < 2 ? "Name must have at least 2 letters" : null,
-      email: isEmail("Invalid email"),
+      name: (value) => (value.length < 2 ? 'Name must have at least 2 letters' : null),
+      // enlistment: (value, values) => validateEnlistmentDate(value, values.ord),
+      //ord: (value, values) => validateOrdDate(values.enlistment, value),
+    },
+  })
+  //user account form
+  const userAccountForm = useForm({
+    initialValues: {
+      email: user?.email || '',
+      oldPassword: '',
+      password: '',
+    },
+    validate: {
+      email: isEmail('Invalid email'),
       password: (value) => checkPasswordValidation(value),
       oldPassword: (value) => checkPasswordValidation(value),
     },
-  });
+  })
 
-  const handleSubmit = async (values: typeof form.values) => {
-    setIsSubmitting(true);
-
+  //update user detail to backend
+  const handleUserDetailSubmit = async (values: typeof userDetailForm.values) => {
+    setIsSubmitting(true)
+    console.log(values)
     try {
-      const res = await fetch("/api/sanity/updateUser", {
-        method: "PUT",
+      const res = await fetch('/api/sanity/updateUserDetails', {
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           ...values,
         }),
-        cache: "no-cache",
-      });
-      const data = await res.json();
+        cache: 'no-cache',
+      })
+      const data = await res.json()
 
-      if (data?.status === "error") {
+      if (data?.status === 'error') {
         showNotification({
-          title: "Error",
-          message:
-            data?.message || "Cannot update profile, something went wrong",
-          color: "red",
+          title: 'Error',
+          message: data?.message || 'Cannot update user details, something went wrong',
+          color: 'red',
           icon: <IconX />,
-        });
+        })
       } else {
         showNotification({
-          title: "Success",
-          message: "Profile updated successfully",
-          color: "green",
+          title: 'Success',
+          message: 'User details updated successfully',
+          color: 'green',
           icon: <IconCheck />,
-        });
+        })
       }
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
 
-    setIsSubmitting(false);
-  };
+    setIsSubmitting(false)
+  }
 
-  const imageUrl = file ? URL.createObjectURL(file) : user?.image;
+  //update user account to backend
+  const handlePasswordSubmit = async (values: typeof userAccountForm.values) => {
+    setIsSubmitting(true)
+    try {
+      const res = await fetch('/api/sanity/updateUserAccount', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...values,
+        }),
+        cache: 'no-cache',
+      })
+      const data = await res.json()
+
+      if (data?.status === 'error') {
+        showNotification({
+          title: 'Error',
+          message: data?.message || 'Cannot update user account, something went wrong',
+          color: 'red',
+          icon: <IconX />,
+        })
+      } else {
+        showNotification({
+          title: 'Success',
+          message: 'User account updated successfully',
+          color: 'green',
+          icon: <IconCheck />,
+        })
+      }
+    } catch (error) {
+      console.error(error)
+    }
+
+    setIsSubmitting(false)
+  }
+
+  const imageUrl = file ? URL.createObjectURL(file) : user?.image
 
   // As this page uses Server Side Rendering, the `session` will be already
   // populated on render without needing to go through a loading stage.
@@ -184,8 +253,8 @@ export default function ProfilePage({ user }: { user: User }) {
       </div>
 
       <Text color="dimmed" mt="md">
-        Update your profile information and settings here. You can also change
-        your password. Enlistment and ORD are optional but recommended.
+        Update your profile information and settings here. You can also change your password.
+        Enlistment and ORD are optional but recommended.
       </Text>
 
       <Tabs keepMounted={false} defaultValue="general" mt="xl">
@@ -203,34 +272,38 @@ export default function ProfilePage({ user }: { user: User }) {
 
         <Tabs.Panel value="general" pt="xs">
           <div className={classes.form}>
-            <TextInput
-              mt="sm"
-              label="Name"
-              placeholder="Name"
-              description="Your name as it is on your NRIC"
-              {...form.getInputProps("name")}
-            />
+            <form onSubmit={userDetailForm.onSubmit(handleUserDetailSubmit)}>
+              <TextInput
+                mt="sm"
+                label="Name"
+                placeholder="Name"
+                description="Your name as it is on your NRIC"
+                {...userDetailForm.getInputProps('name')}
+              />
 
-            <DatePickerInput
-              clearable
-              mt="sm"
-              label="Enlistment date"
-              placeholder="Pick date"
-              {...form.getInputProps("enlistment")}
-            />
+              <DatePickerInput
+                clearable
+                mt="sm"
+                label="Enlistment date"
+                placeholder="Pick date"
+                {...userDetailForm.getInputProps('enlistment')}
+              />
 
-            <DatePickerInput
-              clearable
-              mt="sm"
-              label="ORD date"
-              placeholder="Pick date"
-              {...form.getInputProps("ord")}
-            />
+              <DatePickerInput
+                clearable
+                mt="sm"
+                label="ORD date"
+                placeholder="Pick date"
+                {...userDetailForm.getInputProps('ord')}
+              />
 
-            <Group position="right" mt="lg">
-              <Button color="gray">Cancel</Button>
-              <Button type="submit">Save</Button>
-            </Group>
+              <Group position="right" mt="lg">
+                <Button color="gray">Cancel</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  Save
+                </Button>
+              </Group>
+            </form>
           </div>
         </Tabs.Panel>
 
@@ -241,12 +314,12 @@ export default function ProfilePage({ user }: { user: User }) {
                 <AspectRatio ratio={350 / 350} sx={{ maxWidth: 350 }} mx="auto">
                   <Image
                     priority
-                    src={imageUrl || "/images/avatars/avatar-1.jpg"}
+                    src={imageUrl || '/images/avatars/avatar-1.jpg'}
                     alt="User avatar"
                     width={350}
                     height={350}
                     className="rounded-full"
-                    style={{ objectFit: "cover" }}
+                    style={{ objectFit: 'cover' }}
                   />
                 </AspectRatio>
               </Card.Section>
@@ -270,26 +343,26 @@ export default function ProfilePage({ user }: { user: User }) {
 
         <Tabs.Panel value="settings" pt="xs">
           <div className={classes.form}>
-            <form onSubmit={form.onSubmit(handleSubmit)}>
+            <form onSubmit={userAccountForm.onSubmit(handlePasswordSubmit)}>
               <TextInput
                 mt="sm"
                 label="Email"
                 placeholder="Email"
-                {...form.getInputProps("email")}
+                {...userAccountForm.getInputProps('email')}
               />
 
               <PasswordInput
                 mt="sm"
                 label="Old password"
                 placeholder="Old password"
-                {...form.getInputProps("oldPassword")}
+                {...userAccountForm.getInputProps('oldPassword')}
               />
 
               <PasswordInput
                 mt="sm"
                 label="New Password"
                 placeholder="New Password"
-                {...form.getInputProps("password")}
+                {...userAccountForm.getInputProps('password')}
               />
 
               <Group position="apart" mt="lg">
@@ -305,25 +378,25 @@ export default function ProfilePage({ user }: { user: User }) {
         </Tabs.Panel>
       </Tabs>
     </Container>
-  );
+  )
 }
 
 // Export the `session` prop to use sessions with Server Side Rendering
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions);
+  const session = await getServerSession(context.req, context.res, authOptions)
 
   if (!session) {
     return {
       redirect: {
-        destination: "/login",
+        destination: '/login',
         permanent: false,
       },
-    };
+    }
   }
 
-  const { user } = session;
+  const { user } = session
 
   return {
-    props: { user: JSON.parse(JSON.stringify(user)) },
-  };
+    props: { user },
+  }
 }

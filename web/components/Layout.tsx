@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useRouter } from "next/router";
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
 import {
   createStyles,
   AppShell,
@@ -8,52 +8,45 @@ import {
   Burger,
   ActionIcon,
   useMantineColorScheme,
-} from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { IconMathFunctionY, IconMoonStars, IconSun } from "@tabler/icons-react";
-import { NavbarMin } from "@/components/Navbar";
+} from '@mantine/core'
+import { useDisclosure } from '@mantine/hooks'
+import { IconMathFunctionY, IconMoonStars, IconSun } from '@tabler/icons-react'
+import { NavbarMin } from '@/components/Navbar'
 
-import config from "../../site.config";
+import config from '../../site.config'
 
 const useStyles = createStyles(() => ({
   innerHeader: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 
   innerTwo: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginLeft: "auto",
-    marginRight: "auto",
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
-}));
+}))
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { classes } = useStyles();
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const [opened, { close, toggle }] = useDisclosure(true);
-  const { asPath } = useRouter();
+  const { classes } = useStyles()
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme()
+  const [opened, { close, toggle }] = useDisclosure(true)
+  const { asPath } = useRouter()
 
-  const dark = colorScheme === "dark";
+  const dark = colorScheme === 'dark'
 
   useEffect(() => {
-    close();
-  }, [close, asPath]);
+    close()
+  }, [close, asPath])
 
   return (
     <AppShell
       padding="md"
-      navbar={
-        <NavbarMin
-          width={{ sm: 300 }}
-          p="md"
-          hiddenBreakpoint="sm"
-          hidden={!opened}
-        />
-      }
+      navbar={<NavbarMin width={{ sm: 300 }} p="md" hiddenBreakpoint="sm" hidden={!opened} />}
       header={
         <Header height={60} p="xs">
           <div className={classes.innerHeader}>
@@ -63,17 +56,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <Text
                 span
                 variant="gradient"
-                gradient={{ from: "indigo", to: "cyan", deg: 45 }}
+                gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
                 fz="xl"
                 ml="sm"
               >
-                {config.title || "Duty Roster"}
+                {config.title || 'Duty Roster'}
               </Text>
             </div>
             <ActionIcon
               size={30}
               variant="outline"
-              color={dark ? "yellow" : "blue"}
+              color={dark ? 'yellow' : 'blue'}
               onClick={() => toggleColorScheme()}
               title="Toggle color scheme"
             >
@@ -85,13 +78,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       styles={(theme) => ({
         main: {
           backgroundColor:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[8]
-              : theme.colors.gray[0],
+            theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
         },
       })}
     >
       {children}
     </AppShell>
-  );
+  )
 }
