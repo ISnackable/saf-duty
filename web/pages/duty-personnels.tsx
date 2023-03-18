@@ -265,7 +265,6 @@ export default function DutyPersonnelsPage() {
   )
 }
 
-// Export the `session` prop to use sessions with Server Side Rendering
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions)
 

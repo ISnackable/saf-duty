@@ -1,13 +1,13 @@
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import { SanityAdapter, SanityCredentials } from 'next-auth-sanity'
-import { writeClient } from '@/lib/sanity.client'
+import { clientWithToken } from '@/lib/sanity.client'
 
 export const authOptions: NextAuthOptions = {
-  providers: [SanityCredentials(writeClient)],
+  providers: [SanityCredentials(clientWithToken)],
   session: {
     strategy: 'jwt',
   },
-  adapter: SanityAdapter(writeClient),
+  adapter: SanityAdapter(clientWithToken),
   pages: {
     signIn: '/login',
     error: '/login',

@@ -1,7 +1,7 @@
 import type { Middleware } from 'next-api-route-middleware'
 import { use } from 'next-api-route-middleware'
 import { signUpHandler } from 'next-auth-sanity'
-import { writeClient } from '@/lib/sanity.client'
+import { clientWithToken } from '@/lib/sanity.client'
 
 import { rateLimitMiddleware } from '../rateLimitMiddleware'
 
@@ -115,12 +115,15 @@ export const hcaptcha: Middleware = async (req, res, next) => {
   return res.status(404).send('Not found')
 }
 
-export const addRole: Middleware = async (req, _res, next) => {
+export const addFields: Middleware = async (req, _res, next) => {
   const seed = (Math.random() + 1).toString(36).substring(7)
 
   req.body['role'] = 'user'
   req.body['image'] = `https://api.dicebear.com/5.x/pixel-art/jpg?seed=${seed}`
-  console.log('adding role and image', req.body)
+  req.body['weekdayPoints'] = 0
+  req.body['weekendPoints'] = 0
+  req.body['extra'] = 0
+  console.log('adding role image, weekdayPoints, weekendPoints, extra', req.body)
   return await next()
 }
 
@@ -149,6 +152,6 @@ export default use(
   rateLimitMiddleware,
   hcaptcha,
   validateFields,
-  addRole,
-  signUpHandler(writeClient)
+  addFields,
+  signUpHandler(clientWithToken)
 )
