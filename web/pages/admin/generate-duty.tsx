@@ -1,5 +1,7 @@
 import { forwardRef, useEffect, useState } from 'react'
 import type { GetServerSidePropsContext } from 'next'
+import type { User } from 'next-auth'
+import { getServerSession } from 'next-auth/next'
 import {
   Avatar,
   Container,
@@ -14,6 +16,7 @@ import {
   Table,
   Modal,
 } from '@mantine/core'
+import { useDisclosure } from '@mantine/hooks'
 import { Calendar, MonthPickerInput, DatePickerInput, isSameMonth } from '@mantine/dates'
 import { showNotification } from '@mantine/notifications'
 import {
@@ -23,15 +26,13 @@ import {
   IconDatabase,
   IconX,
 } from '@tabler/icons-react'
-import { getServerSession } from 'next-auth/next'
-import type { User } from 'next-auth'
 
 import * as demo from '@/lib/demo.data'
+import config from '@/../site.config'
 import { createDutyRoster, DutyDate, Personnel } from '@/utils/dutyRoster'
 import { authOptions } from '../api/auth/[...nextauth]'
 import { writeClient } from '@/lib/sanity.client'
 import { getAllUsersQuery } from '@/lib/sanity.queries'
-import { useDisclosure } from '@mantine/hooks'
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -376,7 +377,6 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
   )
 }
 
-// Export the `session` prop to use sessions with Server Side Rendering
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions)
 
@@ -391,7 +391,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const { user } = session
 
-  if (user?.role !== 'admin') {
+  // Only allow access to users with the "admin" role unless the user is demo
+  if (user?.role !== 'admin' && user?.id !== config.demoUserId) {
     return {
       redirect: {
         destination: '/',
@@ -401,7 +402,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   let users = demo.users
-  if (session?.user?.name !== 'demo') {
+  if (session?.user?.id !== config.demoUserId) {
     // We use `writeClient` here as the Users document is not publicly available. It requires authentication.
     users = await writeClient.fetch<User[]>(getAllUsersQuery)
   }

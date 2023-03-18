@@ -167,7 +167,6 @@ export default function ProfilePage({ user }: { user: User }) {
   //update user detail to backend
   const handleUserDetailSubmit = async (values: typeof userDetailForm.values) => {
     setIsSubmitting(true)
-    console.log(values)
     try {
       const res = await fetch('/api/sanity/updateUserDetails', {
         method: 'PUT',
@@ -381,7 +380,6 @@ export default function ProfilePage({ user }: { user: User }) {
   )
 }
 
-// Export the `session` prop to use sessions with Server Side Rendering
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions)
 

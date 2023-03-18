@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import type { GetServerSidePropsContext } from 'next'
-import type { User } from 'next-auth'
 import { Container, createStyles, Divider, List, Text, Title, Button, Group } from '@mantine/core'
 import { DatePicker } from '@mantine/dates'
 import { getServerSession } from 'next-auth/next'
@@ -32,7 +31,7 @@ const MAXIMUM_BLOCKOUTS = 8
 
 ManageBlockoutPage.title = 'Manage Blockouts'
 
-export default function ManageBlockoutPage({ user }: { user: User }) {
+export default function ManageBlockoutPage() {
   const { classes } = useStyles()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -114,8 +113,6 @@ export default function ManageBlockoutPage({ user }: { user: User }) {
       </List>
       <Divider mt="sm" />
 
-      <Text>{user?.name}</Text>
-
       <DatePicker
         mt="lg"
         type="multiple"
@@ -186,7 +183,6 @@ export default function ManageBlockoutPage({ user }: { user: User }) {
   )
 }
 
-// Export the `session` prop to use sessions with Server Side Rendering
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions)
 
@@ -199,9 +195,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
   }
 
-  const { user } = session
-
   return {
-    props: { user },
+    props: {},
   }
 }

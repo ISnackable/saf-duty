@@ -24,6 +24,8 @@ import {
 } from '@tabler/icons-react'
 import { UserButtonMenu } from '@/components/UserButton'
 
+import config from '@/../site.config'
+
 type NavbarMinProps = Omit<NavbarProps, 'children'>
 
 const useStyles = createStyles((theme) => ({
@@ -189,7 +191,7 @@ export function NavbarMin(props: NavbarMinProps) {
         />
       </Navbar.Section>
 
-      {session && session.user?.role === 'admin' && (
+      {session && (session.user?.role === 'admin' || session.user?.id === config.demoUserId) && (
         <Navbar.Section className={classes.section}>
           <Group className={classes.collectionsHeader}>
             <Text size="xs" weight={500} color="dimmed">

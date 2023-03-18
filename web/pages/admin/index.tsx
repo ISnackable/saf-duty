@@ -25,6 +25,7 @@ import { IconPencil, IconTrash, IconUsers } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 
 import * as demo from '@/lib/demo.data'
+import config from '@/../site.config'
 import { authOptions } from '../api/auth/[...nextauth]'
 import { writeClient } from '@/lib/sanity.client'
 import { getAllUsersQuery } from '@/lib/sanity.queries'
@@ -232,7 +233,6 @@ export default function AdminPage({ users }: { users: User[] }) {
   )
 }
 
-// Export the `session` prop to use sessions with Server Side Rendering
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions)
 
@@ -247,7 +247,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const { user } = session
 
-  if (user?.role !== 'admin') {
+  // Only allow access to users with the "admin" role unless the user is demo
+  if (user?.role !== 'admin' && user?.id !== config.demoUserId) {
     return {
       redirect: {
         destination: '/',
@@ -257,7 +258,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   let users = demo.users
-  if (session?.user?.name !== 'demo') {
+  if (session?.user?.id !== config.demoUserId) {
     // We use `writeClient` here as the Users document is not publicly available. It requires authentication.
     users = await writeClient.fetch<User[]>(getAllUsersQuery)
   }

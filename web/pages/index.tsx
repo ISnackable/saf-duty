@@ -9,6 +9,7 @@ import { authOptions } from './api/auth/[...nextauth]'
 import { writeClient } from '@/lib/sanity.client'
 import { getAllUsersQuery } from '@/lib/sanity.queries'
 import * as demo from '@/lib/demo.data'
+import config from '@/../site.config'
 
 const useStyles = createStyles((theme) => {
   return {
@@ -126,7 +127,6 @@ export default function IndexPage({ users }: { users: User[] }) {
   )
 }
 
-// Export the `session` prop to use sessions with Server Side Rendering
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions)
 
@@ -140,7 +140,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   let users = demo.users
-  if (session?.user?.name !== 'demo') {
+  if (session?.user?.id !== config.demoUserId) {
     // We use `writeClient` here as the Users document is not publicly available. It requires authentication.
     users = await writeClient.fetch<User[]>(getAllUsersQuery)
   }

@@ -5,6 +5,7 @@ import * as argon2 from 'argon2'
 
 import { writeClient } from '@/lib/sanity.client'
 import { authOptions } from '../auth/[...nextauth]'
+import config from '@/../site.config'
 
 export default async function deleteUserHandler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'DELETE') return res.status(404).send('Not found')
@@ -25,7 +26,7 @@ export default async function deleteUserHandler(req: NextApiRequest, res: NextAp
     })
   }
   // Demo user
-  else if (userId === 'user.fdf11aae-d142-450b-87a4-559bc6e27f05') {
+  else if (userId === config.demoUserId) {
     return res.status(401).json({
       status: 'error',
       message: 'Unauthorized, you are not allowed to update this user',
