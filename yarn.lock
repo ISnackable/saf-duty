@@ -3122,6 +3122,20 @@ add-stream@^1.0.0:
   resolved "https://registry.yarnpkg.com/add-stream/-/add-stream-1.0.0.tgz#6a7990437ca736d5e1288db92bd3266d5f5cb2aa"
   integrity sha512-qQLMr+8o0WC4FZGQTcJiKBVC59JylcPSrTtk6usvmIDFUOCKegapy1VHQwRbFMOFyb/inzUVqHs+eMYKDM1YeQ==
 
+add-to-calendar-button-react@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/add-to-calendar-button-react/-/add-to-calendar-button-react-2.2.2.tgz#1b3fd56fba34b27dcb9cba0f0b010ae78e011ee3"
+  integrity sha512-3VjNPlOJ3WcndRBttG+PuQnu6vwDWpBCRtL0ZFgV93D9dG6vVE9AfTAQuzWrj8kjDuYLdmIgDVedq+CvnHQA1A==
+  dependencies:
+    add-to-calendar-button "^2.2.4"
+
+add-to-calendar-button@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/add-to-calendar-button/-/add-to-calendar-button-2.2.4.tgz#f9aa21f699926164afa20468b072b2ba9cdb008d"
+  integrity sha512-WpB+I9VWxjc14lCpvOG/CYMEeu5SbzS112InG5m0MgSJ3qlSGMUklzu/4Db8wAfMXJ2MLlkzD0tGAZxQ5itLhg==
+  dependencies:
+    timezones-ical-library "^1.6.1"
+
 agent-base@6, agent-base@^6.0.2:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/agent-base/-/agent-base-6.0.2.tgz#49fff58577cfee3f37176feab4c22e00f86d7f77"
@@ -10077,6 +10091,11 @@ through@2, "through@>=2.2.7 <3", through@^2.3.4, through@^2.3.6, through@^2.3.8:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
   integrity sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==
+
+timezones-ical-library@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/timezones-ical-library/-/timezones-ical-library-1.6.1.tgz#0e694a670517535b90b5fc015e9b6cfc349ad83b"
+  integrity sha512-KlYe1VeyaXlcfXM5rDqUJ8Xv1C80P3ek9A50r3MaOsFpt3YCoymPkAR2SB/wNYOk7hJjl0MoUrJC8B+IaDUtNg==
 
 tiny-glob@^0.2.9:
   version "0.2.9"

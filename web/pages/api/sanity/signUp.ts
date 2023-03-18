@@ -1,7 +1,7 @@
 import type { Middleware } from 'next-api-route-middleware'
 import { use } from 'next-api-route-middleware'
 import { signUpHandler } from 'next-auth-sanity'
-import { writeClient } from '@/lib/sanity.client'
+import { clientWithToken } from '@/lib/sanity.client'
 
 import { rateLimitMiddleware } from '../rateLimitMiddleware'
 
@@ -153,5 +153,5 @@ export default use(
   hcaptcha,
   validateFields,
   addFields,
-  signUpHandler(writeClient)
+  signUpHandler(clientWithToken)
 )

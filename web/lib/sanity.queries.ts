@@ -13,6 +13,8 @@ export interface Roster {
   dutyPersonnelStandIn?: User
 }
 
+export type UpcomingDuties = string[]
+
 export const getAllUsersQuery = groq`*[_type == "user"]{
     name,
     image,
@@ -33,15 +35,12 @@ export const getUserQuery = groq`*[_type == "user" && _id == $id]{
     weekendPoints,
     extra,
     ord,
-    enlistment,
-    "upcomingDuties": *[_type == 'calendar']{
-        roster[dutyPersonnel._ref == $id]{date, dutyPersonnel->{name}}
-    }.roster[]
+    enlistment
 }`
 
 export const getUserUpcomingDutiesQuery = groq`*[_type == 'calendar']{
-    roster[dutyPersonnel._ref == $id]{date, dutyPersonnel->{name}}
-}.roster[]
+    roster[dutyPersonnel._ref == $id]{date}
+}.roster[].date
 `
 
 export const getCalendarQuery = groq`*[_type == "calendar"]{

@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth/next'
 import type { Middleware } from 'next-api-route-middleware'
 import { use } from 'next-api-route-middleware'
 
-import { writeClient } from '@/lib/sanity.client'
+import { clientWithToken } from '@/lib/sanity.client'
 import { checkNameValidation } from '@/pages/api/sanity/signUp'
 import { authOptions } from '../auth/[...nextauth]'
 import { rateLimitMiddleware } from '../rateLimitMiddleware'
@@ -39,7 +39,7 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
   const { name, enlistment, ord } = req.body
 
   try {
-    const newUser = await writeClient.patch(userId).set({ name, enlistment, ord }).commit()
+    const newUser = await clientWithToken.patch(userId).set({ name, enlistment, ord }).commit()
     console.log(newUser)
 
     return res.status(200).json({ status: 'success', message: 'Success, updated user' })

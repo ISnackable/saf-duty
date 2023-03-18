@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth/next'
 import { getUserByIdQuery } from 'next-auth-sanity/queries'
 import * as argon2 from 'argon2'
 
-import { writeClient } from '@/lib/sanity.client'
+import { clientWithToken } from '@/lib/sanity.client'
 import { authOptions } from '../auth/[...nextauth]'
 import config from '@/../site.config'
 
@@ -33,7 +33,7 @@ export default async function deleteUserHandler(req: NextApiRequest, res: NextAp
     })
   }
 
-  const user = await writeClient.fetch(getUserByIdQuery, {
+  const user = await clientWithToken.fetch(getUserByIdQuery, {
     userSchema: 'user',
     id: userId,
   })
@@ -51,7 +51,7 @@ export default async function deleteUserHandler(req: NextApiRequest, res: NextAp
   }
 
   try {
-    const response = await writeClient.delete(user?._id)
+    const response = await clientWithToken.delete(user?._id)
     console.log(response)
 
     return res.status(200).json({ status: 'success', message: 'Success, deleted user' })

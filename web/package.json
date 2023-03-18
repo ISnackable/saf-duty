@@ -24,6 +24,7 @@
     "@mantine/notifications": "^6.0.2",
     "@mantine/nprogress": "^6.0.2",
     "@tabler/icons-react": "^2.10.0",
+    "add-to-calendar-button-react": "^2.2.2",
     "argon2": "^0.30.3",
     "babel-plugin-superjson-next": "^0.4.5",
     "cookies-next": "^2.1.1",

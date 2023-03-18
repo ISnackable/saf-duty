@@ -6,8 +6,7 @@ import { getServerSession } from 'next-auth/next'
 import { IconCalendarEvent } from '@tabler/icons-react'
 
 import { authOptions } from './api/auth/[...nextauth]'
-import { writeClient } from '@/lib/sanity.client'
-import { getAllUsersQuery } from '@/lib/sanity.queries'
+import { getAllUsers } from '@/lib/sanity.client'
 import * as demo from '@/lib/demo.data'
 import config from '@/../site.config'
 
@@ -97,7 +96,19 @@ export default function IndexPage({ users }: { users: User[] }) {
         getDayProps={(date) => {
           // Check if date isWeekend
           const isWeekend = date.getDay() === 0 || date.getDay() === 6
-          if (isWeekend) {
+          const isToday = date.toDateString() === new Date().toDateString()
+
+          if (isToday) {
+            return {
+              sx: (theme) => ({
+                color: `${
+                  theme.colorScheme === 'dark' ? theme.colors.blue[2] : theme.colors.blue[4]
+                } !important`,
+                backgroundColor:
+                  theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[2],
+              }),
+            }
+          } else if (isWeekend) {
             return {
               sx: (theme) => ({
                 color: `${
@@ -141,8 +152,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   let users = demo.users
   if (session?.user?.id !== config.demoUserId) {
-    // We use `writeClient` here as the Users document is not publicly available. It requires authentication.
-    users = await writeClient.fetch<User[]>(getAllUsersQuery)
+    users = await getAllUsers()
   }
 
   return {

@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 import { use } from 'next-api-route-middleware'
 
-import { writeClient } from '@/lib/sanity.client'
+import { clientWithToken } from '@/lib/sanity.client'
 import { authOptions } from '../auth/[...nextauth]'
 import { rateLimitMiddleware } from '../rateLimitMiddleware'
 import config from '@/../site.config'
@@ -37,7 +37,7 @@ async function updateBlockoutHandler(req: NextApiRequest, res: NextApiResponse) 
   blockoutDates.forEach((date) => date.toLocaleDateString())
 
   try {
-    await writeClient.patch(userId).set({ blockouts: blockoutDates }).commit()
+    await clientWithToken.patch(userId).set({ blockouts: blockoutDates }).commit()
     console.log(blockoutDates)
     return res.status(200).json({ status: 'success', message: 'Success, updated blockouts' })
   } catch (error) {

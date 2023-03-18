@@ -5,7 +5,7 @@ import { use } from 'next-api-route-middleware'
 import { getUserByIdQuery } from 'next-auth-sanity/queries'
 import * as argon2 from 'argon2'
 
-import { writeClient } from '@/lib/sanity.client'
+import { clientWithToken } from '@/lib/sanity.client'
 import {
   checkEmailValidation,
   checkNameValidation,
@@ -41,7 +41,7 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
     })
   }
 
-  const user = await writeClient.fetch(getUserByIdQuery, {
+  const user = await clientWithToken.fetch(getUserByIdQuery, {
     userSchema: 'user',
     id: userId,
   })
@@ -69,7 +69,7 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   try {
-    const newUser = await writeClient.patch(user._id).set(clonedUser).commit()
+    const newUser = await clientWithToken.patch(user._id).set(clonedUser).commit()
     console.log(newUser)
 
     return res.status(200).json({ status: 'success', message: 'Success, updated user' })
