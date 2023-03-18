@@ -26,7 +26,7 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(401).json({ status: 'error', message: 'You must be logged in' })
   }
 
-  if (!session?.user?.id) {
+  if (!userId) {
     return res.status(422).json({
       status: 'error',
       message: 'Unproccesable request, user id not found',
@@ -45,7 +45,7 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
     id: userId,
   })
 
-  const { name, email, password, oldPassword, enlistment, ord } = req.body
+  const { name, email, password, oldPassword } = req.body
 
   // Check if old password is correct
   const isOldPasswordCorrect = await argon2.verify(user?.password, oldPassword)
@@ -65,8 +65,6 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
     name,
     email,
     password: hashedPassword,
-    enlistment,
-    ord,
   }
 
   try {

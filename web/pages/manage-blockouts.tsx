@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import type { GetServerSidePropsContext } from 'next'
 import type { User } from 'next-auth'
-import { Container, createStyles, Divider, List, Text, Title } from '@mantine/core'
+import { Container, createStyles, Divider, List, Text, Title, Button, Group } from '@mantine/core'
 import { DatePicker } from '@mantine/dates'
 import { getServerSession } from 'next-auth/next'
 import { IconEdit } from '@tabler/icons-react'
+import { showNotification } from '@mantine/notifications'
 import dayjs from 'dayjs'
+import { IconCheck, IconX } from '@tabler/icons-react'
 
 import { authOptions } from './api/auth/[...nextauth]'
 
@@ -33,6 +35,7 @@ ManageBlockoutPage.title = 'Manage Blockouts'
 export default function ManageBlockoutPage({ user }: { user: User }) {
   const { classes } = useStyles()
 
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [selected, setSelected] = useState<Date[]>([])
 
   const handleSelect = (date: Date) => {
@@ -51,6 +54,44 @@ export default function ManageBlockoutPage({ user }: { user: User }) {
           : [...current, date]
       )
     }
+  }
+
+  //sent blockout date to back end
+  const handleClick = async () => {
+    setIsSubmitting(true)
+    try {
+      const res = await fetch('/api/sanity/manageBlockouts', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          blockoutDates: selected,
+        }),
+        cache: 'no-cache',
+      })
+      const data = await res.json()
+
+      if (data?.status === 'error') {
+        showNotification({
+          title: 'Error',
+          message: data?.message || 'Cannot update block out dates, something went wrong',
+          color: 'red',
+          icon: <IconX />,
+        })
+      } else {
+        showNotification({
+          title: 'Success',
+          message: 'Blockout updated successfully',
+          color: 'green',
+          icon: <IconCheck />,
+        })
+      }
+    } catch (error) {
+      console.error(error)
+    }
+
+    setIsSubmitting(false)
   }
 
   return (
@@ -136,6 +177,11 @@ export default function ManageBlockoutPage({ user }: { user: User }) {
           },
         })}
       />
+      <Group position="right" mt="lg">
+        <Button onClick={handleClick} type="submit" disabled={isSubmitting}>
+          Save
+        </Button>
+      </Group>
     </Container>
   )
 }

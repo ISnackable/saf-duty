@@ -65,7 +65,31 @@ export function checkPasswordValidation(value: string) {
   }
   return null
 }
+/*
+// Function that checks if the date is valid, returns an error message if not
+export function validateEnlistmentDate(enlistmentDate?: Date, ordDate?: Date) {
+  if (!enlistmentDate || !ordDate) return "Dates cannot be empty";
+  /*
+  const minMonths = 22; // 1 year and 10 months in months
+  const maxMonths = 24; // 2 years in months
+  const timeDiff = ordDate.getTime() - enlistmentDate.getTime();
+  const monthsDiff = timeDiff / (1000 * 3600 * 24 * 30);
 
+  if (monthsDiff >= minMonths && monthsDiff <= maxMonths) {
+    return "Enlistment date must be between 1 year and 10 months and 2 years after ORD date";
+  }
+  
+}
+/*
+export function validateOrdDate(enlistmentDate?: Date, ordDate?: Date) {
+  if (!enlistmentDate || !ordDate) return "Dates cannot be empty";
+  
+  if (ordDate < enlistmentDate) {
+    return "ORD date cannot be less than enlistment date";
+  }
+  
+}
+*/
 const useStyles = createStyles((theme) => ({
   title: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
@@ -113,27 +137,39 @@ export default function ProfilePage({ user }: { user: User }) {
       onConfirm: () => console.log('Confirmed'),
     })
 
-  const form = useForm({
+  //userDetail form
+  const userDetailForm = useForm({
     initialValues: {
       name: user?.name || '',
+      enlistment: user?.enlistment,
+      ord: user?.ord,
+    },
+    validate: {
+      name: (value) => (value.length < 2 ? 'Name must have at least 2 letters' : null),
+      // enlistment: (value, values) => validateEnlistmentDate(value, values.ord),
+      //ord: (value, values) => validateOrdDate(values.enlistment, value),
+    },
+  })
+  //user account form
+  const userAccountForm = useForm({
+    initialValues: {
       email: user?.email || '',
       oldPassword: '',
       password: '',
     },
-
     validate: {
-      name: (value) => (value.length < 2 ? 'Name must have at least 2 letters' : null),
       email: isEmail('Invalid email'),
       password: (value) => checkPasswordValidation(value),
       oldPassword: (value) => checkPasswordValidation(value),
     },
   })
 
-  const handleSubmit = async (values: typeof form.values) => {
+  //update user detail to backend
+  const handleUserDetailSubmit = async (values: typeof userDetailForm.values) => {
     setIsSubmitting(true)
-
+    console.log(values)
     try {
-      const res = await fetch('/api/sanity/updateUser', {
+      const res = await fetch('/api/sanity/updateUserDetails', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -148,14 +184,52 @@ export default function ProfilePage({ user }: { user: User }) {
       if (data?.status === 'error') {
         showNotification({
           title: 'Error',
-          message: data?.message || 'Cannot update profile, something went wrong',
+          message: data?.message || 'Cannot update user details, something went wrong',
           color: 'red',
           icon: <IconX />,
         })
       } else {
         showNotification({
           title: 'Success',
-          message: 'Profile updated successfully',
+          message: 'User details updated successfully',
+          color: 'green',
+          icon: <IconCheck />,
+        })
+      }
+    } catch (error) {
+      console.error(error)
+    }
+
+    setIsSubmitting(false)
+  }
+
+  //update user account to backend
+  const handlePasswordSubmit = async (values: typeof userAccountForm.values) => {
+    setIsSubmitting(true)
+    try {
+      const res = await fetch('/api/sanity/updateUserAccount', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...values,
+        }),
+        cache: 'no-cache',
+      })
+      const data = await res.json()
+
+      if (data?.status === 'error') {
+        showNotification({
+          title: 'Error',
+          message: data?.message || 'Cannot update user account, something went wrong',
+          color: 'red',
+          icon: <IconX />,
+        })
+      } else {
+        showNotification({
+          title: 'Success',
+          message: 'User account updated successfully',
           color: 'green',
           icon: <IconCheck />,
         })
@@ -198,34 +272,38 @@ export default function ProfilePage({ user }: { user: User }) {
 
         <Tabs.Panel value="general" pt="xs">
           <div className={classes.form}>
-            <TextInput
-              mt="sm"
-              label="Name"
-              placeholder="Name"
-              description="Your name as it is on your NRIC"
-              {...form.getInputProps('name')}
-            />
+            <form onSubmit={userDetailForm.onSubmit(handleUserDetailSubmit)}>
+              <TextInput
+                mt="sm"
+                label="Name"
+                placeholder="Name"
+                description="Your name as it is on your NRIC"
+                {...userDetailForm.getInputProps('name')}
+              />
 
-            <DatePickerInput
-              clearable
-              mt="sm"
-              label="Enlistment date"
-              placeholder="Pick date"
-              {...form.getInputProps('enlistment')}
-            />
+              <DatePickerInput
+                clearable
+                mt="sm"
+                label="Enlistment date"
+                placeholder="Pick date"
+                {...userDetailForm.getInputProps('enlistment')}
+              />
 
-            <DatePickerInput
-              clearable
-              mt="sm"
-              label="ORD date"
-              placeholder="Pick date"
-              {...form.getInputProps('ord')}
-            />
+              <DatePickerInput
+                clearable
+                mt="sm"
+                label="ORD date"
+                placeholder="Pick date"
+                {...userDetailForm.getInputProps('ord')}
+              />
 
-            <Group position="right" mt="lg">
-              <Button color="gray">Cancel</Button>
-              <Button type="submit">Save</Button>
-            </Group>
+              <Group position="right" mt="lg">
+                <Button color="gray">Cancel</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  Save
+                </Button>
+              </Group>
+            </form>
           </div>
         </Tabs.Panel>
 
@@ -265,26 +343,26 @@ export default function ProfilePage({ user }: { user: User }) {
 
         <Tabs.Panel value="settings" pt="xs">
           <div className={classes.form}>
-            <form onSubmit={form.onSubmit(handleSubmit)}>
+            <form onSubmit={userAccountForm.onSubmit(handlePasswordSubmit)}>
               <TextInput
                 mt="sm"
                 label="Email"
                 placeholder="Email"
-                {...form.getInputProps('email')}
+                {...userAccountForm.getInputProps('email')}
               />
 
               <PasswordInput
                 mt="sm"
                 label="Old password"
                 placeholder="Old password"
-                {...form.getInputProps('oldPassword')}
+                {...userAccountForm.getInputProps('oldPassword')}
               />
 
               <PasswordInput
                 mt="sm"
                 label="New Password"
                 placeholder="New Password"
-                {...form.getInputProps('password')}
+                {...userAccountForm.getInputProps('password')}
               />
 
               <Group position="apart" mt="lg">
