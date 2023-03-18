@@ -31,8 +31,7 @@ import * as demo from '@/lib/demo.data'
 import config from '@/../site.config'
 import { createDutyRoster, DutyDate, Personnel } from '@/utils/dutyRoster'
 import { authOptions } from '../api/auth/[...nextauth]'
-import { writeClient } from '@/lib/sanity.client'
-import { getAllUsersQuery } from '@/lib/sanity.queries'
+import { getAllUsers } from '@/lib/sanity.client'
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -338,7 +337,6 @@ export default function GenerateDutyPage({ users }: { users: User[] }) {
           >
             Generate
           </Button>
-          <Button mt="xl">Save</Button>
         </Group>
 
         {value.length > 0 && (
@@ -403,8 +401,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   let users = demo.users
   if (session?.user?.id !== config.demoUserId) {
-    // We use `writeClient` here as the Users document is not publicly available. It requires authentication.
-    users = await writeClient.fetch<User[]>(getAllUsersQuery)
+    users = await getAllUsers()
   }
 
   return {
