@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import type { GetServerSidePropsContext } from 'next'
-import type { User } from 'next-auth'
 import { Container, createStyles, Divider, List, Text, Title, Button, Group } from '@mantine/core'
 import { DatePicker } from '@mantine/dates'
 import { getServerSession } from 'next-auth/next'
@@ -10,6 +9,9 @@ import dayjs from 'dayjs'
 import { IconCheck, IconX } from '@tabler/icons-react'
 
 import { authOptions } from './api/auth/[...nextauth]'
+import * as demo from '@/lib/demo.data'
+import config from '@/../site.config'
+import { getUserBlockouts } from '@/lib/sanity.client'
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -32,11 +34,11 @@ const MAXIMUM_BLOCKOUTS = 8
 
 ManageBlockoutPage.title = 'Manage Blockouts'
 
-export default function ManageBlockoutPage({ user }: { user: User }) {
+export default function ManageBlockoutPage({ blockouts }: { blockouts: string[] }) {
   const { classes } = useStyles()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [selected, setSelected] = useState<Date[]>([])
+  const [selected, setSelected] = useState<Date[]>(blockouts.map((d) => new Date(d)))
 
   const handleSelect = (date: Date) => {
     const isSelected = selected.some((s) => dayjs(date).isSame(s, 'date'))
@@ -60,13 +62,15 @@ export default function ManageBlockoutPage({ user }: { user: User }) {
   const handleClick = async () => {
     setIsSubmitting(true)
     try {
+      const blockoutDates = selected.map((date) => date.toLocaleDateString('sv-SE'))
+
       const res = await fetch('/api/sanity/manageBlockouts', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          blockoutDates: selected,
+          blockoutDates,
         }),
         cache: 'no-cache',
       })
@@ -113,8 +117,6 @@ export default function ManageBlockoutPage({ user }: { user: User }) {
         <List.Item>You are not allowed to blockout every weekend of the month</List.Item>
       </List>
       <Divider mt="sm" />
-
-      <Text>{user?.name}</Text>
 
       <DatePicker
         mt="lg"
@@ -186,7 +188,6 @@ export default function ManageBlockoutPage({ user }: { user: User }) {
   )
 }
 
-// Export the `session` prop to use sessions with Server Side Rendering
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions)
 
@@ -199,9 +200,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
   }
 
-  const { user } = session
+  let blockouts = demo.blockouts
+  if (session?.user?.id !== config.demoUserId) {
+    blockouts = await getUserBlockouts(session?.user?.id)
+  }
 
   return {
-    props: { user },
+    props: { blockouts },
   }
 }

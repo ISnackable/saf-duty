@@ -18,12 +18,13 @@ import {
   IconFingerprint,
   IconCalendarEvent,
   IconEdit,
-  IconApps,
   IconChessKnight,
   IconCloudLock,
   IconCe,
 } from '@tabler/icons-react'
 import { UserButtonMenu } from '@/components/UserButton'
+
+import config from '@/../site.config'
 
 type NavbarMinProps = Omit<NavbarProps, 'children'>
 
@@ -126,7 +127,7 @@ const links = [
 ]
 
 const adminLinks = [
-  { icon: IconApps, label: 'Overview', link: '/admin' },
+  { icon: IconUsers, label: 'Users overview', link: '/admin' },
   {
     icon: IconChessKnight,
     label: 'Generate duty',
@@ -190,7 +191,7 @@ export function NavbarMin(props: NavbarMinProps) {
         />
       </Navbar.Section>
 
-      {session && session.user?.role === 'admin' && (
+      {session && (session.user?.role === 'admin' || session.user?.id === config.demoUserId) && (
         <Navbar.Section className={classes.section}>
           <Group className={classes.collectionsHeader}>
             <Text size="xs" weight={500} color="dimmed">

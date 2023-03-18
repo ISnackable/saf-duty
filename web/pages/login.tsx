@@ -91,9 +91,9 @@ export default function AuthenticationForm() {
 
   const form = useForm({
     initialValues: {
-      name: 'demo',
-      email: 'demo@email.com',
-      password: '$00pU*2KE1X3',
+      name: '',
+      email: '',
+      password: '',
       termsOfService: true,
     },
 
@@ -101,13 +101,14 @@ export default function AuthenticationForm() {
       name: (value) => formType === 'register' && checkNameValidation(value),
       email: isEmail('Invalid email'),
       password: (value) => formType === 'register' && checkPasswordValidation(value),
-      termsOfService: (value) => (value ? null : 'You must agree to the terms of service'),
+      termsOfService: (value) =>
+        formType === 'register' && (value ? null : 'You must agree to the terms of service'),
     },
 
     validateInputOnChange: ['password'],
   })
 
-  const handleSubmit = async () => {
+  const handleSubmit = async ({ email, password }: { email: string; password: string }) => {
     // Execute the hCaptcha when the form is submitted
     if (formType === 'register' && hcaptchaRef.current !== null) {
       hcaptchaRef.current.execute()
@@ -115,7 +116,7 @@ export default function AuthenticationForm() {
 
     // If type is login then execute the signIn function
     else if (formType === 'login') {
-      const { email, password } = form.values
+      // const { email, password } = form.values
       setIsSubmitting(true)
       try {
         const response = await signIn('sanity-login', {
@@ -234,6 +235,22 @@ export default function AuthenticationForm() {
 
       <Paper radius="md" p="xl" mt={30} withBorder>
         <form onSubmit={form.onSubmit(handleSubmit)}>
+          <Anchor
+            component="button"
+            type="button"
+            color="dimmed"
+            onClick={() => {
+              handleSubmit({
+                email: 'demo@email.com',
+                password: '$00pU*2KE1X3',
+              })
+            }}
+            size="xs"
+          >
+            Interested but lazy to create an account? Click here to login as demo user to see the
+            app in action
+          </Anchor>
+
           <Stack>
             {formType === 'register' && (
               <TextInput
@@ -334,7 +351,6 @@ export default function AuthenticationForm() {
   )
 }
 
-// Export the `session` prop to use sessions with Server Side Rendering
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions)
 

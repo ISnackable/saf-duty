@@ -15,7 +15,7 @@ interface IUser extends DefaultUser {
   totalDutyDone?: number
   weekdayPoints?: number
   weekendPoints?: number
-  extraPoints?: number
+  extra?: number
 }
 declare module 'next-auth' {
   interface User extends IUser {}

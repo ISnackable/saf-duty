@@ -5,7 +5,7 @@ import { use } from 'next-api-route-middleware'
 import { getUserByIdQuery } from 'next-auth-sanity/queries'
 import * as argon2 from 'argon2'
 
-import { writeClient } from '@/lib/sanity.client'
+import { clientWithToken } from '@/lib/sanity.client'
 import {
   checkEmailValidation,
   checkNameValidation,
@@ -13,6 +13,7 @@ import {
 } from '@/pages/api/sanity/signUp'
 import { authOptions } from '../auth/[...nextauth]'
 import { rateLimitMiddleware } from '../rateLimitMiddleware'
+import config from '@/../site.config'
 
 async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'PUT') return res.status(404).send('Not found')
@@ -33,14 +34,14 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
     })
   }
   // Demo user
-  else if (userId === 'user.fdf11aae-d142-450b-87a4-559bc6e27f05') {
+  else if (userId === config.demoUserId) {
     return res.status(401).json({
       status: 'error',
       message: 'Unauthorized, you are not allowed to update this user',
     })
   }
 
-  const user = await writeClient.fetch(getUserByIdQuery, {
+  const user = await clientWithToken.fetch(getUserByIdQuery, {
     userSchema: 'user',
     id: userId,
   })
@@ -68,7 +69,7 @@ async function updateUserHandler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   try {
-    const newUser = await writeClient.patch(user._id).set(clonedUser).commit()
+    const newUser = await clientWithToken.patch(user._id).set(clonedUser).commit()
     console.log(newUser)
 
     return res.status(200).json({ status: 'success', message: 'Success, updated user' })

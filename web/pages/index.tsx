@@ -1,22 +1,15 @@
+import { useState } from 'react'
 import type { GetServerSidePropsContext } from 'next'
-import type { User } from 'next-auth'
 import { Container, createStyles, Divider, Text, Title, Flex } from '@mantine/core'
-import { Calendar } from '@mantine/dates'
+import { Calendar, isSameMonth } from '@mantine/dates'
 import { getServerSession } from 'next-auth/next'
 import { IconCalendarEvent } from '@tabler/icons-react'
 
 import { authOptions } from './api/auth/[...nextauth]'
-import { writeClient } from '@/lib/sanity.client'
-import { getAllUsersQuery } from '@/lib/sanity.queries'
+import { getAllCalendar } from '@/lib/sanity.client'
+import { type Calendar as CalendarType } from '@/lib/sanity.queries'
 import * as demo from '@/lib/demo.data'
-
-export const DAY_SIZES = {
-  xs: 34,
-  sm: 38,
-  md: 46,
-  lg: 58,
-  xl: 66,
-}
+import config from '@/../site.config'
 
 const useStyles = createStyles((theme) => {
   return {
@@ -46,10 +39,11 @@ const useStyles = createStyles((theme) => {
 
 IndexPage.title = 'Duty Roster'
 
-export default function IndexPage({ users }: { users: User[] }) {
+export default function IndexPage({ calendar }: { calendar: CalendarType[] }) {
   const { classes } = useStyles()
 
-  console.dir(users)
+  const [month, setMonth] = useState(new Date())
+  const dutyDates = calendar.find((cal) => isSameMonth(cal.date, month))
 
   return (
     <Container mt="lg">
@@ -70,6 +64,8 @@ export default function IndexPage({ users }: { users: User[] }) {
         // fullWidth
         hideOutsideDates
         size="xl"
+        date={month}
+        onDateChange={setMonth}
         styles={(theme) => ({
           calendar: {
             maxWidth: '100%',
@@ -104,7 +100,19 @@ export default function IndexPage({ users }: { users: User[] }) {
         getDayProps={(date) => {
           // Check if date isWeekend
           const isWeekend = date.getDay() === 0 || date.getDay() === 6
-          if (isWeekend) {
+          const isToday = date.toDateString() === new Date().toDateString()
+
+          if (isToday) {
+            return {
+              sx: (theme) => ({
+                color: `${
+                  theme.colorScheme === 'dark' ? theme.colors.blue[2] : theme.colors.blue[4]
+                } !important`,
+                backgroundColor:
+                  theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[2],
+              }),
+            }
+          } else if (isWeekend) {
             return {
               sx: (theme) => ({
                 color: `${
@@ -120,12 +128,20 @@ export default function IndexPage({ users }: { users: User[] }) {
         renderDay={(date) => {
           const day = date.getDate()
 
+          // return day if not same month
+          if (!isSameMonth(date, month)) {
+            return day
+          }
+
           return (
             <Flex mih={50} justify="center" align="center" direction="column">
               <div>{day}</div>
-              <Text size="xs" align="center">
-                WX (JW)
-              </Text>
+              {dutyDates && (
+                <Text size="xs" align="center">
+                  {dutyDates?.roster?.[day - 1]?.personnel} ({dutyDates?.roster?.[day - 1]?.standby}
+                  )
+                </Text>
+              )}
             </Flex>
           )
         }}
@@ -134,7 +150,6 @@ export default function IndexPage({ users }: { users: User[] }) {
   )
 }
 
-// Export the `session` prop to use sessions with Server Side Rendering
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions)
 
@@ -147,13 +162,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
   }
 
-  let users = demo.users
-  if (session?.user?.name !== 'demo') {
-    // We use `writeClient` here as the Users document is not publicly available. It requires authentication.
-    users = await writeClient.fetch<User[]>(getAllUsersQuery)
+  let calendar: CalendarType[] = demo.calendar
+  if (session?.user?.id !== config.demoUserId) {
+    calendar = await getAllCalendar()
   }
 
   return {
-    props: { users },
+    props: { calendar },
   }
 }
