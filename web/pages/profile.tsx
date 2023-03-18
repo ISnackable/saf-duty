@@ -123,19 +123,51 @@ export default function ProfilePage({ user }: { user: User }) {
 
   const openDeleteModal = () =>
     modals.openConfirmModal({
-      title: 'Delete your profile',
+      title: 'Delete your Account',
       centered: true,
       children: (
         <Text size="sm">
-          Are you sure you want to delete your profile? This action is destructive and you will have
+          Are you sure you want to delete your Account? This action is destructive and you will have
           to contact support to restore your data.
         </Text>
       ),
       labels: { confirm: 'Delete account', cancel: "No don't delete it" },
       confirmProps: { color: 'red' },
       onCancel: () => console.log('Cancel'),
-      onConfirm: () => console.log('Confirmed'),
+      onConfirm: () => deleteUser(),
     })
+
+  //delete user
+  const deleteUser = async () => {
+    console.log('Confirmed')
+    try {
+      const res = await fetch('/api/sanity/deleteUser', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-cache',
+      })
+      const data = await res.json()
+      if (data?.status === 'error') {
+        showNotification({
+          title: 'Error',
+          message: data?.message || 'Cannot delete account something went wrong',
+          color: 'red',
+          icon: <IconX />,
+        })
+      } else {
+        showNotification({
+          title: 'Success',
+          message: 'Successfully Delete Account',
+          color: 'green',
+          icon: <IconCheck />,
+        })
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   //userDetail form
   const userDetailForm = useForm({
@@ -192,6 +224,43 @@ export default function ProfilePage({ user }: { user: User }) {
         showNotification({
           title: 'Success',
           message: 'User details updated successfully',
+          color: 'green',
+          icon: <IconCheck />,
+        })
+      }
+    } catch (error) {
+      console.error(error)
+    }
+
+    setIsSubmitting(false)
+  }
+
+  const saveAvatar = async () => {
+    setIsSubmitting(true)
+    try {
+      const res = await fetch('/api/sanity/updateUserImage', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          image: imageUrl,
+        }),
+        cache: 'no-cache',
+      })
+      const data = await res.json()
+
+      if (data?.status === 'error') {
+        showNotification({
+          title: 'Error',
+          message: data?.message || 'Cannot update Avatar, something went wrong',
+          color: 'red',
+          icon: <IconX />,
+        })
+      } else {
+        showNotification({
+          title: 'Success',
+          message: 'Avatar updated successfully',
           color: 'green',
           icon: <IconCheck />,
         })
@@ -336,7 +405,9 @@ export default function ProfilePage({ user }: { user: User }) {
             </Group>
             <Group position="right">
               <Button color="gray">Cancel</Button>
-              <Button type="submit">Save</Button>
+              <Button onClick={saveAvatar} type="submit">
+                Save
+              </Button>
             </Group>
           </div>
         </Tabs.Panel>

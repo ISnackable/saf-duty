@@ -1,6 +1,7 @@
 import type { GetServerSidePropsContext } from 'next'
 import dayjs from 'dayjs'
 import { Table } from '@mantine/core'
+import Link from 'next/link'
 
 import {
   createStyles,
@@ -58,6 +59,9 @@ const useStyles = createStyles((theme) => ({
 
   icon: {
     color: theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[4],
+  },
+  link: {
+    color: theme.colorScheme === 'dark' ? theme.colors.blue[3] : theme.colors.blue[9],
   },
 }))
 
@@ -151,6 +155,17 @@ export default function PayDayPage() {
         <IconEdit size={48} />
         <Title className={classes.title}>Pay Day</Title>
       </div>
+      <Text color="dimmed" mt="md">
+        The Monthly Allowance Information is took from{' '}
+        <Link
+          href="https://www.cmpb.gov.sg/web/portal/cmpb/home/life-in-ns/saf/service-benefits-and-welfare/monthly-allowance"
+          className={classes.link}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Monthly Allowance on CMPB.GOV.SG
+        </Link>
+      </Text>
 
       <Divider mt="sm" />
       <Paper withBorder p="md" radius="md" mt="xl">

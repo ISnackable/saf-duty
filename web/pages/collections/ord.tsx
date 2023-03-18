@@ -64,7 +64,7 @@ export default function ORDPage({ user }: { user: User }) {
   const current = today.diff(enlist, 'day')
 
   const ordProgress = Math.round((current / total) * 100)
-
+  console.log(user?.enlistment, user?.ord)
   return (
     <Container mt="lg">
       <div className={classes.titleWrapper}>
