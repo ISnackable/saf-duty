@@ -202,8 +202,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
   }
 
-  console.log(session?.user)
-
   let blockouts = demo.blockouts
   if (session?.user?.id !== config.demoUserId) {
     blockouts = await getUserBlockouts(session?.user?.id)
