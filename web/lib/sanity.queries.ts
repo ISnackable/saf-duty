@@ -1,4 +1,5 @@
 import { groq } from 'next-sanity'
+import config from '@/../site.config'
 
 export interface Calendar {
   date: Date
@@ -13,7 +14,7 @@ export interface Roster {
 
 export type UpcomingDuties = string[]
 
-export const getAllUsersQuery = groq`*[_type == "user" && !(_id in path("drafts.**"))]{
+export const getAllUsersQuery = groq`*[_type == "user" && _id != "${config.demoUserId}" && !(_id in path("drafts.**"))]{
     "id": _id,
     name,
     image,

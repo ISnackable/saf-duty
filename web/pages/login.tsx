@@ -236,6 +236,7 @@ export default function AuthenticationForm() {
       <Paper radius="md" p="xl" mt={30} withBorder>
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Anchor
+            disabled={isSubmitting}
             component="button"
             type="button"
             color="dimmed"

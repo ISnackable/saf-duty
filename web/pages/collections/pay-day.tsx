@@ -14,7 +14,7 @@ import {
   Container,
 } from '@mantine/core'
 import { getServerSession } from 'next-auth/next'
-import { IconDeviceAnalytics, IconEdit } from '@tabler/icons-react'
+import { IconEdit } from '@tabler/icons-react'
 
 import { authOptions } from '../api/auth/[...nextauth]'
 

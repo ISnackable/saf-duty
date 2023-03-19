@@ -141,8 +141,8 @@ export default function ProfilePage({ user }: { user: User }) {
   const userDetailForm = useForm({
     initialValues: {
       name: user?.name || '',
-      enlistment: user?.enlistment,
-      ord: user?.ord,
+      enlistment: user?.enlistment ? new Date(user?.enlistment) : null,
+      ord: user?.ord ? new Date(user?.ord) : null,
     },
     validate: {
       name: (value) => (value.length < 2 ? 'Name must have at least 2 letters' : null),
@@ -174,7 +174,9 @@ export default function ProfilePage({ user }: { user: User }) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...values,
+          name: values.name,
+          enlistment: values.enlistment?.toLocaleDateString('sv-SE'),
+          ord: values.ord?.toLocaleDateString('sv-SE'),
         }),
         cache: 'no-cache',
       })

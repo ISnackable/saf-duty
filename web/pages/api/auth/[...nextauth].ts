@@ -18,6 +18,8 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.role = user.role
         token.id = user.id.replace('drafts.', '')
+        token.ord = user.ord
+        token.enlistment = user.enlistment
       }
       return token
     },
@@ -26,6 +28,8 @@ export const authOptions: NextAuthOptions = {
       if (token && session.user) {
         session.user.role = token.role
         session.user.id = token.id?.replace('drafts.', '')
+        session.user.ord = token.ord
+        session.user.enlistment = token.enlistment
       }
       return session
     },

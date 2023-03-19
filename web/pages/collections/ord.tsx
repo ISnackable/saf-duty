@@ -1,7 +1,9 @@
 import type { GetServerSidePropsContext } from 'next'
+import Link from 'next/link'
 import type { User } from 'next-auth'
 import { getServerSession } from 'next-auth/next'
 import {
+  Anchor,
   Badge,
   Blockquote,
   Container,
@@ -17,7 +19,10 @@ import {
 import { IconCalendarStats, IconRun } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 
+import * as demo from '@/lib/demo.data'
+import config from '@/../site.config'
 import { authOptions } from '../api/auth/[...nextauth]'
+import { getUserById } from '@/lib/sanity.client'
 
 const ICON_SIZE = 60
 
@@ -74,8 +79,8 @@ export default function ORDPage({ user }: { user: User }) {
 
       <Text color="dimmed" mt="md">
         ORD is the date when full-time national servicemen (Singaporean Males) complete their 2
-        years (previously 2.5 years) compulsory stint in the Singapore Army, Navy, Police or Civil
-        Defence Force. Stop looking at this page as it is depressing.
+        years (previously 2.5 years) compulsory service in the Singapore Army, Navy, Police or Civil
+        Defence Force.
       </Text>
       <Divider mt="sm" />
 
@@ -90,23 +95,35 @@ export default function ORDPage({ user }: { user: User }) {
 
         <Blockquote cite={`– ${user?.name || 'Some NSF'}`}>ORD loh!!</Blockquote>
 
-        <Group position="apart" mt="xs">
-          <Text size="sm" color="dimmed">
-            Progress
-          </Text>
-          <Text size="sm" color="dimmed">
-            {ordProgress}%
-          </Text>
-        </Group>
+        {user?.enlistment && user?.ord ? (
+          <>
+            <Group position="apart" mt="xs">
+              <Text size="sm" color="dimmed">
+                Progress
+              </Text>
+              <Text size="sm" color="dimmed">
+                {ordProgress}%
+              </Text>
+            </Group>
 
-        <Progress value={ordProgress} mt={5} animate color="teal" />
+            <Progress value={ordProgress} mt={5} animate color="teal" />
 
-        <Group position="apart" mt="md">
-          <Text size="sm">
-            {current} / {total} days
+            <Group position="apart" mt="md">
+              <Text size="sm">
+                {current} / {total} days
+              </Text>
+              <Badge size="sm">{diff} days left</Badge>
+            </Group>
+          </>
+        ) : (
+          <Text size="sm" color="red" align="center">
+            Enlistment and ORD dates are not set. Head over to your{' '}
+            <Anchor component={Link} href="/profile">
+              profile page
+            </Anchor>{' '}
+            to set them. Once set, you will be able to see your ORD progress here.
           </Text>
-          <Badge size="sm">{diff} days left</Badge>
-        </Group>
+        )}
       </Paper>
     </Container>
   )
@@ -124,7 +141,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
   }
 
-  const { user } = session
+  let user = demo.users[0]
+  if (session?.user?.id && session?.user?.id !== config.demoUserId) {
+    user = await getUserById(session?.user?.id)
+  }
 
   return {
     props: { user },

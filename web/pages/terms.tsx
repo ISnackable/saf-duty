@@ -76,7 +76,7 @@ export default function TermsPage() {
         </Text>
 
         <Group position="center">
-          <Button variant="subtle" size="md" component={Link} href="/">
+          <Button variant="subtle" size="md" component={Link} href="/login">
             Take me back to home page
           </Button>
         </Group>

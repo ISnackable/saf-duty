@@ -17,6 +17,7 @@ export const users: User[] = [
     role: Role.user,
     image:
       'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+    enlistment: new Date(2022, 1, 2),
     ord: new Date(2024, 1, 1),
     totalDutyDone: 10,
     weekdayPoints: 0,
@@ -30,6 +31,7 @@ export const users: User[] = [
     role: Role.user,
     image:
       'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+    enlistment: new Date(2022, 2, 29),
     ord: new Date(2024, 2, 28),
     totalDutyDone: 12,
     weekdayPoints: 0,
@@ -43,6 +45,7 @@ export const users: User[] = [
     role: Role.user,
     image:
       'https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+    enlistment: new Date(2023, 5, 11),
     ord: new Date(2025, 5, 10),
     totalDutyDone: 10,
     weekdayPoints: 1,
@@ -56,6 +59,7 @@ export const users: User[] = [
     role: Role.user,
     image:
       'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+    enlistment: new Date(2021, 3, 2),
     ord: new Date(2023, 3, 1),
     totalDutyDone: 9,
     weekdayPoints: 1,
@@ -69,6 +73,7 @@ export const users: User[] = [
     role: Role.user,
     image:
       'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+    enlistment: new Date(2022, 4, 2),
     ord: new Date(2024, 4, 1),
     totalDutyDone: 6,
     weekdayPoints: 1,
@@ -92,6 +97,7 @@ export const users: User[] = [
     role: Role.user,
     image:
       'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+    enlistment: new Date(2022, 9, 30),
     ord: new Date(2024, 9, 29),
     totalDutyDone: 0,
     weekdayPoints: -1,
@@ -105,6 +111,7 @@ export const users: User[] = [
     role: Role.user,
     image:
       'https://images.unsplash.com/photo-1531727991582-cfd25ce79613?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+    enlistment: new Date(2022, 2, 14),
     ord: new Date(2024, 2, 13),
     totalDutyDone: 0,
     weekdayPoints: 1,
@@ -135,6 +142,7 @@ export const users: User[] = [
     role: Role.user,
     image:
       'https://images.unsplash.com/photo-1614587185092-af24ed71c6e4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80',
+    enlistment: new Date(2022, 6, 24),
     ord: new Date(2024, 6, 23),
     totalDutyDone: 0,
     weekdayPoints: 0,
