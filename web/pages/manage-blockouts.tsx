@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { GetServerSidePropsContext } from 'next'
 import { Container, createStyles, Divider, List, Text, Title, Button, Group } from '@mantine/core'
 import { DatePicker } from '@mantine/dates'
@@ -201,6 +201,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     }
   }
+
+  console.log(session?.user)
 
   let blockouts = demo.blockouts
   if (session?.user?.id !== config.demoUserId) {
