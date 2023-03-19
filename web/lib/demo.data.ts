@@ -4,7 +4,7 @@ import type { User } from 'next-auth'
 import { Role } from '@/nextauth.d'
 import { Calendar } from './sanity.queries'
 
-const todayMonth = new Date().getMonth() + 1
+const todayMonth = ('0' + (new Date().getMonth() + 1)).slice(-2)
 
 export const title = 'Blog.'
 

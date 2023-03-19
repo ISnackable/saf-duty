@@ -38,7 +38,9 @@ export default function ManageBlockoutPage({ blockouts }: { blockouts: string[] 
   const { classes } = useStyles()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [selected, setSelected] = useState<Date[]>([])
+  const [selected, setSelected] = useState<Date[]>(
+    blockouts ? blockouts.map((date) => new Date(date)) : []
+  )
 
   const handleSelect = (date: Date) => {
     const isSelected = selected.some((s) => dayjs(date).isSame(s, 'date'))
@@ -57,11 +59,6 @@ export default function ManageBlockoutPage({ blockouts }: { blockouts: string[] 
       )
     }
   }
-
-  useEffect(
-    () => setSelected(blockouts ? blockouts.map((date) => new Date(date)) : []),
-    [blockouts]
-  )
 
   //sent blockout date to back end
   const handleClick = async () => {
