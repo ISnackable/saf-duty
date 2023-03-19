@@ -162,6 +162,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
   }
 
+  // Log user session for logging
+  console.log(session)
+
   let calendar: CalendarType[] = demo.calendar
   if (session?.user?.id !== config.demoUserId) {
     calendar = await getAllCalendar()

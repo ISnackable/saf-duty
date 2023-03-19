@@ -77,7 +77,7 @@ export function UserButtonMenu(props: UserButtonProps) {
           <Menu.Item
             color="red"
             icon={<IconLogout size={14} stroke={1.5} />}
-            onClick={() => signOut()}
+            onClick={() => signOut({ callbackUrl: '/login' })}
           >
             Logout
           </Menu.Item>
