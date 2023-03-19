@@ -1,5 +1,5 @@
 import type {StructureBuilder} from 'sanity/desk'
-import {CalendarIcon, ThListIcon, FilterIcon, ClockIcon} from '@sanity/icons'
+import {CalendarIcon, ThListIcon, FilterIcon, ClockIcon, CogIcon} from '@sanity/icons'
 import {ConfigContext} from 'sanity'
 
 interface CalendarQuery {
@@ -75,12 +75,18 @@ export const myStructure = (S: StructureBuilder, context: ConfigContext) => {
         ])
     )
 
+  const siteSettingsStructure = S.listItem()
+    .title('Site Settings')
+    .icon(CogIcon)
+    .child(S.document().schemaType('siteSettings').documentId('siteSettings'))
+
   // The default root list items (except custom ones)
   const defaultListItems = S.documentTypeListItems().filter(
-    (listItem) => !['calendar', 'verification-token', 'account'].includes(listItem.getId()!)
+    (listItem) =>
+      !['calendar', 'siteSettings', 'verification-token', 'account'].includes(listItem.getId()!)
   )
 
   return S.list()
     .title('Base')
-    .items([calendarStructure, ...defaultListItems])
+    .items([calendarStructure, ...defaultListItems, S.divider(), siteSettingsStructure])
 }

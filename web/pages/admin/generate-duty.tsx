@@ -134,7 +134,9 @@ export default function GenerateDutyPage({
       })
 
       setDutyPersonnelState(dutyPersonnel as unknown as Personnel[])
-      setMultiSelectValue(Array.from(new Set(dutyDates.roster.map((date) => date.personnel))))
+      setMultiSelectValue(
+        Array.from(new Set(dutyDates.roster.map((date) => date.personnel).filter(Boolean)))
+      )
     } else if (month) {
       setDutyRoster([])
       setExtraDate([])
@@ -343,7 +345,12 @@ export default function GenerateDutyPage({
         </div>
 
         <Text color="dimmed" mt="md">
-          Generate the duty roster for the selected month & year with the given personnels.
+          Generate the duty roster for the selected month & year with the given personnels. The
+          algorithm will try to generate the duty roster such that each personnel will have an equal
+          number of duty days and duty weekends and try to make sure that the duty personnel/stand
+          in has less than 2 consecutive days of duty/standby. It uses weekendPoints and
+          weekdayPoints to determine the number of duty days and duty weekends. Personnel with lower
+          points will have more duty.
         </Text>
 
         <Group grow>

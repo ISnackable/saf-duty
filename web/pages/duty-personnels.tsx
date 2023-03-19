@@ -194,7 +194,7 @@ export default function DutyPersonnelsPage() {
   })
 
   return (
-    <Container mt="lg">
+    <Container my="xl">
       <div className={classes.titleWrapper}>
         <IconEdit size={48} />
         <Title className={classes.title}>Duty Personnels</Title>

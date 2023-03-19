@@ -127,10 +127,10 @@ const links = [
 ]
 
 const adminLinks = [
-  { icon: IconUsers, label: 'Users overview', link: '/admin' },
+  { icon: IconUsers, label: 'Manage Users', link: '/admin' },
   {
     icon: IconChessKnight,
-    label: 'Generate duty',
+    label: 'Generate Duty',
     link: '/admin/generate-duty',
   },
 ]

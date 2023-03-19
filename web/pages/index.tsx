@@ -46,7 +46,7 @@ export default function IndexPage({ calendar }: { calendar: CalendarType[] }) {
   const dutyDates = calendar.find((cal) => isSameMonth(cal.date, month))
 
   return (
-    <Container mt="lg">
+    <Container my="xl">
       <div className={classes.titleWrapper}>
         <IconCalendarEvent size={48} />
         <Title className={classes.title}>Duty Roster</Title>

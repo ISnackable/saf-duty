@@ -193,7 +193,7 @@ export default function AdminPage({ users }: { users: User[] }) {
       <Container my="xl">
         <div className={classes.titleWrapper}>
           <IconUsers size={48} />
-          <Title className={classes.title}>Users Overview</Title>
+          <Title className={classes.title}>Manage Users</Title>
         </div>
 
         <Text color="dimmed" mt="md">

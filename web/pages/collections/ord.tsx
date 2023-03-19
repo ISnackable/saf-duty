@@ -56,8 +56,8 @@ ORDPage.title = 'ORD Progress'
 export default function ORDPage({ user }: { user: User }) {
   const { classes } = useStyles()
   const today = dayjs()
-  const enlist = dayjs(`2022-06-05`)
-  const ord = dayjs(`2024-06-05`)
+  const enlist = dayjs(user?.enlistment)
+  const ord = dayjs(user?.ord)
   // Calculate number of days between dates
   const diff = ord.diff(today, 'day')
   const total = ord.diff(enlist, 'day')
@@ -66,7 +66,7 @@ export default function ORDPage({ user }: { user: User }) {
   const ordProgress = Math.round((current / total) * 100)
 
   return (
-    <Container mt="lg">
+    <Container my="xl">
       <div className={classes.titleWrapper}>
         <IconCalendarStats size={48} />
         <Title className={classes.title}>ORD</Title>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { GetServerSidePropsContext } from 'next'
 import { Container, createStyles, Divider, List, Text, Title, Button, Group } from '@mantine/core'
 import { DatePicker } from '@mantine/dates'
@@ -34,11 +34,11 @@ const MAXIMUM_BLOCKOUTS = 8
 
 ManageBlockoutPage.title = 'Manage Blockouts'
 
-export default function ManageBlockoutPage({ blockouts }: { blockouts: string[] }) {
+export default function ManageBlockoutPage({ blockouts }: { blockouts: string[] | null }) {
   const { classes } = useStyles()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [selected, setSelected] = useState<Date[]>(blockouts.map((d) => new Date(d)))
+  const [selected, setSelected] = useState<Date[]>([])
 
   const handleSelect = (date: Date) => {
     const isSelected = selected.some((s) => dayjs(date).isSame(s, 'date'))
@@ -57,6 +57,11 @@ export default function ManageBlockoutPage({ blockouts }: { blockouts: string[] 
       )
     }
   }
+
+  useEffect(
+    () => setSelected(blockouts ? blockouts.map((date) => new Date(date)) : []),
+    [blockouts]
+  )
 
   //sent blockout date to back end
   const handleClick = async () => {
@@ -99,7 +104,7 @@ export default function ManageBlockoutPage({ blockouts }: { blockouts: string[] 
   }
 
   return (
-    <Container mt="lg">
+    <Container my="xl">
       <div className={classes.titleWrapper}>
         <IconEdit size={48} />
         <Title className={classes.title}>Manage Blockouts</Title>
