@@ -235,22 +235,24 @@ export default function AuthenticationForm() {
 
       <Paper radius="md" p="xl" mt={30} withBorder>
         <form onSubmit={form.onSubmit(handleSubmit)}>
-          <Anchor
-            disabled={isSubmitting}
-            component="button"
-            type="button"
-            color="dimmed"
-            onClick={() => {
-              handleSubmit({
-                email: 'demo@email.com',
-                password: '$00pU*2KE1X3',
-              })
-            }}
-            size="xs"
-          >
-            Interested but lazy to create an account? Click here to login as demo user to see the
-            app in action
-          </Anchor>
+          {formType === 'login' && (
+            <Anchor
+              disabled={isSubmitting}
+              component="button"
+              type="button"
+              color="dimmed"
+              onClick={() => {
+                handleSubmit({
+                  email: 'demo@email.com',
+                  password: '$00pU*2KE1X3',
+                })
+              }}
+              size="xs"
+            >
+              Interested but lazy to create an account? Click here to login as demo user to see the
+              app in action
+            </Anchor>
+          )}
 
           <Stack>
             {formType === 'register' && (

@@ -30,6 +30,8 @@ export const getAllUsersQuery = groq`*[_type == "user" && _id != "${config.demoU
 export const getUserQuery = groq`*[_type == "user" && _id == $id && !(_id in path("drafts.**"))]{
     "id": _id,
     name,
+    email,
+    role,
     image,
     blockouts,
     weekdayPoints,

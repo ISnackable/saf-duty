@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { GetServerSidePropsContext } from 'next'
+import { useRouter } from 'next/router'
 import type { User } from 'next-auth'
 import Image from 'next/image'
 import { getServerSession } from 'next-auth/next'
@@ -117,9 +118,20 @@ const useStyles = createStyles((theme) => ({
 ProfilePage.title = 'Profile'
 
 export default function ProfilePage({ user }: { user: User }) {
+  const router = useRouter()
   const { classes } = useStyles()
+
   const [file, setFile] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const reloadSession = async () => {
+    await fetch('/api/auth/session?update=true')
+
+    const event = new Event('visibilitychange')
+    window.dispatchEvent(event)
+
+    router.reload()
+  }
 
   const openDeleteModal = () =>
     modals.openConfirmModal({
@@ -190,6 +202,7 @@ export default function ProfilePage({ user }: { user: User }) {
           icon: <IconX />,
         })
       } else {
+        reloadSession()
         showNotification({
           title: 'Success',
           message: 'User details updated successfully',
@@ -228,6 +241,7 @@ export default function ProfilePage({ user }: { user: User }) {
           icon: <IconX />,
         })
       } else {
+        reloadSession()
         showNotification({
           title: 'Success',
           message: 'User account updated successfully',
