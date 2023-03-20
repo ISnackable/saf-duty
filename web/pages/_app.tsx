@@ -8,6 +8,7 @@ import { MantineProvider, ColorSchemeProvider, ColorScheme } from '@mantine/core
 import { DatesProvider } from '@mantine/dates'
 import { Notifications } from '@mantine/notifications'
 import { ModalsProvider } from '@mantine/modals'
+import { SWRConfig } from 'swr'
 
 import Layout from '@/components/Layout'
 import RouterTransition from '@/components/RouterTransition'
@@ -58,9 +59,18 @@ export default function MyApp({
                 {pagesWithoutLayout.includes(router.pathname) ? (
                   <Component {...pageProps} key={router.asPath} />
                 ) : (
-                  <Layout>
-                    <Component {...pageProps} key={router.asPath} />
-                  </Layout>
+                  <SWRConfig
+                    value={{
+                      fetcher: (resource, init) =>
+                        fetch(resource, init)
+                          .then((res) => res.json())
+                          .then((data) => data.data),
+                    }}
+                  >
+                    <Layout>
+                      <Component {...pageProps} key={router.asPath} />
+                    </Layout>
+                  </SWRConfig>
                 )}
               </ModalsProvider>
             </DatesProvider>

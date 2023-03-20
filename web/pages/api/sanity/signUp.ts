@@ -4,6 +4,7 @@ import { signUpHandler } from 'next-auth-sanity'
 import { clientWithToken } from '@/lib/sanity.client'
 
 import { rateLimitMiddleware } from '../rateLimitMiddleware'
+import { allowMethods } from '../allowMethodsMiddleware'
 
 // Function that checks if the password is valid, returns an error message if not
 export function checkPasswordValidation(value: string) {
@@ -150,8 +151,9 @@ export const validateFields: Middleware = async (req, res, next) => {
 
 export default use(
   rateLimitMiddleware,
-  hcaptcha,
+  allowMethods(['POST']),
   validateFields,
+  hcaptcha,
   addFields,
   signUpHandler(clientWithToken)
 )

@@ -184,7 +184,7 @@ export function NavbarMin(props: NavbarMinProps) {
     <Navbar className={classes.navbar} {...props}>
       <Navbar.Section className={classes.section}>
         <UserButtonMenu
-          image={session?.user?.image || 'https://i.imgur.com/fGxgcDF.png'}
+          image={session?.user?.image || ''}
           name={session?.user?.name || 'Name not found'}
           email={session?.user?.email || 'Email not found'}
           icon={<IconSelector size="0.9rem" stroke={1.5} />}

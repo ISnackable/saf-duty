@@ -1,9 +1,6 @@
 import { useState } from 'react'
-import type { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
-import type { User } from 'next-auth'
 import Image from 'next/image'
-import { getServerSession } from 'next-auth/next'
 import { DatePickerInput } from '@mantine/dates'
 import { isEmail, useForm } from '@mantine/form'
 import {
@@ -30,8 +27,7 @@ import {
   IconUpload,
   IconX,
 } from '@tabler/icons-react'
-
-import { authOptions } from './api/auth/[...nextauth]'
+import { useSession } from 'next-auth/react'
 
 // Function that checks if the password is valid, returns an error message if not
 export function checkPasswordValidation(value: string) {
@@ -117,9 +113,12 @@ const useStyles = createStyles((theme) => ({
 
 ProfilePage.title = 'Profile'
 
-export default function ProfilePage({ user }: { user: User }) {
+export default function ProfilePage() {
+  const { data: session } = useSession()
   const router = useRouter()
   const { classes } = useStyles()
+
+  const user = session?.user
 
   const [file, setFile] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -394,23 +393,4 @@ export default function ProfilePage({ user }: { user: User }) {
       </Tabs>
     </Container>
   )
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
-
-  const { user } = session
-
-  return {
-    props: { user },
-  }
 }

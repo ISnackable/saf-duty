@@ -3,9 +3,7 @@ import { Container, createStyles, Divider, Text, Title, Flex } from '@mantine/co
 import { Calendar, isSameMonth } from '@mantine/dates'
 import { IconCalendarEvent } from '@tabler/icons-react'
 
-import { type Calendar as CalendarType } from '@/lib/sanity.queries'
-import * as demo from '@/lib/demo.data'
-// import config from '@/../site.config'
+import useCalendar from '@/hooks/useCalendar'
 
 const useStyles = createStyles((theme) => {
   return {
@@ -36,11 +34,13 @@ const useStyles = createStyles((theme) => {
 IndexPage.title = 'Duty Roster'
 
 export default function IndexPage() {
+  const { data: calendar, error } = useCalendar()
   const { classes } = useStyles()
 
   const [month, setMonth] = useState(new Date())
-  const calendar: CalendarType[] = demo.calendar
-  const dutyDates = calendar.find((cal) => isSameMonth(cal.date, month))
+
+  if (error) return <div>failed to load</div>
+  const dutyDates = calendar?.find((cal) => isSameMonth(new Date(cal.date), month))
 
   return (
     <Container my="xl">

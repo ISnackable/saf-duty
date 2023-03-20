@@ -1,6 +1,4 @@
-import type { GetServerSidePropsContext } from 'next'
 import type { User } from 'next-auth'
-import { getServerSession } from 'next-auth/next'
 import {
   Avatar,
   Table,
@@ -16,6 +14,7 @@ import {
   NumberInput,
   Modal,
   TextInput,
+  Skeleton,
 } from '@mantine/core'
 import { modals } from '@mantine/modals'
 import { useDisclosure } from '@mantine/hooks'
@@ -23,11 +22,10 @@ import { useForm } from '@mantine/form'
 import { DatePickerInput } from '@mantine/dates'
 import { IconPencil, IconTrash, IconUsers } from '@tabler/icons-react'
 import dayjs from 'dayjs'
+import useSWRImmutable from 'swr/immutable'
 
-import * as demo from '@/lib/demo.data'
-import config from '@/../site.config'
-import { authOptions } from '../api/auth/[...nextauth]'
-import { getAllUsers } from '@/lib/sanity.client'
+// import * as demo from '@/lib/demo.data'
+// import config from '@/../site.config'
 
 const rolesData = [
   { label: 'Admin', value: 'admin' },
@@ -53,7 +51,9 @@ const useStyles = createStyles((theme) => ({
 
 AdminPage.title = 'Admin'
 
-export default function AdminPage({ users }: { users: User[] }) {
+export default function AdminPage() {
+  const { data: users, error, isLoading } = useSWRImmutable<User[]>(`/api/sanity/users`)
+
   const { classes } = useStyles()
   const [opened, { open, close }] = useDisclosure(false)
 
@@ -71,6 +71,8 @@ export default function AdminPage({ users }: { users: User[] }) {
     },
   })
 
+  if (error) return <div>failed to load</div>
+
   const openDeleteModal = (user: User) =>
     modals.openConfirmModal({
       title: `Delete ${user.name}'s account`,
@@ -87,7 +89,7 @@ export default function AdminPage({ users }: { users: User[] }) {
       onConfirm: () => console.log('Confirmed'),
     })
 
-  const rows = users.map((user) => (
+  const rows = users?.map((user) => (
     <tr key={user.name}>
       <td>
         <Group spacing="sm">
@@ -211,7 +213,26 @@ export default function AdminPage({ users }: { users: User[] }) {
                 <th />
               </tr>
             </thead>
-            <tbody>{rows}</tbody>
+            <tbody>
+              {isLoading
+                ? [...Array(4)].map((n) => (
+                    <tr key={n}>
+                      <td>
+                        <Skeleton height={40} />
+                      </td>
+                      <td>
+                        <Skeleton height={40} />
+                      </td>
+                      <td>
+                        <Skeleton height={40} />
+                      </td>
+                      <td>
+                        <Skeleton height={40} />
+                      </td>
+                    </tr>
+                  ))
+                : rows}
+            </tbody>
           </Table>
         </ScrollArea>
 
@@ -230,38 +251,4 @@ export default function AdminPage({ users }: { users: User[] }) {
       </Container>
     </>
   )
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
-
-  const { user } = session
-
-  // Only allow access to users with the "admin" role unless the user is demo
-  if (user?.role !== 'admin' && user?.id !== config.demoUserId) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-
-  let users = demo.users
-  if (session?.user?.id !== config.demoUserId) {
-    users = await getAllUsers()
-  }
-
-  return {
-    props: { users },
-  }
 }

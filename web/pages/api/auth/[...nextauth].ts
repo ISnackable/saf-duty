@@ -3,8 +3,16 @@ import NextAuth, { NextAuthOptions } from 'next-auth'
 import { SanityAdapter, SanityCredentials } from 'next-auth-sanity'
 import { clientWithToken, getUserById } from '@/lib/sanity.client'
 
-const createOptions = (req: NextApiRequest): NextAuthOptions => ({
-  ...authOptions,
+export const createOptions = (req: NextApiRequest): NextAuthOptions => ({
+  providers: [SanityCredentials(clientWithToken)],
+  session: {
+    strategy: 'jwt',
+  },
+  adapter: SanityAdapter(clientWithToken),
+  pages: {
+    signIn: '/login',
+    error: '/login',
+  },
   callbacks: {
     async jwt({ token, user }) {
       /* Step 1: update the token based on the user object */
@@ -47,46 +55,6 @@ const createOptions = (req: NextApiRequest): NextAuthOptions => ({
     },
   },
 })
-
-export const authOptions: NextAuthOptions = {
-  providers: [SanityCredentials(clientWithToken)],
-  session: {
-    strategy: 'jwt',
-  },
-  adapter: SanityAdapter(clientWithToken),
-  pages: {
-    signIn: '/login',
-    error: '/login',
-  },
-  callbacks: {
-    async jwt({ token, user }) {
-      /* Step 1: update the token based on the user object */
-      if (user) {
-        token.name = user.name
-        token.email = user.email
-        token.image = user.image
-        token.role = user.role
-        token.id = user.id.replace('drafts.', '')
-        token.ord = user.ord
-        token.enlistment = user.enlistment
-      }
-      return token
-    },
-    session({ session, token }) {
-      /* Step 2: update the session.user based on the token object */
-      if (token && session.user) {
-        session.user.name = token.name
-        session.user.email = token.email
-        session.user.image = token.image
-        session.user.role = token.role
-        session.user.id = token.id?.replace('drafts.', '')
-        session.user.ord = token.ord
-        session.user.enlistment = token.enlistment
-      }
-      return session
-    },
-  },
-}
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   return NextAuth(req, res, createOptions(req))

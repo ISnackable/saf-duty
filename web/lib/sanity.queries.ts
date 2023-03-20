@@ -1,18 +1,25 @@
 import { groq } from 'next-sanity'
 import config from '@/../site.config'
 
+type TYear = `${number}${number}${number}${number}`
+type TMonth = `${number}${number}`
+type TDay = `${number}${number}`
+
+/**
+ * Represent a string like `2021-01-08`
+ */
+export type TDateISODate = `${TYear}-${TMonth}-${TDay}`
+
 export interface Calendar {
-  date: Date
+  date: TDateISODate
   roster: Roster[]
 }
 
 export interface Roster {
-  date: Date
+  date: TDateISODate
   personnel: string
   standby: string
 }
-
-export type UpcomingDuties = string[]
 
 export const getAllUsersQuery = groq`*[_type == "user" && _id != "${config.demoUserId}" && !(_id in path("drafts.**"))]{
     "id": _id,
@@ -58,12 +65,3 @@ export const getAllCalendarQuery = groq`*[_type == 'calendar' && !(_id in path("
     "standby": dutyPersonnelStandIn->{name}.name
   }
 }|order(_createdAt desc)[0..5]`
-
-export const getCalendarQuery = groq`*[_type == 'calendar' && _id == $id]{
-  date,
-  roster[]{
-    date,
-    "personnel": dutyPersonnel->{name}.name,
-    "standby": dutyPersonnelStandIn->{name}.name
-  }
-}[0]`
