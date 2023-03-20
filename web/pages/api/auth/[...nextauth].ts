@@ -32,6 +32,19 @@ const createOptions = (req: NextApiRequest): NextAuthOptions => ({
 
       return token
     },
+    session({ session, token }) {
+      /* Step 2: update the session.user based on the token object */
+      if (token && session.user) {
+        session.user.name = token.name
+        session.user.email = token.email
+        session.user.image = token.image
+        session.user.role = token.role
+        session.user.id = token.id?.replace('drafts.', '')
+        session.user.ord = token.ord
+        session.user.enlistment = token.enlistment
+      }
+      return session
+    },
   },
 })
 

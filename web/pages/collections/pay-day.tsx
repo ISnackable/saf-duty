@@ -1,4 +1,3 @@
-import type { GetServerSidePropsContext } from 'next'
 import dayjs from 'dayjs'
 import { Table } from '@mantine/core'
 
@@ -13,10 +12,7 @@ import {
   Title,
   Container,
 } from '@mantine/core'
-import { getServerSession } from 'next-auth/next'
 import { IconEdit } from '@tabler/icons-react'
-
-import { authOptions } from '../api/auth/[...nextauth]'
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -201,21 +197,4 @@ export default function PayDayPage() {
       </Paper>
     </Container>
   )
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
-
-  return {
-    props: {},
-  }
 }

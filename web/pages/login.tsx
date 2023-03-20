@@ -1,9 +1,7 @@
 import { useRef, useState } from 'react'
-import type { GetServerSidePropsContext } from 'next'
 import Router from 'next/router'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { getServerSession } from 'next-auth/next'
 import { signIn } from 'next-auth/react'
 import type { User } from 'next-auth'
 import { signUp } from 'next-auth-sanity/client'
@@ -24,8 +22,6 @@ import {
 import { showNotification } from '@mantine/notifications'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
 import { IconAt, IconCheck, IconLock, IconSignature, IconX } from '@tabler/icons-react'
-
-import { authOptions } from './api/auth/[...nextauth]'
 
 import config from '../../site.config'
 
@@ -352,16 +348,4 @@ export default function AuthenticationForm() {
       </Paper>
     </Container>
   )
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-
-  if (session) {
-    return { redirect: { destination: '/' } }
-  }
-
-  return {
-    props: {},
-  }
 }

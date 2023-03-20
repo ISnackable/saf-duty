@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import type { GetServerSidePropsContext } from 'next'
 import type { User } from 'next-auth'
 import {
   Avatar,
@@ -17,7 +16,6 @@ import {
   UnstyledButton,
 } from '@mantine/core'
 import { keys } from '@mantine/utils'
-import { getServerSession } from 'next-auth/next'
 import {
   IconChevronDown,
   IconChevronUp,
@@ -28,7 +26,6 @@ import {
 import dayjs from 'dayjs'
 
 import * as demo from '@/lib/demo.data'
-import { authOptions } from './api/auth/[...nextauth]'
 
 type RowData = Pick<User, 'name' | 'image' | 'ord' | 'totalDutyDone'>
 
@@ -263,23 +260,4 @@ export default function DutyPersonnelsPage() {
       </ScrollArea>
     </Container>
   )
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
-
-  const { user } = session
-
-  return {
-    props: { user },
-  }
 }
