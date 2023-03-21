@@ -119,7 +119,6 @@ export const addFields: Middleware = async (req, _res, next) => {
   req.body['weekdayPoints'] = 0
   req.body['weekendPoints'] = 0
   req.body['extra'] = 0
-  req.body['totalDutyDone'] = 0
   console.log('adding role image, weekdayPoints, weekendPoints, extra', req.body)
   return await next()
 }

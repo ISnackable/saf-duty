@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Router, { useRouter } from 'next/router'
+import Image from 'next/image'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { signIn, useSession } from 'next-auth/react'
@@ -23,7 +24,8 @@ import { showNotification } from '@mantine/notifications'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
 import { IconAt, IconCheck, IconLock, IconSignature, IconX } from '@tabler/icons-react'
 
-import config from '../../site.config'
+import svgImage from '@/public/undraw_fingerprint_re_uf3f.svg'
+import siteConfig from '../../site.config'
 
 const PasswordStrength = dynamic(() =>
   import('@/components/PasswordRequirement').then((mod) => mod.PasswordStrength)
@@ -225,6 +227,16 @@ export default function AuthenticationForm() {
 
   return (
     <Container size={420} my={80}>
+      <div style={{ position: 'relative', height: '30vh' }}>
+        <Image
+          priority
+          src={svgImage}
+          fill={true}
+          alt="Undraw personal information logo"
+          style={{ objectFit: 'fill' }}
+        />
+      </div>
+
       <Title
         align="center"
         sx={(theme) => ({
@@ -232,7 +244,7 @@ export default function AuthenticationForm() {
           fontWeight: 900,
         })}
       >
-        Welcome back to {config.title || ''}!
+        Welcome back to {siteConfig.title || ''}!
       </Title>
 
       <Paper radius="md" p="xl" mt={30} withBorder>
@@ -245,8 +257,8 @@ export default function AuthenticationForm() {
               color="dimmed"
               onClick={() => {
                 handleSubmit({
-                  email: 'demo@email.com',
-                  password: '$00pU*2KE1X3',
+                  email: siteConfig.demoEmail,
+                  password: siteConfig.demoPassword,
                 })
               }}
               size="xs"

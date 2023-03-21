@@ -50,7 +50,6 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
 
     try {
       const sanityRes = await clientWithToken.createOrReplace(doc)
-      const isDocNew = sanityRes._createdAt === sanityRes._updatedAt
 
       for (const person of dutyPersonnel) {
         await clientWithToken
@@ -59,12 +58,6 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
             weekendPoints: person.weekendPoints,
             weekdayPoints: person.weekdayPoints,
             extra: person.extra,
-          })
-          .inc({
-            // If the document is new, then increment, else don't defined the field
-            ...(isDocNew && {
-              totalDutyDone: person.WD_DONE + person.WE_DONE,
-            }),
           })
           .commit()
       }

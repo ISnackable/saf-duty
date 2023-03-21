@@ -175,7 +175,7 @@ export default function GenerateDutyPage() {
     }))
 
     try {
-      const res = await fetch('/api/sanity/createCalendar', {
+      const res = await fetch('/api/sanity/calendar', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -184,7 +184,6 @@ export default function GenerateDutyPage() {
           dutyDates,
           dutyPersonnel,
         }),
-        cache: 'no-cache',
       })
       const data = await res.json()
 

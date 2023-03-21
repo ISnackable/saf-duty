@@ -28,7 +28,7 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-const MAXIMUM_BLOCKOUTS = 8
+const MAXIMUM_BLOCKOUTS = 12
 
 ManageBlockoutPage.title = 'Manage Blockouts'
 
@@ -143,7 +143,9 @@ export default function ManageBlockoutPage() {
       </Text>
       <List mt="lg">
         <List.Item>Unless you have a valid reason;</List.Item>
-        <List.Item>Only a maximum of 8 blockouts date per month (subject to change)</List.Item>
+        <List.Item>
+          Only a maximum of {MAXIMUM_BLOCKOUTS} blockouts date per month (subject to change)
+        </List.Item>
         <List.Item>Inform the person-in-charge of the duty roster your reason</List.Item>
         <List.Item>You are not allowed to blockout every weekend of the month</List.Item>
       </List>

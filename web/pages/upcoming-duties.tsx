@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import dynamic from 'next/dynamic'
 import {
   Container,
   createStyles,
@@ -15,7 +16,6 @@ import {
   ThemeIcon,
 } from '@mantine/core'
 import { IconEdit, IconBellRingingFilled } from '@tabler/icons-react'
-import { AddToCalendarButton } from 'add-to-calendar-button-react'
 import dayjs from 'dayjs'
 
 import svgImage from '@/public/undraw_online_organizer_re_156n.svg'
@@ -38,6 +38,13 @@ const useStyles = createStyles((theme) => ({
     },
   },
 }))
+
+const AddToCalendarButton = dynamic(
+  () => import('add-to-calendar-button-react').then((mod) => mod.AddToCalendarButton),
+  {
+    ssr: false,
+  }
+)
 
 UpcomingDutiesPage.title = 'Upcoming Duties'
 

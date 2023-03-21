@@ -210,8 +210,8 @@ export default function AdminPage() {
             </thead>
             <tbody>
               {isLoading
-                ? [...Array(4)].map((n) => (
-                    <tr key={n}>
+                ? [...Array(4)].map((_, i) => (
+                    <tr key={i}>
                       <td>
                         <Skeleton height={40} />
                       </td>

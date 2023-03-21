@@ -1,11 +1,7 @@
 import type { NextApiResponse } from 'next'
 import { type Middleware, use } from 'next-api-route-middleware'
 
-import {
-  checkEmailValidation,
-  checkNameValidation,
-  checkPasswordValidation,
-} from '@/pages/api/sanity/signUp'
+import { checkNameValidation } from '@/pages/api/sanity/signUp'
 import { clientWithToken } from '@/lib/sanity.client'
 import { rateLimitMiddleware } from '../../../rateLimitMiddleware'
 import { type NextApiRequestWithUser, withUser } from '../../../authMiddleware'
@@ -27,7 +23,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
 
 const validateFields: Middleware<NextApiRequestWithUser> = async (req, res, next) => {
   const { body, query } = req
-  const { name, email, password, oldPassword } = body
+  const { name } = body
   const { id } = query
 
   if (id != req.id) {
@@ -37,17 +33,9 @@ const validateFields: Middleware<NextApiRequestWithUser> = async (req, res, next
     })
   }
 
-  console.log(checkPasswordValidation(password))
-  console.log('oldPassword', checkPasswordValidation(oldPassword))
-  console.log(checkEmailValidation(email))
   console.log(checkNameValidation(name))
 
-  if (
-    checkPasswordValidation(password) === null &&
-    checkEmailValidation(email) === null &&
-    checkNameValidation(name) === null &&
-    checkPasswordValidation(oldPassword) === null
-  ) {
+  if (checkNameValidation(name) === null) {
     return await next()
   } else {
     return res.status(400).json({

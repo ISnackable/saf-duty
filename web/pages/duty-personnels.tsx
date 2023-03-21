@@ -175,7 +175,7 @@ export default function DutyPersonnelsPage() {
   const rows = sortedData?.map((row) => {
     const today = dayjs()
     const enlist = dayjs(`2022-06-05`)
-    const ord = dayjs(row.ord)
+    const ord = dayjs(row?.ord)
     // Calculate number of days between dates
     const total = ord.diff(enlist, 'day')
     const current = today.diff(enlist, 'day')
@@ -193,7 +193,7 @@ export default function DutyPersonnelsPage() {
           </Group>
         </td>
         <td>{row.totalDutyDone}</td>
-        <td>{dayjs(row.ord).format('DD/MM/YYYY')}</td>
+        <td>{row?.ord ? dayjs(row?.ord).format('DD/MM/YYYY') : 'NILL'}</td>
         <td>
           <Progress classNames={{ bar: classes.progressBar }} color="teal" value={ordProgress} />
         </td>
@@ -258,19 +258,19 @@ export default function DutyPersonnelsPage() {
             {rows.length > 0 ? (
               rows
             ) : isLoading ? (
-              [...Array(4)].map((n) => (
-                <tr key={n}>
+              [...Array(4)].map((_, i) => (
+                <tr key={i}>
                   <td>
-                    <Skeleton height={40} />
+                    <Skeleton height={30} />
                   </td>
                   <td>
-                    <Skeleton height={40} />
+                    <Skeleton height={30} />
                   </td>
                   <td>
-                    <Skeleton height={40} />
+                    <Skeleton height={30} />
                   </td>
                   <td>
-                    <Skeleton height={40} />
+                    <Skeleton height={30} />
                   </td>
                 </tr>
               ))

@@ -40,39 +40,40 @@ export interface SanityUser extends User {
 
 export type AllSanityUser = Omit<SanityUser, 'email'>
 
-export const getAllUsersQuery = groq`*[_type == "user" && _id != "${config.demoUserId}" && !(_id in path("drafts.**"))]{
-    "id": _id,
-    name,
-    image,
-    role,
-    blockouts,
-    weekdayPoints,
-    weekendPoints,
-    extra,
-    ord,
-    enlistment,
-    totalDutyDone
-}`
-
-export const getUserQuery = groq`*[_type == "user" && _id == $id && !(_id in path("drafts.**"))]{
-    "id": _id,
-    name,
-    email,
-    role,
-    image,
-    blockouts,
-    weekdayPoints,
-    weekendPoints,
-    extra,
-    ord,
-    enlistment,
-    totalDutyDone
-}[0]`
-
-export const getUserUpcomingDutiesQuery = groq`*[_type == 'calendar' && !(_id in path("drafts.**"))]{
+// Get all calendar roster that is related to the given user id and is created within the last 30 days
+export const getUserUpcomingDutiesQuery = groq`*[_type == 'calendar' && dateTime(_createdAt) > dateTime(now()) - 60*60*24*30 && !(_id in path("drafts.**"))]{
     roster[dutyPersonnel._ref == $id]{date}
 }.roster[].date
 `
+
+export const getAllUsersQuery = groq`*[_type == "user" && _id != "${config.demoUserId}" && !(_id in path("drafts.**"))]{
+  "id": _id,
+  name,
+  image,
+  role,
+  blockouts,
+  weekdayPoints,
+  weekendPoints,
+  extra,
+  ord,
+  enlistment,
+  "totalDutyDone": count(*[_type == 'calendar' && references(^._id)].roster[^._id == dutyPersonnel._ref])
+}`
+
+export const getUserQuery = groq`*[_type == "user" && _id == $id && !(_id in path("drafts.**"))]{
+  "id": _id,
+  name,
+  email,
+  role,
+  image,
+  blockouts,
+  weekdayPoints,
+  weekendPoints,
+  extra,
+  ord,
+  enlistment,
+  "totalDutyDone": count(*[_type == 'calendar' && references($id)].roster[$id == dutyPersonnel._ref])
+}[0]`
 
 export const getUserBlockoutsQuery = groq`*[_type == "user" && _id == $id && !(_id in path("drafts.**"))]{
     blockouts

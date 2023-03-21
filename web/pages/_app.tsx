@@ -24,7 +24,7 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithTitle
 }
 
-const pagesWithoutLayout = ['/login', '/404', '/500', '/privacy', '/terms']
+const pagesWithoutLayout = ['/login', '/404', '/500', '/privacy', '/terms', '/faq']
 
 export default function MyApp({
   Component,
