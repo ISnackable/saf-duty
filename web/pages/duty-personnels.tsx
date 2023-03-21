@@ -1,6 +1,4 @@
-import { useState } from 'react'
-import type { GetServerSidePropsContext } from 'next'
-import type { User } from 'next-auth'
+import { useEffect, useState } from 'react'
 import {
   Avatar,
   Center,
@@ -10,6 +8,7 @@ import {
   Group,
   Progress,
   ScrollArea,
+  Skeleton,
   Table,
   Text,
   TextInput,
@@ -17,7 +16,6 @@ import {
   UnstyledButton,
 } from '@mantine/core'
 import { keys } from '@mantine/utils'
-import { getServerSession } from 'next-auth/next'
 import {
   IconChevronDown,
   IconChevronUp,
@@ -27,10 +25,10 @@ import {
 } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 
-import * as demo from '@/lib/demo.data'
-import { authOptions } from './api/auth/[...nextauth]'
+import type { AllSanityUser } from '@/lib/sanity.queries'
+import useUsers from '@/hooks/useUsers'
 
-type RowData = Pick<User, 'name' | 'image' | 'ord' | 'totalDutyDone'>
+type RowData = Pick<AllSanityUser, 'name' | 'image' | 'ord' | 'totalDutyDone'>
 
 interface ThProps {
   children: React.ReactNode
@@ -141,14 +139,24 @@ DutyPersonnelsPage.title = 'Duty Personnels'
 // a: https://stackoverflow.com/a/2627493/104380
 
 export default function DutyPersonnelsPage() {
-  // if no data, use demo data
-  const data: RowData[] = demo.users
+  const { data: users, isLoading } = useUsers()
+  const data = users?.map((user) => ({
+    name: user.name,
+    image: user.image,
+    ord: user.ord,
+    totalDutyDone: user.totalDutyDone,
+  })) as RowData[]
 
   const { classes } = useStyles()
   const [search, setSearch] = useState('')
-  const [sortedData, setSortedData] = useState(data)
+  const [sortedData, setSortedData] = useState<RowData[]>([])
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null)
   const [reverseSortDirection, setReverseSortDirection] = useState(false)
+
+  useEffect(() => {
+    setSortedData(data ? data : [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading])
 
   const setSorting = (field: keyof RowData) => {
     const reversed = field === sortBy ? !reverseSortDirection : false
@@ -164,10 +172,10 @@ export default function DutyPersonnelsPage() {
     setSortedData(sortData(data, { sortBy, reversed: reverseSortDirection, search: value }))
   }
 
-  const rows = sortedData.map((row) => {
+  const rows = sortedData?.map((row) => {
     const today = dayjs()
     const enlist = dayjs(`2022-06-05`)
-    const ord = dayjs(row.ord)
+    const ord = dayjs(row?.ord)
     // Calculate number of days between dates
     const total = ord.diff(enlist, 'day')
     const current = today.diff(enlist, 'day')
@@ -185,7 +193,7 @@ export default function DutyPersonnelsPage() {
           </Group>
         </td>
         <td>{row.totalDutyDone}</td>
-        <td>{dayjs(row.ord).format('DD/MM/YYYY')}</td>
+        <td>{row?.ord ? dayjs(row?.ord).format('DD/MM/YYYY') : 'NILL'}</td>
         <td>
           <Progress classNames={{ bar: classes.progressBar }} color="teal" value={ordProgress} />
         </td>
@@ -249,9 +257,26 @@ export default function DutyPersonnelsPage() {
           <tbody>
             {rows.length > 0 ? (
               rows
+            ) : isLoading ? (
+              [...Array(4)].map((_, i) => (
+                <tr key={i}>
+                  <td>
+                    <Skeleton height={30} />
+                  </td>
+                  <td>
+                    <Skeleton height={30} />
+                  </td>
+                  <td>
+                    <Skeleton height={30} />
+                  </td>
+                  <td>
+                    <Skeleton height={30} />
+                  </td>
+                </tr>
+              ))
             ) : (
               <tr>
-                <td colSpan={Object.keys(data[0]).length}>
+                <td>
                   <Text weight={500} align="center">
                     Nothing found
                   </Text>
@@ -263,23 +288,4 @@ export default function DutyPersonnelsPage() {
       </ScrollArea>
     </Container>
   )
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
-
-  const { user } = session
-
-  return {
-    props: { user },
-  }
 }

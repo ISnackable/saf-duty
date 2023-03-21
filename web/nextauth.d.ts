@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 // nextauth.d.ts
 import { DefaultUser } from 'next-auth'
+import { TDateISODate } from '@/lib/sanity.queries'
 // Define a role enum
 export enum Role {
   user = 'user',
@@ -9,13 +10,13 @@ export enum Role {
 // common interface for JWT and Session
 interface IUser extends DefaultUser {
   role?: Role
-  ord?: Date
-  enlistment?: Date
-  blockouts?: Date[]
-  totalDutyDone?: number
-  weekdayPoints?: number
-  weekendPoints?: number
-  extra?: number
+  ord?: TDateISODate
+  enlistment?: TDateISODate
+  // blockouts?: TDateISODate[]
+  // totalDutyDone?: number
+  // weekdayPoints?: number
+  // weekendPoints?: number
+  // extra?: number
 }
 declare module 'next-auth' {
   interface User extends IUser {}

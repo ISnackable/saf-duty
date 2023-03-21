@@ -1,10 +1,9 @@
-import { useRef, useState } from 'react'
-import type { GetServerSidePropsContext } from 'next'
-import Router from 'next/router'
+import { useEffect, useRef, useState } from 'react'
+import Router, { useRouter } from 'next/router'
+import Image from 'next/image'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { getServerSession } from 'next-auth/next'
-import { signIn } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import type { User } from 'next-auth'
 import { signUp } from 'next-auth-sanity/client'
 import { useToggle, upperFirst } from '@mantine/hooks'
@@ -25,9 +24,8 @@ import { showNotification } from '@mantine/notifications'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
 import { IconAt, IconCheck, IconLock, IconSignature, IconX } from '@tabler/icons-react'
 
-import { authOptions } from './api/auth/[...nextauth]'
-
-import config from '../../site.config'
+import svgImage from '@/public/undraw_fingerprint_re_uf3f.svg'
+import siteConfig from '../../site.config'
 
 const PasswordStrength = dynamic(() =>
   import('@/components/PasswordRequirement').then((mod) => mod.PasswordStrength)
@@ -85,9 +83,18 @@ type NextAuthSanityResponse = {
 AuthenticationForm.title = 'Login'
 
 export default function AuthenticationForm() {
+  const { status } = useSession()
+  const router = useRouter()
+
   const hcaptchaRef = useRef<HCaptcha>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formType, setFormType] = useToggle(['login', 'register'])
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.push('/')
+    }
+  }, [router, status])
 
   const form = useForm({
     initialValues: {
@@ -139,9 +146,6 @@ export default function AuthenticationForm() {
             color: 'green',
             icon: <IconCheck />,
           })
-
-          // If the user is authenticated, redirect to the home page
-          Router.push('/')
         }
       } catch (error) {
         showNotification({
@@ -223,6 +227,16 @@ export default function AuthenticationForm() {
 
   return (
     <Container size={420} my={80}>
+      <div style={{ position: 'relative', height: '30vh' }}>
+        <Image
+          priority
+          src={svgImage}
+          fill={true}
+          alt="Undraw personal information logo"
+          style={{ objectFit: 'fill' }}
+        />
+      </div>
+
       <Title
         align="center"
         sx={(theme) => ({
@@ -230,7 +244,7 @@ export default function AuthenticationForm() {
           fontWeight: 900,
         })}
       >
-        Welcome back to {config.title || ''}!
+        Welcome back to {siteConfig.title || ''}!
       </Title>
 
       <Paper radius="md" p="xl" mt={30} withBorder>
@@ -243,8 +257,8 @@ export default function AuthenticationForm() {
               color="dimmed"
               onClick={() => {
                 handleSubmit({
-                  email: 'demo@email.com',
-                  password: '$00pU*2KE1X3',
+                  email: siteConfig.demoEmail,
+                  password: siteConfig.demoPassword,
                 })
               }}
               size="xs"
@@ -352,16 +366,4 @@ export default function AuthenticationForm() {
       </Paper>
     </Container>
   )
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-
-  if (session) {
-    return { redirect: { destination: '/' } }
-  }
-
-  return {
-    props: {},
-  }
 }

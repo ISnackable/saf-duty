@@ -12,6 +12,6 @@ export const rateLimitMiddleware: Middleware = async (_req, res, next) => {
     await limiter.check(res, 10, 'CACHE_TOKEN') // 10 requests per minute
     return await next()
   } catch {
-    res.status(429).json({ status: 'error', message: 'Rate limit exceeded' })
+    return res.status(429).json({ status: 'error', message: 'Rate limit exceeded' })
   }
 }

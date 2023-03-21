@@ -122,7 +122,7 @@ export default function PrivacyPage() {
             new practices.
           </Text>
           <Group position="center">
-            <Button variant="subtle" size="md" component={Link} href="/login">
+            <Button variant="subtle" size="md" component={Link} href="/">
               Take me back to home page
             </Button>
           </Group>

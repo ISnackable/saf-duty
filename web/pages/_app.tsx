@@ -1,16 +1,14 @@
 import { useState } from 'react'
 import type { NextPage } from 'next'
-import App from 'next/app'
-import type { AppContext, AppProps } from 'next/app'
+import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import type { Session } from 'next-auth'
-import { getSession, SessionProvider } from 'next-auth/react'
+import { SessionProvider } from 'next-auth/react'
 import { MantineProvider, ColorSchemeProvider, ColorScheme } from '@mantine/core'
 import { DatesProvider } from '@mantine/dates'
 import { Notifications } from '@mantine/notifications'
 import { ModalsProvider } from '@mantine/modals'
-import { getCookie, setCookie } from 'cookies-next'
+import { SWRConfig } from 'swr'
 
 import Layout from '@/components/Layout'
 import RouterTransition from '@/components/RouterTransition'
@@ -26,20 +24,16 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithTitle
 }
 
-const pagesWithoutLayout = ['/login', '/404', '/500', '/privacy', '/terms']
+const pagesWithoutLayout = ['/login', '/404', '/500', '/privacy', '/terms', '/faq']
 
-export default function MyApp(props: AppPropsWithLayout & { colorScheme: ColorScheme }) {
-  const { Component, pageProps } = props
-  const { session } = pageProps
-
-  const [colorScheme, setColorScheme] = useState<ColorScheme>(props.colorScheme)
+export default function MyApp({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppPropsWithLayout) {
+  const [colorScheme, setColorScheme] = useState<ColorScheme>('dark')
   const toggleColorScheme = (value?: ColorScheme) => {
     const nextColorScheme = value || (colorScheme === 'dark' ? 'light' : 'dark')
     setColorScheme(nextColorScheme)
-    // when color scheme is updated save it to cookie
-    setCookie('mantine-color-scheme', nextColorScheme, {
-      maxAge: 60 * 60 * 24 * 30,
-    })
   }
 
   const router = useRouter()
@@ -63,11 +57,20 @@ export default function MyApp(props: AppPropsWithLayout & { colorScheme: ColorSc
                 <Notifications />
 
                 {pagesWithoutLayout.includes(router.pathname) ? (
-                  <Component {...pageProps} />
+                  <Component {...pageProps} key={router.asPath} />
                 ) : (
-                  <Layout>
-                    <Component {...pageProps} />
-                  </Layout>
+                  <SWRConfig
+                    value={{
+                      fetcher: (resource, init) =>
+                        fetch(resource, init)
+                          .then((res) => res.json())
+                          .then((data) => data.data),
+                    }}
+                  >
+                    <Layout>
+                      <Component {...pageProps} key={router.asPath} />
+                    </Layout>
+                  </SWRConfig>
                 )}
               </ModalsProvider>
             </DatesProvider>
@@ -76,18 +79,4 @@ export default function MyApp(props: AppPropsWithLayout & { colorScheme: ColorSc
       </SessionProvider>
     </>
   )
-}
-
-MyApp.getInitialProps = async (context: AppContext) => {
-  let session: Session | null | undefined = undefined
-  // getSession works both server-side and client-side but we want to avoid any calls to /api/auth/session
-  // on page load, so we only call it server-side.
-  const appProps = await App.getInitialProps(context)
-  if (typeof window === 'undefined') session = await getSession(context.ctx)
-
-  return {
-    ...appProps,
-    ...(session !== undefined ? { session } : {}),
-    colorScheme: getCookie('mantine-color-scheme', context.ctx) || 'dark',
-  }
 }

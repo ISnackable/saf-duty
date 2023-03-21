@@ -46,7 +46,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <AppShell
       padding="md"
-      navbar={<NavbarMin width={{ sm: 300 }} p="md" hiddenBreakpoint="sm" hidden={!opened} />}
+      navbarOffsetBreakpoint="md"
+      navbar={<NavbarMin p="md" hiddenBreakpoint="md" hidden={!opened} width={{ sm: 300 }} />}
       header={
         <Header height={60} p="xs">
           <div className={classes.innerHeader}>

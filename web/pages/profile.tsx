@@ -1,9 +1,6 @@
-import { useState } from 'react'
-import type { GetServerSidePropsContext } from 'next'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import type { User } from 'next-auth'
 import Image from 'next/image'
-import { getServerSession } from 'next-auth/next'
 import { DatePickerInput } from '@mantine/dates'
 import { isEmail, useForm } from '@mantine/form'
 import {
@@ -30,8 +27,7 @@ import {
   IconUpload,
   IconX,
 } from '@tabler/icons-react'
-
-import { authOptions } from './api/auth/[...nextauth]'
+import { useSession } from 'next-auth/react'
 
 // Function that checks if the password is valid, returns an error message if not
 export function checkPasswordValidation(value: string) {
@@ -117,9 +113,12 @@ const useStyles = createStyles((theme) => ({
 
 ProfilePage.title = 'Profile'
 
-export default function ProfilePage({ user }: { user: User }) {
+export default function ProfilePage() {
+  const { data: session, status } = useSession()
   const router = useRouter()
   const { classes } = useStyles()
+
+  const user = session?.user
 
   const [file, setFile] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -152,12 +151,12 @@ export default function ProfilePage({ user }: { user: User }) {
   //userDetail form
   const userDetailForm = useForm({
     initialValues: {
-      name: user?.name || '',
+      name: user?.name,
       enlistment: user?.enlistment ? new Date(user?.enlistment) : null,
       ord: user?.ord ? new Date(user?.ord) : null,
     },
     validate: {
-      name: (value) => (value.length < 2 ? 'Name must have at least 2 letters' : null),
+      name: (value) => (value && value.length < 2 ? 'Name must have at least 2 letters' : null),
       // enlistment: (value, values) => validateEnlistmentDate(value, values.ord),
       //ord: (value, values) => validateOrdDate(values.enlistment, value),
     },
@@ -165,7 +164,7 @@ export default function ProfilePage({ user }: { user: User }) {
   //user account form
   const userAccountForm = useForm({
     initialValues: {
-      email: user?.email || '',
+      email: user?.email,
       oldPassword: '',
       password: '',
     },
@@ -176,11 +175,27 @@ export default function ProfilePage({ user }: { user: User }) {
     },
   })
 
+  useEffect(() => {
+    if (user) {
+      userDetailForm.setValues({
+        name: user?.name,
+        enlistment: user?.enlistment ? new Date(user?.enlistment) : null,
+        ord: user?.ord ? new Date(user?.ord) : null,
+      })
+      userDetailForm.resetDirty()
+      userAccountForm.setValues({
+        email: user?.email,
+      })
+      userAccountForm.resetDirty()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status])
+
   //update user detail to backend
   const handleUserDetailSubmit = async (values: typeof userDetailForm.values) => {
     setIsSubmitting(true)
     try {
-      const res = await fetch('/api/sanity/updateUserDetails', {
+      const res = await fetch(`/api/sanity/user/${user?.id}/details`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -190,7 +205,6 @@ export default function ProfilePage({ user }: { user: User }) {
           enlistment: values.enlistment?.toLocaleDateString('sv-SE'),
           ord: values.ord?.toLocaleDateString('sv-SE'),
         }),
-        cache: 'no-cache',
       })
       const data = await res.json()
 
@@ -221,7 +235,7 @@ export default function ProfilePage({ user }: { user: User }) {
   const handlePasswordSubmit = async (values: typeof userAccountForm.values) => {
     setIsSubmitting(true)
     try {
-      const res = await fetch('/api/sanity/updateUserAccount', {
+      const res = await fetch(`/api/sanity/user/${user?.id}/account`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -394,23 +408,4 @@ export default function ProfilePage({ user }: { user: User }) {
       </Tabs>
     </Container>
   )
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
-
-  const { user } = session
-
-  return {
-    props: { user },
-  }
 }
