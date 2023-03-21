@@ -1,8 +1,8 @@
-import { useRef, useState } from 'react'
-import Router from 'next/router'
+import { useEffect, useRef, useState } from 'react'
+import Router, { useRouter } from 'next/router'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { signIn } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import type { User } from 'next-auth'
 import { signUp } from 'next-auth-sanity/client'
 import { useToggle, upperFirst } from '@mantine/hooks'
@@ -81,9 +81,18 @@ type NextAuthSanityResponse = {
 AuthenticationForm.title = 'Login'
 
 export default function AuthenticationForm() {
+  const { status } = useSession()
+  const router = useRouter()
+
   const hcaptchaRef = useRef<HCaptcha>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formType, setFormType] = useToggle(['login', 'register'])
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.push('/')
+    }
+  }, [router, status])
 
   const form = useForm({
     initialValues: {
@@ -135,9 +144,6 @@ export default function AuthenticationForm() {
             color: 'green',
             icon: <IconCheck />,
           })
-
-          // If the user is authenticated, redirect to the home page
-          Router.push('/')
         }
       } catch (error) {
         showNotification({

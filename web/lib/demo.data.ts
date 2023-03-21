@@ -1,8 +1,7 @@
 // All the demo data that used as fallbacks when there's nothing in the dataset yet
 
-import type { User } from 'next-auth'
+import type { AllSanityUser, Calendar, TDateISODate } from './sanity.queries'
 import { Role } from '@/nextauth.d'
-import { Calendar } from './sanity.queries'
 
 const todayMonth = (new Date().getMonth() + 1).toString().padStart(2, '0') as `${number}${number}`
 
@@ -10,7 +9,7 @@ export const title = 'Blog.'
 
 export const description = 'Example description.'
 
-export const users: User[] = [
+export const users: AllSanityUser[] = [
   {
     id: '5eda9aac-bfc1-11ed-afa1-0242ac120002',
     name: 'Jun Jie',
@@ -167,14 +166,14 @@ export const users: User[] = [
   },
 ]
 
-export const blockouts = [
+export const blockouts: TDateISODate[] = [
   `2023-${todayMonth}-15`,
   `2023-${todayMonth}-13`,
   `2023-${todayMonth}-19`,
   `2023-${todayMonth}-04`,
 ]
 
-export const upcomingDuties = [
+export const upcomingDuties: TDateISODate[] = [
   `2023-${todayMonth}-05`,
   `2023-${todayMonth}-12`,
   `2023-${todayMonth}-17`,

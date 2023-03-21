@@ -59,61 +59,56 @@ export function checkNameValidation(value: string) {
 }
 
 export const hcaptcha: Middleware = async (req, res, next) => {
-  const { body, method } = req
+  const { body } = req
 
   console.log('Reached hcaptcha API')
 
   // Extract the email and captcha code from the request body
   const { captcha } = body
 
-  if (method === 'POST') {
-    try {
-      const secret =
-        process.env.NODE_ENV === 'development'
-          ? '0x0000000000000000000000000000000000000000'
-          : process.env.HCAPTCHA_SECRET_KEY
+  try {
+    const secret =
+      process.env.NODE_ENV === 'development'
+        ? '0x0000000000000000000000000000000000000000'
+        : process.env.HCAPTCHA_SECRET_KEY
 
-      // Ping the hcaptcha verify API to verify the captcha code you received
-      const response = await fetch(`https://hcaptcha.com/siteverify`, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-        },
-        body: `response=${captcha}&secret=${secret}`,
-        method: 'POST',
-        cache: 'no-store',
-      })
-      const captchaValidation = await response.json()
-      /**
-       * {
-       *    "success": true|false,     // is the passcode valid, and does it meet security criteria you specified, e.g. sitekey?
-       *    "challenge_ts": timestamp, // timestamp of the challenge (ISO format yyyy-MM-dd'T'HH:mm:ssZZ)
-       *    "hostname": string,        // the hostname of the site where the challenge was solved
-       *    "credit": true|false,      // optional: whether the response will be credited
-       *    "error-codes": [...]       // optional: any error codes
-       *    "score": float,            // ENTERPRISE feature: a score denoting malicious activity.
-       *    "score_reason": [...]      // ENTERPRISE feature: reason(s) for score. See BotStop.com for details.
-       *  }
-       */
-      if (captchaValidation.success) {
-        // Once the captcha is verified, remove the captcha code from the request body
-        delete req.body['captcha']
+    // Ping the hcaptcha verify API to verify the captcha code you received
+    const response = await fetch(`https://hcaptcha.com/siteverify`, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+      },
+      body: `response=${captcha}&secret=${secret}`,
+      method: 'POST',
+      cache: 'no-store',
+    })
+    const captchaValidation = await response.json()
+    /**
+     * {
+     *    "success": true|false,     // is the passcode valid, and does it meet security criteria you specified, e.g. sitekey?
+     *    "challenge_ts": timestamp, // timestamp of the challenge (ISO format yyyy-MM-dd'T'HH:mm:ssZZ)
+     *    "hostname": string,        // the hostname of the site where the challenge was solved
+     *    "credit": true|false,      // optional: whether the response will be credited
+     *    "error-codes": [...]       // optional: any error codes
+     *    "score": float,            // ENTERPRISE feature: a score denoting malicious activity.
+     *    "score_reason": [...]      // ENTERPRISE feature: reason(s) for score. See BotStop.com for details.
+     *  }
+     */
+    if (captchaValidation.success) {
+      // Once the captcha is verified, remove the captcha code from the request body
+      delete req.body['captcha']
 
-        // Go next if everything is successful
-        return await next()
-      }
-
-      return res.status(422).json({
-        status: 'error',
-        message: 'Unproccesable request, Invalid captcha code',
-      })
-    } catch (error) {
-      console.log(error)
-      return res.status(422).json({ status: 'error', message: 'Something went wrong' })
+      // Go next if everything is successful
+      return await next()
     }
+
+    return res.status(422).json({
+      status: 'error',
+      message: 'Unproccesable request, Invalid captcha code',
+    })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ status: 'error', message: 'Something went wrong' })
   }
-  // Return 404 if someone pings the API with a method other than
-  // POST
-  return res.status(404).send('Not found')
 }
 
 export const addFields: Middleware = async (req, _res, next) => {
@@ -124,6 +119,7 @@ export const addFields: Middleware = async (req, _res, next) => {
   req.body['weekdayPoints'] = 0
   req.body['weekendPoints'] = 0
   req.body['extra'] = 0
+  req.body['totalDutyDone'] = 0
   console.log('adding role image, weekdayPoints, weekendPoints, extra', req.body)
   return await next()
 }
@@ -142,7 +138,7 @@ export const validateFields: Middleware = async (req, res, next) => {
   ) {
     return await next()
   } else {
-    return res.status(422).json({
+    return res.status(400).json({
       status: 'error',
       message: 'Unproccesable request, fields are missing or invalid',
     })

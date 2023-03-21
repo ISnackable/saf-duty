@@ -10,9 +10,14 @@ import { allowMethods } from '../allowMethodsMiddleware'
 async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   const { method } = req
   if (method === 'GET') {
-    const calendar = await getAllCalendar()
+    try {
+      const calendar = await getAllCalendar()
 
-    return res.status(200).json({ status: 'success', data: calendar, message: 'ok' })
+      return res.status(200).json({ status: 'success', data: calendar, message: 'ok' })
+    } catch (error) {
+      console.error(error)
+      return res.status(500).json({ status: 'error', message: 'Something went wrong' })
+    }
   } else if (method === 'POST') {
     // Check if user is admin
     if (req.role !== 'admin') {
@@ -89,7 +94,7 @@ const validateFields: Middleware = async (req, res, next) => {
       dutyPersonnel.length === 0 &&
       dutyDates.every((date) => !dateRegExp.test(`${date.date}`))
     ) {
-      return res.status(422).json({
+      return res.status(400).json({
         status: 'error',
         message: 'Missing required fields',
       })

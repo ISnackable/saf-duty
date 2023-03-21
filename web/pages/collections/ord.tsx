@@ -1,7 +1,4 @@
-import type { GetServerSidePropsContext } from 'next'
 import Link from 'next/link'
-import type { User } from 'next-auth'
-import { getServerSession } from 'next-auth/next'
 import {
   Anchor,
   Badge,
@@ -18,11 +15,7 @@ import {
 } from '@mantine/core'
 import { IconCalendarStats, IconRun } from '@tabler/icons-react'
 import dayjs from 'dayjs'
-
-import * as demo from '@/lib/demo.data'
-import config from '@/../site.config'
-import { authOptions } from '../api/auth/[...nextauth]'
-import { getUserById } from '@/lib/sanity.client'
+import { useSession } from 'next-auth/react'
 
 const ICON_SIZE = 60
 
@@ -58,11 +51,13 @@ const useStyles = createStyles((theme) => ({
 
 ORDPage.title = 'ORD Progress'
 
-export default function ORDPage({ user }: { user: User }) {
+export default function ORDPage() {
+  const { data: session } = useSession()
+
   const { classes } = useStyles()
   const today = dayjs()
-  const enlist = dayjs(user?.enlistment)
-  const ord = dayjs(user?.ord)
+  const enlist = dayjs(session?.user?.enlistment)
+  const ord = dayjs(session?.user?.ord)
   // Calculate number of days between dates
   const diff = ord.diff(today, 'day')
   const total = ord.diff(enlist, 'day')
@@ -93,9 +88,9 @@ export default function ORDPage({ user }: { user: User }) {
           ORD
         </Text>
 
-        <Blockquote cite={`– ${user?.name || 'Some NSF'}`}>ORD loh!!</Blockquote>
+        <Blockquote cite={`– ${session?.user?.name || 'Some NSF'}`}>ORD loh!!</Blockquote>
 
-        {user?.enlistment && user?.ord ? (
+        {session?.user?.enlistment && session?.user?.ord ? (
           <>
             <Group position="apart" mt="xs">
               <Text size="sm" color="dimmed">
@@ -127,26 +122,4 @@ export default function ORDPage({ user }: { user: User }) {
       </Paper>
     </Container>
   )
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
-
-  let user = demo.users[0]
-  if (session?.user?.id && session?.user?.id !== config.demoUserId) {
-    user = await getUserById(session?.user?.id)
-  }
-
-  return {
-    props: { user },
-  }
 }

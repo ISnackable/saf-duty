@@ -1,5 +1,6 @@
 import type { NextApiResponse } from 'next'
 import { type Middleware, use } from 'next-api-route-middleware'
+import { getUserByIdQuery } from 'next-auth-sanity/queries'
 import argon2 from 'argon2'
 
 import {
@@ -15,21 +16,26 @@ import { allowMethods } from '../../../allowMethodsMiddleware'
 async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   const { name, email, password, oldPassword } = req.body
 
-  // @ts-expect-error TODO: Fix this type error later
-  const isOldPasswordCorrect = await argon2.verify(user?.password, oldPassword)
+  try {
+    const user = await clientWithToken.fetch(getUserByIdQuery, { id: req.id })
+    const isOldPasswordCorrect = await argon2.verify(user?.password, oldPassword)
 
-  console.log('isOldPasswordCorrect', isOldPasswordCorrect)
+    console.log('isOldPasswordCorrect', isOldPasswordCorrect)
 
-  if (!isOldPasswordCorrect) {
-    return res.status(401).json({
-      status: 'error',
-      message: 'Unauthorized, old password is incorrect',
-    })
+    if (!isOldPasswordCorrect) {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Unauthorized, old password is incorrect',
+      })
+    }
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ status: 'error', message: 'Something went wrong' })
   }
 
-  const hashedPassword = await argon2.hash(password)
-
   try {
+    const hashedPassword = await argon2.hash(password)
+
     const newUser = await clientWithToken
       .patch(req.id)
       .set({
@@ -47,8 +53,18 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   }
 }
 
-const validateFields: Middleware = async (req, res, next) => {
-  const { name, email, password, oldPassword } = req.body
+const validateFields: Middleware<NextApiRequestWithUser> = async (req, res, next) => {
+  const { body, query } = req
+
+  const { name, email, password, oldPassword } = body
+  const { id } = query
+
+  if (id != req.id) {
+    return res.status(401).json({
+      status: 'error',
+      message: 'Unauthorized, id in path does not match id in auth cookie',
+    })
+  }
 
   console.log(checkPasswordValidation(password))
   console.log('oldPassword', checkPasswordValidation(oldPassword))
@@ -63,11 +79,11 @@ const validateFields: Middleware = async (req, res, next) => {
   ) {
     return await next()
   } else {
-    return res.status(422).json({
+    return res.status(400).json({
       status: 'error',
       message: 'Unproccesable request, fields are missing or invalid',
     })
   }
 }
 
-export default use(rateLimitMiddleware, allowMethods(['PUT']), validateFields, withUser, handler)
+export default use(rateLimitMiddleware, allowMethods(['PUT']), withUser, validateFields, handler)

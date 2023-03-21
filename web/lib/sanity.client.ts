@@ -1,5 +1,4 @@
 import { createClient } from 'next-sanity'
-import type { User } from 'next-auth'
 
 import { apiVersion, dataset, projectId, useCdn } from './sanity.api'
 import {
@@ -9,7 +8,9 @@ import {
   type Calendar,
   getAllCalendarQuery,
   getUserBlockoutsQuery,
+  type AllSanityUser,
   type TDateISODate,
+  type SanityUser,
 } from './sanity.queries'
 
 export const client = createClient({
@@ -27,12 +28,12 @@ export const clientWithToken = createClient({
   token: process.env.SANITY_API_TOKEN,
 })
 
-export async function getAllUsers(): Promise<User[]> {
+export async function getAllUsers(): Promise<AllSanityUser[]> {
   const users = await clientWithToken.fetch(getAllUsersQuery)
   return users
 }
 
-export async function getUserById(id: string): Promise<User> {
+export async function getUserById(id: string): Promise<SanityUser> {
   const user = await clientWithToken.fetch(getUserQuery, { id })
   return user
 }

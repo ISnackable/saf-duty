@@ -12,11 +12,11 @@ interface IUser extends DefaultUser {
   role?: Role
   ord?: TDateISODate
   enlistment?: TDateISODate
-  blockouts?: TDateISODate[]
-  totalDutyDone?: number
-  weekdayPoints?: number
-  weekendPoints?: number
-  extra?: number
+  // blockouts?: TDateISODate[]
+  // totalDutyDone?: number
+  // weekdayPoints?: number
+  // weekendPoints?: number
+  // extra?: number
 }
 declare module 'next-auth' {
   interface User extends IUser {}

@@ -10,9 +10,15 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   const { method } = req
 
   if (method === 'GET') {
-    const blockouts = await getUserBlockouts(req.id)
+    try {
+      const blockouts = await getUserBlockouts(req.id)
 
-    return res.status(200).json({ status: 'success', data: blockouts, message: 'ok' })
+      return res.status(200).json({ status: 'success', data: blockouts, message: 'ok' })
+    } catch (error) {
+      console.error(error)
+
+      return res.status(500).json({ status: 'error', message: 'Something went wrong' })
+    }
   } else if (method === 'PUT') {
     const { blockoutDates }: { blockoutDates: string[] } = req.body
 
@@ -27,8 +33,16 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   }
 }
 
-const validateFields: Middleware = async (req, res, next) => {
-  const { method } = req
+const validateFields: Middleware<NextApiRequestWithUser> = async (req, res, next) => {
+  const { method, query } = req
+  const { id } = query
+
+  if (id != req.id) {
+    return res.status(401).json({
+      status: 'error',
+      message: 'Unauthorized, id in path does not match id in auth cookie',
+    })
+  }
 
   if (method === 'PUT') {
     const { blockoutDates }: { blockoutDates: string[] } = req.body
@@ -39,7 +53,7 @@ const validateFields: Middleware = async (req, res, next) => {
     if (blockoutDates.length > 0 && blockoutDates.every((date) => dateRegExp.test(date))) {
       return await next()
     } else {
-      return res.status(422).json({
+      return res.status(400).json({
         status: 'error',
         message: 'Unproccesable request, fields are missing or invalid',
       })
@@ -53,7 +67,7 @@ const validateFields: Middleware = async (req, res, next) => {
 export default use(
   rateLimitMiddleware,
   allowMethods(['GET', 'PUT']),
-  validateFields,
   withUser,
+  validateFields,
   handler
 )

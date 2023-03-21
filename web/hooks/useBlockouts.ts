@@ -1,30 +1,28 @@
 import { useSession } from 'next-auth/react'
 import useSWRImmutable from 'swr/immutable'
 
-import { type Calendar as CalendarType } from '@/lib/sanity.queries'
+import { type TDateISODate } from '@/lib/sanity.queries'
 import siteConfig from '@/../site.config'
 import * as demo from '@/lib/demo.data'
 
-export default function useCalendar() {
+export default function useBlockouts() {
   const { data: session } = useSession()
 
   const isDemo = session?.user?.id === siteConfig.demoUserId
-
-  const { data, error, isLoading } = useSWRImmutable<CalendarType[]>(
-    !isDemo ? `/api/sanity/calendar` : null
+  const { data, error, mutate } = useSWRImmutable<TDateISODate[]>(
+    !isDemo && session?.user?.id ? `/api/sanity/user/${session?.user?.id}/blockouts` : null
   )
 
   if (isDemo) {
     return {
-      data: demo.calendar,
-      isLoading: false,
+      data: demo.blockouts,
       error: null,
     }
   }
 
   return {
     data,
-    isLoading,
     error,
+    mutate,
   }
 }

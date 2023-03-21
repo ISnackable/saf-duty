@@ -22,10 +22,8 @@ import { useForm } from '@mantine/form'
 import { DatePickerInput } from '@mantine/dates'
 import { IconPencil, IconTrash, IconUsers } from '@tabler/icons-react'
 import dayjs from 'dayjs'
-import useSWRImmutable from 'swr/immutable'
 
-// import * as demo from '@/lib/demo.data'
-// import config from '@/../site.config'
+import useUsers from '@/hooks/useUsers'
 
 const rolesData = [
   { label: 'Admin', value: 'admin' },
@@ -52,7 +50,7 @@ const useStyles = createStyles((theme) => ({
 AdminPage.title = 'Admin'
 
 export default function AdminPage() {
-  const { data: users, error, isLoading } = useSWRImmutable<User[]>(`/api/sanity/users`)
+  const { data: users, error, isLoading } = useUsers()
 
   const { classes } = useStyles()
   const [opened, { open, close }] = useDisclosure(false)
@@ -97,9 +95,6 @@ export default function AdminPage() {
           <div>
             <Text fz="sm" fw={500}>
               {user.name}
-            </Text>
-            <Text fz="xs" c="dimmed">
-              {user.email}
             </Text>
           </div>
         </Group>

@@ -25,8 +25,17 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   }
 }
 
-const validateFields: Middleware = async (req, res, next) => {
-  const { name, email, password, oldPassword } = req.body
+const validateFields: Middleware<NextApiRequestWithUser> = async (req, res, next) => {
+  const { body, query } = req
+  const { name, email, password, oldPassword } = body
+  const { id } = query
+
+  if (id != req.id) {
+    return res.status(401).json({
+      status: 'error',
+      message: 'Unauthorized, id in path does not match id in auth cookie',
+    })
+  }
 
   console.log(checkPasswordValidation(password))
   console.log('oldPassword', checkPasswordValidation(oldPassword))
@@ -41,11 +50,11 @@ const validateFields: Middleware = async (req, res, next) => {
   ) {
     return await next()
   } else {
-    return res.status(422).json({
+    return res.status(400).json({
       status: 'error',
       message: 'Unproccesable request, fields are missing or invalid',
     })
   }
 }
 
-export default use(rateLimitMiddleware, allowMethods(['PUT']), validateFields, withUser, handler)
+export default use(rateLimitMiddleware, allowMethods(['PUT']), withUser, validateFields, handler)

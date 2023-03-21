@@ -6,12 +6,10 @@ import { showNotification } from '@mantine/notifications'
 import { IconCheck, IconX } from '@tabler/icons-react'
 import { useSession } from 'next-auth/react'
 import dayjs from 'dayjs'
-import useSWRImmutable from 'swr/immutable'
 
-// import * as demo from '@/lib/demo.data'
-// import config from '@/../site.config'
 import { TDateISODate } from '@/lib/sanity.queries'
 import { isWeekend } from '@/utils/dutyRoster'
+import useBlockouts from '@/hooks/useBlockouts'
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -37,16 +35,7 @@ ManageBlockoutPage.title = 'Manage Blockouts'
 export default function ManageBlockoutPage() {
   const { data: session } = useSession()
 
-  // if (session?.user?.id === config.demoUserId) {
-  // let blockouts = demo.blockouts
-  // }
-  const {
-    data: blockouts,
-    error,
-    mutate,
-  } = useSWRImmutable<TDateISODate[]>(
-    session?.user?.id ? `/api/sanity/user/${session?.user?.id}/blockouts` : null
-  )
+  const { data: blockouts, error, mutate } = useBlockouts()
 
   const { classes } = useStyles()
 
@@ -120,7 +109,10 @@ export default function ManageBlockoutPage() {
           icon: <IconX />,
         })
       } else {
-        mutate(blockoutDates)
+        if (mutate) {
+          mutate(blockoutDates)
+        }
+
         showNotification({
           title: 'Success',
           message: 'Blockout updated successfully',
