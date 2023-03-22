@@ -1,6 +1,5 @@
 import { createGetInitialProps } from '@mantine/next'
 import Document, { Head, Html, Main, NextScript } from 'next/document'
-
 import config from '../../site.config'
 
 const getInitialProps = createGetInitialProps()

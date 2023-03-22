@@ -1,4 +1,3 @@
-import type { GetServerSidePropsContext } from 'next'
 import dayjs from 'dayjs'
 import { Table } from '@mantine/core'
 import Link from 'next/link'
@@ -14,10 +13,7 @@ import {
   Title,
   Container,
 } from '@mantine/core'
-import { getServerSession } from 'next-auth/next'
-import { IconDeviceAnalytics, IconEdit } from '@tabler/icons-react'
-
-import { authOptions } from '../api/auth/[...nextauth]'
+import { IconEdit } from '@tabler/icons-react'
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -96,15 +92,6 @@ const daysTotal: number = nextPayday.diff(today.startOf('month').date(paydayDay)
 
 const currentdate = daysTotal - daysLeft
 
-const data = [
-  {
-    label: 'Total earned',
-    count: '204,001',
-    part: progress,
-    color: '#47d6ab',
-  },
-]
-
 const elements = [
   { rankStarting: 'Recruit or Private', rankaAllowance: '$580' },
   { rankStarting: 'Lance Corporal', rankaAllowance: '$600' },
@@ -113,12 +100,10 @@ const elements = [
 ]
 const vocation = [
   {
-    sn: 1,
     vocation: 'Service and Technical vocations',
     vocationAllowance: '$50',
   },
   {
-    sn: 2,
     vocation: 'All combatants',
     vocationAllowance: '$175',
   },
@@ -129,12 +114,6 @@ PayDayPage.title = 'Pay Day'
 export default function PayDayPage() {
   const { classes } = useStyles()
 
-  const segments = data.map((segment) => ({
-    value: segment.part,
-    color: segment.color,
-    label: segment.part > 10 ? `${segment.part}%` : undefined,
-  }))
-
   const rows = elements.map((element) => (
     <tr key={element.rankStarting}>
       <td>{element.rankStarting}</td>
@@ -142,15 +121,14 @@ export default function PayDayPage() {
     </tr>
   ))
   const vocations = vocation.map((vocation) => (
-    <tr key={vocation.sn}>
-      <td>{vocation.sn}</td>
+    <tr key={vocation.vocation}>
       <td>{vocation.vocation}</td>
       <td>{vocation.vocationAllowance}</td>
     </tr>
   ))
 
   return (
-    <Container mt="lg">
+    <Container my="xl">
       <div className={classes.titleWrapper}>
         <IconEdit size={48} />
         <Title className={classes.title}>Pay Day</Title>
@@ -175,11 +153,12 @@ export default function PayDayPage() {
               Next Pay Day
             </Text>
           </Group>
-          <IconDeviceAnalytics size={20} className={classes.icon} stroke={1.5} />
         </Group>
 
         <Progress
-          sections={segments}
+          value={progress}
+          color="#47d6ab"
+          label={`${progress}%`}
           size={34}
           classNames={{ label: classes.progressLabel }}
           mt={40}
@@ -193,13 +172,12 @@ export default function PayDayPage() {
       </Paper>
 
       <Paper withBorder p="md" radius="md" mt="xl">
-        <Group position="apart">
+        <Group position="apart" mb="sm">
           <Group align="flex-end" spacing="xs">
             <Text size="xl" weight={700}>
               Monthly rank allowance
             </Text>
           </Group>
-          <IconDeviceAnalytics size={20} className={classes.icon} stroke={1.5} />
         </Group>
 
         <Table withBorder withColumnBorders>
@@ -214,19 +192,17 @@ export default function PayDayPage() {
       </Paper>
 
       <Paper withBorder p="md" radius="md" mt="xl">
-        <Group position="apart">
+        <Group position="apart" mb="sm">
           <Group align="flex-end" spacing="xs">
             <Text size="xl" weight={700}>
               Monthly vocation allowance
             </Text>
           </Group>
-          <IconDeviceAnalytics size={20} className={classes.icon} stroke={1.5} />
         </Group>
 
         <Table withBorder withColumnBorders>
           <thead>
             <tr>
-              <th>S/N</th>
               <th>Vocations</th>
               <th>Monthly vocation allowance</th>
             </tr>
@@ -236,21 +212,4 @@ export default function PayDayPage() {
       </Paper>
     </Container>
   )
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
-
-  return {
-    props: {},
-  }
 }

@@ -21,6 +21,7 @@ import {
   IconChessKnight,
   IconCloudLock,
   IconCe,
+  IconMessageCircleQuestion,
 } from '@tabler/icons-react'
 import { UserButtonMenu } from '@/components/UserButton'
 
@@ -30,7 +31,7 @@ type NavbarMinProps = Omit<NavbarProps, 'children'>
 
 const useStyles = createStyles((theme) => ({
   navbar: {
-    paddingTop: 0,
+    paddingTop: '0 !important',
   },
 
   section: {
@@ -98,7 +99,6 @@ const useStyles = createStyles((theme) => ({
   },
 
   collectionLink: {
-    display: 'block',
     padding: `${rem(8)} ${theme.spacing.xs}`,
     textDecoration: 'none',
     borderRadius: theme.radius.sm,
@@ -127,10 +127,10 @@ const links = [
 ]
 
 const adminLinks = [
-  { icon: IconUsers, label: 'Users overview', link: '/admin' },
+  { icon: IconUsers, label: 'Manage Users', link: '/admin' },
   {
     icon: IconChessKnight,
-    label: 'Generate duty',
+    label: 'Generate Duty',
     link: '/admin/generate-duty',
   },
 ]
@@ -139,6 +139,16 @@ const collections = [
   { emoji: '✨', label: 'IPPT', link: '/collections/ippt' },
   { emoji: '💰', label: 'Pay Day', link: '/collections/pay-day' },
   { emoji: '📅', label: 'ORD', link: '/collections/ord' },
+]
+
+const othersLinks = [
+  { icon: IconCloudLock, label: 'Privacy', link: '/privacy' },
+  {
+    icon: IconCe,
+    label: 'Terms and Conditions',
+    link: '/terms',
+  },
+  { label: 'FAQ', link: '/faq', icon: IconMessageCircleQuestion },
 ]
 
 export function NavbarMin(props: NavbarMinProps) {
@@ -180,13 +190,22 @@ export function NavbarMin(props: NavbarMinProps) {
     </Link>
   ))
 
+  const thirdLinks = othersLinks.map((link) => (
+    <UnstyledButton key={link.label} className={classes.mainLink}>
+      <Link href={link.link} key={link.label} className={classes.mainLinkInner}>
+        <link.icon size={20} className={classes.mainLinkIcon} stroke={1.5} />
+        <span>{link.label}</span>
+      </Link>
+    </UnstyledButton>
+  ))
+
   return (
     <Navbar className={classes.navbar} {...props}>
       <Navbar.Section className={classes.section}>
         <UserButtonMenu
-          image={session?.user?.image || 'https://i.imgur.com/fGxgcDF.png'}
-          name={session?.user?.name || 'Test Name'}
-          email={session?.user?.email || 'Test Email'}
+          image={session?.user?.image || ''}
+          name={session?.user?.name || 'Name not found'}
+          email={session?.user?.email || 'Email not found'}
           icon={<IconSelector size="0.9rem" stroke={1.5} />}
         />
       </Navbar.Section>
@@ -233,20 +252,7 @@ export function NavbarMin(props: NavbarMinProps) {
             Others
           </Text>
         </Group>
-        <div className={classes.mainLinks}>
-          <UnstyledButton className={classes.mainLink}>
-            <Link href="/privacy" className={classes.mainLinkInner}>
-              <IconCloudLock size={20} stroke={1.5} style={{ marginRight: 9, fontSize: 16 }} />
-              Privacy
-            </Link>
-          </UnstyledButton>
-          <UnstyledButton className={classes.mainLink}>
-            <Link href="/terms" className={classes.mainLinkInner}>
-              <IconCe size={20} stroke={1.5} style={{ marginRight: 9, fontSize: 16 }} />
-              Terms and Conditions
-            </Link>
-          </UnstyledButton>
-        </div>
+        <div className={classes.mainLinks}>{thirdLinks}</div>
       </Navbar.Section>
     </Navbar>
   )

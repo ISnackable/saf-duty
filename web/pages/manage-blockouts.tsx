@@ -1,17 +1,15 @@
-import { useState } from 'react'
-import type { GetServerSidePropsContext } from 'next'
+import { useEffect, useState } from 'react'
 import { Container, createStyles, Divider, List, Text, Title, Button, Group } from '@mantine/core'
 import { DatePicker } from '@mantine/dates'
-import { getServerSession } from 'next-auth/next'
 import { IconEdit } from '@tabler/icons-react'
 import { showNotification } from '@mantine/notifications'
-import dayjs from 'dayjs'
 import { IconCheck, IconX } from '@tabler/icons-react'
+import { useSession } from 'next-auth/react'
+import dayjs from 'dayjs'
 
-import { authOptions } from './api/auth/[...nextauth]'
-import * as demo from '@/lib/demo.data'
-import config from '@/../site.config'
-import { getUserBlockouts } from '@/lib/sanity.client'
+import { TDateISODate } from '@/lib/sanity.queries'
+import { isWeekend } from '@/utils/dutyRoster'
+import useBlockouts from '@/hooks/useBlockouts'
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -30,25 +28,51 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-const MAXIMUM_BLOCKOUTS = 8
+const MAXIMUM_BLOCKOUTS = 12
 
 ManageBlockoutPage.title = 'Manage Blockouts'
 
-export default function ManageBlockoutPage({ blockouts }: { blockouts: string[] }) {
+export default function ManageBlockoutPage() {
+  const { data: session } = useSession()
+
+  const { data: blockouts, error, mutate } = useBlockouts()
+
   const { classes } = useStyles()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [selected, setSelected] = useState<Date[]>(blockouts.map((d) => new Date(d)))
+  const [selected, setSelected] = useState<Date[]>([])
+
+  useEffect(() => {
+    setSelected(blockouts ? blockouts.map((date) => new Date(date)) : [])
+  }, [blockouts])
 
   const handleSelect = (date: Date) => {
     const isSelected = selected.some((s) => dayjs(date).isSame(s, 'date'))
     const currentMonthSelected = selected.filter((d) => dayjs(d).isSame(date, 'month'))
 
+    let firstDay = dayjs(date).startOf('month')
+    const lastDay = dayjs(date).endOf('month')
+
+    const weekends = []
+    while (firstDay.isBefore(lastDay, 'day')) {
+      if (isWeekend(firstDay.toDate())) {
+        weekends.push(firstDay.toDate())
+      }
+      firstDay = firstDay.add(1, 'day')
+    }
+
+    const numWeekends = weekends.length
+    const numSelectedWeekends = weekends.filter((w) =>
+      currentMonthSelected.some((s) => dayjs(s).isSame(w, 'date'))
+    ).length
+    const canSelectWeekend = numSelectedWeekends < numWeekends - 1
+
     if (isSelected) {
       setSelected((current) => current.filter((d) => !dayjs(d).isSame(date, 'date')))
     } else if (
       currentMonthSelected.length !== MAXIMUM_BLOCKOUTS &&
-      !currentMonthSelected.includes(date)
+      !currentMonthSelected.includes(date) &&
+      canSelectWeekend
     ) {
       setSelected((current) =>
         current.includes(date)
@@ -62,9 +86,11 @@ export default function ManageBlockoutPage({ blockouts }: { blockouts: string[] 
   const handleClick = async () => {
     setIsSubmitting(true)
     try {
-      const blockoutDates = selected.map((date) => date.toLocaleDateString('sv-SE'))
+      const blockoutDates = selected.map((date) =>
+        date.toLocaleDateString('sv-SE')
+      ) as TDateISODate[]
 
-      const res = await fetch('/api/sanity/manageBlockouts', {
+      const res = await fetch(`/api/sanity/user/${session?.user?.id}/blockouts`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +98,6 @@ export default function ManageBlockoutPage({ blockouts }: { blockouts: string[] 
         body: JSON.stringify({
           blockoutDates,
         }),
-        cache: 'no-cache',
       })
       const data = await res.json()
 
@@ -84,6 +109,10 @@ export default function ManageBlockoutPage({ blockouts }: { blockouts: string[] 
           icon: <IconX />,
         })
       } else {
+        if (mutate) {
+          mutate(blockoutDates)
+        }
+
         showNotification({
           title: 'Success',
           message: 'Blockout updated successfully',
@@ -98,8 +127,10 @@ export default function ManageBlockoutPage({ blockouts }: { blockouts: string[] 
     setIsSubmitting(false)
   }
 
+  if (error) return <div>failed to load</div>
+
   return (
-    <Container mt="lg">
+    <Container my="xl">
       <div className={classes.titleWrapper}>
         <IconEdit size={48} />
         <Title className={classes.title}>Manage Blockouts</Title>
@@ -112,7 +143,9 @@ export default function ManageBlockoutPage({ blockouts }: { blockouts: string[] 
       </Text>
       <List mt="lg">
         <List.Item>Unless you have a valid reason;</List.Item>
-        <List.Item>Only a maximum of 8 blockouts date per month (subject to change)</List.Item>
+        <List.Item>
+          Only a maximum of {MAXIMUM_BLOCKOUTS} blockouts date per month (subject to change)
+        </List.Item>
         <List.Item>Inform the person-in-charge of the duty roster your reason</List.Item>
         <List.Item>You are not allowed to blockout every weekend of the month</List.Item>
       </List>
@@ -186,26 +219,4 @@ export default function ManageBlockoutPage({ blockouts }: { blockouts: string[] 
       </Group>
     </Container>
   )
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
-
-  let blockouts = demo.blockouts
-  if (session?.user?.id !== config.demoUserId) {
-    blockouts = await getUserBlockouts(session?.user?.id)
-  }
-
-  return {
-    props: { blockouts },
-  }
 }

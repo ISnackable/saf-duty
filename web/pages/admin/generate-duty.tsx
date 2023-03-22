@@ -1,7 +1,4 @@
 import { forwardRef, useEffect, useState } from 'react'
-import type { GetServerSidePropsContext } from 'next'
-import type { User } from 'next-auth'
-import { getServerSession } from 'next-auth/next'
 import {
   Avatar,
   Container,
@@ -28,12 +25,9 @@ import {
   IconX,
 } from '@tabler/icons-react'
 
-import * as demo from '@/lib/demo.data'
-import config from '@/../site.config'
 import { createDutyRoster, DutyDate, isWeekend, Personnel } from '@/utils/dutyRoster'
-import { authOptions } from '../api/auth/[...nextauth]'
-import { getAllCalendar, getAllUsers } from '@/lib/sanity.client'
-import { type Calendar as CalendarType } from '@/lib/sanity.queries'
+import useUsers from '@/hooks/useUsers'
+import useCalendar from '@/hooks/useCalendar'
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -77,14 +71,11 @@ GenerateDutyPage.title = 'Generate Duty'
 const today = new Date()
 const firstDay = new Date(today.getFullYear(), today.getMonth(), 1)
 
-export default function GenerateDutyPage({
-  users,
-  calendar,
-}: {
-  users: User[]
-  calendar: CalendarType[]
-}) {
-  const data = users.map((user) => ({
+export default function GenerateDutyPage() {
+  const { data: users, error } = useUsers()
+  const { data: calendar } = useCalendar()
+
+  const data = users?.map((user) => ({
     label: user.name || 'Default',
     value: user.name || 'default',
     image: user.image || '',
@@ -114,33 +105,57 @@ export default function GenerateDutyPage({
   // Make sure extraDates is cleared whenever new month is selected
   useEffect(() => {
     // if there is a calendar for the selected month, set the duty roster
-    const dutyDates = calendar.find((cal) => isSameMonth(cal.date, month || firstDay))
+    const dutyDates = calendar?.find((cal) => isSameMonth(new Date(cal.date), month || firstDay))
     if (dutyDates) {
-      setDutyRoster(dutyDates.roster as unknown as DutyDate[])
+      const roster = dutyDates.roster.map((date) => ({
+        date: new Date(date.date),
+        personnel: date.personnel,
+        standby: date.standby,
+        isExtra: false,
+        blockout: [],
+        isWeekend: false,
+        allocated: false,
+      }))
+      setDutyRoster(roster)
 
-      const dutyPersonnel = users.map((user) => {
+      const dutyPersonnel = users?.map((user) => {
         const WD_DONE = dutyDates.roster.filter(
-          (date) => !isWeekend(date.date) && date.personnel === user.name
+          (date) => !isWeekend(new Date(date.date)) && date.personnel === user.name
         ).length
         const WE_DONE = dutyDates.roster.filter(
-          (date) => isWeekend(date.date) && date.personnel === user.name
+          (date) => isWeekend(new Date(date.date)) && date.personnel === user.name
         ).length
+        const blockouts = user.blockouts?.map((blockout) => new Date(blockout))
 
         return {
           ...user,
-          WD_DONE,
-          WE_DONE,
+          blockouts,
+          WD_RM: 0, // Weekday Remaining
+          SBWD_RM: 0, // Stand In/Stand By weekend
+          WD_DONE, // No. Weekdays duty assigned
+          WE_RM: 0, // Weekend Remaining
+          SBWE_RM: 0, // Stand In/Stand By weekend
+          WE_DONE, // No. Weekends duty assigned
+          SB_COUNT: 0, // Total stand in count
+          EX_DONE: 0, // Extra Cleared,
         }
       })
 
-      setDutyPersonnelState(dutyPersonnel as unknown as Personnel[])
-      setMultiSelectValue(Array.from(new Set(dutyDates.roster.map((date) => date.personnel))))
+      if (dutyPersonnel) {
+        setDutyPersonnelState(dutyPersonnel)
+      }
+
+      setMultiSelectValue(
+        Array.from(new Set(dutyDates.roster.map((date) => date.personnel).filter(Boolean)))
+      )
     } else if (month) {
       setDutyRoster([])
       setExtraDate([])
       setDutyPersonnelState([])
     }
   }, [calendar, month, users])
+
+  if (error) return <div>Failed to load</div>
 
   //sent blockout date to back end
   const handleSave = async () => {
@@ -160,7 +175,7 @@ export default function GenerateDutyPage({
     }))
 
     try {
-      const res = await fetch('/api/sanity/createCalendar', {
+      const res = await fetch('/api/sanity/calendar', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -169,7 +184,6 @@ export default function GenerateDutyPage({
           dutyDates,
           dutyPersonnel,
         }),
-        cache: 'no-cache',
       })
       const data = await res.json()
 
@@ -196,7 +210,9 @@ export default function GenerateDutyPage({
   }
 
   const handleClick = () => {
-    const personnel = [...users].filter((user) => multiSelectValue.includes(user.name || ''))
+    const personnel = [...(users || [])].filter((user) =>
+      multiSelectValue.includes(user.name || '')
+    )
 
     notifications.clean()
 
@@ -254,14 +270,14 @@ export default function GenerateDutyPage({
             searchable
             value={modalDPValue}
             onChange={setModalDPValue}
-            data={data}
+            data={data || []}
           />
           <Select
             label="Stand in"
             searchable
             value={modalSBValue}
             onChange={setModalSBValue}
-            data={data}
+            data={data || []}
           />
         </Group>
 
@@ -343,7 +359,12 @@ export default function GenerateDutyPage({
         </div>
 
         <Text color="dimmed" mt="md">
-          Generate the duty roster for the selected month & year with the given personnels.
+          Generate the duty roster for the selected month & year with the given personnels. The
+          algorithm will try to generate the duty roster such that each personnel will have an equal
+          number of duty days and duty weekends and try to make sure that the duty personnel/stand
+          in has less than 2 consecutive days of duty/standby. It uses weekendPoints and
+          weekdayPoints to determine the number of duty days and duty weekends. Personnel with lower
+          points will have more duty.
         </Text>
 
         <Group grow>
@@ -378,7 +399,7 @@ export default function GenerateDutyPage({
           mt="sm"
           value={multiSelectValue}
           onChange={setMultiSelectValue}
-          data={data}
+          data={data || []}
           label="Choose personnel doing duties"
           placeholder="Pick all you like"
           itemComponent={SelectItem}
@@ -480,7 +501,9 @@ export default function GenerateDutyPage({
           <Button
             mt="xl"
             onClick={() => {
-              const dutyDates = calendar.find((cal) => isSameMonth(cal.date, month || firstDay))
+              const dutyDates = calendar?.find((cal) =>
+                isSameMonth(new Date(cal.date), month || firstDay)
+              )
 
               if (dutyDates) {
                 modals.openConfirmModal({
@@ -526,7 +549,7 @@ export default function GenerateDutyPage({
             </thead>
             <tbody>
               {multiSelectValue.map((person) => {
-                const user = users.find((user) => user?.name === person)
+                const user = users?.find((user) => user?.name === person)
                 const dutyPersonnel = dutyPersonnelState?.find((user) => user?.name === person)
 
                 return (
@@ -553,40 +576,4 @@ export default function GenerateDutyPage({
       </Container>
     </>
   )
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
-
-  const { user } = session
-
-  // Only allow access to users with the "admin" role unless the user is demo
-  if (user?.role !== 'admin' && user?.id !== config.demoUserId) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-
-  let calendar: CalendarType[] = demo.calendar
-  let users = demo.users
-  if (session?.user?.id !== config.demoUserId) {
-    users = await getAllUsers()
-    calendar = await getAllCalendar()
-  }
-
-  return {
-    props: { users, calendar },
-  }
 }

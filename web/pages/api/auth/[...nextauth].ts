@@ -1,8 +1,9 @@
+import type { NextApiRequest, NextApiResponse } from 'next'
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import { SanityAdapter, SanityCredentials } from 'next-auth-sanity'
-import { clientWithToken } from '@/lib/sanity.client'
+import { clientWithToken, getUserById } from '@/lib/sanity.client'
 
-export const authOptions: NextAuthOptions = {
+export const createOptions = (req: NextApiRequest): NextAuthOptions => ({
   providers: [SanityCredentials(clientWithToken)],
   session: {
     strategy: 'jwt',
@@ -18,18 +19,45 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.role = user.role
         token.id = user.id.replace('drafts.', '')
+        token.ord = user.ord
+        token.image = user.image
+        token.enlistment = user.enlistment
       }
+
+      // If the specified query param(s) exits(s), we know it's an update
+      if (req.query?.update) {
+        console.log("Updating user's token...")
+        const updatedUser = await getUserById(token.id.replace('drafts.', ''))
+
+        console.log("Updated user's token: ", updatedUser)
+        token.name = updatedUser.name
+        token.email = updatedUser.email
+        token.role = updatedUser.role
+        token.image = updatedUser.image
+        token.enlistment = updatedUser.enlistment
+        token.ord = updatedUser.ord
+      }
+
       return token
     },
     session({ session, token }) {
       /* Step 2: update the session.user based on the token object */
       if (token && session.user) {
+        session.user.name = token.name
+        session.user.email = token.email
+        session.user.image = token.image
         session.user.role = token.role
         session.user.id = token.id?.replace('drafts.', '')
+        session.user.ord = token.ord
+        session.user.enlistment = token.enlistment
       }
       return session
     },
   },
+})
+
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  return NextAuth(req, res, createOptions(req))
 }
 
-export default NextAuth(authOptions)
+export default handler

@@ -1,7 +1,6 @@
-import type { GetServerSidePropsContext } from 'next'
-import type { User } from 'next-auth'
-import { getServerSession } from 'next-auth/next'
+import Link from 'next/link'
 import {
+  Anchor,
   Badge,
   Blockquote,
   Container,
@@ -16,8 +15,7 @@ import {
 } from '@mantine/core'
 import { IconCalendarStats, IconRun } from '@tabler/icons-react'
 import dayjs from 'dayjs'
-
-import { authOptions } from '../api/auth/[...nextauth]'
+import { useSession } from 'next-auth/react'
 
 const ICON_SIZE = 60
 
@@ -53,11 +51,13 @@ const useStyles = createStyles((theme) => ({
 
 ORDPage.title = 'ORD Progress'
 
-export default function ORDPage({ user }: { user: User }) {
+export default function ORDPage() {
+  const { data: session } = useSession()
+
   const { classes } = useStyles()
   const today = dayjs()
-  const enlist = dayjs(`2022-06-05`)
-  const ord = dayjs(`2024-06-05`)
+  const enlist = dayjs(session?.user?.enlistment)
+  const ord = dayjs(session?.user?.ord)
   // Calculate number of days between dates
   const diff = ord.diff(today, 'day')
   const total = ord.diff(enlist, 'day')
@@ -66,7 +66,7 @@ export default function ORDPage({ user }: { user: User }) {
   const ordProgress = Math.round((current / total) * 100)
   console.log(user?.enlistment, user?.ord)
   return (
-    <Container mt="lg">
+    <Container my="xl">
       <div className={classes.titleWrapper}>
         <IconCalendarStats size={48} />
         <Title className={classes.title}>ORD</Title>
@@ -74,8 +74,8 @@ export default function ORDPage({ user }: { user: User }) {
 
       <Text color="dimmed" mt="md">
         ORD is the date when full-time national servicemen (Singaporean Males) complete their 2
-        years (previously 2.5 years) compulsory stint in the Singapore Army, Navy, Police or Civil
-        Defence Force. Stop looking at this page as it is depressing.
+        years (previously 2.5 years) compulsory service in the Singapore Army, Navy, Police or Civil
+        Defence Force.
       </Text>
       <Divider mt="sm" />
 
@@ -88,45 +88,38 @@ export default function ORDPage({ user }: { user: User }) {
           ORD
         </Text>
 
-        <Blockquote cite={`– ${user?.name || 'Some NSF'}`}>ORD loh!!</Blockquote>
+        <Blockquote cite={`– ${session?.user?.name || 'Some NSF'}`}>ORD loh!!</Blockquote>
 
-        <Group position="apart" mt="xs">
-          <Text size="sm" color="dimmed">
-            Progress
-          </Text>
-          <Text size="sm" color="dimmed">
-            {ordProgress}%
-          </Text>
-        </Group>
+        {session?.user?.enlistment && session?.user?.ord ? (
+          <>
+            <Group position="apart" mt="xs">
+              <Text size="sm" color="dimmed">
+                Progress
+              </Text>
+              <Text size="sm" color="dimmed">
+                {ordProgress}%
+              </Text>
+            </Group>
 
-        <Progress value={ordProgress} mt={5} animate color="teal" />
+            <Progress value={ordProgress} mt={5} animate color="teal" />
 
-        <Group position="apart" mt="md">
-          <Text size="sm">
-            {current} / {total} days
+            <Group position="apart" mt="md">
+              <Text size="sm">
+                {current} / {total} days
+              </Text>
+              <Badge size="sm">{diff} days left</Badge>
+            </Group>
+          </>
+        ) : (
+          <Text size="sm" color="red" align="center">
+            Enlistment and ORD dates are not set. Head over to your{' '}
+            <Anchor component={Link} href="/profile">
+              profile page
+            </Anchor>{' '}
+            to set them. Once set, you will be able to see your ORD progress here.
           </Text>
-          <Badge size="sm">{diff} days left</Badge>
-        </Group>
+        )}
       </Paper>
     </Container>
   )
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
-
-  const { user } = session
-
-  return {
-    props: { user },
-  }
 }

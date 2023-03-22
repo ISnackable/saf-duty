@@ -1,9 +1,6 @@
-import type { GetServerSidePropsContext } from 'next'
-import { getServerSession } from 'next-auth/next'
 import { Container, createStyles, Divider, Text, Title } from '@mantine/core'
 import { IconSparkles } from '@tabler/icons-react'
 
-import { authOptions } from '../api/auth/[...nextauth]'
 import Link from 'next/link'
 
 const useStyles = createStyles((theme) => ({
@@ -71,21 +68,4 @@ export default function IpptPage() {
       />
     </>
   )
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
-
-  return {
-    props: {},
-  }
 }
