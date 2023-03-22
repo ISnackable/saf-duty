@@ -5,6 +5,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { SessionProvider } from 'next-auth/react'
 import { MantineProvider, ColorSchemeProvider, ColorScheme } from '@mantine/core'
+import { useColorScheme } from '@mantine/hooks'
 import { DatesProvider } from '@mantine/dates'
 import { Notifications } from '@mantine/notifications'
 import { ModalsProvider } from '@mantine/modals'
@@ -30,11 +31,10 @@ export default function MyApp({
   Component,
   pageProps: { session, ...pageProps },
 }: AppPropsWithLayout) {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>('dark')
-  const toggleColorScheme = (value?: ColorScheme) => {
-    const nextColorScheme = value || (colorScheme === 'dark' ? 'light' : 'dark')
-    setColorScheme(nextColorScheme)
-  }
+  const preferredColorScheme = useColorScheme()
+  const [colorScheme, setColorScheme] = useState<ColorScheme>(preferredColorScheme)
+  const toggleColorScheme = (value?: ColorScheme) =>
+    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'))
 
   const router = useRouter()
 

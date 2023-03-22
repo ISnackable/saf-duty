@@ -1,14 +1,14 @@
 import { forwardRef } from 'react'
 import Link from 'next/link'
 import { signOut } from 'next-auth/react'
-import { Group, Avatar, Text, Menu, UnstyledButton } from '@mantine/core'
+import { Group, Avatar, Text, Menu, UnstyledButton, Skeleton } from '@mantine/core'
 import { IconChevronRight, IconSettings, IconLogout, IconApps } from '@tabler/icons-react'
 import InstallPWA from '@/components/InstallPWA'
 
-interface UserButtonProps extends React.ComponentPropsWithoutRef<'button'> {
+interface UserButtonProps extends Omit<React.ComponentPropsWithoutRef<'button'>, 'name'> {
   image: string
-  name: string
-  email: string
+  name?: string | null
+  email?: string | null
   icon?: React.ReactNode
 }
 
@@ -34,11 +34,11 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
 
         <div style={{ flex: 1 }}>
           <Text size="sm" weight={500}>
-            {name}
+            {name ? name : <Skeleton height={10} />}
           </Text>
 
           <Text color="dimmed" size="xs">
-            {email}
+            {email ? email : <Skeleton height={10} mt="xs" />}
           </Text>
         </div>
 

@@ -1,14 +1,18 @@
 import { getAllUsers } from '@/lib/sanity.client'
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiResponse } from 'next'
 import { use } from 'next-api-route-middleware'
 
 import { allowMethods } from '../allowMethodsMiddleware'
-import { withUser } from '../authMiddleware'
+import { type NextApiRequestWithUser, withUser } from '../authMiddleware'
 import { rateLimitMiddleware } from '../rateLimitMiddleware'
 
-async function handler(_req: NextApiRequest, res: NextApiResponse) {
+async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
-    const users = await getAllUsers()
+    if (!req.unit) {
+      return res.status(400).json({ status: 'error', message: 'Bad request, unit code not found' })
+    }
+    console.log(req.unit)
+    const users = await getAllUsers(req.unit)
 
     return res.status(200).json({ status: 'success', data: users, message: 'ok' })
   } catch (error) {

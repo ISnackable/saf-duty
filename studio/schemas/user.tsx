@@ -59,6 +59,15 @@ export default defineType({
       initialValue: 'user',
     }),
     defineField({
+      name: 'unit',
+      title: 'Unit Reference No.',
+      type: 'reference',
+      to: [{type: 'unit'}],
+      options: {
+        disableNew: true,
+      },
+    }),
+    defineField({
       name: 'ord',
       title: 'ORD Date',
       type: 'date',

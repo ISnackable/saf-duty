@@ -23,12 +23,18 @@ export interface Roster {
   standby: string
 }
 
+export interface Unit {
+  id: string
+  unitCode: string
+}
+
 export interface SanityUser extends User {
   id: string
   name: string
   email: string
-  role?: Role
   image: string
+  role?: Role
+  unit?: string
   blockouts?: TDateISODate[]
   weekdayPoints: number
   weekendPoints: number
@@ -40,17 +46,23 @@ export interface SanityUser extends User {
 
 export type AllSanityUser = Omit<SanityUser, 'email'>
 
+export const getAllUnitsQuery = groq`*[_type == "unit"]{
+  "id": _id,
+  unitCode
+}`
+
 // Get all calendar roster that is related to the given user id and is created within the last 30 days
 export const getUserUpcomingDutiesQuery = groq`*[_type == 'calendar' && dateTime(_createdAt) > dateTime(now()) - 60*60*24*30 && !(_id in path("drafts.**"))]{
     roster[dutyPersonnel._ref == $id]{date}
 }.roster[].date
 `
 
-export const getAllUsersQuery = groq`*[_type == "user" && _id != "${config.demoUserId}" && !(_id in path("drafts.**"))]{
+export const getAllUsersQuery = groq`*[_type == "user" && _id != "${config.demoUserId}" && unit->unitCode == $unit && !(_id in path("drafts.**"))]{
   "id": _id,
   name,
   image,
   role,
+  "unit": unit->unitCode,
   blockouts,
   weekdayPoints,
   weekendPoints,
@@ -65,6 +77,7 @@ export const getUserQuery = groq`*[_type == "user" && _id == $id && !(_id in pat
   name,
   email,
   role,
+  "unit": unit->unitCode,
   image,
   blockouts,
   weekdayPoints,
