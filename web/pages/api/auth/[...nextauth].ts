@@ -1,7 +1,49 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import NextAuth, { NextAuthOptions } from 'next-auth'
-import { SanityAdapter, SanityCredentials } from 'next-auth-sanity'
+import type { CredentialsConfig } from 'next-auth/providers'
+import Credentials from 'next-auth/providers/credentials'
+import { SanityAdapter } from 'next-auth-sanity'
+import argon2 from 'argon2'
+import type { SanityClient } from '@sanity/client'
+
 import { clientWithToken, getUserById } from '@/lib/sanity.client'
+import { getUserByEmailQuery } from '@/lib/sanity.queries'
+
+const SanityCredentials = (client: SanityClient, userSchema = 'user'): CredentialsConfig =>
+  Credentials({
+    name: 'Credentials',
+    id: 'sanity-login',
+    type: 'credentials',
+    credentials: {
+      email: {
+        label: 'Email',
+        type: 'text',
+      },
+      password: {
+        label: 'Password',
+        type: 'password',
+      },
+    },
+    async authorize(credentials) {
+      const { _id, ...user } = await client.fetch(getUserByEmailQuery, {
+        userSchema,
+        email: credentials?.email,
+      })
+
+      if (!user) throw new Error('Email does not exist')
+
+      if (credentials?.password) {
+        if (await argon2.verify(user.password, credentials.password)) {
+          return {
+            id: _id,
+            ...user,
+          }
+        }
+      }
+
+      throw new Error('Password Invalid')
+    },
+  })
 
 export const createOptions = (req: NextApiRequest): NextAuthOptions => ({
   providers: [SanityCredentials(clientWithToken)],
@@ -15,12 +57,11 @@ export const createOptions = (req: NextApiRequest): NextAuthOptions => ({
   },
   callbacks: {
     async jwt({ token, user }) {
-      /* Step 1: update the token based on the user object */
+      // Only available on first time sign in
       if (user) {
         token.id = user.id.replace('drafts.', '')
         token.image = user.image
         token.role = user.role
-        // TODO: FIX ME, returns reference obj instead of value
         token.unit = user.unit
         token.ord = user.ord
         token.enlistment = user.enlistment

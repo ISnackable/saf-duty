@@ -46,6 +46,11 @@ export interface SanityUser extends User {
 
 export type AllSanityUser = Omit<SanityUser, 'email'>
 
+export const getUserByEmailQuery = groq`*[_type == $userSchema && email == $email][0]{
+  ...,
+  "unit": unit->unitCode
+}`
+
 export const getAllUnitsQuery = groq`*[_type == "unit"]{
   "id": _id,
   unitCode

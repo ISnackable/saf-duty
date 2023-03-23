@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
@@ -31,8 +31,7 @@ export default function MyApp({
   Component,
   pageProps: { session, ...pageProps },
 }: AppPropsWithLayout) {
-  const preferredColorScheme = useColorScheme()
-  const [colorScheme, setColorScheme] = useState<ColorScheme>(preferredColorScheme)
+  const [colorScheme, setColorScheme] = useState<ColorScheme>('dark')
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'))
 
@@ -50,7 +49,7 @@ export default function MyApp({
 
       <SessionProvider session={session}>
         <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-          <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme }}>
+          <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
             <DatesProvider settings={{ firstDayOfWeek: 0 }}>
               <ModalsProvider>
                 <RouterTransition />
