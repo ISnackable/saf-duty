@@ -131,10 +131,12 @@ export default function IndexPage() {
           }
 
           return (
-            <Flex mih={50} justify="center" align="center" direction="column">
-              <div>{day}</div>
+            <Flex mih="100%" direction="column">
+              <Text fz="sm" ta="right" mb="auto" mt="xs" mr="xs">
+                {day}
+              </Text>
               {dutyDates && (
-                <Text size="xs" align="center">
+                <Text size="xs" align="center" mb="auto">
                   {dutyDates?.roster?.[day - 1]?.personnel} ({dutyDates?.roster?.[day - 1]?.standby}
                   )
                 </Text>
