@@ -23,6 +23,7 @@ export const withUser: Middleware<NextApiRequestWithUser> = async (req, res, nex
 
     req.id = session.user.id
     req.role = session.user.role
+    req.unit = session.user.unit
     return await next()
   } else {
     return res.status(401).send({ status: 'error', message: 'Unauthorized, invalid auth cookie' })

@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { SessionProvider } from 'next-auth/react'
 import { MantineProvider, ColorSchemeProvider, ColorScheme } from '@mantine/core'
+import { useColorScheme } from '@mantine/hooks'
 import { DatesProvider } from '@mantine/dates'
 import { Notifications } from '@mantine/notifications'
 import { ModalsProvider } from '@mantine/modals'
@@ -31,10 +32,8 @@ export default function MyApp({
   pageProps: { session, ...pageProps },
 }: AppPropsWithLayout) {
   const [colorScheme, setColorScheme] = useState<ColorScheme>('dark')
-  const toggleColorScheme = (value?: ColorScheme) => {
-    const nextColorScheme = value || (colorScheme === 'dark' ? 'light' : 'dark')
-    setColorScheme(nextColorScheme)
-  }
+  const toggleColorScheme = (value?: ColorScheme) =>
+    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'))
 
   const router = useRouter()
 
@@ -50,7 +49,7 @@ export default function MyApp({
 
       <SessionProvider session={session}>
         <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-          <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme }}>
+          <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
             <DatesProvider settings={{ firstDayOfWeek: 0 }}>
               <ModalsProvider>
                 <RouterTransition />

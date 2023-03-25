@@ -1,7 +1,7 @@
 import type { Middleware } from 'next-api-route-middleware'
 import { use } from 'next-api-route-middleware'
 import { signUpHandler } from 'next-auth-sanity'
-import { clientWithToken } from '@/lib/sanity.client'
+import { clientWithToken, getAllUnits } from '@/lib/sanity.client'
 
 import { rateLimitMiddleware } from '../rateLimitMiddleware'
 import { allowMethods } from '../allowMethodsMiddleware'
@@ -103,7 +103,7 @@ export const hcaptcha: Middleware = async (req, res, next) => {
 
     return res.status(422).json({
       status: 'error',
-      message: 'Unproccesable request, Invalid captcha code',
+      message: 'Unproccesable request, invalid captcha code',
     })
   } catch (error) {
     console.log(error)
@@ -111,20 +111,40 @@ export const hcaptcha: Middleware = async (req, res, next) => {
   }
 }
 
-export const addFields: Middleware = async (req, _res, next) => {
+export const addFields: Middleware = async (req, res, next) => {
+  const { unit }: { unit: string } = req.body
   const seed = (Math.random() + 1).toString(36).substring(7)
 
-  req.body['role'] = 'user'
-  req.body['image'] = `https://api.dicebear.com/5.x/pixel-art/jpg?seed=${seed}`
-  req.body['weekdayPoints'] = 0
-  req.body['weekendPoints'] = 0
-  req.body['extra'] = 0
-  console.log('adding role image, weekdayPoints, weekendPoints, extra', req.body)
-  return await next()
+  try {
+    const units = await getAllUnits()
+    const found = units.find((e) => e.unitCode === unit)
+    if (found) {
+      // Once unit is accepted
+      req.body['role'] = 'user'
+      req.body['image'] = `https://api.dicebear.com/5.x/pixel-art/jpg?seed=${seed}`
+      req.body['weekdayPoints'] = 0
+      req.body['weekendPoints'] = 0
+      req.body['extra'] = 0
+      req.body['unit'] = {
+        _type: 'reference',
+        _ref: found.id,
+      }
+      console.log('adding role, image, weekdayPoints, weekendPoints, extra, unit', req.body)
+      return await next()
+    } else {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Unauthorized, invalid unit code',
+      })
+    }
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ status: 'error', message: 'Something went wrong' })
+  }
 }
 
 export const validateFields: Middleware = async (req, res, next) => {
-  const { name, email, password } = req.body
+  const { name, email, password }: { name: string; email: string; password: string } = req.body
 
   console.log(checkPasswordValidation(password))
   console.log(checkEmailValidation(email))
