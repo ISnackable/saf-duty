@@ -478,10 +478,13 @@ export default function GenerateDutyPage() {
 
             if (dutyRoster?.length > 0) {
               return (
-                <Flex mih={50} justify="center" align="center" direction="column">
-                  <div>{day}</div>
-                  <Text size="xs" align="center">
-                    {dutyRoster?.[day - 1]?.personnel} ({dutyRoster?.[day - 1]?.standby})
+                <Flex mih="100%" direction="column">
+                  <Text fz="sm" ta="right" mb="auto" mt="xs" mr="xs">
+                    {day}
+                  </Text>
+
+                  <Text size="xs" align="center" mb="auto">
+                    {dutyRoster?.[day - 1]?.personnel} ({dutyRoster?.[day - 1]?.standby}) )
                   </Text>
                 </Flex>
               )

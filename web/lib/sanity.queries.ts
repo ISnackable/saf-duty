@@ -97,7 +97,7 @@ export const getUserBlockoutsQuery = groq`*[_type == "user" && _id == $id && !(_
     blockouts
 }[0].blockouts`
 
-export const getAllCalendarQuery = groq`*[_type == 'calendar' && !(_id in path("drafts.**"))]{
+export const getAllCalendarQuery = groq`*[_type == 'calendar' && references($id) && !(_id in path("drafts.**"))]{
   date,
   roster[]{
     date,

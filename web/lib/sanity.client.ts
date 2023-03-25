@@ -58,8 +58,8 @@ export async function getUserBlockouts(id: string): Promise<TDateISODate[]> {
 /**
  * @returns {Calendar[]} in descending order of creation date
  */
-export async function getAllCalendar(): Promise<Calendar[]> {
-  const calendar: Calendar[] = await clientWithToken.fetch(getAllCalendarQuery)
+export async function getAllCalendar(id: string): Promise<Calendar[]> {
+  const calendar: Calendar[] = await clientWithToken.fetch(getAllCalendarQuery, { id })
 
   return calendar
 }
