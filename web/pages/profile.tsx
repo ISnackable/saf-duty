@@ -263,32 +263,35 @@ export default function ProfilePage() {
     setIsSubmitting(false)
   }
 
-  const saveAvatar = async () => {
+  const handleAvatarUpload = async () => {
     setIsSubmitting(true)
     try {
-      const res = await fetch('/api/sanity/updateUserImage', {
+      if (!file) return
+
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const res = await fetch(`/api/sanity/user/${user?.id}/avatar`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          image: imageUrl,
-        }),
-        cache: 'no-cache',
+        body: formData,
       })
       const data = await res.json()
 
       if (data?.status === 'error') {
         showNotification({
           title: 'Error',
-          message: data?.message || 'Cannot update Avatar, something went wrong',
+          message: data?.message || 'Cannot update user details, something went wrong',
           color: 'red',
           icon: <IconX />,
         })
       } else {
+        reloadSession()
         showNotification({
           title: 'Success',
-          message: 'Avatar updated successfully',
+          message: 'User details updated successfully',
           color: 'green',
           icon: <IconCheck />,
         })
@@ -434,7 +437,7 @@ export default function ProfilePage() {
             </Group>
             <Group position="right">
               <Button color="gray">Cancel</Button>
-              <Button onClick={saveAvatar} type="submit">
+              <Button onClick={handleAvatarUpload} type="submit">
                 Save
               </Button>
             </Group>
