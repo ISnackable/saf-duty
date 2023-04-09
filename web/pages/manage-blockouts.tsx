@@ -35,16 +35,19 @@ ManageBlockoutPage.title = 'Manage Blockouts'
 export default function ManageBlockoutPage() {
   const { data: session } = useSession()
 
-  const { data: blockouts, error, mutate } = useBlockouts()
+  const { data, error, mutate } = useBlockouts()
 
   const { classes } = useStyles()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [selected, setSelected] = useState<Date[]>([])
+  const maximumBlockouts = data?.maxBlockouts || MAXIMUM_BLOCKOUTS
 
   useEffect(() => {
-    setSelected(blockouts ? blockouts.map((date) => new Date(date)) : [])
-  }, [blockouts])
+    if (data?.blockouts) {
+      setSelected(data.blockouts ? data.blockouts.map((date) => new Date(date)) : [])
+    }
+  }, [data?.blockouts])
 
   const handleSelect = (date: Date) => {
     const isSelected = selected.some((s) => dayjs(date).isSame(s, 'date'))
@@ -70,7 +73,7 @@ export default function ManageBlockoutPage() {
     if (isSelected) {
       setSelected((current) => current.filter((d) => !dayjs(d).isSame(date, 'date')))
     } else if (
-      currentMonthSelected.length !== MAXIMUM_BLOCKOUTS &&
+      currentMonthSelected.length !== maximumBlockouts &&
       !currentMonthSelected.includes(date) &&
       canSelectWeekend
     ) {
@@ -99,18 +102,18 @@ export default function ManageBlockoutPage() {
           blockoutDates,
         }),
       })
-      const data = await res.json()
+      const resData = await res.json()
 
-      if (data?.status === 'error') {
+      if (resData?.status === 'error') {
         showNotification({
           title: 'Error',
-          message: data?.message || 'Cannot update block out dates, something went wrong',
+          message: resData?.message || 'Cannot update block out dates, something went wrong',
           color: 'red',
           icon: <IconX />,
         })
       } else {
-        if (mutate) {
-          mutate(blockoutDates)
+        if (mutate && data) {
+          mutate({ ...data, blockouts: blockoutDates })
         }
 
         showNotification({
@@ -144,7 +147,7 @@ export default function ManageBlockoutPage() {
       <List mt="lg">
         <List.Item>Unless you have a valid reason;</List.Item>
         <List.Item>
-          Only a maximum of {MAXIMUM_BLOCKOUTS} blockouts date per month (subject to change)
+          Only a maximum of {maximumBlockouts} blockouts date per month (subject to change)
         </List.Item>
         <List.Item>Inform the person-in-charge of the duty roster your reason</List.Item>
         <List.Item>You are not allowed to blockout every weekend of the month</List.Item>
