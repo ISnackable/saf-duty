@@ -1,12 +1,11 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import NextAuth, { NextAuthOptions } from 'next-auth'
+import NextAuth, { AuthOptions } from 'next-auth'
 import type { CredentialsConfig } from 'next-auth/providers'
 import Credentials from 'next-auth/providers/credentials'
 import { SanityAdapter } from 'next-auth-sanity'
 import argon2 from 'argon2'
 import type { SanityClient } from '@sanity/client'
 
-import { clientWithToken, getUserById } from '@/lib/sanity.client'
+import { clientWithToken } from '@/lib/sanity.client'
 import { getUserByEmailQuery } from '@/lib/sanity.queries'
 
 const SanityCredentials = (client: SanityClient, userSchema = 'user'): CredentialsConfig =>
@@ -45,18 +44,20 @@ const SanityCredentials = (client: SanityClient, userSchema = 'user'): Credentia
     },
   })
 
-export const createOptions = (req: NextApiRequest): NextAuthOptions => ({
+export const authOptions: AuthOptions = {
+  // @ts-expect-error - clientWithToken type is not compatible with SanityCredentials
   providers: [SanityCredentials(clientWithToken)],
   session: {
     strategy: 'jwt',
   },
+  // @ts-expect-error - clientWithToken type is not compatible with SanityAdapter
   adapter: SanityAdapter(clientWithToken),
   pages: {
     signIn: '/login',
     error: '/login',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, trigger, session, user }) {
       // Only available on first time sign in
       if (user) {
         token.id = user.id.replace('drafts.', '')
@@ -67,19 +68,11 @@ export const createOptions = (req: NextApiRequest): NextAuthOptions => ({
         token.enlistment = user.enlistment
       }
 
-      // If the specified query param(s) exits(s), we know it's an update
-      if (req.query?.update) {
-        console.log("Updating user's token...")
-        const updatedUser = await getUserById(token.id.replace('drafts.', ''))
-
-        console.log("Updated user's token: ", updatedUser)
-        token.name = updatedUser.name
-        token.email = updatedUser.email
-        token.image = updatedUser.image
-        token.role = updatedUser.role
-        token.unit = updatedUser.unit
-        token.ord = updatedUser.ord
-        token.enlistment = updatedUser.enlistment
+      if (trigger === 'update') {
+        if (session.email) token.email = session.email
+        if (token.name) token.name = session.name
+        if (token.ord) token.ord = session.ord
+        if (token.enlistment) token.enlistment = session.enlistment
       }
 
       return token
@@ -99,10 +92,6 @@ export const createOptions = (req: NextApiRequest): NextAuthOptions => ({
       return session
     },
   },
-})
-
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  return NextAuth(req, res, createOptions(req))
 }
 
-export default handler
+export default NextAuth(authOptions)

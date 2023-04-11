@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 import Image from 'next/image'
 import { DatePickerInput } from '@mantine/dates'
 import { isEmail, useForm } from '@mantine/form'
@@ -83,8 +82,7 @@ const useStyles = createStyles((theme) => ({
 ProfilePage.title = 'Profile'
 
 export default function ProfilePage() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
+  const { data: session, status, update } = useSession()
   const { classes } = useStyles()
 
   const user = session?.user
@@ -92,14 +90,13 @@ export default function ProfilePage() {
   const [file, setFile] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const reloadSession = async () => {
-    await fetch('/api/auth/session?update=true')
-
-    const event = new Event('visibilitychange')
-    window.dispatchEvent(event)
-
-    router.reload()
-  }
+  // Listen for when the page is visible, if the user switches tabs
+  // and makes our tab visible again, re-fetch the session
+  useEffect(() => {
+    const visibilityHandler = () => document.visibilityState === 'visible' && update()
+    window.addEventListener('visibilitychange', visibilityHandler, false)
+    return () => window.removeEventListener('visibilitychange', visibilityHandler, false)
+  }, [update])
 
   const openDeleteModal = () =>
     modals.openConfirmModal({
@@ -185,7 +182,7 @@ export default function ProfilePage() {
           icon: <IconX />,
         })
       } else {
-        reloadSession()
+        update(values)
         showNotification({
           title: 'Success',
           message: 'User details updated successfully',
@@ -224,7 +221,7 @@ export default function ProfilePage() {
           icon: <IconX />,
         })
       } else {
-        reloadSession()
+        update(values)
         showNotification({
           title: 'Success',
           message: 'User account updated successfully',

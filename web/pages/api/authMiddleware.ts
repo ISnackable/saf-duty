@@ -4,13 +4,13 @@ import type { Middleware } from 'next-api-route-middleware'
 import { getServerSession } from 'next-auth/next'
 
 import config from '@/../site.config'
-import { createOptions } from './auth/[...nextauth]'
+import { authOptions } from './auth/[...nextauth]'
 
 export type NextApiRequestWithUser = NextApiRequest & User
 
 export const withUser: Middleware<NextApiRequestWithUser> = async (req, res, next) => {
   const { method } = req
-  const session = await getServerSession(req, res, createOptions(req))
+  const session = await getServerSession(req, res, authOptions)
 
   if (session && session.user) {
     // Only allow GET requests for demo user
