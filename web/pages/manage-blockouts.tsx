@@ -216,7 +216,7 @@ export default function ManageBlockoutPage() {
         })}
       />
       <Group position="right" mt="lg">
-        <Button onClick={handleClick} type="submit" disabled={isSubmitting}>
+        <Button onClick={handleClick} type="submit" loading={isSubmitting}>
           Save
         </Button>
       </Group>

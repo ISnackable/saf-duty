@@ -294,7 +294,7 @@ export default function ProfilePage() {
 
               <Group position="right" mt="lg">
                 <Button color="gray">Cancel</Button>
-                <Button type="submit" disabled={isSubmitting}>
+                <Button type="submit" loading={isSubmitting}>
                   Save
                 </Button>
               </Group>
@@ -364,7 +364,7 @@ export default function ProfilePage() {
                 <Button onClick={openDeleteModal} color="red">
                   Delete account
                 </Button>
-                <Button type="submit" disabled={isSubmitting}>
+                <Button type="submit" loading={isSubmitting}>
                   Save
                 </Button>
               </Group>

@@ -12,6 +12,7 @@ import {
   Flex,
   Table,
   Modal,
+  ScrollArea,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Calendar, MonthPickerInput, DatePickerInput, isSameMonth } from '@mantine/dates'
@@ -540,41 +541,45 @@ export default function GenerateDutyPage() {
         </Group>
 
         {multiSelectValue.length > 0 && (
-          <Table mt="xl" withBorder withColumnBorders>
-            <thead>
-              <tr>
-                <th>Personnel</th>
-                <th>Weekday Points</th>
-                <th>Weekend Points</th>
-                <th>Extras</th>
-                <th>No. of duties</th>
-              </tr>
-            </thead>
-            <tbody>
-              {multiSelectValue.map((person) => {
-                const user = users?.find((user) => user?.name === person)
-                const dutyPersonnel = dutyPersonnelState?.find((user) => user?.name === person)
+          <ScrollArea>
+            <Table mt="xl" withBorder withColumnBorders sx={{ minWidth: 800 }} verticalSpacing="xs">
+              <thead>
+                <tr>
+                  <th>Personnel</th>
+                  <th>Weekday Points</th>
+                  <th>Weekend Points</th>
+                  <th>Extras</th>
+                  <th>No. of duties</th>
+                </tr>
+              </thead>
+              <tbody>
+                {multiSelectValue.map((person) => {
+                  const user = users?.find((user) => user?.name === person)
+                  const dutyPersonnel = dutyPersonnelState?.find((user) => user?.name === person)
 
-                return (
-                  <tr key={person}>
-                    <td>{person}</td>
-                    <td>{`${user?.weekdayPoints} ${
-                      dutyPersonnel ? ' ⟶ ' + dutyPersonnel.weekdayPoints : ''
-                    }`}</td>
-                    <td>{`${user?.weekendPoints} ${
-                      dutyPersonnel ? ' ⟶ ' + dutyPersonnel.weekendPoints : ''
-                    }`}</td>
-                    <td>{`${user?.extra} ${dutyPersonnel ? ' ⟶ ' + dutyPersonnel.extra : ''}`}</td>
-                    <td>{`${dutyPersonnel ? dutyPersonnel.WD_DONE : 0} weekday, ${
-                      dutyPersonnel ? dutyPersonnel.WE_DONE : 0
-                    } weekend --- Total: (${
-                      dutyPersonnel ? dutyPersonnel.WD_DONE + dutyPersonnel.WE_DONE : 0
-                    })`}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </Table>
+                  return (
+                    <tr key={person}>
+                      <td>{person}</td>
+                      <td>{`${user?.weekdayPoints} ${
+                        dutyPersonnel ? ' ⟶ ' + dutyPersonnel.weekdayPoints : ''
+                      }`}</td>
+                      <td>{`${user?.weekendPoints} ${
+                        dutyPersonnel ? ' ⟶ ' + dutyPersonnel.weekendPoints : ''
+                      }`}</td>
+                      <td>{`${user?.extra} ${
+                        dutyPersonnel ? ' ⟶ ' + dutyPersonnel.extra : ''
+                      }`}</td>
+                      <td>{`${dutyPersonnel ? dutyPersonnel.WD_DONE : 0} weekday, ${
+                        dutyPersonnel ? dutyPersonnel.WE_DONE : 0
+                      } weekend --- Total: (${
+                        dutyPersonnel ? dutyPersonnel.WD_DONE + dutyPersonnel.WE_DONE : 0
+                      })`}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </Table>
+          </ScrollArea>
         )}
       </Container>
     </>
