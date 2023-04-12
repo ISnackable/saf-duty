@@ -33,7 +33,7 @@ const validateFields: Middleware<NextApiRequestWithUser> = async (req, res, next
     })
   }
 
-  console.log(checkNameValidation(name))
+  console.log('checkNameValidation:', checkNameValidation(name))
 
   if (checkNameValidation(name) === null) {
     return await next()

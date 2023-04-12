@@ -170,5 +170,6 @@ export default use(
   validateFields,
   hcaptcha,
   addFields,
+  // @ts-expect-error - clientWithToken type is not compatible with the type of the client
   signUpHandler(clientWithToken)
 )

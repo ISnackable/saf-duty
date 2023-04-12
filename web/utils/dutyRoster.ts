@@ -285,9 +285,7 @@ function assignPersonnelShift(personnel: Personnel[], dutyDates: DutyDate[]) {
       while (dutyDates[i].blockout.includes(personnel[j].name) || personnel[j].WD_RM == 0) {
         j += 1
         if (j === personnel.length) {
-          throw new Error(
-            `Unable to assign personnel on ${dutyDates[i + 1].date.toLocaleDateString()}`
-          )
+          throw new Error(`Unable to assign personnel on ${dutyDates[i].date.toLocaleDateString()}`)
         }
       }
 
@@ -311,9 +309,7 @@ function assignPersonnelShift(personnel: Personnel[], dutyDates: DutyDate[]) {
       ) {
         j += 1
         if (j == personnel.length - 1) {
-          throw new Error(
-            `Unable to assign stand in on ${dutyDates[i + 1].date.toLocaleDateString()}`
-          )
+          throw new Error(`Unable to assign stand in on ${dutyDates[i].date.toLocaleDateString()}`)
         }
       }
       dutyDates[i].standby = personnel[j].name
@@ -333,9 +329,7 @@ function assignPersonnelShift(personnel: Personnel[], dutyDates: DutyDate[]) {
       while (dutyDates[i].blockout.includes(personnel[j].name) || personnel[j].WE_RM == 0) {
         j += 1
         if (j == personnel.length - 1) {
-          throw new Error(
-            `Unable to assign personnel on ${dutyDates[i + 1].date.toLocaleDateString()}`
-          )
+          throw new Error(`Unable to assign personnel on ${dutyDates[i].date.toLocaleDateString()}`)
         }
       }
       dutyDates[i].personnel = personnel[j].name
@@ -357,9 +351,7 @@ function assignPersonnelShift(personnel: Personnel[], dutyDates: DutyDate[]) {
       ) {
         j += 1
         if (j == personnel.length - 1) {
-          throw new Error(
-            `Unable to assign stand in on ${dutyDates[i + 1].date.toLocaleDateString()}`
-          )
+          throw new Error(`Unable to assign stand in on ${dutyDates[i].date.toLocaleDateString()}`)
         }
       }
       dutyDates[i].standby = personnel[j].name

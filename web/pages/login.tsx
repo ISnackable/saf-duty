@@ -171,6 +171,7 @@ export default function AuthenticationForm() {
     const { name, email, password, unit } = form.values
     // If the hCaptcha code is null or undefined indicating that
     // the hCaptcha was expired then return early
+
     if (!captchaCode || (formType === 'register' && !name) || !email || !password) {
       return
     }
@@ -180,13 +181,12 @@ export default function AuthenticationForm() {
     try {
       if (formType === 'register') {
         const response: NextAuthSanityResponse = await signUp({
-          email,
+          email: email.toLowerCase(),
           password,
           name,
           unit,
           captcha: captchaCode,
         })
-
         if (response?.status === 'error') {
           showNotification({
             title: 'Error',
@@ -208,13 +208,11 @@ export default function AuthenticationForm() {
             color: 'teal',
             icon: <IconCheck />,
           })
-
           await signIn('sanity-login', {
             email,
             password,
             redirect: false,
           })
-
           // If the user is authenticated, redirect to the home page
           Router.push('/')
         }
@@ -354,25 +352,28 @@ export default function AuthenticationForm() {
             </Button>
           </Group>
 
-          <HCaptcha
-            size="invisible"
-            ref={hcaptchaRef}
-            sitekey={
-              process.env.NODE_ENV === 'development'
-                ? '10000000-ffff-ffff-ffff-000000000001'
-                : process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ''
-            }
-            onVerify={onHCaptchaChange}
-            onExpire={() => onHCaptchaChange(null)}
-            onError={(err) => {
-              onHCaptchaChange(null)
-              showNotification({
-                title: 'Error',
-                message: 'Cannot verify captcha',
-              })
-              console.error(err)
-            }}
-          />
+          {process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY && (
+            <HCaptcha
+              size="invisible"
+              ref={hcaptchaRef}
+              theme="dark"
+              sitekey={
+                process.env.NODE_ENV === 'development'
+                  ? '10000000-ffff-ffff-ffff-000000000001'
+                  : process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY
+              }
+              onVerify={onHCaptchaChange}
+              onExpire={() => onHCaptchaChange(null)}
+              onError={(err) => {
+                onHCaptchaChange(null)
+                showNotification({
+                  title: 'Error',
+                  message: 'Cannot verify captcha',
+                })
+                console.error(err)
+              }}
+            />
+          )}
         </form>
       </Paper>
     </Container>
