@@ -1469,10 +1469,10 @@
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.3.tgz#555193ab2e3bb3b6adc3d551c9c030d9e860daf6"
   integrity sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==
 
-"@hcaptcha/react-hcaptcha@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@hcaptcha/react-hcaptcha/-/react-hcaptcha-1.7.0.tgz#0c1eb46a80dfa9ac6d441ec1894b6b3cd0baa7a7"
-  integrity sha512-XL9auBm28PmiGMGZwcSeolDmWeVlo5Gy8J8oFaai7ZzQElwFzC3cOZv7zv5zcrImaT23lY2cbddojKHYsMb5ow==
+"@hcaptcha/react-hcaptcha@1.8.1":
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/@hcaptcha/react-hcaptcha/-/react-hcaptcha-1.8.1.tgz#3e6e0423100158bae089e4ef6507db0d4c62ec3f"
+  integrity sha512-33tIl77HgeahiQ6R0+JPDA8cGBBv95cIVcdOcFVwiGCJhrOxyiOQetCdEUNTDS13xrkvIP29K/PrqLXXSbKl6Q==
   dependencies:
     "@babel/runtime" "^7.17.9"
 
@@ -2748,10 +2748,10 @@
     lodash "^4.17.21"
     slate "0.81.1"
 
-"@sanity/preview-kit@1.3.8":
-  version "1.3.8"
-  resolved "https://registry.yarnpkg.com/@sanity/preview-kit/-/preview-kit-1.3.8.tgz#8614851b981e672885c0cab3cecb8b50669daacb"
-  integrity sha512-4w0y7KXMcwQLhpjH+AS0a/vdsuzpnP+Kb8EbCs446F8gTm7xGpNyLOIgyi10UDO+FINXlnvhST2QRQDHkWP0+w==
+"@sanity/preview-kit@1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@sanity/preview-kit/-/preview-kit-1.4.0.tgz#88e59fc42b713868f4c33cfdc575b5c68671b824"
+  integrity sha512-jEOZjmlKLKShH+92cQf0DLisfgnRrNEZPEiWFItztNocsZIppC8Pzo6Ch2LaCb+1cXxqxCfzxSfEQwkeTn6zLA==
   dependencies:
     "@sanity/eventsource" "5"
     "@sanity/groq-store" "2.1.0"
@@ -3052,10 +3052,10 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/react@18.0.34":
-  version "18.0.34"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.34.tgz#e553444a578f023e6e1ac499514688fb80b0a984"
-  integrity sha512-NO1UO8941541CJl1BeOXi8a9dNKFK09Gnru5ZJqkm4Q3/WoQJtHvmwt0VX0SB9YCEwe7TfSSxDuaNmx6H2BAIQ==
+"@types/react@18.0.35":
+  version "18.0.35"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.35.tgz#192061cb1044fe01f2d3a94272cd35dd50502741"
+  integrity sha512-6Laome31HpetaIUGFWl1VQ3mdSImwxtFZ39rh059a1MNnKGqBpC88J6NJ8n/Is3Qx7CefDGLgf/KhN/sYCf7ag==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -7989,13 +7989,13 @@ next-pwa@^5.6.0:
     workbox-webpack-plugin "^6.5.4"
     workbox-window "^6.5.4"
 
-next-sanity@^4.1.6:
-  version "4.1.6"
-  resolved "https://registry.yarnpkg.com/next-sanity/-/next-sanity-4.1.6.tgz#e4aba26b5f4a3dd6a97912c22f1bf98811748122"
-  integrity sha512-0vnmVGEvJECW9lyLPXqs4/VrhhNSZV4w0IwKmGPiAcavzY3sp8c7kKHzEu0uvTBCi3HBMrQpwRcv7mQMFvJVpw==
+next-sanity@^4.1.7:
+  version "4.1.7"
+  resolved "https://registry.yarnpkg.com/next-sanity/-/next-sanity-4.1.7.tgz#8bec14e6b74a1e82d6d7df19f1a011b3eba58fde"
+  integrity sha512-bMYVeE6Uwg7WW2/zVCAgQ8S+uFIi03Vhgrf1fTRQjEZY9rIGGbYSZ4wiDwsix+ms/zClzpqkUR91mmBR2tNN/Q==
   dependencies:
     "@sanity/client" "5"
-    "@sanity/preview-kit" "1.3.8"
+    "@sanity/preview-kit" "1.4.0"
     "@sanity/webhook" "2"
     groq "3"
 

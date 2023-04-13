@@ -255,7 +255,7 @@ export default function AuthenticationForm() {
         <form onSubmit={form.onSubmit(handleSubmit)}>
           {formType === 'login' && (
             <Anchor
-              loading={isSubmitting}
+              disabled={isSubmitting}
               component="button"
               type="button"
               color="dimmed"
