@@ -13,6 +13,7 @@ import {
   type TDateISODate,
   type SanityUser,
   getAllUnitsQuery,
+  type SanityUserBlockouts,
 } from './sanity.queries'
 
 export const client = createClient({
@@ -50,7 +51,7 @@ export async function getUserUpcomingDuties(id: string): Promise<TDateISODate[]>
   return result
 }
 
-export async function getUserBlockouts(id: string): Promise<TDateISODate[]> {
+export async function getUserBlockouts(id: string): Promise<SanityUserBlockouts> {
   const result = await clientWithToken.fetch(getUserBlockoutsQuery, { id })
   return result
 }

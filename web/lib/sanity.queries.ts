@@ -46,6 +46,11 @@ export interface SanityUser extends User {
 
 export type AllSanityUser = Omit<SanityUser, 'email'>
 
+export interface SanityUserBlockouts {
+  maxBlockouts: number
+  blockouts: TDateISODate[]
+}
+
 export const getUserByEmailQuery = groq`*[_type == $userSchema && email == $email][0]{
   ...,
   "unit": unit->unitCode
@@ -94,8 +99,9 @@ export const getUserQuery = groq`*[_type == "user" && _id == $id && !(_id in pat
 }[0]`
 
 export const getUserBlockoutsQuery = groq`*[_type == "user" && _id == $id && !(_id in path("drafts.**"))]{
+    maxBlockouts,
     blockouts
-}[0].blockouts`
+}[0]`
 
 export const getAllCalendarQuery = groq`*[_type == 'calendar' && references($id) && !(_id in path("drafts.**"))]{
   date,
