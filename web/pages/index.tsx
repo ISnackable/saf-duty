@@ -11,23 +11,30 @@ import {
   Box,
   Group,
   Flex,
-  Grid,
   LoadingOverlay,
   ThemeIcon,
+  Paper,
+  rem,
+  Progress,
+  Button,
+  Avatar,
+  ColorSwatch,
+  Stack,
+  SimpleGrid,
 } from '@mantine/core'
+import { Carousel } from '@mantine/carousel'
 import { IconEdit, IconBellRingingFilled } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 
-import svgImage from '@/public/undraw_online_organizer_re_156n.svg'
 import { useEffect, useState } from 'react'
 import useUpcomingDuties from '@/hooks/useUpcomingDuties'
+import { useSession } from 'next-auth/react'
 
 const useStyles = createStyles((theme) => ({
   title: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
     color: theme.colorScheme === 'dark' ? theme.white : theme.black,
     lineHeight: 1,
-    textTransform: 'uppercase',
   },
 
   titleWrapper: {
@@ -36,6 +43,32 @@ const useStyles = createStyles((theme) => ({
     '& > *:not(:last-child)': {
       marginRight: theme.spacing.sm,
     },
+  },
+
+  card: {
+    height: rem(280),
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  },
+
+  cardTitle: {
+    fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+    fontWeight: 900,
+    color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+    lineHeight: 1.2,
+    fontSize: rem(32),
+  },
+
+  cardTime: {
+    color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+    opacity: 0.7,
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    marginTop: theme.spacing.xs,
   },
 }))
 
@@ -46,15 +79,46 @@ const AddToCalendarButton = dynamic(
   }
 )
 
+interface CardProps {
+  title: string
+  time: string
+}
+
+function Card({ title, time }: CardProps) {
+  const { classes } = useStyles()
+
+  return (
+    <Paper
+      shadow="md"
+      p="xl"
+      radius="md"
+      // sx={{ background: getRandomGraidentStyle() }}
+      className={classes.card}
+    >
+      <div>
+        <Title order={3} className={classes.cardTitle}>
+          {title}
+        </Title>
+        <Text className={classes.cardTime} size="xs">
+          {time}
+        </Text>
+      </div>
+      <Stack justify="flex-end" spacing="xs">
+        <Title order={3}> Standby</Title>
+        <Text size="md">Some other person</Text>
+      </Stack>
+    </Paper>
+  )
+}
+
 UpcomingDutiesPage.title = 'Upcoming Duties'
 
 export default function UpcomingDutiesPage() {
+  const { data: session } = useSession()
   const { data: upcomingDuties, isLoading, error } = useUpcomingDuties()
 
   const { classes } = useStyles()
   const { colorScheme } = useMantineTheme()
-
-  const [indexOfUpcomingDate, setIndexOfUpcomingDate] = useState(0)
 
   const calendarDates = upcomingDuties?.map((date) => ({
     name: 'SAF Duty',
@@ -62,16 +126,30 @@ export default function UpcomingDutiesPage() {
     startDate: date,
   }))
 
-  useEffect(() => {
-    setIndexOfUpcomingDate(
-      upcomingDuties?.findIndex((date) => {
-        const dutyDate = new Date(date)
-        const today = new Date()
+  const data =
+    upcomingDuties?.map((date) => ({
+      title: dayjs(date).format('D MMM'),
+      time: `${dayjs(date).format('ddd')} 8:00 AM`,
+    })) || []
 
-        return dutyDate.valueOf() > today.valueOf()
-      }) || 0
-    )
-  }, [upcomingDuties])
+  const slides = data.map((item) => (
+    <Carousel.Slide key={item.title}>
+      <Card {...item} />
+    </Carousel.Slide>
+  ))
+
+  // const [indexOfUpcomingDate, setIndexOfUpcomingDate] = useState(0)
+
+  // useEffect(() => {
+  //   setIndexOfUpcomingDate(
+  //     upcomingDuties?.findIndex((date) => {
+  //       const dutyDate = new Date(date)
+  //       const today = new Date()
+
+  //       return dutyDate.valueOf() > today.valueOf()
+  //     }) || 0
+  //   )
+  // }, [upcomingDuties])
 
   if (error) {
     return (
@@ -86,77 +164,99 @@ export default function UpcomingDutiesPage() {
   return (
     <Container my="xl">
       <div className={classes.titleWrapper}>
-        <IconEdit size={48} />
-        <Title className={classes.title}>Upcoming Duties</Title>
+        <Avatar src={session?.user?.image} radius="xl" />
+        <Title className={classes.title}>Howdy, {session?.user?.name}</Title>
       </div>
 
       <Text color="dimmed" mt="md">
-        View the list of upcoming duties you have been assigned to. This list was generated from the
-        duty roster. Easier to keep track your duties on the go! You can also add the list of
-        upcoming duties to your calendar.
+        Review your upcoming duties and add them to your calendar.
       </Text>
-      <Divider mt="sm" />
+      <Divider my="sm" />
 
       <Box pos="relative">
         {isLoading && <LoadingOverlay visible={isLoading} overlayBlur={2} />}
+        {upcomingDuties && upcomingDuties?.length > 0 ? (
+          <Carousel
+            loop
+            withControls={false}
+            withIndicators
+            slideSize="50%"
+            breakpoints={[{ maxWidth: 'sm', slideSize: '80%', slideGap: 'sm' }]}
+            slideGap="xl"
+            align="start"
+            styles={{
+              indicator: {
+                width: rem(12),
+                height: rem(4),
+                transition: 'width 250ms ease',
 
-        <Grid gutter="xl" mt="xl">
-          <Grid.Col md={12} lg={upcomingDuties && upcomingDuties?.length > 0 ? 8 : 12}>
-            <div style={{ position: 'relative', height: '40vh' }}>
-              <Image
-                priority
-                src={svgImage}
-                fill={true}
-                alt="Undraw personal information logo"
-                style={{ objectFit: 'fill' }}
-              />
-            </div>
-          </Grid.Col>
-          <Grid.Col span={upcomingDuties && upcomingDuties?.length > 0 ? 'auto' : 12}>
-            {upcomingDuties && upcomingDuties?.length > 0 ? (
-              <Timeline active={indexOfUpcomingDate} bulletSize={24} lineWidth={2} mt="xl">
-                {upcomingDuties?.map((date, index) => {
-                  const duration = dayjs(date).diff(new Date(), 'day')
-
-                  return (
-                    <Timeline.Item
-                      key={date}
-                      title={dayjs(date).format('D MMMM, dddd')}
-                      bullet={
-                        index === indexOfUpcomingDate && (
-                          <ThemeIcon
-                            size={22}
-                            variant="gradient"
-                            gradient={{ from: 'lime', to: 'yellow' }}
-                            radius="xl"
-                          >
-                            <IconBellRingingFilled size="0.8rem" />
-                          </ThemeIcon>
-                        )
-                      }
-                    >
-                      <Text color="dimmed" size="sm">
-                        8:00 AM
-                      </Text>
-                      <Text size="xs" mt={4}>
-                        {Math.abs(duration)} days {duration < 0 ? 'ago' : 'ahead'}
-                      </Text>
-                    </Timeline.Item>
-                  )
-                })}
-              </Timeline>
-            ) : (
-              <Box mt="xl">
-                <Flex align="center" justify="center">
-                  <Text size="xl" color="dimmed">
-                    No upcoming duties
-                  </Text>
-                </Flex>
-              </Box>
-            )}
-          </Grid.Col>
-        </Grid>
-
+                '&[data-active]': {
+                  width: rem(40),
+                },
+              },
+            }}
+          >
+            {slides}
+          </Carousel>
+        ) : (
+          <Box mt="xl">
+            <Flex align="center" justify="center">
+              <Text size="xl" color="dimmed">
+                No upcoming duties
+              </Text>
+            </Flex>
+          </Box>
+        )}
+        <Divider my="sm" />
+        Duties Completed 1 of 4
+        <Progress mb="xl" value={50} />
+        <Divider my="sm" />
+        Duties Stats: duties worked this month: 4 duties worked this year: 12 duties worked total:
+        24
+        <SimpleGrid
+          cols={4}
+          breakpoints={[
+            { maxWidth: 'md', cols: 2 },
+            { maxWidth: 'xs', cols: 1 },
+          ]}
+        >
+          <Paper>
+            <Text>Month</Text>
+          </Paper>
+          <Paper>
+            <Text>Month</Text>
+          </Paper>
+          <Paper>
+            <Text>Month</Text>
+          </Paper>
+          <Paper>
+            <Text>Month</Text>
+          </Paper>
+        </SimpleGrid>
+        <Divider my="sm" />
+        Also working:
+        <Carousel slideSize="10%" align="start" withControls={false} dragFree>
+          <Carousel.Slide>
+            <Avatar src={session?.user?.image} radius="xl" />
+            {session?.user?.name}1
+          </Carousel.Slide>
+          <Carousel.Slide>
+            <Avatar src={session?.user?.image} radius="xl" />
+            {session?.user?.name}2
+          </Carousel.Slide>
+          <Carousel.Slide>
+            <Avatar src={session?.user?.image} radius="xl" />
+            {session?.user?.name}3
+          </Carousel.Slide>
+          <Carousel.Slide>
+            <Avatar src={session?.user?.image} radius="xl" />
+            {session?.user?.name}4
+          </Carousel.Slide>
+          <Carousel.Slide>
+            <Avatar src={session?.user?.image} radius="xl" />
+            {session?.user?.name}5
+          </Carousel.Slide>
+        </Carousel>
         {upcomingDuties && upcomingDuties?.length > 0 && (
           <Group mt="lg" position="center">
             <AddToCalendarButton
@@ -175,6 +275,9 @@ export default function UpcomingDutiesPage() {
             />
           </Group>
         )}
+        <Button mt="xl" color="primary" fullWidth>
+          Add to Calendar
+        </Button>
       </Box>
     </Container>
   )

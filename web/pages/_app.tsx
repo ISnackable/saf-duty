@@ -43,7 +43,7 @@ export default function MyApp({
           <title>{`${Component.title} - ${config.title || 'Duty Roster'}`}</title>
         )}
 
-        <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
       </Head>
 
       <SessionProvider session={session}>
