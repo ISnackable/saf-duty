@@ -268,14 +268,12 @@ export default function GenerateDutyPage() {
         <Group grow>
           <Select
             label="Duty personnel"
-            searchable
             value={modalDPValue}
             onChange={setModalDPValue}
             data={data || []}
           />
           <Select
             label="Stand in"
-            searchable
             value={modalSBValue}
             onChange={setModalSBValue}
             data={data || []}

@@ -13,7 +13,6 @@ import {
 } from '@mantine/core'
 import {
   IconUsers,
-  IconCheckbox,
   IconSelector,
   IconFingerprint,
   IconCalendarEvent,
@@ -22,6 +21,8 @@ import {
   IconCloudLock,
   IconCe,
   IconMessageCircleQuestion,
+  IconHome2,
+  IconArrowsExchange,
 } from '@tabler/icons-react'
 import { UserButtonMenu } from '@/components/UserButton'
 
@@ -115,14 +116,15 @@ const useStyles = createStyles((theme) => ({
 }))
 
 const links = [
-  { icon: IconCalendarEvent, label: 'Duty Roster', link: '/' },
-  { icon: IconEdit, label: 'Manage Blockouts', link: '/manage-blockouts' },
   {
-    icon: IconCheckbox,
-    label: 'Upcoming Duties',
-    notifications: 4,
-    link: '/upcoming-duties',
+    icon: IconHome2,
+    label: 'Home',
+    // notifications: 4,
+    link: '/',
   },
+  { icon: IconCalendarEvent, label: 'Duty Roster', link: '/duty-roster' },
+  { icon: IconEdit, label: 'My Availability', link: '/manage-blockouts' },
+  { icon: IconArrowsExchange, label: 'Swap Duties', link: '/swap-duties' },
   { icon: IconUsers, label: 'Duty Personnels', link: '/duty-personnels' },
 ]
 

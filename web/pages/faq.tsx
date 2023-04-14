@@ -32,6 +32,8 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
+FaqWithImage.Title = 'Frequently Asked Questions'
+
 export default function FaqWithImage() {
   const { classes } = useStyles()
   return (

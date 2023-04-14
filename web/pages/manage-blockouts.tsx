@@ -140,16 +140,15 @@ export default function ManageBlockoutPage() {
       </div>
 
       <Text color="dimmed" mt="md">
-        View and manage your blockouts. To add a blockout, click on the date you want to block out.
-        To remove a blockout, click on the date again. The day you selected will be highlighted. You
-        are only able to block out dates within the current month and next month.
+        View and manage your blockouts. The day you selected will be your blockout date, make sure
+        to save after you are done. You are only able to block out dates within the current month
+        and next month.
       </Text>
       <List mt="lg">
-        <List.Item>Unless you have a valid reason;</List.Item>
         <List.Item>
           Only a maximum of {maximumBlockouts} blockouts date per month (subject to change)
         </List.Item>
-        <List.Item>Inform the person-in-charge of the duty roster your reason</List.Item>
+        <List.Item>Inform the person-in-charge if you need more blockouts</List.Item>
         <List.Item>You are not allowed to blockout every weekend of the month</List.Item>
       </List>
       <Divider mt="sm" />
