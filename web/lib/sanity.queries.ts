@@ -51,6 +51,27 @@ export interface SanityUserBlockouts {
   blockouts: TDateISODate[]
 }
 
+export interface SanityReference {
+  _ref: string
+  _type?: 'reference'
+  _weak?: boolean
+}
+
+export interface SanitySwapRequest {
+  _createdAt: TDateISODate
+  _id: string
+  _rev: string
+  _type: string
+  _updatedAt: TDateISODate
+  calendar: SanityReference
+  reason?: string
+  receiver: SanityReference
+  receiverDate: TDateISODate
+  requester: SanityReference
+  requesterDate: TDateISODate
+  status: 'pending' | 'approved' | 'declined'
+}
+
 export const getUserByEmailQuery = groq`*[_type == $userSchema && email == $email][0]{
   ...,
   "unit": unit->unitCode
@@ -111,3 +132,5 @@ export const getAllCalendarQuery = groq`*[_type == 'calendar' && references($id)
     "standby": dutyPersonnelStandIn->{name}.name
   }
 }|order(_createdAt desc)[0..5]`
+
+export const getUserSwapRequestQuery = groq`*[_type == "swapRequest" && references($id)]`

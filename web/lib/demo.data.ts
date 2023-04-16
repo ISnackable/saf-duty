@@ -11,8 +11,8 @@ export const description = 'Example description.'
 
 export const users: AllSanityUser[] = [
   {
-    id: '5eda9aac-bfc1-11ed-afa1-0242ac120002',
-    name: 'Jun Jie',
+    id: 'user.fdf11aae-d142-450b-87a4-559bc6e27f05',
+    name: 'demo',
     role: Role.user,
     image:
       'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
