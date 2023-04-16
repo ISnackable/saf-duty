@@ -159,7 +159,7 @@ export function NavbarMin(props: NavbarMinProps) {
 
   const mainLinks = links.map((link) => (
     <UnstyledButton key={link.label} className={classes.mainLink}>
-      <Link href={link.link} key={link.label} className={classes.mainLinkInner}>
+      <Link href={link.link} key={link.label} className={classes.mainLinkInner} prefetch={false}>
         <link.icon size={20} className={classes.mainLinkIcon} stroke={1.5} />
         <span>{link.label}</span>
       </Link>
@@ -183,18 +183,24 @@ export function NavbarMin(props: NavbarMinProps) {
       label={link.label}
       href={link.link}
       icon={<link.icon size={22} className={classes.mainLinkIcon} stroke={1.5} />}
+      prefetch={false}
     />
   ))
 
   const collectionLinks = collections.map((collection) => (
-    <Link href={collection.link} key={collection.label} className={classes.collectionLink}>
+    <Link
+      href={collection.link}
+      key={collection.label}
+      className={classes.collectionLink}
+      prefetch={false}
+    >
       <span style={{ marginRight: 9, fontSize: 16 }}>{collection.emoji}</span> {collection.label}
     </Link>
   ))
 
   const thirdLinks = othersLinks.map((link) => (
     <UnstyledButton key={link.label} className={classes.mainLink}>
-      <Link href={link.link} key={link.label} className={classes.mainLinkInner}>
+      <Link href={link.link} key={link.label} className={classes.mainLinkInner} prefetch={false}>
         <link.icon size={20} className={classes.mainLinkIcon} stroke={1.5} />
         <span>{link.label}</span>
       </Link>

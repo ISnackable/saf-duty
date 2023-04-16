@@ -47,7 +47,7 @@ function NavigationIcon({ icon: Icon, to, title, isActive }: IconProps): JSX.Ele
   const { classes, cx } = useStyles()
 
   return (
-    <Link href={to} className={classes.link}>
+    <Link href={to} className={classes.link} prefetch={false}>
       <Stack align="center" spacing={0}>
         <Icon.type
           {...Icon.props}

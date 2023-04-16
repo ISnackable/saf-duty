@@ -53,7 +53,7 @@ export default function FourOFourPage() {
         been moved to another URL.
       </Text>
       <Group position="center">
-        <Button variant="subtle" size="md" component={Link} href="/">
+        <Button variant="subtle" size="md" component={Link} href="/" prefetch={false}>
           Take me back to home page
         </Button>
       </Group>

@@ -113,7 +113,7 @@ export default function ORDPage() {
         ) : (
           <Text size="sm" color="red" align="center">
             Enlistment and ORD dates are not set. Head over to your{' '}
-            <Anchor component={Link} href="/profile">
+            <Anchor component={Link} href="/profile" prefetch={false}>
               profile page
             </Anchor>{' '}
             to set them. Once set, you will be able to see your ORD progress here.

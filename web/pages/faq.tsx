@@ -54,7 +54,7 @@ export default function FaqWithImage() {
                 <Accordion.Panel>
                   For now, you have to contact the admin to reset your password. However, you can
                   change your password if you are logged in at the{' '}
-                  <Anchor component={Link} href="/profile">
+                  <Anchor component={Link} href="/profile" prefetch={false}>
                     profile page
                   </Anchor>
                   .
@@ -70,7 +70,7 @@ export default function FaqWithImage() {
         </Grid>
 
         <Group position="center" mt="lg">
-          <Button variant="subtle" size="md" component={Link} href="/">
+          <Button variant="subtle" size="md" component={Link} href="/" prefetch={false}>
             Take me back to home page
           </Button>
         </Group>

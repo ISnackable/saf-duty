@@ -66,6 +66,7 @@ export function UserButtonMenu(props: UserButtonProps) {
             icon={<IconSettings size={14} stroke={1.5} />}
             component={Link}
             href="/profile"
+            prefetch={false}
           >
             Profile
           </Menu.Item>

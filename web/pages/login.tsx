@@ -324,6 +324,7 @@ export default function AuthenticationForm() {
                         href="/terms"
                         target="_blank"
                         rel="noopener noreferrer"
+                        prefetch={false}
                       >
                         terms and conditions
                       </Anchor>
