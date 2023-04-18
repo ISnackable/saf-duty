@@ -1,9 +1,10 @@
+import { useEffect, useState } from 'react'
+import { useSession } from 'next-auth/react'
 import { Container, Tabs, Title, Text, createStyles, Divider } from '@mantine/core'
 import { IconEdit } from '@tabler/icons-react'
 
-import useSwapRequest, { type INormalizedSanitySwapRequest } from '@/hooks/useSwapRequest'
-import { useSession } from 'next-auth/react'
-import { useEffect, useState } from 'react'
+import useSwapRequest from '@/hooks/useSwapRequest'
+import { type SanitySwapRequest } from '@/lib/sanity.queries'
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -25,7 +26,7 @@ const useStyles = createStyles((theme) => ({
 SwapDuties.title = 'Swap Duties'
 
 // function to get all the swap requests that the user has received, and all the swap requests that the user has sent from the swapRecords
-function sortSwapRequests(swapRecords: INormalizedSanitySwapRequest[], userId: string) {
+function sortSwapRequests(swapRecords: SanitySwapRequest[], userId: string) {
   const received = []
   const sentByMe = []
 
@@ -44,10 +45,10 @@ export default function SwapDuties() {
   const { classes } = useStyles()
 
   const { data: session } = useSession()
-  const { swapRecords } = useSwapRequest()
+  const { data: swapRecords } = useSwapRequest()
 
-  const [received, setReceived] = useState<INormalizedSanitySwapRequest[]>([])
-  const [sentByMe, setSentByMe] = useState<INormalizedSanitySwapRequest[]>([])
+  const [received, setReceived] = useState<SanitySwapRequest[]>([])
+  const [sentByMe, setSentByMe] = useState<SanitySwapRequest[]>([])
 
   useEffect(() => {
     // sort the swap requests
@@ -82,7 +83,9 @@ export default function SwapDuties() {
             received.map((swapRequest) => {
               return (
                 <div key={swapRequest._id}>
-                  <Text> {swapRequest.status} </Text>
+                  <Text>
+                    From: {swapRequest.requester.name} to {swapRequest.receiver.name}
+                  </Text>
                 </div>
               )
             })
@@ -93,9 +96,19 @@ export default function SwapDuties() {
 
         <Tabs.Panel value="sent-by-me" pt="xs">
           <Title order={2}>Pending</Title>
-          {/* Card of the request */}
-          {/* No requests to display */}
-
+          {sentByMe.length > 0 ? (
+            sentByMe.map((swapRequest) => {
+              return (
+                <div key={swapRequest._id}>
+                  <Text>
+                    From: {swapRequest.requester.name} to {swapRequest.receiver.name}
+                  </Text>
+                </div>
+              )
+            })
+          ) : (
+            <Text>No requests to display</Text>
+          )}
           <Title order={2}>History</Title>
         </Tabs.Panel>
       </Tabs>

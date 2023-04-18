@@ -70,7 +70,7 @@ export default function FaqWithImage() {
         </Grid>
 
         <Group position="center" mt="lg">
-          <Button variant="subtle" size="md" component={Link} href="/" prefetch={false}>
+          <Button variant="subtle" size="md" component={Link} href="/login" prefetch={false}>
             Take me back to home page
           </Button>
         </Group>

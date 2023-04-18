@@ -14,6 +14,8 @@ import {
   type SanityUser,
   getAllUnitsQuery,
   type SanityUserBlockouts,
+  getUserSwapRequestQuery,
+  type SanitySwapRequest,
 } from './sanity.queries'
 
 export const client = createClient({
@@ -63,4 +65,9 @@ export async function getAllCalendar(id: string): Promise<Calendar[]> {
   const calendar: Calendar[] = await clientWithToken.fetch(getAllCalendarQuery, { id })
 
   return calendar
+}
+
+export async function getUserSwapRequest(id: string): Promise<SanitySwapRequest[]> {
+  const result = await clientWithToken.fetch(getUserSwapRequestQuery, { id })
+  return result
 }

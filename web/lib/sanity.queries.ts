@@ -63,11 +63,20 @@ export interface SanitySwapRequest {
   _rev: string
   _type: string
   _updatedAt: TDateISODate
-  calendar: SanityReference
+  calendar: {
+    id: string
+    date: TDateISODate
+  }
   reason?: string
-  receiver: SanityReference
+  receiver: {
+    id: string
+    name: string
+  }
   receiverDate: TDateISODate
-  requester: SanityReference
+  requester: {
+    id: string
+    name: string
+  }
   requesterDate: TDateISODate
   status: 'pending' | 'approved' | 'declined'
 }
@@ -133,4 +142,18 @@ export const getAllCalendarQuery = groq`*[_type == 'calendar' && references($id)
   }
 }|order(_createdAt desc)[0..5]`
 
-export const getUserSwapRequestQuery = groq`*[_type == "swapRequest" && references($id)]`
+export const getUserSwapRequestQuery = groq`*[_type == "swapRequest" && references($id)]{
+  ...,
+  calendar->{
+    "id": _id,
+    date
+  },
+  "receiver": receiver->{
+    "id": _id,
+    name
+  },
+  "requester": requester->{
+    "id": _id,
+    name
+  }
+}`

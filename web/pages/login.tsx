@@ -94,7 +94,7 @@ export default function AuthenticationForm() {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      router.push('/')
+      router.replace('/')
     }
   }, [router, status])
 
@@ -214,7 +214,7 @@ export default function AuthenticationForm() {
             redirect: false,
           })
           // If the user is authenticated, redirect to the home page
-          Router.push('/')
+          Router.replace('/')
         }
       }
     } catch (error) {
