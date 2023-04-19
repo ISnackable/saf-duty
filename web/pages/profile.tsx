@@ -241,7 +241,7 @@ export default function ProfilePage() {
   // As this page uses Server Side Rendering, the `session` will be already
   // populated on render without needing to go through a loading stage.
   return (
-    <Container my="xl">
+    <Container my="xl" size="xl">
       <div className={classes.titleWrapper}>
         <IconSettings size={48} />
         <Title className={classes.title}>Profile</Title>

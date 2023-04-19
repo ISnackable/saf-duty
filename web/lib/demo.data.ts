@@ -167,17 +167,17 @@ export const users: AllSanityUser[] = [
 ]
 
 export const blockouts: TDateISODate[] = [
-  `2023-${todayMonth}-15`,
-  `2023-${todayMonth}-13`,
-  `2023-${todayMonth}-19`,
   `2023-${todayMonth}-04`,
+  `2023-${todayMonth}-15`,
+  `2023-${todayMonth}-19`,
+  `2023-${todayMonth}-24`,
 ]
 
 export const upcomingDuties: TDateISODate[] = [
-  `2023-${todayMonth}-05`,
-  `2023-${todayMonth}-12`,
-  `2023-${todayMonth}-17`,
-  `2023-${todayMonth}-23`,
+  `2023-${todayMonth}-03`,
+  `2023-${todayMonth}-13`,
+  `2023-${todayMonth}-26`,
+  `2023-${todayMonth}-28`,
 ]
 
 export const calendar: Calendar[] = [
@@ -187,7 +187,7 @@ export const calendar: Calendar[] = [
       {
         date: `2023-${todayMonth}-01`,
         personnel: 'Jun Kai',
-        standby: 'Jun Jie',
+        standby: 'demo',
       },
       {
         date: `2023-${todayMonth}-02`,
@@ -196,7 +196,7 @@ export const calendar: Calendar[] = [
       },
       {
         date: `2023-${todayMonth}-03`,
-        personnel: 'Jun Jie',
+        personnel: 'demo',
         standby: 'Jia Hao',
       },
       {
@@ -237,7 +237,7 @@ export const calendar: Calendar[] = [
       {
         date: `2023-${todayMonth}-11`,
         personnel: 'Darryl Koh',
-        standby: 'Jun Jie',
+        standby: 'demo',
       },
       {
         date: `2023-${todayMonth}-12`,
@@ -246,7 +246,7 @@ export const calendar: Calendar[] = [
       },
       {
         date: `2023-${todayMonth}-13`,
-        personnel: 'Jun Jie',
+        personnel: 'demo',
         standby: 'Elliot Tan',
       },
       {
@@ -302,7 +302,7 @@ export const calendar: Calendar[] = [
       {
         date: `2023-${todayMonth}-24`,
         personnel: 'Wang Li',
-        standby: 'Jun Jie',
+        standby: 'demo',
       },
       {
         date: `2023-${todayMonth}-25`,
@@ -311,7 +311,7 @@ export const calendar: Calendar[] = [
       },
       {
         date: `2023-${todayMonth}-26`,
-        personnel: 'Jun Jie',
+        personnel: 'demo',
         standby: 'Jia Hui',
       },
       {
@@ -321,7 +321,7 @@ export const calendar: Calendar[] = [
       },
       {
         date: `2023-${todayMonth}-28`,
-        personnel: 'Jun Jie',
+        personnel: 'demo',
         standby: 'Wang Li',
       },
       {
@@ -337,7 +337,7 @@ export const calendar: Calendar[] = [
       {
         date: `2023-${todayMonth}-31`,
         personnel: 'Elliot Tan',
-        standby: 'Jun Jie',
+        standby: 'demo',
       },
     ],
   },

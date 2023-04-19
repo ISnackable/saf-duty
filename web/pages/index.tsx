@@ -1,4 +1,4 @@
-import Image from 'next/image'
+// import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import {
   Container,
@@ -6,35 +6,35 @@ import {
   Divider,
   Text,
   Title,
-  Timeline,
   useMantineTheme,
   Box,
   Group,
   Flex,
-  LoadingOverlay,
-  ThemeIcon,
+  // LoadingOverlay,
   Paper,
   rem,
   Progress,
-  Button,
   Avatar,
-  ColorSwatch,
   Stack,
   SimpleGrid,
+  Skeleton,
 } from '@mantine/core'
 import { Carousel } from '@mantine/carousel'
-import { IconEdit, IconBellRingingFilled } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 
-import { useEffect, useState } from 'react'
 import useUpcomingDuties from '@/hooks/useUpcomingDuties'
 import { useSession } from 'next-auth/react'
+import useUsers from '@/hooks/useUsers'
+import Link from 'next/link'
 
 const useStyles = createStyles((theme) => ({
   title: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
     color: theme.colorScheme === 'dark' ? theme.white : theme.black,
     lineHeight: 1,
+    // [theme.fn.smallerThan('sm')]: {
+    //   fontSize: rem(35),
+    // },
   },
 
   titleWrapper: {
@@ -69,6 +69,17 @@ const useStyles = createStyles((theme) => ({
     fontWeight: 700,
     textTransform: 'uppercase',
     marginTop: theme.spacing.xs,
+  },
+
+  statsTitle: {
+    fontWeight: 700,
+    textTransform: 'uppercase',
+  },
+
+  statsValue: {
+    fontSize: rem(15),
+    fontWeight: 700,
+    lineHeight: 1,
   },
 }))
 
@@ -116,6 +127,7 @@ UpcomingDutiesPage.title = 'Upcoming Duties'
 export default function UpcomingDutiesPage() {
   const { data: session } = useSession()
   const { data: upcomingDuties, isLoading, error } = useUpcomingDuties()
+  const { data: users, isLoading: userLoading } = useUsers()
 
   const { classes } = useStyles()
   const { colorScheme } = useMantineTheme()
@@ -153,7 +165,7 @@ export default function UpcomingDutiesPage() {
 
   if (error) {
     return (
-      <Container my="xl">
+      <Container my="xl" size="xl">
         <Text size="xl" color="red">
           {error.message}
         </Text>
@@ -162,20 +174,23 @@ export default function UpcomingDutiesPage() {
   }
 
   return (
-    <Container my="xl">
+    <Container my="xl" size="xl">
       <div className={classes.titleWrapper}>
         <Avatar src={session?.user?.image} radius="xl" />
         <Title className={classes.title}>Howdy, {session?.user?.name}</Title>
       </div>
-
       <Text color="dimmed" mt="md">
         Review your upcoming duties and add them to your calendar.
       </Text>
       <Divider my="sm" />
-
-      <Box pos="relative">
-        {isLoading && <LoadingOverlay visible={isLoading} overlayBlur={2} />}
-        {upcomingDuties && upcomingDuties?.length > 0 ? (
+      <Group position="apart" mb="sm">
+        <Title order={4}>Upcoming Duties</Title>
+        <Text color="dimmed" component={Link} href="/duty-roster" prefetch={false}>
+          View all ➤
+        </Text>
+      </Group>
+      {upcomingDuties && upcomingDuties?.length > 0 ? (
+        <>
           <Carousel
             loop
             withControls={false}
@@ -195,70 +210,12 @@ export default function UpcomingDutiesPage() {
                 },
               },
             }}
+            slidesToScroll="auto"
           >
             {slides}
           </Carousel>
-        ) : (
-          <Box mt="xl">
-            <Flex align="center" justify="center">
-              <Text size="xl" color="dimmed">
-                No upcoming duties
-              </Text>
-            </Flex>
-          </Box>
-        )}
-        <Divider my="sm" />
-        Duties Completed 1 of 4
-        <Progress mb="xl" value={50} />
-        <Divider my="sm" />
-        Duties Stats: duties worked this month: 4 duties worked this year: 12 duties worked total:
-        24
-        <SimpleGrid
-          cols={4}
-          breakpoints={[
-            { maxWidth: 'md', cols: 2 },
-            { maxWidth: 'xs', cols: 1 },
-          ]}
-        >
-          <Paper>
-            <Text>Month</Text>
-          </Paper>
-          <Paper>
-            <Text>Month</Text>
-          </Paper>
-          <Paper>
-            <Text>Month</Text>
-          </Paper>
-          <Paper>
-            <Text>Month</Text>
-          </Paper>
-        </SimpleGrid>
-        <Divider my="sm" />
-        Also working:
-        <Carousel slideSize="10%" align="start" withControls={false} dragFree>
-          <Carousel.Slide>
-            <Avatar src={session?.user?.image} radius="xl" />
-            {session?.user?.name}1
-          </Carousel.Slide>
-          <Carousel.Slide>
-            <Avatar src={session?.user?.image} radius="xl" />
-            {session?.user?.name}2
-          </Carousel.Slide>
-          <Carousel.Slide>
-            <Avatar src={session?.user?.image} radius="xl" />
-            {session?.user?.name}3
-          </Carousel.Slide>
-          <Carousel.Slide>
-            <Avatar src={session?.user?.image} radius="xl" />
-            {session?.user?.name}4
-          </Carousel.Slide>
-          <Carousel.Slide>
-            <Avatar src={session?.user?.image} radius="xl" />
-            {session?.user?.name}5
-          </Carousel.Slide>
-        </Carousel>
-        {upcomingDuties && upcomingDuties?.length > 0 && (
-          <Group mt="lg" position="center">
+
+          <Group mt="md" position="center">
             <AddToCalendarButton
               name="Duty Roster"
               dates={calendarDates}
@@ -274,11 +231,108 @@ export default function UpcomingDutiesPage() {
               class={`atcb atcb-${colorScheme}`}
             />
           </Group>
+        </>
+      ) : (
+        <Box my="xl">
+          <Flex align="center" justify="center">
+            <Text size="xl" color="dimmed">
+              No upcoming duties
+            </Text>
+          </Flex>
+        </Box>
+      )}
+      <Divider my="xl" />
+      <Group position="apart" mb="sm">
+        <Title order={4}>Duties Completed</Title>
+        <Text color="dimmed" component="span">
+          1 of 4
+        </Text>
+      </Group>
+      <Progress mb="xl" value={50} size="lg" />
+      <Divider my="xl" />
+      <Title order={4} mb="sm">
+        Duties Stats
+      </Title>
+      <SimpleGrid cols={3} breakpoints={[{ maxWidth: 'xs', cols: 1 }]}>
+        <Paper withBorder p="md" radius="md">
+          <Group position="apart">
+            <Text size="xs" color="dimmed" className={classes.statsTitle}>
+              Month
+            </Text>
+          </Group>
+
+          <Group align="flex-end" mt={25}>
+            <Text className={classes.statsValue}>50 duties worked this month</Text>
+          </Group>
+        </Paper>
+        <Paper withBorder p="md" radius="md">
+          <Group position="apart">
+            <Text size="xs" color="dimmed" className={classes.statsTitle}>
+              Year
+            </Text>
+          </Group>
+
+          <Group align="flex-end" mt={25}>
+            <Text className={classes.statsValue}>50 duties worked this month</Text>
+          </Group>
+        </Paper>
+        <Paper withBorder p="md" radius="md">
+          <Group position="apart">
+            <Text size="xs" color="dimmed" className={classes.statsTitle}>
+              Total
+            </Text>
+          </Group>
+
+          <Group align="flex-end" mt={25}>
+            <Text className={classes.statsValue}>50 duties worked this month</Text>
+          </Group>
+        </Paper>
+      </SimpleGrid>
+      <Divider my="xl" />
+      <Title order={4} mb="sm">
+        Also on duty
+      </Title>
+      <Carousel slideSize="10%" slideGap="sm" align="start" withControls={false} dragFree>
+        {userLoading ? (
+          <>
+            <Carousel.Slide>
+              <Skeleton height={60} circle />
+            </Carousel.Slide>
+            <Carousel.Slide>
+              <Skeleton height={60} circle />
+            </Carousel.Slide>
+            <Carousel.Slide>
+              <Skeleton height={60} circle />
+            </Carousel.Slide>
+            <Carousel.Slide>
+              <Skeleton height={60} circle />
+            </Carousel.Slide>
+            <Carousel.Slide>
+              <Skeleton height={60} circle />
+            </Carousel.Slide>
+            <Carousel.Slide>
+              <Skeleton height={60} circle />
+            </Carousel.Slide>
+            <Carousel.Slide>
+              <Skeleton height={60} circle />
+            </Carousel.Slide>
+            <Carousel.Slide>
+              <Skeleton height={60} circle />
+            </Carousel.Slide>
+          </>
+        ) : users && users.length > 0 ? (
+          users?.map((user) => (
+            <Carousel.Slide key={user.id}>
+              <Avatar src={user.image} radius="xl" size="lg" />
+              {user.name}
+            </Carousel.Slide>
+          ))
+        ) : (
+          <>
+            <Text>No one else is on duty</Text>
+          </>
         )}
-        <Button mt="xl" color="primary" fullWidth>
-          Add to Calendar
-        </Button>
-      </Box>
+      </Carousel>
     </Container>
   )
 }

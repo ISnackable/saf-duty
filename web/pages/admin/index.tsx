@@ -183,7 +183,7 @@ export default function AdminPage() {
         </div>
       </Modal>
 
-      <Container my="xl">
+      <Container my="xl" size="xl">
         <div className={classes.titleWrapper}>
           <IconUsers size={48} />
           <Title className={classes.title}>Manage Users</Title>

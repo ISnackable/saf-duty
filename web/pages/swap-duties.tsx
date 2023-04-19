@@ -60,10 +60,10 @@ export default function SwapDuties() {
   }, [session?.user, swapRecords])
 
   return (
-    <Container my="xl">
+    <Container my="xl" size="xl">
       <div className={classes.titleWrapper}>
         <IconEdit size={48} />
-        <Title className={classes.title}>Swap duties requests</Title>
+        <Title className={classes.title}>Swap requests</Title>
       </div>
 
       <Text color="dimmed" mt="md">

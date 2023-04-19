@@ -1,9 +1,10 @@
-import { useState } from 'react'
-import { Container, createStyles, Divider, Text, Title, Flex } from '@mantine/core'
+import { type ReactElement, type ReactNode, useState } from 'react'
+import { Container, createStyles, Divider, Text, Title, Flex, Indicator, rem } from '@mantine/core'
 import { Calendar, isSameMonth } from '@mantine/dates'
 import { IconCalendarEvent } from '@tabler/icons-react'
 
 import useCalendar from '@/hooks/useCalendar'
+import { useSession } from 'next-auth/react'
 
 const useStyles = createStyles((theme) => {
   return {
@@ -33,8 +34,20 @@ const useStyles = createStyles((theme) => {
 
 IndexPage.title = 'Duty Roster'
 
+const ConditionalWrapper = ({
+  condition,
+  wrapper,
+  children,
+}: {
+  condition: boolean
+  wrapper: (children: ReactNode) => ReactElement
+  children: ReactElement
+}) => (condition ? wrapper(children) : children)
+
 export default function IndexPage() {
+  const { data: session } = useSession()
   const { data: calendar, error } = useCalendar()
+
   const { classes } = useStyles()
 
   const [month, setMonth] = useState(new Date())
@@ -43,7 +56,7 @@ export default function IndexPage() {
   const dutyDates = calendar?.find((cal) => isSameMonth(new Date(cal.date), month))
 
   return (
-    <Container my="xl">
+    <Container my="xl" size="xl">
       <div className={classes.titleWrapper}>
         <IconCalendarEvent size={48} />
         <Title className={classes.title}>Duty Roster</Title>
@@ -125,23 +138,35 @@ export default function IndexPage() {
         renderDay={(date) => {
           const day = date.getDate()
 
-          // return day if not same month
-          if (!isSameMonth(date, month)) {
-            return day
-          }
+          // // return day if not same month
+          // if (!isSameMonth(date, month)) {
+          //   return day
+          // }
 
           return (
-            <Flex mih="100%" direction="column">
-              <Text fz="sm" ta="right" mb="auto" mt="xs" mr="xs">
-                {day}
-              </Text>
-              {dutyDates && (
-                <Text size="xs" align="center" mb="auto">
-                  {dutyDates?.roster?.[day - 1]?.personnel} ({dutyDates?.roster?.[day - 1]?.standby}
-                  )
-                </Text>
+            <ConditionalWrapper
+              condition={
+                session?.user?.name?.toLowerCase() ===
+                dutyDates?.roster?.[day - 1]?.personnel?.toLowerCase()
+              }
+              wrapper={(children) => (
+                <Indicator size={6} offset={-2}>
+                  {children}
+                </Indicator>
               )}
-            </Flex>
+            >
+              <Flex mih="100%" direction="column">
+                <Text fz="sm" ta="right" mb="auto" mt="xs" mr="xs">
+                  {day}
+                </Text>
+                {dutyDates && (
+                  <Text size="xs" align="center" mb="auto">
+                    {dutyDates?.roster?.[day - 1]?.personnel} (
+                    {dutyDates?.roster?.[day - 1]?.standby})
+                  </Text>
+                )}
+              </Flex>
+            </ConditionalWrapper>
           )
         }}
       />

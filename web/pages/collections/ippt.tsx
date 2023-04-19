@@ -31,7 +31,7 @@ export default function IpptPage() {
 
   return (
     <>
-      <Container my="lg">
+      <Container my="lg" size="xl">
         <div className={classes.titleWrapper}>
           <IconSparkles size={48} />
           <Title className={classes.title}>IPPT Calculator</Title>
@@ -63,7 +63,7 @@ export default function IpptPage() {
         src="https://ippt.yctay.com/?age=20&situpReps=33&pushupReps=20&runMins=12&runSecs=30"
         width="100%"
         height="100%"
-        style={{ border: 'none' }}
+        style={{ border: 'none', marginBottom: 50 }}
         sandbox="allow-scripts allow-same-origin"
       />
     </>

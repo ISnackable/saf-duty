@@ -351,7 +351,7 @@ export default function GenerateDutyPage() {
           </Button>
         </Group>
       </Modal>
-      <Container my="xl">
+      <Container my="xl" size="xl">
         <div className={classes.titleWrapper}>
           <IconChessKnight size={48} />
           <Title className={classes.title}>Generate Duty</Title>
@@ -483,7 +483,7 @@ export default function GenerateDutyPage() {
                   </Text>
 
                   <Text size="xs" align="center" mb="auto">
-                    {dutyRoster?.[day - 1]?.personnel} ({dutyRoster?.[day - 1]?.standby}) )
+                    {dutyRoster?.[day - 1]?.personnel} ({dutyRoster?.[day - 1]?.standby})
                   </Text>
                 </Flex>
               )

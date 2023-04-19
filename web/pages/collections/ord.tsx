@@ -66,7 +66,7 @@ export default function ORDPage() {
   const ordProgress = Math.round((current / total) * 100)
 
   return (
-    <Container my="xl">
+    <Container my="xl" size="xl">
       <div className={classes.titleWrapper}>
         <IconCalendarStats size={48} />
         <Title className={classes.title}>ORD</Title>

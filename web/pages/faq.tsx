@@ -38,7 +38,7 @@ export default function FaqWithImage() {
   const { classes } = useStyles()
   return (
     <div className={classes.wrapper}>
-      <Container my="xl">
+      <Container my="xl" size="xl">
         <Grid id="faq-grid" gutter={50}>
           <Col span={12} md={6}>
             <Image src={image.src} alt="Frequently Asked Questions" />
