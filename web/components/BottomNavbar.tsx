@@ -21,7 +21,9 @@ export type IconProps = {
 const useStyles = createStyles((theme) => ({
   footer: {
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
-    paddingBottom: 'env(safe-area-inset-bottom, 50px)',
+    paddingBottom: 'clamp(0px, calc(env(safe-area-inset-bottom, 0px)), 15px)',
+    height: 'clamp(60px, calc(env(safe-area-inset-bottom) + 60px), 75px) !important',
+    maxHeight: 'clamp(60px, calc(env(safe-area-inset-bottom) + 60px), 75px) !important',
   },
   icons: {
     height: '100%',
