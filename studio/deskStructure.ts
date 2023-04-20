@@ -1,5 +1,5 @@
 import type {StructureBuilder} from 'sanity/desk'
-import {CalendarIcon, ThListIcon, FilterIcon, ClockIcon, CogIcon} from '@sanity/icons'
+import {UsersIcon, CalendarIcon, ThListIcon, FilterIcon, ClockIcon, CogIcon} from '@sanity/icons'
 import {ConfigContext} from 'sanity'
 
 interface CalendarQuery {
@@ -75,6 +75,37 @@ export const myStructure = (S: StructureBuilder, context: ConfigContext) => {
         ])
     )
 
+  const userStructure = S.listItem()
+    .title('User')
+    .icon(UsersIcon)
+    .child(
+      S.list()
+        .title('User')
+        .items([
+          S.listItem()
+            .title('All Users')
+            .icon(UsersIcon)
+            .child(
+              S.documentTypeList('user')
+                .title('All Users')
+                .child((documentId) => S.document().documentId(documentId).schemaType('user'))
+            ),
+          S.listItem()
+            .title('User by unit')
+            .icon(FilterIcon)
+            .child(
+              S.documentTypeList('unit')
+                .title('Users by unit')
+                .child((unitId) =>
+                  S.documentList()
+                    .title('User')
+                    .filter('_type == "user" && $unitId == unit._ref')
+                    .params({unitId})
+                )
+            ),
+        ])
+    )
+
   const siteSettingsStructure = S.listItem()
     .title('Site Settings')
     .icon(CogIcon)
@@ -83,10 +114,18 @@ export const myStructure = (S: StructureBuilder, context: ConfigContext) => {
   // The default root list items (except custom ones)
   const defaultListItems = S.documentTypeListItems().filter(
     (listItem) =>
-      !['calendar', 'siteSettings', 'verification-token', 'account'].includes(listItem.getId()!)
+      !['calendar', 'user', 'siteSettings', 'verification-token', 'account'].includes(
+        listItem.getId()!
+      )
   )
 
   return S.list()
     .title('Base')
-    .items([calendarStructure, ...defaultListItems, S.divider(), siteSettingsStructure])
+    .items([
+      calendarStructure,
+      userStructure,
+      ...defaultListItems,
+      S.divider(),
+      siteSettingsStructure,
+    ])
 }

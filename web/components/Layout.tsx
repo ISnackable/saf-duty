@@ -8,10 +8,21 @@ import {
   Burger,
   ActionIcon,
   useMantineColorScheme,
+  useMantineTheme,
+  Transition,
 } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
-import { IconMathFunctionY, IconMoonStars, IconSun } from '@tabler/icons-react'
+import { useDisclosure, useMediaQuery } from '@mantine/hooks'
+import {
+  IconCalendarEvent,
+  IconArrowsExchange,
+  IconMathFunctionY,
+  IconMoonStars,
+  IconSun,
+  IconHome2,
+  IconEdit,
+} from '@tabler/icons-react'
 import { NavbarMin } from '@/components/Navbar'
+import { BottomNavigation } from '@/components/BottomNavbar'
 
 import config from '../../site.config'
 
@@ -33,21 +44,35 @@ const useStyles = createStyles(() => ({
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { classes } = useStyles()
+
+  const theme = useMantineTheme()
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
   const [opened, { close, toggle }] = useDisclosure(true)
-  const { asPath } = useRouter()
-
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
+  const { pathname } = useRouter()
   const dark = colorScheme === 'dark'
 
   useEffect(() => {
-    close()
-  }, [close, asPath])
+    if (isMobile) close()
+  }, [close, pathname, isMobile])
 
   return (
     <AppShell
       padding="md"
-      navbarOffsetBreakpoint="md"
-      navbar={<NavbarMin p="md" hiddenBreakpoint="md" hidden={!opened} width={{ sm: 300 }} />}
+      navbarOffsetBreakpoint="sm"
+      navbar={
+        <Transition mounted={opened} transition="slide-right" duration={400} timingFunction="ease">
+          {(styles) => (
+            <NavbarMin
+              style={styles}
+              p="md"
+              hiddenBreakpoint="sm"
+              hidden={!opened}
+              width={{ sm: 300 }}
+            />
+          )}
+        </Transition>
+      }
       header={
         <Header height={60} p="xs">
           <div className={classes.innerHeader}>
@@ -76,8 +101,39 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </Header>
       }
+      footer={
+        isMobile ? (
+          <BottomNavigation>
+            <BottomNavigation.Button
+              icon={<IconHome2 />}
+              to="/"
+              title="Home"
+              isActive={pathname === '/'}
+            />
+            <BottomNavigation.Button
+              icon={<IconCalendarEvent />}
+              to="/duty-roster"
+              title="Duty Rosters"
+              isActive={pathname === '/duty-roster'}
+            />
+            <BottomNavigation.Button
+              icon={<IconEdit />}
+              to="/manage-blockouts"
+              title="My Availability"
+              isActive={pathname === '/manage-blockouts'}
+            />
+            <BottomNavigation.Button
+              icon={<IconArrowsExchange />}
+              to="/swap-duties"
+              title="Swap Duties"
+              isActive={pathname === '/swap-duties'}
+            />
+          </BottomNavigation>
+        ) : undefined
+      }
       styles={(theme) => ({
         main: {
+          transition: 'padding-left 400ms ease',
           backgroundColor:
             theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
         },

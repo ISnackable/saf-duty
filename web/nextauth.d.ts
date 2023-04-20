@@ -10,6 +10,7 @@ export enum Role {
 // common interface for JWT and Session
 interface IUser extends DefaultUser {
   role?: Role
+  unit?: string
   ord?: TDateISODate
   enlistment?: TDateISODate
   // blockouts?: TDateISODate[]

@@ -103,15 +103,7 @@ export default function AdminPage() {
         <Select data={rolesData} defaultValue={user.role} variant="unstyled" />
       </td>
       <td>
-        <Text fz="sm" c="dimmed">
-          <NumberInput
-            withAsterisk
-            defaultValue={user.extra}
-            placeholder="extra"
-            max={120}
-            min={0}
-          />
-        </Text>
+        <NumberInput withAsterisk defaultValue={12} placeholder="12" max={120} min={0} />
       </td>
       <td>
         <Group spacing={0} position="right">
@@ -152,6 +144,8 @@ export default function AdminPage() {
               placeholder="Weekend Points"
               {...form.getInputProps('weekendPoints')}
             />
+
+            <NumberInput mt="sm" label="Extras" placeholder="Extras" max={120} min={0} />
           </Group>
           <Group grow>
             <DatePickerInput
@@ -181,13 +175,15 @@ export default function AdminPage() {
           />
 
           <Group position="right" mt="lg">
-            <Button color="gray">Cancel</Button>
+            <Button color="gray" onClick={close}>
+              Cancel
+            </Button>
             <Button type="submit">Save</Button>
           </Group>
         </div>
       </Modal>
 
-      <Container my="xl">
+      <Container my="xl" size="xl">
         <div className={classes.titleWrapper}>
           <IconUsers size={48} />
           <Title className={classes.title}>Manage Users</Title>
@@ -204,7 +200,7 @@ export default function AdminPage() {
               <tr>
                 <th>User</th>
                 <th>Role</th>
-                <th>Extra</th>
+                <th>Maximum No. of Blockouts</th>
                 <th />
               </tr>
             </thead>
@@ -230,19 +226,6 @@ export default function AdminPage() {
             </tbody>
           </Table>
         </ScrollArea>
-
-        <Group position="right" mt="xl">
-          <Button
-            color="gray"
-            onClick={() => {
-              console.log('DaD')
-              // close()
-            }}
-          >
-            Cancel
-          </Button>
-          <Button type="submit">Save</Button>
-        </Group>
       </Container>
     </>
   )

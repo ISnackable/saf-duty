@@ -31,10 +31,8 @@ export default function MyApp({
   pageProps: { session, ...pageProps },
 }: AppPropsWithLayout) {
   const [colorScheme, setColorScheme] = useState<ColorScheme>('dark')
-  const toggleColorScheme = (value?: ColorScheme) => {
-    const nextColorScheme = value || (colorScheme === 'dark' ? 'light' : 'dark')
-    setColorScheme(nextColorScheme)
-  }
+  const toggleColorScheme = (value?: ColorScheme) =>
+    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'))
 
   const router = useRouter()
 
@@ -45,12 +43,12 @@ export default function MyApp({
           <title>{`${Component.title} - ${config.title || 'Duty Roster'}`}</title>
         )}
 
-        <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
       </Head>
 
       <SessionProvider session={session}>
         <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-          <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme }}>
+          <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
             <DatesProvider settings={{ firstDayOfWeek: 0 }}>
               <ModalsProvider>
                 <RouterTransition />

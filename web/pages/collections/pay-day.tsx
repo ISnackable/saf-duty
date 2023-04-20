@@ -128,7 +128,7 @@ export default function PayDayPage() {
   ))
 
   return (
-    <Container my="xl">
+    <Container my="xl" size="xl">
       <div className={classes.titleWrapper}>
         <IconEdit size={48} />
         <Title className={classes.title}>Pay Day</Title>

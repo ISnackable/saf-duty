@@ -19,6 +19,8 @@ import {
   Container,
   Title,
   Checkbox,
+  PinInput,
+  Input,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
@@ -92,7 +94,7 @@ export default function AuthenticationForm() {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      router.push('/')
+      router.replace('/')
     }
   }, [router, status])
 
@@ -102,6 +104,7 @@ export default function AuthenticationForm() {
       email: '',
       password: '',
       termsOfService: true,
+      unit: '',
     },
 
     validate: {
@@ -110,6 +113,8 @@ export default function AuthenticationForm() {
       password: (value) => formType === 'register' && checkPasswordValidation(value),
       termsOfService: (value) =>
         formType === 'register' && (value ? null : 'You must agree to the terms of service'),
+      unit: (value) =>
+        formType === 'register' && (value.length === 4 ? null : 'Unit code must have 4 characters'),
     },
 
     validateInputOnChange: ['password'],
@@ -163,9 +168,10 @@ export default function AuthenticationForm() {
   }
 
   const onHCaptchaChange = async (captchaCode: string | null | undefined) => {
-    const { name, email, password } = form.values
+    const { name, email, password, unit } = form.values
     // If the hCaptcha code is null or undefined indicating that
     // the hCaptcha was expired then return early
+
     if (!captchaCode || (formType === 'register' && !name) || !email || !password) {
       return
     }
@@ -175,12 +181,12 @@ export default function AuthenticationForm() {
     try {
       if (formType === 'register') {
         const response: NextAuthSanityResponse = await signUp({
-          email,
+          email: email.toLowerCase(),
           password,
           name,
+          unit,
           captcha: captchaCode,
         })
-
         if (response?.status === 'error') {
           showNotification({
             title: 'Error',
@@ -202,15 +208,13 @@ export default function AuthenticationForm() {
             color: 'teal',
             icon: <IconCheck />,
           })
-
           await signIn('sanity-login', {
             email,
             password,
             redirect: false,
           })
-
           // If the user is authenticated, redirect to the home page
-          Router.push('/')
+          Router.replace('/')
         }
       }
     } catch (error) {
@@ -307,22 +311,28 @@ export default function AuthenticationForm() {
             )}
 
             {formType === 'register' && (
-              <Checkbox
-                label={
-                  <>
-                    I accept{' '}
-                    <Anchor
-                      component={Link}
-                      href="/terms"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      terms and conditions
-                    </Anchor>
-                  </>
-                }
-                {...form.getInputProps('termsOfService', { type: 'checkbox' })}
-              />
+              <>
+                <Input.Wrapper withAsterisk label="Unit  code" {...form.getInputProps('unit')}>
+                  <PinInput type="number" mask {...form.getInputProps('unit')} />
+                </Input.Wrapper>
+                <Checkbox
+                  label={
+                    <>
+                      I accept{' '}
+                      <Anchor
+                        component={Link}
+                        href="/terms"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        prefetch={false}
+                      >
+                        terms and conditions
+                      </Anchor>
+                    </>
+                  }
+                  {...form.getInputProps('termsOfService', { type: 'checkbox' })}
+                />
+              </>
             )}
           </Stack>
 
@@ -338,30 +348,33 @@ export default function AuthenticationForm() {
                 ? 'Already have an account? Login'
                 : "Don't have an account? Register"}
             </Anchor>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" loading={isSubmitting}>
               {upperFirst(formType)}
             </Button>
           </Group>
 
-          <HCaptcha
-            size="invisible"
-            ref={hcaptchaRef}
-            sitekey={
-              process.env.NODE_ENV === 'development'
-                ? '10000000-ffff-ffff-ffff-000000000001'
-                : process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ''
-            }
-            onVerify={onHCaptchaChange}
-            onExpire={() => onHCaptchaChange(null)}
-            onError={(err) => {
-              onHCaptchaChange(null)
-              showNotification({
-                title: 'Error',
-                message: 'Cannot verify captcha',
-              })
-              console.error(err)
-            }}
-          />
+          {process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY && (
+            <HCaptcha
+              size="invisible"
+              ref={hcaptchaRef}
+              theme="dark"
+              sitekey={
+                process.env.NODE_ENV === 'development'
+                  ? '10000000-ffff-ffff-ffff-000000000001'
+                  : process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY
+              }
+              onVerify={onHCaptchaChange}
+              onExpire={() => onHCaptchaChange(null)}
+              onError={(err) => {
+                onHCaptchaChange(null)
+                showNotification({
+                  title: 'Error',
+                  message: 'Cannot verify captcha',
+                })
+                console.error(err)
+              }}
+            />
+          )}
         </form>
       </Paper>
     </Container>

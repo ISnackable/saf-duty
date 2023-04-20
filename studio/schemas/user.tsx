@@ -59,6 +59,15 @@ export default defineType({
       initialValue: 'user',
     }),
     defineField({
+      name: 'unit',
+      title: 'Unit Reference No.',
+      type: 'reference',
+      to: [{type: 'unit'}],
+      options: {
+        disableNew: true,
+      },
+    }),
+    defineField({
       name: 'ord',
       title: 'ORD Date',
       type: 'date',
@@ -95,6 +104,13 @@ export default defineType({
       type: 'number',
       initialValue: 0,
       validation: (Rule) => Rule.integer().positive(),
+    }),
+    defineField({
+      name: 'maxBlockouts',
+      title: 'Maximum No. of Blockouts',
+      type: 'number',
+      initialValue: 12,
+      validation: (Rule) => Rule.integer().positive().max(120),
     }),
     defineField({
       name: 'blockouts',

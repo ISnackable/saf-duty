@@ -5,12 +5,17 @@ import {
   getAllUsersQuery,
   getUserQuery,
   getUserUpcomingDutiesQuery,
+  type Unit,
   type Calendar,
   getAllCalendarQuery,
   getUserBlockoutsQuery,
   type AllSanityUser,
   type TDateISODate,
   type SanityUser,
+  getAllUnitsQuery,
+  type SanityUserBlockouts,
+  getUserSwapRequestQuery,
+  type SanitySwapRequest,
 } from './sanity.queries'
 
 export const client = createClient({
@@ -28,8 +33,13 @@ export const clientWithToken = createClient({
   token: process.env.SANITY_API_TOKEN,
 })
 
-export async function getAllUsers(): Promise<AllSanityUser[]> {
-  const users = await clientWithToken.fetch(getAllUsersQuery)
+export async function getAllUnits(): Promise<Unit[]> {
+  const result = await client.fetch(getAllUnitsQuery)
+  return result
+}
+
+export async function getAllUsers(unit: string): Promise<AllSanityUser[]> {
+  const users = await clientWithToken.fetch(getAllUsersQuery, { unit })
   return users
 }
 
@@ -38,14 +48,12 @@ export async function getUserById(id: string): Promise<SanityUser> {
   return user
 }
 
-export async function getUserUpcomingDuties(id?: string): Promise<TDateISODate[]> {
-  if (!id) return []
+export async function getUserUpcomingDuties(id: string): Promise<TDateISODate[]> {
   const result = await client.fetch(getUserUpcomingDutiesQuery, { id })
   return result
 }
 
-export async function getUserBlockouts(id?: string): Promise<TDateISODate[]> {
-  if (!id) return []
+export async function getUserBlockouts(id: string): Promise<SanityUserBlockouts> {
   const result = await clientWithToken.fetch(getUserBlockoutsQuery, { id })
   return result
 }
@@ -53,8 +61,13 @@ export async function getUserBlockouts(id?: string): Promise<TDateISODate[]> {
 /**
  * @returns {Calendar[]} in descending order of creation date
  */
-export async function getAllCalendar(): Promise<Calendar[]> {
-  const calendar: Calendar[] = await clientWithToken.fetch(getAllCalendarQuery)
+export async function getAllCalendar(id: string): Promise<Calendar[]> {
+  const calendar: Calendar[] = await clientWithToken.fetch(getAllCalendarQuery, { id })
 
   return calendar
+}
+
+export async function getUserSwapRequest(id: string): Promise<SanitySwapRequest[]> {
+  const result = await clientWithToken.fetch(getUserSwapRequestQuery, { id })
+  return result
 }

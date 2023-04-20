@@ -4,13 +4,13 @@ import type { Middleware } from 'next-api-route-middleware'
 import { getServerSession } from 'next-auth/next'
 
 import config from '@/../site.config'
-import { createOptions } from './auth/[...nextauth]'
+import { authOptions } from './auth/[...nextauth]'
 
 export type NextApiRequestWithUser = NextApiRequest & User
 
 export const withUser: Middleware<NextApiRequestWithUser> = async (req, res, next) => {
   const { method } = req
-  const session = await getServerSession(req, res, createOptions(req))
+  const session = await getServerSession(req, res, authOptions)
 
   if (session && session.user) {
     // Only allow GET requests for demo user
@@ -23,6 +23,7 @@ export const withUser: Middleware<NextApiRequestWithUser> = async (req, res, nex
 
     req.id = session.user.id
     req.role = session.user.role
+    req.unit = session.user.unit
     return await next()
   } else {
     return res.status(401).send({ status: 'error', message: 'Unauthorized, invalid auth cookie' })

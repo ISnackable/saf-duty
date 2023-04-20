@@ -13,7 +13,6 @@ import {
 } from '@mantine/core'
 import {
   IconUsers,
-  IconCheckbox,
   IconSelector,
   IconFingerprint,
   IconCalendarEvent,
@@ -22,6 +21,8 @@ import {
   IconCloudLock,
   IconCe,
   IconMessageCircleQuestion,
+  IconHome2,
+  IconArrowsExchange,
 } from '@tabler/icons-react'
 import { UserButtonMenu } from '@/components/UserButton'
 
@@ -115,14 +116,15 @@ const useStyles = createStyles((theme) => ({
 }))
 
 const links = [
-  { icon: IconCalendarEvent, label: 'Duty Roster', link: '/' },
-  { icon: IconEdit, label: 'Manage Blockouts', link: '/manage-blockouts' },
   {
-    icon: IconCheckbox,
-    label: 'Upcoming Duties',
-    notifications: 4,
-    link: '/upcoming-duties',
+    icon: IconHome2,
+    label: 'Home',
+    // notifications: 4,
+    link: '/',
   },
+  { icon: IconCalendarEvent, label: 'Duty Roster', link: '/duty-roster' },
+  { icon: IconEdit, label: 'My Availability', link: '/manage-blockouts' },
+  { icon: IconArrowsExchange, label: 'Swap Duties', link: '/swap-duties' },
   { icon: IconUsers, label: 'Duty Personnels', link: '/duty-personnels' },
 ]
 
@@ -157,7 +159,7 @@ export function NavbarMin(props: NavbarMinProps) {
 
   const mainLinks = links.map((link) => (
     <UnstyledButton key={link.label} className={classes.mainLink}>
-      <Link href={link.link} key={link.label} className={classes.mainLinkInner}>
+      <Link href={link.link} key={link.label} className={classes.mainLinkInner} prefetch={false}>
         <link.icon size={20} className={classes.mainLinkIcon} stroke={1.5} />
         <span>{link.label}</span>
       </Link>
@@ -181,18 +183,24 @@ export function NavbarMin(props: NavbarMinProps) {
       label={link.label}
       href={link.link}
       icon={<link.icon size={22} className={classes.mainLinkIcon} stroke={1.5} />}
+      prefetch={false}
     />
   ))
 
   const collectionLinks = collections.map((collection) => (
-    <Link href={collection.link} key={collection.label} className={classes.collectionLink}>
+    <Link
+      href={collection.link}
+      key={collection.label}
+      className={classes.collectionLink}
+      prefetch={false}
+    >
       <span style={{ marginRight: 9, fontSize: 16 }}>{collection.emoji}</span> {collection.label}
     </Link>
   ))
 
   const thirdLinks = othersLinks.map((link) => (
     <UnstyledButton key={link.label} className={classes.mainLink}>
-      <Link href={link.link} key={link.label} className={classes.mainLinkInner}>
+      <Link href={link.link} key={link.label} className={classes.mainLinkInner} prefetch={false}>
         <link.icon size={20} className={classes.mainLinkIcon} stroke={1.5} />
         <span>{link.label}</span>
       </Link>
@@ -204,8 +212,8 @@ export function NavbarMin(props: NavbarMinProps) {
       <Navbar.Section className={classes.section}>
         <UserButtonMenu
           image={session?.user?.image || ''}
-          name={session?.user?.name || 'Name not found'}
-          email={session?.user?.email || 'Email not found'}
+          name={session?.user?.name}
+          email={session?.user?.email}
           icon={<IconSelector size="0.9rem" stroke={1.5} />}
         />
       </Navbar.Section>

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 import Image from 'next/image'
 import { DatePickerInput } from '@mantine/dates'
 import { isEmail, useForm } from '@mantine/form'
@@ -29,39 +28,8 @@ import {
 } from '@tabler/icons-react'
 import { useSession } from 'next-auth/react'
 
-// Function that checks if the password is valid, returns an error message if not
-export function checkPasswordValidation(value: string) {
-  const isWhitespace = /^(?=.*\s)/
-  if (isWhitespace.test(value)) {
-    return 'Password must not contain Whitespaces.'
-  }
+import { checkPasswordValidation } from '@/pages/login'
 
-  const isContainsUppercase = /^(?=.*[A-Z])/
-  if (!isContainsUppercase.test(value)) {
-    return 'Password must have at least one Uppercase Character.'
-  }
-
-  const isContainsLowercase = /^(?=.*[a-z])/
-  if (!isContainsLowercase.test(value)) {
-    return 'Password must have at least one Lowercase Character.'
-  }
-
-  const isContainsNumber = /^(?=.*[0-9])/
-  if (!isContainsNumber.test(value)) {
-    return 'Password must contain at least one Digit.'
-  }
-
-  const isContainsSymbol = /^(?=.*[~`!@#$%^&*()--+={}\[\]|\\:;"'<>,.?/_₹])/
-  if (!isContainsSymbol.test(value)) {
-    return 'Password must contain at least one Special Symbol.'
-  }
-
-  const isValidLength = /^.{10,16}$/
-  if (!isValidLength.test(value)) {
-    return 'Password must be 10-16 Characters Long.'
-  }
-  return null
-}
 /*
 // Function that checks if the date is valid, returns an error message if not
 export function validateEnlistmentDate(enlistmentDate?: Date, ordDate?: Date) {
@@ -114,8 +82,7 @@ const useStyles = createStyles((theme) => ({
 ProfilePage.title = 'Profile'
 
 export default function ProfilePage() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
+  const { data: session, status, update } = useSession()
   const { classes } = useStyles()
 
   const user = session?.user
@@ -123,14 +90,13 @@ export default function ProfilePage() {
   const [file, setFile] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const reloadSession = async () => {
-    await fetch('/api/auth/session?update=true')
-
-    const event = new Event('visibilitychange')
-    window.dispatchEvent(event)
-
-    router.reload()
-  }
+  // Listen for when the page is visible, if the user switches tabs
+  // and makes our tab visible again, re-fetch the session
+  useEffect(() => {
+    const visibilityHandler = () => document.visibilityState === 'visible' && update()
+    window.addEventListener('visibilitychange', visibilityHandler, false)
+    return () => window.removeEventListener('visibilitychange', visibilityHandler, false)
+  }, [update])
 
   const openDeleteModal = () =>
     modals.openConfirmModal({
@@ -248,7 +214,7 @@ export default function ProfilePage() {
           icon: <IconX />,
         })
       } else {
-        reloadSession()
+        update(values)
         showNotification({
           title: 'Success',
           message: 'User details updated successfully',
@@ -327,7 +293,7 @@ export default function ProfilePage() {
           icon: <IconX />,
         })
       } else {
-        reloadSession()
+        update(values)
         showNotification({
           title: 'Success',
           message: 'User account updated successfully',
@@ -347,7 +313,7 @@ export default function ProfilePage() {
   // As this page uses Server Side Rendering, the `session` will be already
   // populated on render without needing to go through a loading stage.
   return (
-    <Container my="xl">
+    <Container my="xl" size="xl">
       <div className={classes.titleWrapper}>
         <IconSettings size={48} />
         <Title className={classes.title}>Profile</Title>
@@ -400,7 +366,7 @@ export default function ProfilePage() {
 
               <Group position="right" mt="lg">
                 <Button color="gray">Cancel</Button>
-                <Button type="submit" disabled={isSubmitting}>
+                <Button type="submit" loading={isSubmitting}>
                   Save
                 </Button>
               </Group>
@@ -472,7 +438,7 @@ export default function ProfilePage() {
                 <Button onClick={openDeleteModal} color="red">
                   Delete account
                 </Button>
-                <Button type="submit" disabled={isSubmitting}>
+                <Button type="submit" loading={isSubmitting}>
                   Save
                 </Button>
               </Group>

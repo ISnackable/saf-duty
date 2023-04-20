@@ -11,7 +11,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   const { method } = req
   if (method === 'GET') {
     try {
-      const calendar = await getAllCalendar()
+      const calendar = await getAllCalendar(req.id)
 
       return res.status(200).json({ status: 'success', data: calendar, message: 'ok' })
     } catch (error) {

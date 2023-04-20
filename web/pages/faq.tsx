@@ -32,11 +32,13 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
+FaqWithImage.Title = 'Frequently Asked Questions'
+
 export default function FaqWithImage() {
   const { classes } = useStyles()
   return (
     <div className={classes.wrapper}>
-      <Container my="xl">
+      <Container my="xl" size="xl">
         <Grid id="faq-grid" gutter={50}>
           <Col span={12} md={6}>
             <Image src={image.src} alt="Frequently Asked Questions" />
@@ -52,7 +54,7 @@ export default function FaqWithImage() {
                 <Accordion.Panel>
                   For now, you have to contact the admin to reset your password. However, you can
                   change your password if you are logged in at the{' '}
-                  <Anchor component={Link} href="/profile">
+                  <Anchor component={Link} href="/profile" prefetch={false}>
                     profile page
                   </Anchor>
                   .
@@ -68,7 +70,7 @@ export default function FaqWithImage() {
         </Grid>
 
         <Group position="center" mt="lg">
-          <Button variant="subtle" size="md" component={Link} href="/">
+          <Button variant="subtle" size="md" component={Link} href="/login" prefetch={false}>
             Take me back to home page
           </Button>
         </Group>

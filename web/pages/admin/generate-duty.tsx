@@ -12,6 +12,7 @@ import {
   Flex,
   Table,
   Modal,
+  ScrollArea,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Calendar, MonthPickerInput, DatePickerInput, isSameMonth } from '@mantine/dates'
@@ -267,14 +268,12 @@ export default function GenerateDutyPage() {
         <Group grow>
           <Select
             label="Duty personnel"
-            searchable
             value={modalDPValue}
             onChange={setModalDPValue}
             data={data || []}
           />
           <Select
             label="Stand in"
-            searchable
             value={modalSBValue}
             onChange={setModalSBValue}
             data={data || []}
@@ -352,7 +351,7 @@ export default function GenerateDutyPage() {
           </Button>
         </Group>
       </Modal>
-      <Container my="xl">
+      <Container my="xl" size="xl">
         <div className={classes.titleWrapper}>
           <IconChessKnight size={48} />
           <Title className={classes.title}>Generate Duty</Title>
@@ -478,9 +477,12 @@ export default function GenerateDutyPage() {
 
             if (dutyRoster?.length > 0) {
               return (
-                <Flex mih={50} justify="center" align="center" direction="column">
-                  <div>{day}</div>
-                  <Text size="xs" align="center">
+                <Flex mih="100%" direction="column">
+                  <Text fz="sm" ta="right" mb="auto" mt="xs" mr="xs">
+                    {day}
+                  </Text>
+
+                  <Text size="xs" align="center" mb="auto">
                     {dutyRoster?.[day - 1]?.personnel} ({dutyRoster?.[day - 1]?.standby})
                   </Text>
                 </Flex>
@@ -537,41 +539,45 @@ export default function GenerateDutyPage() {
         </Group>
 
         {multiSelectValue.length > 0 && (
-          <Table mt="xl" withBorder withColumnBorders>
-            <thead>
-              <tr>
-                <th>Personnel</th>
-                <th>Weekday Points</th>
-                <th>Weekend Points</th>
-                <th>Extras</th>
-                <th>No. of duties</th>
-              </tr>
-            </thead>
-            <tbody>
-              {multiSelectValue.map((person) => {
-                const user = users?.find((user) => user?.name === person)
-                const dutyPersonnel = dutyPersonnelState?.find((user) => user?.name === person)
+          <ScrollArea>
+            <Table mt="xl" withBorder withColumnBorders sx={{ minWidth: 800 }} verticalSpacing="xs">
+              <thead>
+                <tr>
+                  <th>Personnel</th>
+                  <th>Weekday Points</th>
+                  <th>Weekend Points</th>
+                  <th>Extras</th>
+                  <th>No. of duties</th>
+                </tr>
+              </thead>
+              <tbody>
+                {multiSelectValue.map((person) => {
+                  const user = users?.find((user) => user?.name === person)
+                  const dutyPersonnel = dutyPersonnelState?.find((user) => user?.name === person)
 
-                return (
-                  <tr key={person}>
-                    <td>{person}</td>
-                    <td>{`${user?.weekdayPoints} ${
-                      dutyPersonnel ? ' ⟶ ' + dutyPersonnel.weekdayPoints : ''
-                    }`}</td>
-                    <td>{`${user?.weekendPoints} ${
-                      dutyPersonnel ? ' ⟶ ' + dutyPersonnel.weekendPoints : ''
-                    }`}</td>
-                    <td>{`${user?.extra} ${dutyPersonnel ? ' ⟶ ' + dutyPersonnel.extra : ''}`}</td>
-                    <td>{`${dutyPersonnel ? dutyPersonnel.WD_DONE : 0} weekday, ${
-                      dutyPersonnel ? dutyPersonnel.WE_DONE : 0
-                    } weekend --- Total: (${
-                      dutyPersonnel ? dutyPersonnel.WD_DONE + dutyPersonnel.WE_DONE : 0
-                    })`}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </Table>
+                  return (
+                    <tr key={person}>
+                      <td>{person}</td>
+                      <td>{`${user?.weekdayPoints} ${
+                        dutyPersonnel ? ' ⟶ ' + dutyPersonnel.weekdayPoints : ''
+                      }`}</td>
+                      <td>{`${user?.weekendPoints} ${
+                        dutyPersonnel ? ' ⟶ ' + dutyPersonnel.weekendPoints : ''
+                      }`}</td>
+                      <td>{`${user?.extra} ${
+                        dutyPersonnel ? ' ⟶ ' + dutyPersonnel.extra : ''
+                      }`}</td>
+                      <td>{`${dutyPersonnel ? dutyPersonnel.WD_DONE : 0} weekday, ${
+                        dutyPersonnel ? dutyPersonnel.WE_DONE : 0
+                      } weekend --- Total: (${
+                        dutyPersonnel ? dutyPersonnel.WD_DONE + dutyPersonnel.WE_DONE : 0
+                      })`}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </Table>
+          </ScrollArea>
         )}
       </Container>
     </>

@@ -22,9 +22,10 @@ export const config = {
   matcher: [
     '/',
     '/duty-personnels',
+    '/duty-roster',
     '/manage-blockouts',
     '/profile',
-    '/upcoming-duties',
+    '/swap-duties',
     '/admin/:path*',
     '/collections/:path*',
   ],
