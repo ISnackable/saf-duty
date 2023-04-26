@@ -4,6 +4,7 @@ import { signOut } from 'next-auth/react'
 import { Group, Avatar, Text, Menu, UnstyledButton, Skeleton } from '@mantine/core'
 import { IconChevronRight, IconSettings, IconLogout, IconApps } from '@tabler/icons-react'
 import InstallPWA from '@/components/InstallPWA'
+import Router from 'next/router'
 
 interface UserButtonProps extends Omit<React.ComponentPropsWithoutRef<'button'>, 'name'> {
   image: string
@@ -78,7 +79,10 @@ export function UserButtonMenu(props: UserButtonProps) {
           <Menu.Item
             color="red"
             icon={<IconLogout size={14} stroke={1.5} />}
-            onClick={() => signOut({ callbackUrl: '/login' })}
+            onClick={async () => {
+              const data = await signOut({ redirect: false, callbackUrl: '/login' })
+              Router.replace(data.url)
+            }}
           >
             Logout
           </Menu.Item>

@@ -267,12 +267,14 @@ export default function GenerateDutyPage() {
         </Text>
         <Group grow>
           <Select
+            withinPortal
             label="Duty personnel"
             value={modalDPValue}
             onChange={setModalDPValue}
             data={data || []}
           />
           <Select
+            withinPortal
             label="Stand in"
             value={modalSBValue}
             onChange={setModalSBValue}
@@ -281,7 +283,7 @@ export default function GenerateDutyPage() {
         </Group>
 
         <Group position="right" mt="xl">
-          <Button variant="outline" onClick={close}>
+          <Button color="gray" onClick={close}>
             Cancel
           </Button>
           <Button

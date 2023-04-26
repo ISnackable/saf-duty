@@ -58,6 +58,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <AppShell
+      zIndex={200}
       padding="md"
       navbarOffsetBreakpoint="sm"
       navbar={

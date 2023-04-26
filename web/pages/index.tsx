@@ -122,7 +122,7 @@ function Card({ title, time }: CardProps) {
   )
 }
 
-UpcomingDutiesPage.title = 'Upcoming Duties'
+UpcomingDutiesPage.title = 'Home'
 
 export default function UpcomingDutiesPage() {
   const { data: session } = useSession()

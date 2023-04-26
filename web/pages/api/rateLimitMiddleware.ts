@@ -15,3 +15,5 @@ export const rateLimitMiddleware: Middleware = async (_req, res, next) => {
     return res.status(429).json({ status: 'error', message: 'Rate limit exceeded' })
   }
 }
+
+export default rateLimitMiddleware
