@@ -104,10 +104,6 @@ function isDateInArray(array: Date[], value: Date) {
  * @example isSameDate(new Date(2021, 0, 1), new Date(2021, 0, 1))
  */
 export function isSameDate(date1: Date, date2: Date) {
-  console.log(date1.getFullYear() === date2.getFullYear())
-  console.log(date1.getDate() === date2.getDate())
-  console.log(date1.getMonth() === date2.getMonth())
-
   return (
     date1.getFullYear() === date2.getFullYear() &&
     date1.getDate() === date2.getDate() &&

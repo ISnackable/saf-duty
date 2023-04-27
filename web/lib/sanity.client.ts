@@ -16,6 +16,7 @@ import {
   type SanityUserBlockouts,
   getUserSwapRequestQuery,
   type SanitySwapRequest,
+  getUserPushSubscriptionQuery,
 } from './sanity.queries'
 
 export const client = createClient({
@@ -69,5 +70,10 @@ export async function getAllCalendar(id: string): Promise<Calendar[]> {
 
 export async function getUserSwapRequest(id: string): Promise<SanitySwapRequest[]> {
   const result = await clientWithToken.fetch(getUserSwapRequestQuery, { id })
+  return result
+}
+
+export async function getUserPushSubscription(id: string): Promise<string> {
+  const result = await clientWithToken.fetch(getUserPushSubscriptionQuery, { id })
   return result
 }

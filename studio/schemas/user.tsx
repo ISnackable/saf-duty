@@ -118,6 +118,13 @@ export default defineType({
       type: 'array',
       of: [{type: 'date'}],
     }),
+    defineField({
+      name: 'pushSubscription',
+      title: 'Push Subscription',
+      hidden: true,
+      type: 'string',
+      readOnly: true,
+    }),
   ],
   preview: {
     select: {

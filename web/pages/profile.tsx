@@ -117,7 +117,7 @@ export default function ProfilePage() {
   //userDetail form
   const userDetailForm = useForm({
     initialValues: {
-      name: user?.name,
+      name: user?.name || '',
       enlistment: user?.enlistment ? new Date(user?.enlistment) : null,
       ord: user?.ord ? new Date(user?.ord) : null,
     },
@@ -130,7 +130,7 @@ export default function ProfilePage() {
   //user account form
   const userAccountForm = useForm({
     initialValues: {
-      email: user?.email,
+      email: user?.email || '',
       oldPassword: '',
       password: '',
     },
@@ -144,13 +144,13 @@ export default function ProfilePage() {
   useEffect(() => {
     if (user) {
       userDetailForm.setValues({
-        name: user?.name,
+        name: user?.name || '',
         enlistment: user?.enlistment ? new Date(user?.enlistment) : null,
         ord: user?.ord ? new Date(user?.ord) : null,
       })
       userDetailForm.resetDirty()
       userAccountForm.setValues({
-        email: user?.email,
+        email: user?.email || '',
       })
       userAccountForm.resetDirty()
     }

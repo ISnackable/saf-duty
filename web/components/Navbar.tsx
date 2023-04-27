@@ -211,6 +211,7 @@ export function NavbarMin(props: NavbarMinProps) {
     <Navbar className={classes.navbar} {...props}>
       <Navbar.Section className={classes.section}>
         <UserButtonMenu
+          userId={session?.user?.id}
           image={session?.user?.image || ''}
           name={session?.user?.name}
           email={session?.user?.email}

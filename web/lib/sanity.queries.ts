@@ -157,3 +157,7 @@ export const getUserSwapRequestQuery = groq`*[_type == "swapRequest" && referenc
     name
   }
 }`
+
+export const getUserPushSubscriptionQuery = groq`*[_type == "user" && _id == $id && !(_id in path("drafts.**"))]{
+  pushSubscription
+}[0].pushSubscription`
