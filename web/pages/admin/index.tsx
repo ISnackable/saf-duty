@@ -130,27 +130,24 @@ export default function AdminPage() {
             {...form.getInputProps('image')}
           />
 
-          <Group grow>
+          <Group mt="sm" grow>
             <NumberInput
-              mt="sm"
               label="Weekday Points"
               placeholder="Weekday Points"
               {...form.getInputProps('weekdayPoints')}
             />
 
             <NumberInput
-              mt="sm"
               label="Weekend Points"
               placeholder="Weekend Points"
               {...form.getInputProps('weekendPoints')}
             />
 
-            <NumberInput mt="sm" label="Extras" placeholder="Extras" max={120} min={0} />
+            <NumberInput label="Number of Extras" placeholder="0" max={120} min={0} />
           </Group>
-          <Group grow>
+          <Group mt="sm" grow>
             <DatePickerInput
               clearable
-              mt="sm"
               label="Enlistment date"
               placeholder="Pick date"
               {...form.getInputProps('enlistment')}
@@ -158,7 +155,6 @@ export default function AdminPage() {
 
             <DatePickerInput
               clearable
-              mt="sm"
               label="ORD date"
               placeholder="Pick date"
               {...form.getInputProps('ord')}

@@ -1,4 +1,4 @@
-// import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import {
   Container,
@@ -10,14 +10,12 @@ import {
   Box,
   Group,
   Flex,
-  // LoadingOverlay,
   Paper,
   rem,
   Progress,
   Avatar,
-  Stack,
-  SimpleGrid,
   Skeleton,
+  Badge,
 } from '@mantine/core'
 import { Carousel } from '@mantine/carousel'
 import dayjs from 'dayjs'
@@ -26,6 +24,22 @@ import useUpcomingDuties from '@/hooks/useUpcomingDuties'
 import { useSession } from 'next-auth/react'
 import useUsers from '@/hooks/useUsers'
 import Link from 'next/link'
+import { IconClock } from '@tabler/icons-react'
+
+function ordinal_suffix_of(i: number) {
+  const j = i % 10,
+    k = i % 100
+  if (j == 1 && k != 11) {
+    return i + 'st'
+  }
+  if (j == 2 && k != 12) {
+    return i + 'nd'
+  }
+  if (j == 3 && k != 13) {
+    return i + 'rd'
+  }
+  return i + 'th'
+}
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -68,7 +82,6 @@ const useStyles = createStyles((theme) => ({
     opacity: 0.7,
     fontWeight: 700,
     textTransform: 'uppercase',
-    marginTop: theme.spacing.xs,
   },
 
   statsTitle: {
@@ -91,33 +104,29 @@ const AddToCalendarButton = dynamic(
 )
 
 interface CardProps {
+  index: number
   title: string
   time: string
 }
 
-function Card({ title, time }: CardProps) {
+function Card({ index, title, time }: CardProps) {
   const { classes } = useStyles()
 
   return (
-    <Paper
-      shadow="md"
-      p="xl"
-      radius="md"
-      // sx={{ background: getRandomGraidentStyle() }}
-      className={classes.card}
-    >
+    <Paper shadow="md" p="xl" radius="md" className={classes.card}>
       <div>
         <Title order={3} className={classes.cardTitle}>
           {title}
         </Title>
-        <Text className={classes.cardTime} size="xs">
-          {time}
-        </Text>
+        <Flex mt="xs" align="center">
+          <IconClock size={15} stroke={1.5} />
+          <Text className={classes.cardTime} size="xs" ml={5}>
+            {time}
+          </Text>
+        </Flex>
       </div>
-      <Stack justify="flex-end" spacing="xs">
-        <Title order={3}> Standby</Title>
-        <Text size="md">Some other person</Text>
-      </Stack>
+
+      <Badge size="sm">Your {ordinal_suffix_of(index + 1)} duty</Badge>
     </Paper>
   )
 }
@@ -126,8 +135,10 @@ UpcomingDutiesPage.title = 'Home'
 
 export default function UpcomingDutiesPage() {
   const { data: session } = useSession()
-  const { data: upcomingDuties, isLoading, error } = useUpcomingDuties()
+  const { data: upcomingDuties } = useUpcomingDuties()
   const { data: users, isLoading: userLoading } = useUsers()
+
+  const [indexOfUpcomingDate, setIndexOfUpcomingDate] = useState(0)
 
   const { classes } = useStyles()
   const { colorScheme } = useMantineTheme()
@@ -144,34 +155,22 @@ export default function UpcomingDutiesPage() {
       time: `${dayjs(date).format('ddd')} 8:00 AM`,
     })) || []
 
-  const slides = data.map((item) => (
+  const slides = data.map((item, i) => (
     <Carousel.Slide key={item.title}>
-      <Card {...item} />
+      <Card index={i} {...item} />
     </Carousel.Slide>
   ))
 
-  // const [indexOfUpcomingDate, setIndexOfUpcomingDate] = useState(0)
+  useEffect(() => {
+    setIndexOfUpcomingDate(
+      upcomingDuties?.findIndex((date) => {
+        const dutyDate = new Date(date)
+        const today = new Date()
 
-  // useEffect(() => {
-  //   setIndexOfUpcomingDate(
-  //     upcomingDuties?.findIndex((date) => {
-  //       const dutyDate = new Date(date)
-  //       const today = new Date()
-
-  //       return dutyDate.valueOf() > today.valueOf()
-  //     }) || 0
-  //   )
-  // }, [upcomingDuties])
-
-  if (error) {
-    return (
-      <Container my="xl" size="xl">
-        <Text size="xl" color="red">
-          {error.message}
-        </Text>
-      </Container>
+        return dutyDate.setHours(0, 0, 0, 0) >= today.setHours(0, 0, 0, 0)
+      }) || 0
     )
-  }
+  }, [upcomingDuties])
 
   return (
     <Container my="xl" size="xl">
@@ -194,6 +193,7 @@ export default function UpcomingDutiesPage() {
           <Carousel
             loop
             withControls={false}
+            initialSlide={indexOfUpcomingDate}
             withIndicators
             slideSize="50%"
             breakpoints={[{ maxWidth: 'sm', slideSize: '80%', slideGap: 'sm' }]}
@@ -245,50 +245,23 @@ export default function UpcomingDutiesPage() {
       <Group position="apart" mb="sm">
         <Title order={4}>Duties Completed</Title>
         <Text color="dimmed" component="span">
-          1 of 4
+          {indexOfUpcomingDate === -1 ? upcomingDuties?.length : indexOfUpcomingDate} of{' '}
+          {upcomingDuties?.length}
         </Text>
       </Group>
-      <Progress mb="xl" value={50} size="lg" />
+      <Progress
+        mb="xl"
+        value={
+          upcomingDuties && upcomingDuties?.length > 0
+            ? ((indexOfUpcomingDate === -1 ? upcomingDuties?.length : indexOfUpcomingDate) /
+                upcomingDuties?.length) *
+              100
+            : 0
+        }
+        size="lg"
+      />
       <Divider my="xl" />
-      <Title order={4} mb="sm">
-        Duties Stats
-      </Title>
-      <SimpleGrid cols={3} breakpoints={[{ maxWidth: 'xs', cols: 1 }]}>
-        <Paper withBorder p="md" radius="md">
-          <Group position="apart">
-            <Text size="xs" color="dimmed" className={classes.statsTitle}>
-              Month
-            </Text>
-          </Group>
 
-          <Group align="flex-end" mt={25}>
-            <Text className={classes.statsValue}>50 duties worked this month</Text>
-          </Group>
-        </Paper>
-        <Paper withBorder p="md" radius="md">
-          <Group position="apart">
-            <Text size="xs" color="dimmed" className={classes.statsTitle}>
-              Year
-            </Text>
-          </Group>
-
-          <Group align="flex-end" mt={25}>
-            <Text className={classes.statsValue}>50 duties worked this month</Text>
-          </Group>
-        </Paper>
-        <Paper withBorder p="md" radius="md">
-          <Group position="apart">
-            <Text size="xs" color="dimmed" className={classes.statsTitle}>
-              Total
-            </Text>
-          </Group>
-
-          <Group align="flex-end" mt={25}>
-            <Text className={classes.statsValue}>50 duties worked this month</Text>
-          </Group>
-        </Paper>
-      </SimpleGrid>
-      <Divider my="xl" />
       <Title order={4} mb="sm">
         Also on duty
       </Title>

@@ -4,7 +4,7 @@ import { parseBody } from 'next-sanity/webhook'
 import webPush from 'web-push'
 import { rateLimitMiddleware } from './rateLimitMiddleware'
 import { allowMethods } from './allowMethodsMiddleware'
-import { getUserPushSubscription } from '@/lib/sanity.client'
+import { clientWithToken, getUserPushSubscription } from '@/lib/sanity.client'
 
 // Export the config from next-sanity to enable validating the request body signature properly
 export { config } from 'next-sanity/webhook'
@@ -28,6 +28,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     // get user's subscription from database using the id in the body
     const subscription = JSON.parse(await getUserPushSubscription(body._id))
 
+    if (!subscription)
+      return res.status(404).json({ status: 'error', message: 'Subscription not found' })
+
     webPush
       .sendNotification(subscription, JSON.stringify({ title: 'Hello Web Push', message: 'HELLO' }))
       .then((response) => {
@@ -37,7 +40,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         if (err.statusCode === 404 || err.statusCode === 410) {
           console.log('Subscription has expired or is no longer valid: ', err)
           res.writeHead(err.statusCode, err.headers).end(err.body)
-          // return deleteSubscriptionFromDatabase(subscription._id);
+
+          // delete subscription from database
+          clientWithToken.patch(body._id).unset(['pushSubscription']).commit()
+
           return res.status(200).json({ status: 'success', message: 'ok' })
         } else {
           console.error(err)

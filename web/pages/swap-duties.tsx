@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
-import { Container, Tabs, Title, Text, createStyles, Divider } from '@mantine/core'
+import { Container, Tabs, Title, Text, createStyles, Divider, Box } from '@mantine/core'
 import { IconEdit } from '@tabler/icons-react'
 
 import useSwapRequest from '@/hooks/useSwapRequest'
@@ -79,6 +79,24 @@ export default function SwapDuties() {
         </Tabs.List>
 
         <Tabs.Panel value="received" pt="xs">
+          <Box
+            sx={(theme) => ({
+              backgroundColor:
+                theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+              textAlign: 'center',
+              padding: theme.spacing.xl,
+              borderRadius: theme.radius.md,
+              cursor: 'pointer',
+
+              '&:hover': {
+                backgroundColor:
+                  theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[1],
+              },
+            })}
+          >
+            Box lets you add inline styles with sx prop
+          </Box>
+
           {received.length > 0 ? (
             received.map((swapRequest) => {
               return (

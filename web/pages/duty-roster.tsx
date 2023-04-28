@@ -1,4 +1,4 @@
-import { type ReactElement, type ReactNode, useState } from 'react'
+import { type ReactElement, type ReactNode, useState, useEffect } from 'react'
 import {
   Container,
   createStyles,
@@ -11,10 +11,12 @@ import {
   Button,
   Box,
   Group,
+  Textarea,
+  Card,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Calendar, isSameMonth } from '@mantine/dates'
-import { IconCalendarEvent } from '@tabler/icons-react'
+import { IconCalendar, IconCalendarEvent, IconUser } from '@tabler/icons-react'
 
 import useCalendar from '@/hooks/useCalendar'
 import { useSession } from 'next-auth/react'
@@ -62,9 +64,17 @@ export default function IndexPage() {
   const { data: calendar, error } = useCalendar()
   const [opened, { open, close }] = useDisclosure(false)
 
+  const [drawerDateValue, setDrawerDateValue] = useState<Date | null | undefined>(null)
+  const [drawerPersonnelValue, setDrawerPersonnelValue] = useState<string | null | undefined>(null)
+  const [month, setMonth] = useState(new Date())
+
   const { classes } = useStyles()
 
-  const [month, setMonth] = useState(new Date())
+  useEffect(() => {
+    if (drawerDateValue !== null && drawerPersonnelValue !== null) {
+      open()
+    }
+  }, [open, drawerDateValue, drawerPersonnelValue])
 
   if (error) return <div>failed to load</div>
   const dutyDates = calendar?.find((cal) => isSameMonth(new Date(cal.date), month))
@@ -74,42 +84,61 @@ export default function IndexPage() {
       <Drawer
         opened={opened}
         onClose={close}
-        title="Swap Duty"
+        title="Request Swap Duty"
         position="bottom"
-        overlayProps={{ opacity: 0.5, blur: 4 }}
+        overlayProps={{ opacity: 0.5, blur: 1 }}
       >
         <Flex direction="column">
-          <Box
-            sx={(theme) => ({
-              backgroundColor:
-                theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-              textAlign: 'center',
-              padding: theme.spacing.xl,
-              borderRadius: theme.radius.md,
-              cursor: 'pointer',
+          <Card p="md">
+            <Group>
+              <IconCalendar size={50} />
+              <Box ml="lg">
+                <Card.Section>
+                  <Text component="span" size="lg">
+                    Date
+                  </Text>
+                </Card.Section>
+                <Card.Section>
+                  <Text component="span" size="md" c="dimmed">
+                    {drawerDateValue?.toLocaleDateString(undefined, {
+                      weekday: 'long',
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </Text>
+                </Card.Section>
+              </Box>
+            </Group>
+          </Card>
 
-              '&:hover': {
-                backgroundColor:
-                  theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[1],
-              },
-            })}
-          >
-            Box lets you add inline styles with sx prop
-          </Box>
+          <Card p="md" mt="sm">
+            <Group>
+              <IconUser size={50} />
+              <Box ml="lg">
+                <Card.Section>
+                  <Text component="span" size="lg">
+                    Duty Personnel
+                  </Text>
+                </Card.Section>
+                <Card.Section>
+                  <Text component="span" size="md" c="dimmed">
+                    {drawerPersonnelValue}
+                  </Text>
+                </Card.Section>
+              </Box>
+            </Group>
+          </Card>
 
-          <Text c="dimmed" ta="center" mt={170}>
-            You are swapping duty with <strong>Person A</strong> on <strong>1st Jan 2021</strong> at{' '}
-            <strong>12pm</strong>
-          </Text>
+          <Textarea
+            mt="xs"
+            placeholder="I need to attend my friend's birthday on the 21st."
+            label="Reason for swap (optional)"
+          />
 
-          <Group mt="lg" position="center">
-            <Button color="gray" size="md" style={{ flex: '1 1 0%' }}>
-              Decline
-            </Button>
-            <Button size="md" style={{ flex: '1 1 0%' }}>
-              Approve
-            </Button>
-          </Group>
+          <Button mt="xl" size="md" fullWidth>
+            Request Swap
+          </Button>
         </Flex>
       </Drawer>
       <Container my="xl" size="xl">
@@ -165,8 +194,19 @@ export default function IndexPage() {
           getDayProps={(date) => {
             const defaultDayProps = {
               onClick: () => {
-                // const day = date.getDate()
-                if (dutyDates) open()
+                const day = date.getDate()
+
+                if (
+                  dutyDates &&
+                  session?.user?.name &&
+                  !(
+                    session?.user?.name?.toLowerCase() ===
+                    dutyDates?.roster?.[day - 1]?.personnel?.toLowerCase()
+                  )
+                ) {
+                  setDrawerPersonnelValue(dutyDates?.roster?.[day - 1]?.personnel)
+                  setDrawerDateValue(date)
+                }
               },
             }
             // Check if date isWeekend
@@ -202,11 +242,6 @@ export default function IndexPage() {
           }}
           renderDay={(date) => {
             const day = date.getDate()
-
-            // // return day if not same month
-            // if (!isSameMonth(date, month)) {
-            //   return day
-            // }
 
             return (
               <ConditionalWrapper
