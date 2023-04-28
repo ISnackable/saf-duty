@@ -1,5 +1,18 @@
 import { useState, useEffect } from 'react'
 
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+  const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/')
+
+  const rawData = window.atob(base64)
+  const outputArray = new Uint8Array(rawData.length)
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i)
+  }
+  return outputArray
+}
+
 /**
  * checks if Push notification and service workers are supported by your browser
  */
@@ -25,7 +38,7 @@ async function createNotificationSubscription() {
   // subscribe and return the subscription
   return await serviceWorker.pushManager.subscribe({
     userVisibleOnly: true,
-    applicationServerKey: process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY || '',
+    applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY || ''),
   })
 }
 
@@ -67,20 +80,16 @@ export default function usePushNotifications() {
     if (isPushNotificationSupported()) {
       setPushNotificationSupported(true)
       setUserConsent(Notification.permission)
+      const getExixtingSubscription = async () => {
+        const existingSubscription = await getUserSubscription()
+        setUserSubscription(existingSubscription)
+      }
+      getExixtingSubscription()
     }
   }, [])
   //if the push notifications are supported, registers the service worker
-  //this effect runs only the first render
-
-  useEffect(() => {
-    const getExixtingSubscription = async () => {
-      const existingSubscription = await getUserSubscription()
-      setUserSubscription(existingSubscription)
-    }
-    getExixtingSubscription()
-  }, [])
-  //Retrieve if there is any push notification subscription for the registered service worker
-  // this use effect runs only in the first render
+  // then retrieve if there is any push notification subscription for the registered service worker
+  // this effect runs only the first render
 
   /**
    * define a click handler that asks the user permission,
