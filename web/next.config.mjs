@@ -6,6 +6,7 @@ import withBundleAnalyzer from '@next/bundle-analyzer'
 const PWA = WithPWA({
   dest: 'public',
   disable: process.env.NODE_ENV === 'development',
+  dynamicStartUrlRedirect: '/login',
 })
 const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
