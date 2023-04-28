@@ -319,13 +319,7 @@ export default function AuthenticationForm() {
                   label={
                     <>
                       I accept{' '}
-                      <Anchor
-                        component={Link}
-                        href="/terms"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        prefetch={false}
-                      >
+                      <Anchor component={Link} href="/terms" prefetch={false}>
                         terms and conditions
                       </Anchor>
                     </>
