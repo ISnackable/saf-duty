@@ -197,8 +197,8 @@ function calculateWeekdayShift(personnel: Personnel[], dutyDates: DutyDate[]) {
   const totalExtraDays = dutyDates.filter((date) => date.isExtra).length
   const totalPersonnel = personnel.length
 
-  // We assume that all extra dates are allocated to personnel
-  const nonAllocatedExtra = totalWeekendDays - totalExtraDays
+  // Number of extra days that are not allocated
+  const nonAllocatedExtra = dutyDates.filter((date) => date.isExtra && !date.allocated).length
 
   const totalWeekdayDays = dutyDates.length - totalWeekendDays - totalExtraDays + nonAllocatedExtra
 
@@ -252,7 +252,9 @@ function allocateWeekendShift(
   additionalWeekendAllocation: number
 ) {
   let shuffledDutyPersonnel = shuffleArray(personnel)
-  shuffledDutyPersonnel = sortByKey(shuffledDutyPersonnel, 'WD_RM')
+  // shuffledDutyPersonnel = sortByKey(shuffledDutyPersonnel, 'WD_RM')
+  // Sort by two values priortizing WD_RM then weekendPoints
+  shuffledDutyPersonnel.sort((a, b) => a.WD_RM - b.WD_RM || a.weekendPoints - b.weekendPoints)
 
   // Allocate normal weekends
   for (let person of shuffledDutyPersonnel.slice(0, additionalWeekendAllocation)) {
@@ -261,7 +263,6 @@ function allocateWeekendShift(
   }
 
   // Allocate additional weekends
-
   for (let person of shuffledDutyPersonnel.slice(additionalWeekendAllocation)) {
     person.WE_RM = weekendAllocation
     person.weekendPoints -= 1
@@ -424,6 +425,9 @@ export function createDutyRoster(users: AllSanityUser[], month: Date, extraDates
   const dutyPersonnel = createDutyPersonnel(users)
   const dutyDates = createDutyDate(dutyPersonnel, getDatesInMonth(month), extraDates)
 
+  // Assign Extra shift
+  assignExtraShift(dutyPersonnel, dutyDates)
+
   // Calculate WD and WE allocation
   const { weekdayAllocation, additionalWeekdayAllocation } = calculateWeekdayShift(
     dutyPersonnel,
@@ -437,8 +441,6 @@ export function createDutyRoster(users: AllSanityUser[], month: Date, extraDates
   // Allocate WD and WE to personnel
   allocateWeekdayShift(dutyPersonnel, weekdayAllocation, additionalWeekdayAllocation)
   allocateWeekendShift(dutyPersonnel, weekendAllocation, additionalWeekendAllocation)
-  // Assign Extra shift
-  assignExtraShift(dutyPersonnel, dutyDates)
 
   // Assign WD and WE to dutyDates
   return assignPersonnelShift(dutyPersonnel, dutyDates)
