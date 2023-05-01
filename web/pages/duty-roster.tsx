@@ -16,7 +16,14 @@ import {
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Calendar, isSameMonth } from '@mantine/dates'
-import { IconCalendar, IconCalendarEvent, IconUser } from '@tabler/icons-react'
+import { showNotification } from '@mantine/notifications'
+import {
+  IconX,
+  IconCalendar,
+  IconCalendarEvent,
+  IconUser,
+  IconAlertCircle,
+} from '@tabler/icons-react'
 
 import useCalendar from '@/hooks/useCalendar'
 import { useSession } from 'next-auth/react'
@@ -195,17 +202,36 @@ export default function IndexPage() {
             const defaultDayProps = {
               onClick: () => {
                 const day = date.getDate()
+                const username = session?.user?.name?.toLowerCase()
 
-                if (
-                  dutyDates &&
-                  session?.user?.name &&
-                  !(
-                    session?.user?.name?.toLowerCase() ===
-                    dutyDates?.roster?.[day - 1]?.personnel?.toLowerCase()
-                  )
-                ) {
-                  setDrawerPersonnelValue(dutyDates?.roster?.[day - 1]?.personnel)
-                  setDrawerDateValue(date)
+                if (dutyDates) {
+                  // Check if date is past
+                  if (date.valueOf() <= new Date().valueOf()) {
+                    showNotification({
+                      title: 'Cannot swap duty',
+                      message: 'You cannot swap duty for past dates.',
+                      color: 'red',
+                      icon: <IconX />,
+                    })
+                  } else if (
+                    username &&
+                    !(username === dutyDates?.roster?.[day - 1]?.personnel?.toLowerCase())
+                  ) {
+                    if (
+                      dutyDates?.roster?.[day - 2]?.personnel?.toLowerCase() === username ||
+                      dutyDates?.roster?.[day]?.personnel?.toLowerCase() === username
+                    ) {
+                      showNotification({
+                        title: 'Warning',
+                        message: `Take note, you are the personnel on duty for the day before or after.`,
+                        color: 'yellow',
+                        icon: <IconAlertCircle />,
+                      })
+                    }
+
+                    setDrawerPersonnelValue(dutyDates?.roster?.[day - 1]?.personnel)
+                    setDrawerDateValue(date)
+                  }
                 }
               },
             }

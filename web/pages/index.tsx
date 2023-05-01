@@ -111,6 +111,7 @@ interface CardProps {
 
 function Card({ index, title, time }: CardProps) {
   const { classes } = useStyles()
+  const today = new Date()
 
   return (
     <Paper shadow="md" p="xl" radius="md" className={classes.card}>
@@ -126,7 +127,12 @@ function Card({ index, title, time }: CardProps) {
         </Flex>
       </div>
 
-      <Badge size="sm">Your {ordinal_suffix_of(index + 1)} duty</Badge>
+      <Badge size="sm">
+        Your {ordinal_suffix_of(index + 1)} duty
+        {new Date(title).setFullYear(today.getFullYear()) <= today.valueOf()
+          ? ' ✅'
+          : undefined}{' '}
+      </Badge>
     </Paper>
   )
 }
@@ -176,6 +182,7 @@ export default function UpcomingDutiesPage() {
     <Container my="xl" size="xl">
       <div className={classes.titleWrapper}>
         <Avatar src={session?.user?.image} radius="xl" />
+        {/* //TODO: check if loading then render skeleton */}
         <Title className={classes.title}>Howdy, {session?.user?.name}</Title>
       </div>
       <Text color="dimmed" mt="md">

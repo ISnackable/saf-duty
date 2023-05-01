@@ -92,10 +92,9 @@ export const getAllUnitsQuery = groq`*[_type == "unit"]{
 }`
 
 // Get all calendar roster that is related to the given user id and is created within the last 30 days
-export const getUserUpcomingDutiesQuery = groq`*[_type == 'calendar' && dateTime(_createdAt) > dateTime(now()) - 60*60*24*30 && !(_id in path("drafts.**"))]{
+export const getUserUpcomingDutiesQuery = groq`*[_type == 'calendar' && date >= $firstDay && date <= $lastDay && !(_id in path("drafts.**"))]{
     roster[dutyPersonnel._ref == $id]{date}
-}.roster[].date
-`
+}.roster[].date`
 
 export const getAllUsersQuery = groq`*[_type == "user" && _id != "${config.demoUserId}" && unit->unitCode == $unit && !(_id in path("drafts.**"))]{
   "id": _id,
