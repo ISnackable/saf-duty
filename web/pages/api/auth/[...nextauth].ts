@@ -45,12 +45,10 @@ const SanityCredentials = (client: SanityClient, userSchema = 'user'): Credentia
   })
 
 export const authOptions: AuthOptions = {
-  // @ts-expect-error - clientWithToken type is not compatible with SanityCredentials
   providers: [SanityCredentials(clientWithToken)],
   session: {
     strategy: 'jwt',
   },
-  // @ts-expect-error - clientWithToken type is not compatible with SanityAdapter
   adapter: SanityAdapter(clientWithToken),
   pages: {
     signIn: '/login',
