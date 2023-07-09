@@ -59,7 +59,7 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
         {icon || <IconChevronRight size={16} />}
       </Group>
     </UnstyledButton>
-  )
+  ),
 )
 
 UserButton.displayName = 'UserButton'
