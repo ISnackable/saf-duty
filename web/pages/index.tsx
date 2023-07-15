@@ -100,7 +100,7 @@ const AddToCalendarButton = dynamic(
   () => import('add-to-calendar-button-react').then((mod) => mod.AddToCalendarButton),
   {
     ssr: false,
-  }
+  },
 )
 
 interface CardProps {
@@ -128,8 +128,9 @@ function Card({ index, title, time }: CardProps) {
       </div>
 
       <Badge size="sm">
-        Your {ordinal_suffix_of(index + 1)} duty
-        {new Date(title).setFullYear(today.getFullYear()) <= today.valueOf()
+        Your {ordinal_suffix_of(index + 1)} duty{' '}
+        {new Date(`${title} ${today.getFullYear()}`).setFullYear(today.getFullYear()) <=
+        today.valueOf()
           ? ' ✅'
           : undefined}{' '}
       </Badge>
@@ -174,7 +175,7 @@ export default function UpcomingDutiesPage() {
         const today = new Date()
 
         return dutyDate.setHours(0, 0, 0, 0) >= today.setHours(0, 0, 0, 0)
-      }) || 0
+      }) || 0,
     )
   }, [upcomingDuties])
 

@@ -77,6 +77,10 @@ export default function IndexPage() {
 
   const { classes } = useStyles()
 
+  function onRequestSwap() {
+    console.log(drawerDateValue, drawerPersonnelValue)
+  }
+
   useEffect(() => {
     if (drawerDateValue !== null && drawerPersonnelValue !== null) {
       open()
@@ -143,7 +147,7 @@ export default function IndexPage() {
             label="Reason for swap (optional)"
           />
 
-          <Button mt="xl" size="md" fullWidth>
+          <Button mt="xl" size="md" fullWidth onClick={onRequestSwap}>
             Request Swap
           </Button>
         </Flex>
