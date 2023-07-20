@@ -51,6 +51,36 @@ export interface SanityUserBlockouts {
   blockouts: TDateISODate[]
 }
 
+export interface SanityReference {
+  _ref: string
+  _type?: 'reference'
+  _weak?: boolean
+}
+
+export interface SanitySwapRequest {
+  _createdAt: TDateISODate
+  _id: string
+  _rev: string
+  _type: string
+  _updatedAt: TDateISODate
+  calendar: {
+    id: string
+    date: TDateISODate
+  }
+  reason?: string
+  receiver: {
+    id: string
+    name: string
+  }
+  receiverDate: TDateISODate
+  requester: {
+    id: string
+    name: string
+  }
+  requesterDate: TDateISODate
+  status: 'pending' | 'approved' | 'declined'
+}
+
 export const getUserByEmailQuery = groq`*[_type == $userSchema && email == $email][0]{
   ...,
   "unit": unit->unitCode
@@ -62,10 +92,9 @@ export const getAllUnitsQuery = groq`*[_type == "unit"]{
 }`
 
 // Get all calendar roster that is related to the given user id and is created within the last 30 days
-export const getUserUpcomingDutiesQuery = groq`*[_type == 'calendar' && dateTime(_createdAt) > dateTime(now()) - 60*60*24*30 && !(_id in path("drafts.**"))]{
+export const getUserUpcomingDutiesQuery = groq`*[_type == 'calendar' && date >= $firstDay && date <= $lastDay && !(_id in path("drafts.**"))]{
     roster[dutyPersonnel._ref == $id]{date}
-}.roster[].date
-`
+}.roster[].date`
 
 export const getAllUsersQuery = groq`*[_type == "user" && _id != "${config.demoUserId}" && unit->unitCode == $unit && !(_id in path("drafts.**"))]{
   "id": _id,
@@ -111,3 +140,23 @@ export const getAllCalendarQuery = groq`*[_type == 'calendar' && references($id)
     "standby": dutyPersonnelStandIn->{name}.name
   }
 }|order(_createdAt desc)[0..5]`
+
+export const getUserSwapRequestQuery = groq`*[_type == "swapRequest" && references($id)]{
+  ...,
+  calendar->{
+    "id": _id,
+    date
+  },
+  "receiver": receiver->{
+    "id": _id,
+    name
+  },
+  "requester": requester->{
+    "id": _id,
+    name
+  }
+}`
+
+export const getUserPushSubscriptionQuery = groq`*[_type == "user" && _id == $id && !(_id in path("drafts.**"))]{
+  pushSubscription
+}[0].pushSubscription`

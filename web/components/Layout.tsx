@@ -58,15 +58,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <AppShell
+      zIndex={200}
       padding="md"
-      navbarOffsetBreakpoint="md"
+      navbarOffsetBreakpoint="sm"
       navbar={
         <Transition mounted={opened} transition="slide-right" duration={400} timingFunction="ease">
           {(styles) => (
             <NavbarMin
               style={styles}
               p="md"
-              hiddenBreakpoint="md"
+              hiddenBreakpoint="sm"
               hidden={!opened}
               width={{ sm: 300 }}
             />
@@ -133,6 +134,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       }
       styles={(theme) => ({
         main: {
+          transition: 'padding-left 400ms ease',
           backgroundColor:
             theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
         },

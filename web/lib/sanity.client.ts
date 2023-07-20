@@ -14,6 +14,9 @@ import {
   type SanityUser,
   getAllUnitsQuery,
   type SanityUserBlockouts,
+  getUserSwapRequestQuery,
+  type SanitySwapRequest,
+  getUserPushSubscriptionQuery,
 } from './sanity.queries'
 
 export const client = createClient({
@@ -47,7 +50,11 @@ export async function getUserById(id: string): Promise<SanityUser> {
 }
 
 export async function getUserUpcomingDuties(id: string): Promise<TDateISODate[]> {
-  const result = await client.fetch(getUserUpcomingDutiesQuery, { id })
+  const today = new Date()
+  const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).toLocaleDateString('sv-SE')
+  const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).toLocaleDateString('sv-SE')
+
+  const result = await client.fetch(getUserUpcomingDutiesQuery, { id, firstDay, lastDay })
   return result
 }
 
@@ -63,4 +70,14 @@ export async function getAllCalendar(id: string): Promise<Calendar[]> {
   const calendar: Calendar[] = await clientWithToken.fetch(getAllCalendarQuery, { id })
 
   return calendar
+}
+
+export async function getUserSwapRequest(id: string): Promise<SanitySwapRequest[]> {
+  const result = await clientWithToken.fetch(getUserSwapRequestQuery, { id })
+  return result
+}
+
+export async function getUserPushSubscription(id: string): Promise<string> {
+  const result = await clientWithToken.fetch(getUserPushSubscriptionQuery, { id })
+  return result
 }

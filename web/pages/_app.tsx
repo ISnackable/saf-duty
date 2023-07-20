@@ -1,10 +1,10 @@
-import { useState } from 'react'
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { SessionProvider } from 'next-auth/react'
 import { MantineProvider, ColorSchemeProvider, ColorScheme } from '@mantine/core'
+import { useLocalStorage } from '@mantine/hooks'
 import { DatesProvider } from '@mantine/dates'
 import { Notifications } from '@mantine/notifications'
 import { ModalsProvider } from '@mantine/modals'
@@ -30,7 +30,11 @@ export default function MyApp({
   Component,
   pageProps: { session, ...pageProps },
 }: AppPropsWithLayout) {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>('dark')
+  const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
+    key: 'mantine-color-scheme',
+    defaultValue: 'dark',
+    getInitialValueInEffect: true,
+  })
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'))
 
@@ -43,7 +47,7 @@ export default function MyApp({
           <title>{`${Component.title} - ${config.title || 'Duty Roster'}`}</title>
         )}
 
-        <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
       </Head>
 
       <SessionProvider session={session}>

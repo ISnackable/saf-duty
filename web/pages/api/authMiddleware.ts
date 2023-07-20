@@ -29,3 +29,5 @@ export const withUser: Middleware<NextApiRequestWithUser> = async (req, res, nex
     return res.status(401).send({ status: 'error', message: 'Unauthorized, invalid auth cookie' })
   }
 }
+
+export default withUser

@@ -117,7 +117,7 @@ export default function ProfilePage() {
   //userDetail form
   const userDetailForm = useForm({
     initialValues: {
-      name: user?.name,
+      name: user?.name || '',
       enlistment: user?.enlistment ? new Date(user?.enlistment) : null,
       ord: user?.ord ? new Date(user?.ord) : null,
     },
@@ -130,7 +130,7 @@ export default function ProfilePage() {
   //user account form
   const userAccountForm = useForm({
     initialValues: {
-      email: user?.email,
+      email: user?.email || '',
       oldPassword: '',
       password: '',
     },
@@ -144,13 +144,13 @@ export default function ProfilePage() {
   useEffect(() => {
     if (user) {
       userDetailForm.setValues({
-        name: user?.name,
+        name: user?.name || '',
         enlistment: user?.enlistment ? new Date(user?.enlistment) : null,
         ord: user?.ord ? new Date(user?.ord) : null,
       })
       userDetailForm.resetDirty()
       userAccountForm.setValues({
-        email: user?.email,
+        email: user?.email || '',
       })
       userAccountForm.resetDirty()
     }
@@ -241,7 +241,7 @@ export default function ProfilePage() {
   // As this page uses Server Side Rendering, the `session` will be already
   // populated on render without needing to go through a loading stage.
   return (
-    <Container my="xl">
+    <Container my="xl" size="xl">
       <div className={classes.titleWrapper}>
         <IconSettings size={48} />
         <Title className={classes.title}>Profile</Title>

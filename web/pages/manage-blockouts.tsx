@@ -133,7 +133,7 @@ export default function ManageBlockoutPage() {
   if (error) return <div>failed to load</div>
 
   return (
-    <Container my="xl">
+    <Container my="xl" size="xl">
       <div className={classes.titleWrapper}>
         <IconEdit size={48} />
         <Title className={classes.title}>Manage Blockouts</Title>

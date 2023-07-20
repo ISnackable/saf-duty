@@ -61,7 +61,7 @@ export default function TermsPage() {
         </Title>
         <Text size="md" my="md">
           You may want to also read the{' '}
-          <Anchor component={Link} href="/privacy">
+          <Anchor component={Link} href="/privacy" prefetch={false}>
             privacy policy
           </Anchor>{' '}
           page.
@@ -76,7 +76,7 @@ export default function TermsPage() {
         </Text>
 
         <Group position="center">
-          <Button variant="subtle" size="md" component={Link} href="/">
+          <Button variant="subtle" size="md" component={Link} href="/login" prefetch={false}>
             Take me back to home page
           </Button>
         </Group>

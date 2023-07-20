@@ -11,8 +11,8 @@ export const description = 'Example description.'
 
 export const users: AllSanityUser[] = [
   {
-    id: '5eda9aac-bfc1-11ed-afa1-0242ac120002',
-    name: 'Jun Jie',
+    id: 'user.fdf11aae-d142-450b-87a4-559bc6e27f05',
+    name: 'demo',
     role: Role.user,
     image:
       'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
@@ -167,17 +167,17 @@ export const users: AllSanityUser[] = [
 ]
 
 export const blockouts: TDateISODate[] = [
-  `2023-${todayMonth}-15`,
-  `2023-${todayMonth}-13`,
-  `2023-${todayMonth}-19`,
   `2023-${todayMonth}-04`,
+  `2023-${todayMonth}-15`,
+  `2023-${todayMonth}-19`,
+  `2023-${todayMonth}-24`,
 ]
 
 export const upcomingDuties: TDateISODate[] = [
-  `2023-${todayMonth}-05`,
-  `2023-${todayMonth}-12`,
-  `2023-${todayMonth}-17`,
-  `2023-${todayMonth}-23`,
+  `2023-${todayMonth}-03`,
+  `2023-${todayMonth}-13`,
+  `2023-${todayMonth}-26`,
+  `2023-${todayMonth}-28`,
 ]
 
 export const calendar: Calendar[] = [
@@ -187,7 +187,7 @@ export const calendar: Calendar[] = [
       {
         date: `2023-${todayMonth}-01`,
         personnel: 'Jun Kai',
-        standby: 'Jun Jie',
+        standby: 'demo',
       },
       {
         date: `2023-${todayMonth}-02`,
@@ -196,7 +196,7 @@ export const calendar: Calendar[] = [
       },
       {
         date: `2023-${todayMonth}-03`,
-        personnel: 'Jun Jie',
+        personnel: 'demo',
         standby: 'Jia Hao',
       },
       {
@@ -237,7 +237,7 @@ export const calendar: Calendar[] = [
       {
         date: `2023-${todayMonth}-11`,
         personnel: 'Darryl Koh',
-        standby: 'Jun Jie',
+        standby: 'demo',
       },
       {
         date: `2023-${todayMonth}-12`,
@@ -246,7 +246,7 @@ export const calendar: Calendar[] = [
       },
       {
         date: `2023-${todayMonth}-13`,
-        personnel: 'Jun Jie',
+        personnel: 'demo',
         standby: 'Elliot Tan',
       },
       {
@@ -302,7 +302,7 @@ export const calendar: Calendar[] = [
       {
         date: `2023-${todayMonth}-24`,
         personnel: 'Wang Li',
-        standby: 'Jun Jie',
+        standby: 'demo',
       },
       {
         date: `2023-${todayMonth}-25`,
@@ -311,7 +311,7 @@ export const calendar: Calendar[] = [
       },
       {
         date: `2023-${todayMonth}-26`,
-        personnel: 'Jun Jie',
+        personnel: 'demo',
         standby: 'Jia Hui',
       },
       {
@@ -321,7 +321,7 @@ export const calendar: Calendar[] = [
       },
       {
         date: `2023-${todayMonth}-28`,
-        personnel: 'Jun Jie',
+        personnel: 'demo',
         standby: 'Wang Li',
       },
       {
@@ -337,8 +337,168 @@ export const calendar: Calendar[] = [
       {
         date: `2023-${todayMonth}-31`,
         personnel: 'Elliot Tan',
-        standby: 'Jun Jie',
+        standby: 'demo',
       },
     ],
   },
+  // {
+  //   date: `2023-05-01`,
+  //   roster: [
+  //     {
+  //       date: `2023-05-01`,
+  //       personnel: 'Jun Kai',
+  //       standby: 'demo',
+  //     },
+  //     {
+  //       date: `2023-05-02`,
+  //       personnel: 'Zhi Hao',
+  //       standby: 'Darryl Koh',
+  //     },
+  //     {
+  //       date: `2023-05-03`,
+  //       personnel: 'demo',
+  //       standby: 'Jia Hao',
+  //     },
+  //     {
+  //       date: `2023-05-04`,
+  //       personnel: 'Elliot Tan',
+  //       standby: 'Wang Li',
+  //     },
+  //     {
+  //       date: `2023-05-05`,
+  //       personnel: 'Jun Kai',
+  //       standby: 'Jia Hui',
+  //     },
+  //     {
+  //       date: `2023-05-06`,
+  //       personnel: 'Darryl Koh',
+  //       standby: 'Zhi Hao',
+  //     },
+  //     {
+  //       date: `2023-05-07`,
+  //       personnel: 'Wang Li',
+  //       standby: 'Jun Kai',
+  //     },
+  //     {
+  //       date: `2023-05-08`,
+  //       personnel: 'Jia Hui',
+  //       standby: 'Elliot Tan',
+  //     },
+  //     {
+  //       date: `2023-05-09`,
+  //       personnel: 'Zhi Hao',
+  //       standby: 'Jia Hao',
+  //     },
+  //     {
+  //       date: `2023-05-10`,
+  //       personnel: 'Elliot Tan',
+  //       standby: 'Jun Kai',
+  //     },
+  //     {
+  //       date: `2023-05-11`,
+  //       personnel: 'Darryl Koh',
+  //       standby: 'demo',
+  //     },
+  //     {
+  //       date: `2023-05-12`,
+  //       personnel: 'Wang Li',
+  //       standby: 'Zhi Hao',
+  //     },
+  //     {
+  //       date: `2023-05-13`,
+  //       personnel: 'demo',
+  //       standby: 'Elliot Tan',
+  //     },
+  //     {
+  //       date: `2023-05-14`,
+  //       personnel: 'Jun Kai',
+  //       standby: 'Wang Li',
+  //     },
+  //     {
+  //       date: `2023-05-15`,
+  //       personnel: 'Darryl Koh',
+  //       standby: 'Jia Hui',
+  //     },
+  //     {
+  //       date: `2023-05-16`,
+  //       personnel: 'Elliot Tan',
+  //       standby: 'Wang Li',
+  //     },
+  //     {
+  //       date: `2023-05-17`,
+  //       personnel: 'Jia Hui',
+  //       standby: 'Darryl Koh',
+  //     },
+  //     {
+  //       date: `2023-05-18`,
+  //       personnel: 'Zhi Hao',
+  //       standby: 'Elliot Tan',
+  //     },
+  //     {
+  //       date: `2023-05-19`,
+  //       personnel: 'Jia Hui',
+  //       standby: 'Jun Kai',
+  //     },
+  //     {
+  //       date: `2023-05-20`,
+  //       personnel: 'Wang Li',
+  //       standby: 'Jia Hao',
+  //     },
+  //     {
+  //       date: `2023-05-21`,
+  //       personnel: 'Zhi Hao',
+  //       standby: 'Darryl Koh',
+  //     },
+  //     {
+  //       date: `2023-05-22`,
+  //       personnel: 'Jia Hao',
+  //       standby: 'Jia Hui',
+  //     },
+  //     {
+  //       date: `2023-05-23`,
+  //       personnel: 'Darryl Koh',
+  //       standby: 'Zhi Hao',
+  //     },
+  //     {
+  //       date: `2023-05-24`,
+  //       personnel: 'Wang Li',
+  //       standby: 'demo',
+  //     },
+  //     {
+  //       date: `2023-05-25`,
+  //       personnel: 'Jia Hao',
+  //       standby: 'Darryl Koh',
+  //     },
+  //     {
+  //       date: `2023-05-26`,
+  //       personnel: 'demo',
+  //       standby: 'Jia Hui',
+  //     },
+  //     {
+  //       date: `2023-05-27`,
+  //       personnel: 'Jia Hao',
+  //       standby: 'Zhi Hao',
+  //     },
+  //     {
+  //       date: `2023-05-28`,
+  //       personnel: 'demo',
+  //       standby: 'Wang Li',
+  //     },
+  //     {
+  //       date: `2023-05-29`,
+  //       personnel: 'Jun Kai',
+  //       standby: 'Elliot Tan',
+  //     },
+  //     {
+  //       date: `2023-05-30`,
+  //       personnel: 'Jia Hui',
+  //       standby: 'Jia Hao',
+  //     },
+  //     {
+  //       date: `2023-05-31`,
+  //       personnel: 'Elliot Tan',
+  //       standby: 'demo',
+  //     },
+  //   ],
+  // },
 ]

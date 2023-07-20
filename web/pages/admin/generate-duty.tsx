@@ -191,14 +191,14 @@ export default function GenerateDutyPage() {
       if (data?.status === 'error') {
         showNotification({
           title: 'Error',
-          message: data?.message || 'Cannot update block out dates, something went wrong',
+          message: data?.message || 'Cannot update duty roster, something went wrong',
           color: 'red',
           icon: <IconX />,
         })
       } else {
         showNotification({
           title: 'Success',
-          message: 'Blockout updated successfully',
+          message: 'Duty roster updated successfully',
           color: 'green',
           icon: <IconCheck />,
         })
@@ -267,12 +267,14 @@ export default function GenerateDutyPage() {
         </Text>
         <Group grow>
           <Select
+            withinPortal
             label="Duty personnel"
             value={modalDPValue}
             onChange={setModalDPValue}
             data={data || []}
           />
           <Select
+            withinPortal
             label="Stand in"
             value={modalSBValue}
             onChange={setModalSBValue}
@@ -281,7 +283,7 @@ export default function GenerateDutyPage() {
         </Group>
 
         <Group position="right" mt="xl">
-          <Button variant="outline" onClick={close}>
+          <Button color="gray" onClick={close}>
             Cancel
           </Button>
           <Button
@@ -328,11 +330,11 @@ export default function GenerateDutyPage() {
                 // Check if the duty personnel/stand in has more than 2 consecutive days of duty/standby
                 if (
                   (newDutyRoster[index + 1] &&
-                    newDutyRoster[index + 1].personnel === modalDPValue) ||
-                  newDutyRoster[index + 1].standby === modalSBValue ||
+                    (newDutyRoster[index + 1].personnel === modalDPValue ||
+                      newDutyRoster[index + 1].standby === modalSBValue)) ||
                   (newDutyRoster[index - 1] &&
-                    newDutyRoster[index - 1].personnel === modalDPValue) ||
-                  newDutyRoster[index - 1].standby === modalSBValue
+                    (newDutyRoster[index - 1].personnel === modalDPValue ||
+                      newDutyRoster[index - 1].standby === modalSBValue))
                 ) {
                   showNotification({
                     title: 'Warning',
@@ -351,7 +353,7 @@ export default function GenerateDutyPage() {
           </Button>
         </Group>
       </Modal>
-      <Container my="xl">
+      <Container my="xl" size="xl">
         <div className={classes.titleWrapper}>
           <IconChessKnight size={48} />
           <Title className={classes.title}>Generate Duty</Title>
@@ -483,7 +485,7 @@ export default function GenerateDutyPage() {
                   </Text>
 
                   <Text size="xs" align="center" mb="auto">
-                    {dutyRoster?.[day - 1]?.personnel} ({dutyRoster?.[day - 1]?.standby}) )
+                    {dutyRoster?.[day - 1]?.personnel} ({dutyRoster?.[day - 1]?.standby})
                   </Text>
                 </Flex>
               )

@@ -88,32 +88,14 @@ export default function PrivacyPage() {
           </Title>
           <Text size="md" my="md">
             All data is encrypted via{' '}
-            <Anchor
-              href="https://en.wikipedia.org/wiki/Transport_Layer_Security"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              SSL/TLS
-            </Anchor>{' '}
+            <Anchor href="https://en.wikipedia.org/wiki/Transport_Layer_Security">SSL/TLS</Anchor>{' '}
             when transmitted from your browser to{' '}
-            <Anchor href="https://www.sanity.io/" target="_blank" rel="noopener noreferrer">
-              sanity.io
-            </Anchor>{' '}
-            and{' '}
-            <Anchor href="https://vercel.com/" target="_blank" rel="noopener noreferrer">
-              vercel
-            </Anchor>{' '}
-            server.
+            <Anchor href="https://www.sanity.io/">sanity.io</Anchor> and{' '}
+            <Anchor href="https://vercel.com/">vercel</Anchor> server.
           </Text>
           Account information is stored in a database hosted by{' '}
-          <Anchor href="https://www.sanity.io/" target="_blank" rel="noopener noreferrer">
-            sanity.io
-          </Anchor>{' '}
-          and is encrypted using{' '}
-          <Anchor href="https://argon2.online/" target="_blank" rel="noopener noreferrer">
-            argon2
-          </Anchor>{' '}
-          hashing algorithm.
+          <Anchor href="https://www.sanity.io/">sanity.io</Anchor> and is encrypted using{' '}
+          <Anchor href="https://argon2.online/">argon2</Anchor> hashing algorithm.
           <Title order={2} id="changes-questions" my="lg">
             Changes &amp; questions
           </Title>
@@ -122,7 +104,7 @@ export default function PrivacyPage() {
             new practices.
           </Text>
           <Group position="center">
-            <Button variant="subtle" size="md" component={Link} href="/">
+            <Button variant="subtle" size="md" component={Link} href="/login" prefetch={false}>
               Take me back to home page
             </Button>
           </Group>

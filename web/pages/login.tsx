@@ -94,7 +94,7 @@ export default function AuthenticationForm() {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      router.push('/')
+      router.replace('/')
     }
   }, [router, status])
 
@@ -214,7 +214,7 @@ export default function AuthenticationForm() {
             redirect: false,
           })
           // If the user is authenticated, redirect to the home page
-          Router.push('/')
+          Router.replace('/')
         }
       }
     } catch (error) {
@@ -319,12 +319,7 @@ export default function AuthenticationForm() {
                   label={
                     <>
                       I accept{' '}
-                      <Anchor
-                        component={Link}
-                        href="/terms"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
+                      <Anchor component={Link} href="/terms" prefetch={false}>
                         terms and conditions
                       </Anchor>
                     </>

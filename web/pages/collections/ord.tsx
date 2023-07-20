@@ -66,7 +66,7 @@ export default function ORDPage() {
   const ordProgress = Math.round((current / total) * 100)
 
   return (
-    <Container my="xl">
+    <Container my="xl" size="xl">
       <div className={classes.titleWrapper}>
         <IconCalendarStats size={48} />
         <Title className={classes.title}>ORD</Title>
@@ -113,7 +113,7 @@ export default function ORDPage() {
         ) : (
           <Text size="sm" color="red" align="center">
             Enlistment and ORD dates are not set. Head over to your{' '}
-            <Anchor component={Link} href="/profile">
+            <Anchor component={Link} href="/profile" prefetch={false}>
               profile page
             </Anchor>{' '}
             to set them. Once set, you will be able to see your ORD progress here.

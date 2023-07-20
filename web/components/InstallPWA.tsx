@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button, Divider, List, Menu, Text } from '@mantine/core'
 import type { MenuItemProps } from '@mantine/core'
 import { useOs } from '@mantine/hooks'
@@ -7,7 +7,7 @@ import { IconShare2, IconSquareRoundedPlusFilled } from '@tabler/icons-react'
 
 export default function InstallPWA(props: MenuItemProps) {
   const [supportsPWA, setSupportsPWA] = useState(false)
-  const [deferredPrompt, setDeferredPrompt] = useState<Event>()
+  const deferredPrompt = useRef<Event>()
   const os = useOs()
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function InstallPWA(props: MenuItemProps) {
       beforeInstallPromptEvent.preventDefault()
 
       // Stash the event so it can be triggered later.
-      setDeferredPrompt(beforeInstallPromptEvent)
+      deferredPrompt.current = beforeInstallPromptEvent
       setSupportsPWA(true)
     }
 
@@ -52,13 +52,13 @@ export default function InstallPWA(props: MenuItemProps) {
       })
     }
 
-    if (!deferredPrompt) {
+    if (!deferredPrompt.current) {
       return
     }
 
     // Show the prompt
     // @ts-expect-error - TS doesn't know about prompt() as BeforeInstallPromptEvent is not a standard interface
-    deferredPrompt.prompt()
+    deferredPrompt?.current.prompt()
   }
   return (
     <>
