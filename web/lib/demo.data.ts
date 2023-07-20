@@ -1,6 +1,6 @@
 // All the demo data that used as fallbacks when there's nothing in the dataset yet
 
-import type { AllSanityUser, Calendar, TDateISODate } from './sanity.queries'
+import type { AllSanityUser, Calendar, SanitySwapRequest, TDateISODate } from './sanity.queries'
 import { Role } from '@/nextauth.d'
 
 const todayMonth = (new Date().getMonth() + 1).toString().padStart(2, '0') as `${number}${number}`
@@ -501,4 +501,88 @@ export const calendar: Calendar[] = [
   //     },
   //   ],
   // },
+]
+
+export const swapRecords: SanitySwapRequest[] = [
+  {
+    _updatedAt: '2023-04-15',
+    reason: 'abcdefgwdawdawdawdawdad',
+    _type: 'swapRequest',
+    status: 'pending',
+    calendar: {
+      id: 'calendar-2023-03-01',
+      date: '2023-03-01',
+    },
+    receiver: {
+      id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+      name: 'Zhi Hao',
+      image:
+        'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+    },
+    receiverDate: '2023-03-27',
+    _id: '9c23238b-0f67-43f2-a281-7e3167c92680',
+    requester: {
+      id: 'user.fdf11aae-d142-450b-87a4-559bc6e27f05',
+      name: 'demo',
+      image:
+        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+    },
+    _rev: 't2rWJTAb4uNhnFji5txjM4',
+    requesterDate: '2023-03-04',
+    _createdAt: '2023-04-14',
+  },
+  {
+    receiver: {
+      id: 'user.fdf11aae-d142-450b-87a4-559bc6e27f05',
+      name: 'demo',
+      image:
+        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+    },
+    _rev: '1gKhFzwtTHqc5n8Z8BZVx6',
+    _createdAt: '2023-04-15',
+    _type: 'swapRequest',
+    calendar: {
+      id: 'calendar-2023-03-01',
+      date: '2023-03-01',
+    },
+    requester: {
+      id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+      name: 'Zhi Hao',
+      image:
+        'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+    },
+    reason: 'abcdefg',
+    requesterDate: '2023-03-27',
+    _id: 'f7b62509-b55c-4d69-8fbb-7268fa792c30',
+    _updatedAt: '2023-04-15',
+    receiverDate: '2023-03-21',
+    status: 'pending',
+  },
+  {
+    _type: 'swapRequest',
+    receiver: {
+      id: 'user.fdf11aae-d142-450b-87a4-559bc6e27f05',
+      name: 'demo',
+      image:
+        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+    },
+    receiverDate: '2023-03-10',
+    _id: 'f86b497e-adea-458d-a028-807e0d9395a1',
+    calendar: {
+      id: 'calendar-2023-03-01',
+      date: '2023-03-01',
+    },
+    requester: {
+      id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+      name: 'Zhi Hao',
+      image:
+        'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+    },
+    reason: 'a',
+    requesterDate: '2023-03-20',
+    status: 'pending',
+    _createdAt: '2023-04-15',
+    _rev: 'f5T2DmY3fkMt6I6qKjOpiP',
+    _updatedAt: '2023-04-15',
+  },
 ]

@@ -42,6 +42,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     })
 
     const doc = {
+      // TODO: Add unit reference to the calendar document, or the _id
       _id: `calendar-${dutyDates[0].date}`,
       _type: 'calendar',
       date: dutyDates[0].date,
@@ -103,5 +104,5 @@ export default use(
   allowMethods(['GET', 'POST']),
   validateFields,
   withUser,
-  handler
+  handler,
 )

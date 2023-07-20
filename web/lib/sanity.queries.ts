@@ -71,11 +71,13 @@ export interface SanitySwapRequest {
   receiver: {
     id: string
     name: string
+    image: string
   }
   receiverDate: TDateISODate
   requester: {
     id: string
     name: string
+    image: string
   }
   requesterDate: TDateISODate
   status: 'pending' | 'approved' | 'declined'
@@ -149,11 +151,13 @@ export const getUserSwapRequestQuery = groq`*[_type == "swapRequest" && referenc
   },
   "receiver": receiver->{
     "id": _id,
-    name
+    name,
+    image
   },
   "requester": requester->{
     "id": _id,
-    name
+    name,
+    image
   }
 }`
 

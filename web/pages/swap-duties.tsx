@@ -1,10 +1,28 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
-import { Container, Tabs, Title, Text, createStyles, Divider, Box } from '@mantine/core'
-import { IconEdit } from '@tabler/icons-react'
+import {
+  Container,
+  Tabs,
+  Title,
+  Text,
+  createStyles,
+  Divider,
+  Box,
+  Avatar,
+  Group,
+  Anchor,
+} from '@mantine/core'
+import {
+  IconArrowBadgeLeftFilled,
+  IconArrowBadgeRightFilled,
+  IconCalendar,
+  IconClock,
+  IconEdit,
+} from '@tabler/icons-react'
 
 import useSwapRequest from '@/hooks/useSwapRequest'
 import { type SanitySwapRequest } from '@/lib/sanity.queries'
+import Link from 'next/link'
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -52,7 +70,7 @@ export default function SwapDuties() {
 
   useEffect(() => {
     // sort the swap requests
-    if (session?.user && swapRecords) {
+    if (session?.user && swapRecords && swapRecords.length > 0) {
       const { received, sentByMe } = sortSwapRequests(swapRecords, session.user.id)
       setReceived(received)
       setSentByMe(sentByMe)
@@ -74,37 +92,94 @@ export default function SwapDuties() {
 
       <Tabs mt="lg" defaultValue="received" activateTabWithKeyboard={false} keepMounted={false}>
         <Tabs.List grow position="center">
-          <Tabs.Tab value="received">Received</Tabs.Tab>
+          <Tabs.Tab value="received">Offers received</Tabs.Tab>
           <Tabs.Tab value="sent-by-me">Sent by me</Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel value="received" pt="xs">
-          <Box
-            sx={(theme) => ({
-              backgroundColor:
-                theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-              textAlign: 'center',
-              padding: theme.spacing.xl,
-              borderRadius: theme.radius.md,
-              cursor: 'pointer',
-
-              '&:hover': {
-                backgroundColor:
-                  theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[1],
-              },
-            })}
-          >
-            Box lets you add inline styles with sx prop
-          </Box>
-
+          <Title order={3} mb="sm">
+            Swaps Offers
+          </Title>
           {received.length > 0 ? (
             received.map((swapRequest) => {
               return (
-                <div key={swapRequest._id}>
-                  <Text>
-                    From: {swapRequest.requester.name} to {swapRequest.receiver.name}
-                  </Text>
-                </div>
+                <Box
+                  key={swapRequest._id}
+                  mb="sm"
+                  sx={(theme) => ({
+                    backgroundColor:
+                      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[1],
+                    textAlign: 'center',
+                    padding: theme.spacing.xl,
+                    borderRadius: theme.radius.md,
+                    cursor: 'pointer',
+
+                    '&:hover': {
+                      backgroundColor:
+                        theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[2],
+                    },
+                  })}
+                >
+                  <Group grow noWrap>
+                    <div>
+                      <Group noWrap>
+                        <Avatar
+                          src={swapRequest.requester.image}
+                          alt="it's me"
+                          size="md"
+                          radius="md"
+                        />
+                        <Text fz="lg" fw={500}>
+                          {swapRequest.requester.name}
+                        </Text>
+                      </Group>
+
+                      <Group spacing={10} mt={5} noWrap>
+                        <IconCalendar stroke={1.5} size="1rem" />
+                        <Text fz="sm" c="dimmed">
+                          {new Date(swapRequest.requesterDate).toDateString()}
+                        </Text>
+                      </Group>
+
+                      <Group spacing={10} mt={3} noWrap>
+                        <IconClock stroke={1.5} size="1rem" />
+                        <Text fz="sm" c="dimmed">
+                          8:00AM
+                        </Text>
+                      </Group>
+                    </div>
+
+                    <IconArrowBadgeLeftFilled stroke={1.5} size="5rem" />
+
+                    <div>
+                      <Group noWrap>
+                        <Avatar
+                          src={swapRequest.receiver.image}
+                          alt="it's me"
+                          size="md"
+                          radius="md"
+                        />
+                        <Text fz="lg" fw={500}>
+                          {swapRequest.receiver.name}
+                        </Text>
+                      </Group>
+
+                      <Group spacing={10} mt={5} noWrap>
+                        <IconCalendar stroke={1.5} size="1rem" />
+                        <Text fz="sm" c="dimmed">
+                          {new Date(swapRequest.receiverDate).toDateString()}
+                        </Text>
+                      </Group>
+
+                      <Group spacing={10} mt={3} noWrap>
+                        <IconClock stroke={1.5} size="1rem" />
+                        <Text fz="sm" c="dimmed">
+                          8:00AM
+                        </Text>
+                      </Group>
+                    </div>
+                  </Group>
+                </Box>
               )
             })
           ) : (
@@ -113,21 +188,100 @@ export default function SwapDuties() {
         </Tabs.Panel>
 
         <Tabs.Panel value="sent-by-me" pt="xs">
-          <Title order={2}>Pending</Title>
+          <Title order={3} mb="sm">
+            Pending Approval
+          </Title>
           {sentByMe.length > 0 ? (
             sentByMe.map((swapRequest) => {
               return (
-                <div key={swapRequest._id}>
-                  <Text>
-                    From: {swapRequest.requester.name} to {swapRequest.receiver.name}
-                  </Text>
-                </div>
+                <Box
+                  key={swapRequest._id}
+                  mb="sm"
+                  sx={(theme) => ({
+                    backgroundColor:
+                      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[1],
+                    textAlign: 'center',
+                    padding: theme.spacing.xl,
+                    borderRadius: theme.radius.md,
+                    cursor: 'pointer',
+
+                    '&:hover': {
+                      backgroundColor:
+                        theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[2],
+                    },
+                  })}
+                >
+                  <Group grow noWrap>
+                    <div>
+                      <Group noWrap>
+                        <Avatar
+                          src={swapRequest.requester.image}
+                          alt="it's me"
+                          size="md"
+                          radius="md"
+                        />
+                        <Text fz="lg" fw={500}>
+                          {swapRequest.requester.name}
+                        </Text>
+                      </Group>
+
+                      <Group spacing={10} mt={5} noWrap>
+                        <IconCalendar stroke={1.5} size="1rem" />
+                        <Text fz="sm" c="dimmed">
+                          {new Date(swapRequest.requesterDate).toDateString()}
+                        </Text>
+                      </Group>
+
+                      <Group spacing={10} mt={3} noWrap>
+                        <IconClock stroke={1.5} size="1rem" />
+                        <Text fz="sm" c="dimmed">
+                          8:00AM
+                        </Text>
+                      </Group>
+                    </div>
+
+                    <IconArrowBadgeRightFilled stroke={1.5} size="5rem" />
+
+                    <div>
+                      <Group noWrap>
+                        <Avatar
+                          src={swapRequest.receiver.image}
+                          alt="it's me"
+                          size="md"
+                          radius="md"
+                        />
+                        <Text fz="lg" fw={500}>
+                          {swapRequest.receiver.name}
+                        </Text>
+                      </Group>
+
+                      <Group spacing={10} mt={5} noWrap>
+                        <IconCalendar stroke={1.5} size="1rem" />
+                        <Text fz="sm" c="dimmed">
+                          {new Date(swapRequest.receiverDate).toDateString()}
+                        </Text>
+                      </Group>
+
+                      <Group spacing={10} mt={3} noWrap>
+                        <IconClock stroke={1.5} size="1rem" />
+                        <Text fz="sm" c="dimmed">
+                          8:00AM
+                        </Text>
+                      </Group>
+                    </div>
+                  </Group>
+                </Box>
               )
             })
           ) : (
-            <Text>No requests to display</Text>
+            <Text>
+              No requests to display, you can request to swap duties{' '}
+              <Anchor component={Link} href="/duty-roster" prefetch={false}>
+                here
+              </Anchor>
+              !
+            </Text>
           )}
-          <Title order={2}>History</Title>
         </Tabs.Panel>
       </Tabs>
     </Container>

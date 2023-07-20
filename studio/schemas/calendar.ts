@@ -30,7 +30,7 @@ const executeQuery = async (ctx: ValidationContext, query: string, value?: strin
 
 export const isUniqueMicrocopyKey = async (
   value: string | undefined,
-  ctx: ValidationContext
+  ctx: ValidationContext,
 ): Promise<CustomValidatorResult> => {
   const isUnique = await executeQuery(ctx, uniqueMicrocopyKeyQuery, value)
   return isUnique ? true : 'There is another microcopy with the same key for this namespace'
@@ -43,11 +43,20 @@ export default defineType({
   icon: CalendarIcon,
   fields: [
     defineField({
+      name: 'unit',
+      title: 'Unit Reference No.',
+      type: 'reference',
+      to: [{type: 'unit'}],
+      options: {
+        disableNew: true,
+      },
+    }),
+    defineField({
       name: 'date',
       title: 'Date',
       type: 'date',
       initialValue: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toLocaleDateString(
-        'sv-SE'
+        'sv-SE',
       ),
       options: {
         dateFormat: 'MMMM, YYYY',
@@ -55,7 +64,7 @@ export default defineType({
       validation: (Rule) => [
         Rule.required(),
         Rule.custom(isUniqueMicrocopyKey).error(
-          'A document with this month and year already exists'
+          'A document with this month and year already exists',
         ),
       ],
     }),

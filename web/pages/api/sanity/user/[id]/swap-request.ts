@@ -7,14 +7,24 @@ import { type NextApiRequestWithUser, withUser } from '../../../authMiddleware'
 import { allowMethods } from '../../../allowMethodsMiddleware'
 
 async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
-  try {
-    const swapRecords = await getUserSwapRequest(req.id)
+  console.log('swap request handler called')
+  const { body, method } = req
 
-    return res.status(200).json({ status: 'success', data: swapRecords, message: 'ok' })
-  } catch (error) {
-    console.error(error)
+  if (method === 'GET') {
+    try {
+      const swapRecords = await getUserSwapRequest(req.id)
 
-    return res.status(500).json({ status: 'error', message: 'Something went wrong' })
+      return res.status(200).json({ status: 'success', data: swapRecords, message: 'ok' })
+    } catch (error) {
+      console.error(error)
+
+      return res.status(500).json({ status: 'error', message: 'Something went wrong' })
+    }
+  } else if (method === 'POST') {
+    const { swapRequest } = body
+    console.log(swapRequest)
+
+    return res.status(501).json({ status: 'error', message: 'Not Implemented' })
   }
 }
 
@@ -31,11 +41,12 @@ const validateFields: Middleware<NextApiRequestWithUser> = async (req, res, next
 
   if (method === 'POST') {
     // TODO:// Validate fields of adding a swap request
+    // 1. Should validate whether the user and the target user has already made a swap request
+    // 2. Should validate whether the user and the target user are in the same unit
     const { swapRequest } = body
     console.log(swapRequest)
   }
 
-  //  If the request is not a POST request, which means it's a GET request, then just continue to the next middleware
   return await next()
 }
 
@@ -44,5 +55,5 @@ export default use(
   allowMethods(['GET', 'POST']),
   withUser,
   validateFields,
-  handler
+  handler,
 )
