@@ -159,7 +159,7 @@ export default function IndexPage() {
         </div>
         <Text color="dimmed" mt="md">
           View the duty roster, below the date indicate the duty personnel while the circle bracket
-          indicates the duty stand in personnel. The names are the initials of the personnel.
+          indicates the duty stand in personnel. Click on the date to request for swap duty.
         </Text>
         <Divider mt="sm" />
 
