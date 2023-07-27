@@ -98,6 +98,9 @@ export default function IndexPage() {
         title="Request Swap Duty"
         position="bottom"
         overlayProps={{ opacity: 0.5, blur: 1 }}
+        transitionProps={{
+          transition: 'slide-up',
+        }}
       >
         <Flex direction="column">
           <Card p="md">
