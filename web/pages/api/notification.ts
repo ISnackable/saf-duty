@@ -4,16 +4,72 @@ import { parseBody } from 'next-sanity/webhook'
 import webPush from 'web-push'
 import { rateLimitMiddleware } from './rateLimitMiddleware'
 import { allowMethods } from './allowMethodsMiddleware'
-import { clientWithToken, getUserPushSubscription } from '@/lib/sanity.client'
+import { clientWithToken } from '@/lib/sanity.client'
 
 // Export the config from next-sanity to enable validating the request body signature properly
 export { config } from 'next-sanity/webhook'
+
+interface DutyPersonnel {
+  id: string
+  subscription: string
+}
 
 webPush.setVapidDetails(
   `mailto:${process.env.WEB_PUSH_EMAIL}`,
   process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY || '',
   process.env.WEB_PUSH_PRIVATE_KEY || '',
 )
+
+/**
+ * -- Sanity Webhook Structure --
+ * Name: New Calendar Roster Notification
+ * Description: Sends a push notification to the user when a new calendar roster is published
+ * Trigger On: Create
+ * Filter: `_type == "calendar"`
+ * // Projection: `{
+ * //   date,
+ * //   'dutyPersonnels': array::unique(roster[].dutyPersonnel._ref)
+ * }`
+ * Projection: `{
+ *  date,
+ *  "dutyPersonnels": roster[].dutyPersonnel {
+ *    "id": _ref,
+ *    "dutyPersonnelSubscription": @->pushSubscription
+ *  }
+ * }`
+ * HTTP Method: POST
+ * Secret: SANITY_REVALIDATE_SECRET
+ */
+
+export function sendPushNotification(
+  subscription: webPush.PushSubscription,
+  payload: string,
+  userId: string,
+) {
+  return webPush
+    .sendNotification(
+      subscription,
+      JSON.stringify({
+        title: '',
+        message: payload,
+      }),
+    )
+    .catch((err) => {
+      if (err.statusCode === 404 || err.statusCode === 410) {
+        console.log('Subscription has expired or is no longer valid: ', err)
+
+        return deleteSubscriptionFromDatabase(userId)
+      } else {
+        console.error(err)
+        throw err
+      }
+    })
+}
+
+export function deleteSubscriptionFromDatabase(userId: string) {
+  // delete subscription from database
+  clientWithToken.patch(userId).unset(['pushSubscription']).commit()
+}
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -25,46 +81,53 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       return res.status(401).send({ status: 'error', message: `Unauthorized, ${message}` })
     }
 
-    // TODO: Check if the body is a calendar type or a user type
-    // Check what type of body it is, and handle it accordingly
-    // Two types: either a calendar type is published, or a user is sent through the webhook (on a daily cron job basis)
-    // If it's a calendar type, then we need to send a push notification to the user that a new duty roster has been published
-    // If it's a user type, then we need to send a push notification to the user that they have a duty on that day
+    // Locale date string formatted as "Month Year"
+    const rosterLocaleDateString = new Date(body.date as string).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+    })
 
-    // get user's subscription from database using the id in the body
-    const subscription = JSON.parse(await getUserPushSubscription(body._id))
+    // Remove all duplicate dutyPersonnels and dutyPersonnels without a subscription from the array
+    let dutyPersonnelsWithSubscriptions: DutyPersonnel[] = body.dutyPersonnels as DutyPersonnel[]
+    const ids = dutyPersonnelsWithSubscriptions.map(({ id }) => id)
+    dutyPersonnelsWithSubscriptions = dutyPersonnelsWithSubscriptions.filter(
+      ({ id, subscription }, index) => !ids.includes(id, index + 1) && subscription,
+    )
 
-    if (!subscription)
-      return res.status(404).json({ status: 'error', message: 'Subscription not found' })
+    // for (let i = 0; i < dutyPersonnels.length; i++) {
+    //   const subscription = await getUserPushSubscription(dutyPersonnels[i])
+    //   if (!subscription) continue
 
-    webPush
-      .sendNotification(
-        subscription,
-        JSON.stringify({
-          title: '',
-          message: `Duty Reminder: You have a duty on ${body._id} at 8:00 AM.`,
-        }),
-      )
-      .then((response) => {
-        return res.status(response.statusCode).json({ status: 'success', message: response.body })
-      })
-      .catch((err) => {
-        if (err.statusCode === 404 || err.statusCode === 410) {
-          console.log('Subscription has expired or is no longer valid: ', err)
+    //   try {
+    //     dutyPersonnelsWithSubscriptions.push({
+    //       id: dutyPersonnels[i],
+    //       subscription: JSON.parse(subscription),
+    //     })
+    //   } catch (error) {
+    //     console.error(error)
+    //     deleteSubscriptionFromDatabase(dutyPersonnels[i])
+    //   }
+    // }
 
-          // delete subscription from database
-          clientWithToken.patch(body._id).unset(['pushSubscription']).commit()
+    if (!dutyPersonnelsWithSubscriptions.length)
+      return res.status(404).json({ status: 'error', message: 'Subscriptions not found' })
 
-          return res.status(err.statusCode).json({ status: 'success', message: 'ok' })
-        } else {
-          console.error(err)
-        }
-        return res.status(500).json({ status: 'error', message: 'Something went wrong' })
-      })
+    // send push notification all the users
+    await Promise.all(
+      dutyPersonnelsWithSubscriptions.map((dutyPersonnel) =>
+        sendPushNotification(
+          JSON.parse(dutyPersonnel.subscription),
+          `New duty roster published ${rosterLocaleDateString}`,
+          dutyPersonnel.id,
+        ),
+      ),
+    )
+
+    return res.status(200).json({ status: 'success', message: 'ok' })
   } catch (err) {
     console.error(err)
     return res.status(500).json({ status: 'error', message: 'Something went wrong' })
   }
 }
 
-export default use(rateLimitMiddleware, allowMethods(['GET']), handler)
+export default use(rateLimitMiddleware, allowMethods(['POST']), handler)

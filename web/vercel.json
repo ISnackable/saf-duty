@@ -1,8 +1,12 @@
 {
   "crons": [
     {
-      "path": "/api/cron/cleanupUnsedAssets",
+      "path": "/api/cron/cleanupUnusedAssets",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/dailyDutyReminder",
+      "schedule": "0 18 * * *"
     }
   ]
 }
