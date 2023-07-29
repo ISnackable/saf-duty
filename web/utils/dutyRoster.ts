@@ -193,14 +193,15 @@ function createDutyDate(personnel: Personnel[], date: Date[], extraDates: Date[]
 
 function calculateWeekdayShift(personnel: Personnel[], dutyDates: DutyDate[]) {
   // total_wd = total_days - total_we - len(extradates) + non_allocated_extras
-  const totalWeekendDays = dutyDates.filter((date) => date.isWeekend).length
-  const totalExtraDays = dutyDates.filter((date) => date.isExtra).length
+  // const totalWeekendDays = dutyDates.filter((date) => date.isWeekend).length
+  // const totalExtraDays = dutyDates.filter((date) => date.isExtra).length
   const totalPersonnel = personnel.length
 
   // Number of extra days that are not allocated
-  const nonAllocatedExtra = dutyDates.filter((date) => date.isExtra && !date.allocated).length
+  // const nonAllocatedExtra = dutyDates.filter((date) => date.isExtra && !date.allocated).length
 
-  const totalWeekdayDays = dutyDates.length - totalWeekendDays - totalExtraDays + nonAllocatedExtra
+  // const totalWeekdayDays = dutyDates.length - totalWeekendDays - totalExtraDays + nonAllocatedExtra
+  const totalWeekdayDays = dutyDates.filter((date) => !date.isWeekend).length
 
   // Calculate normal WD per personnel
   const weekdayAllocation = Math.floor(totalWeekdayDays / totalPersonnel)
@@ -211,7 +212,11 @@ function calculateWeekdayShift(personnel: Personnel[], dutyDates: DutyDate[]) {
 }
 
 function calculateWeekendShift(personnel: Personnel[], dutyDates: DutyDate[]) {
-  const totalWeekendDays = dutyDates.filter((date) => date.isWeekend).length
+  const totalExtraDays = dutyDates.filter((date) => date.isExtra).length
+  const nonAllocatedExtra = dutyDates.filter((date) => date.isExtra && !date.allocated).length
+
+  const totalWeekendDays =
+    dutyDates.filter((date) => date.isWeekend).length - totalExtraDays + nonAllocatedExtra
 
   const totalPersonnel = personnel.length
 
@@ -226,7 +231,7 @@ function calculateWeekendShift(personnel: Personnel[], dutyDates: DutyDate[]) {
 function allocateWeekdayShift(
   personnel: Personnel[],
   weekdayAllocation: number,
-  additionalWeekdayAllocation: number
+  additionalWeekdayAllocation: number,
 ) {
   let shuffledDutyPersonnel = shuffleArray(personnel)
   shuffledDutyPersonnel = sortByKey(shuffledDutyPersonnel, 'weekdayPoints')
@@ -249,7 +254,7 @@ function allocateWeekdayShift(
 function allocateWeekendShift(
   personnel: Personnel[],
   weekendAllocation: number,
-  additionalWeekendAllocation: number
+  additionalWeekendAllocation: number,
 ) {
   let shuffledDutyPersonnel = shuffleArray(personnel)
   // shuffledDutyPersonnel = sortByKey(shuffledDutyPersonnel, 'WD_RM')
@@ -325,7 +330,7 @@ function assignPersonnelShift(personnel: Personnel[], dutyDates: DutyDate[]) {
       let j = 0
       while (dutyDates[i].blockout.includes(personnel[j].name) || personnel[j].WE_RM == 0) {
         j += 1
-        if (j == personnel.length - 1) {
+        if (j === personnel.length - 1) {
           throw new Error(`Unable to assign personnel on ${dutyDates[i].date.toLocaleDateString()}`)
         }
       }
@@ -375,7 +380,7 @@ function assignExtraShift(personnel: Personnel[], dutyDates: DutyDate[]) {
     let j = 0
     while (dutyDates[i - 1].blockout.includes(personnel[j].name) || personnel[j].extra == 0) {
       j += 1
-      if (j == personnel.length - 1) return false
+      if (j === personnel.length - 1) return false
     }
 
     // Assign Extra shift to person who has worked the least Extras
@@ -431,11 +436,11 @@ export function createDutyRoster(users: AllSanityUser[], month: Date, extraDates
   // Calculate WD and WE allocation
   const { weekdayAllocation, additionalWeekdayAllocation } = calculateWeekdayShift(
     dutyPersonnel,
-    dutyDates
+    dutyDates,
   )
   const { weekendAllocation, additionalWeekendAllocation } = calculateWeekendShift(
     dutyPersonnel,
-    dutyDates
+    dutyDates,
   )
 
   // Allocate WD and WE to personnel

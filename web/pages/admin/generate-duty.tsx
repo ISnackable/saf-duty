@@ -63,7 +63,7 @@ const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
         </div>
       </Group>
     </div>
-  )
+  ),
 )
 
 SelectItem.displayName = 'SelectItem'
@@ -121,10 +121,10 @@ export default function GenerateDutyPage() {
 
       const dutyPersonnel = users?.map((user) => {
         const WD_DONE = dutyDates.roster.filter(
-          (date) => !isWeekend(new Date(date.date)) && date.personnel === user.name
+          (date) => !isWeekend(new Date(date.date)) && date.personnel === user.name,
         ).length
         const WE_DONE = dutyDates.roster.filter(
-          (date) => isWeekend(new Date(date.date)) && date.personnel === user.name
+          (date) => isWeekend(new Date(date.date)) && date.personnel === user.name,
         ).length
         const blockouts = user.blockouts?.map((blockout) => new Date(blockout))
 
@@ -147,7 +147,7 @@ export default function GenerateDutyPage() {
       }
 
       setMultiSelectValue(
-        Array.from(new Set(dutyDates.roster.map((date) => date.personnel).filter(Boolean)))
+        Array.from(new Set(dutyDates.roster.map((date) => date.personnel).filter(Boolean))),
       )
     } else if (month) {
       setDutyRoster([])
@@ -212,7 +212,7 @@ export default function GenerateDutyPage() {
 
   const handleClick = () => {
     const personnel = [...(users || [])].filter((user) =>
-      multiSelectValue.includes(user.name || '')
+      multiSelectValue.includes(user.name || ''),
     )
 
     notifications.clean()
@@ -291,16 +291,17 @@ export default function GenerateDutyPage() {
               const newDutyRoster = [...dutyRoster]
               const newDutyPersonnel = [...dutyPersonnelState]
               const index = newDutyRoster.findIndex(
-                (date) => date.date.setHours(0, 0, 0) === modalDateValue.setHours(0, 0, 0)
+                (date) => date.date.setHours(0, 0, 0) === modalDateValue.setHours(0, 0, 0),
               )
 
               const newPersonnel = newDutyPersonnel.find(
-                (personnel) => personnel.name === modalDPValue
+                (personnel) => personnel.name === modalDPValue,
               )
               const oldPersonnel = newDutyPersonnel.find(
-                (personnel) => personnel.name === newDutyRoster[index]?.personnel
+                (personnel) => personnel.name === newDutyRoster[index]?.personnel,
               )
 
+              // TODO: Figure out how to swap extras between personnel
               if (index !== -1 && newPersonnel && oldPersonnel) {
                 newDutyRoster[index].personnel = modalDPValue || ''
                 newDutyRoster[index].standby = modalSBValue || ''
@@ -308,13 +309,15 @@ export default function GenerateDutyPage() {
                 if (isWeekend(modalDateValue)) {
                   newPersonnel.WE_DONE += 1
                   oldPersonnel.WE_DONE -= 1
-                  newPersonnel.weekendPoints += 1
-                  oldPersonnel.weekendPoints -= 1
+                  // Pts would be plus/minus by 2 as it would calcuate the points after the duty roster is generated
+                  newPersonnel.weekendPoints += 2
+                  oldPersonnel.weekendPoints -= 2
                 } else {
                   newPersonnel.WD_DONE += 1
                   oldPersonnel.WD_DONE -= 1
-                  newPersonnel.weekdayPoints += 1
-                  oldPersonnel.weekdayPoints -= 1
+                  // Pts would be plus/minus by 2 as it would calcuate the points after the duty roster is generated
+                  newPersonnel.weekdayPoints += 2
+                  oldPersonnel.weekdayPoints -= 2
                 }
 
                 setDutyRoster(newDutyRoster)
@@ -506,7 +509,7 @@ export default function GenerateDutyPage() {
             mt="xl"
             onClick={() => {
               const dutyDates = calendar?.find((cal) =>
-                isSameMonth(new Date(cal.date), month || firstDay)
+                isSameMonth(new Date(cal.date), month || firstDay),
               )
 
               if (dutyDates) {
@@ -570,9 +573,11 @@ export default function GenerateDutyPage() {
                         dutyPersonnel ? ' ⟶ ' + dutyPersonnel.extra : ''
                       }`}</td>
                       <td>{`${dutyPersonnel ? dutyPersonnel.WD_DONE : 0} weekday, ${
-                        dutyPersonnel ? dutyPersonnel.WE_DONE : 0
+                        dutyPersonnel ? dutyPersonnel.WE_DONE + dutyPersonnel.EX_DONE : 0
                       } weekend --- Total: (${
-                        dutyPersonnel ? dutyPersonnel.WD_DONE + dutyPersonnel.WE_DONE : 0
+                        dutyPersonnel
+                          ? dutyPersonnel.WD_DONE + dutyPersonnel.WE_DONE + dutyPersonnel.EX_DONE
+                          : 0
                       })`}</td>
                     </tr>
                   )
