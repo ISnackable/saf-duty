@@ -16,7 +16,7 @@ import {
   AspectRatio,
   FileButton,
 } from '@mantine/core'
-import { modals } from '@mantine/modals'
+// import { modals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import {
   IconCheck,
@@ -90,29 +90,29 @@ export default function ProfilePage() {
   const [file, setFile] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Listen for when the page is visible, if the user switches tabs
-  // and makes our tab visible again, re-fetch the session
-  useEffect(() => {
-    const visibilityHandler = () => document.visibilityState === 'visible' && update()
-    window.addEventListener('visibilitychange', visibilityHandler, false)
-    return () => window.removeEventListener('visibilitychange', visibilityHandler, false)
-  }, [update])
+  // // Listen for when the page is visible, if the user switches tabs
+  // // and makes our tab visible again, re-fetch the session
+  // useEffect(() => {
+  //   const visibilityHandler = () => document.visibilityState === 'visible' && update()
+  //   window.addEventListener('visibilitychange', visibilityHandler, false)
+  //   return () => window.removeEventListener('visibilitychange', visibilityHandler, false)
+  // }, [update])
 
-  const openDeleteModal = () =>
-    modals.openConfirmModal({
-      title: 'Delete your profile',
-      centered: true,
-      children: (
-        <Text size="sm">
-          Are you sure you want to delete your profile? This action is destructive and you will have
-          to contact support to restore your data.
-        </Text>
-      ),
-      labels: { confirm: 'Delete account', cancel: "No don't delete it" },
-      confirmProps: { color: 'red' },
-      onCancel: () => console.log('Cancel'),
-      onConfirm: () => console.log('Confirmed'),
-    })
+  // const openDeleteModal = () =>
+  //   modals.openConfirmModal({
+  //     title: 'Delete your profile',
+  //     centered: true,
+  //     children: (
+  //       <Text size="sm">
+  //         Are you sure you want to delete your profile? This action is destructive and you will have
+  //         to contact support to restore your data.
+  //       </Text>
+  //     ),
+  //     labels: { confirm: 'Delete account', cancel: "No don't delete it" },
+  //     confirmProps: { color: 'red' },
+  //     onCancel: () => console.log('Cancel'),
+  //     onConfirm: () => console.log('Confirmed'),
+  //   })
 
   //userDetail form
   const userDetailForm = useForm({
@@ -236,6 +236,56 @@ export default function ProfilePage() {
     setIsSubmitting(false)
   }
 
+  const handleAvatarSubmit = async () => {
+    setIsSubmitting(true)
+
+    if (!file) {
+      showNotification({
+        title: 'Error',
+        message: 'Please select an image to upload',
+        color: 'red',
+        icon: <IconX />,
+      })
+      setIsSubmitting(false)
+      return
+    }
+
+    try {
+      const arrayBuffer = await file.arrayBuffer()
+
+      const res = await fetch(`/api/sanity/user/${user?.id}/avatar`, {
+        method: 'POST',
+        body: arrayBuffer,
+        headers: {
+          'Content-Type': 'application/octet-stream',
+        },
+      })
+      const data = await res.json()
+
+      if (data?.status === 'error') {
+        showNotification({
+          title: 'Error',
+          message: data?.message || 'Cannot update user avatar, something went wrong',
+          color: 'red',
+          icon: <IconX />,
+        })
+      } else {
+        showNotification({
+          title: 'Success',
+          message: 'User avatar updated successfully',
+          color: 'green',
+          icon: <IconCheck />,
+        })
+
+        update({ ...user, image: imageUrl })
+      }
+    } catch (error) {
+      console.error(error)
+    }
+
+    setIsSubmitting(false)
+  }
+
   const imageUrl = file ? URL.createObjectURL(file) : user?.image
 
   // As this page uses Server Side Rendering, the `session` will be already
@@ -330,8 +380,9 @@ export default function ProfilePage() {
               </FileButton>
             </Group>
             <Group position="right">
-              <Button color="gray">Cancel</Button>
-              <Button type="submit">Save</Button>
+              <Button type="submit" onClick={handleAvatarSubmit} loading={isSubmitting}>
+                Save
+              </Button>
             </Group>
           </div>
         </Tabs.Panel>
@@ -361,9 +412,9 @@ export default function ProfilePage() {
               />
 
               <Group position="apart" mt="lg">
-                <Button onClick={openDeleteModal} color="red">
+                {/* <Button onClick={openDeleteModal} color="red">
                   Delete account
-                </Button>
+                </Button> */}
                 <Button type="submit" loading={isSubmitting}>
                   Save
                 </Button>

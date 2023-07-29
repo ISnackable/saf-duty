@@ -69,6 +69,7 @@ export const authOptions: AuthOptions = {
       if (trigger === 'update') {
         if (session.email) token.email = session.email
         if (token.name) token.name = session.name
+        if (session.image) token.image = session.image
         if (token.ord) token.ord = session.ord
         if (token.enlistment) token.enlistment = session.enlistment
       }

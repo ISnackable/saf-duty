@@ -3,7 +3,7 @@ import { Button, Divider, List, Menu, Text } from '@mantine/core'
 import type { MenuItemProps } from '@mantine/core'
 import { useOs } from '@mantine/hooks'
 import { modals } from '@mantine/modals'
-import { IconShare2, IconSquareRoundedPlusFilled } from '@tabler/icons-react'
+import { IconDotsVertical, IconShare2, IconSquareRoundedPlusFilled } from '@tabler/icons-react'
 
 export default function InstallPWA(props: MenuItemProps) {
   const [supportsPWA, setSupportsPWA] = useState(false)
@@ -26,7 +26,10 @@ export default function InstallPWA(props: MenuItemProps) {
   }, [])
 
   const onClick = () => {
-    if (!supportsPWA && (os === 'macos' || os === 'ios' || os === 'undetermined')) {
+    if (
+      !supportsPWA &&
+      (os === 'macos' || os === 'ios' || os === 'android' || os === 'undetermined')
+    ) {
       modals.open({
         title: 'Install Web App',
         centered: true,
@@ -34,11 +37,18 @@ export default function InstallPWA(props: MenuItemProps) {
           <>
             <Text>
               This website has app functionality. Add it to your home screen to use it in fullscreen
+              and notifications.
             </Text>
             <Divider my="sm" />
             <List spacing="xs" size="md" center type="ordered">
-              <List.Item icon={<IconShare2 size="1rem" />}>
-                Press the &apos;Share&apos; button
+              <List.Item
+                icon={
+                  os === 'android' ? <IconDotsVertical size="1rem" /> : <IconShare2 size="1rem" />
+                }
+              >
+                {os === 'android'
+                  ? `Press the 'three dot' icon in Chrome`
+                  : `Press the 'Share' button`}
               </List.Item>
               <List.Item icon={<IconSquareRoundedPlusFilled size="1rem" />}>
                 Press &apos;Add to Home Screen&apos;
