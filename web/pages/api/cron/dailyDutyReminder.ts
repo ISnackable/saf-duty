@@ -3,6 +3,7 @@ import webPush from 'web-push'
 
 import { clientWithToken } from '@/lib/sanity.client'
 import { sendPushNotification } from '../notification'
+import { validateCronjobBearerToken } from './cleanupUnusedAssets'
 
 webPush.setVapidDetails(
   `mailto:${process.env.WEB_PUSH_EMAIL}`,
@@ -25,7 +26,11 @@ const query = `array::compact(*[_type == "calendar"]{
 }.roster)`
 
 // then we need to send a push notification to the user that they have a duty on that day
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(request: NextApiRequest, response: NextApiResponse) {
+  if (!validateCronjobBearerToken(request)) {
+    return response.status(401).end()
+  }
+
   try {
     const tomorrow = new Date()
     tomorrow.setDate(tomorrow.getDate() + 1)
@@ -54,9 +59,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }),
     )
 
-    return res.status(200).json({ status: 'success', message: 'ok' })
+    return response.status(200).json({ status: 'success', message: 'ok' })
   } catch (err) {
     console.error(err)
-    return res.status(500).json({ status: 'error', message: 'Something went wrong' })
+    return response.status(500).json({ status: 'error', message: 'Something went wrong' })
   }
 }

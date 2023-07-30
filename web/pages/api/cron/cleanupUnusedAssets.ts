@@ -8,8 +8,18 @@ const query = `*[ _type in ["sanity.imageAsset", "sanity.fileAsset"] ]
 [ refs == 0 ]
 ._id`
 
+export function validateCronjobBearerToken(req: NextApiRequest) {
+  const token = req.headers.authorization?.replace('Bearer ', '')
+  if (!token) return false
+  return token === process.env.CRON_SECRET
+}
+
 // This is a cron job that runs every 24 hours to delete unused assets from Sanity
 export default function handler(request: NextApiRequest, response: NextApiResponse) {
+  if (!validateCronjobBearerToken(request)) {
+    return response.status(401).end()
+  }
+
   clientWithToken
     .fetch(query)
     .then((ids) => {

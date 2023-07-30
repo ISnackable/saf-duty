@@ -38,7 +38,7 @@ webPush.setVapidDetails(
  *  }
  * }`
  * HTTP Method: POST
- * Secret: SANITY_REVALIDATE_SECRET
+ * Secret: SANITY_WEBHOOK_SECRET
  */
 
 export function sendPushNotification(
@@ -73,7 +73,7 @@ export function deleteSubscriptionFromDatabase(userId: string) {
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { isValidSignature, body } = await parseBody(req, process.env.SANITY_REVALIDATE_SECRET)
+    const { isValidSignature, body } = await parseBody(req, process.env.SANITY_WEBHOOK_SECRET)
 
     if (!isValidSignature) {
       const message = 'Invalid signature'
