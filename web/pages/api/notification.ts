@@ -117,7 +117,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       dutyPersonnelsWithSubscriptions.map((dutyPersonnel) =>
         sendPushNotification(
           JSON.parse(dutyPersonnel.subscription),
-          `New duty roster published ${rosterLocaleDateString}`,
+          `${rosterLocaleDateString} roster has been published. Open the app to view your duty.`,
           dutyPersonnel.id,
         ),
       ),

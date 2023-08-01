@@ -19,6 +19,7 @@ interface dutyReminder {
 
 const query = `array::compact(*[_type == "calendar"]{
   roster[date == $tomorrow]{
+   "calendar": ^._id,
    date,
    "id": dutyPersonnel._ref,
    "dutyPersonnelSubscription": dutyPersonnel->pushSubscription
@@ -35,7 +36,9 @@ export default async function handler(request: NextApiRequest, response: NextApi
     const tomorrow = new Date()
     tomorrow.setDate(tomorrow.getDate() + 1)
 
-    const result: dutyReminder[] = await clientWithToken.fetch(query, { tomorrow })
+    const result: dutyReminder[] = await clientWithToken.fetch(query, {
+      tomorrow: tomorrow.toLocaleDateString('sv-SE'),
+    })
 
     // send push notification all the users
     await Promise.all(
