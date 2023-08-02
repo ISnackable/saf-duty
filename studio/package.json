@@ -22,10 +22,10 @@
     "react-dom": "^18.2.0",
     "react-is": "^18.2.0",
     "sanity": "^3.14.4",
-    "styled-components": "^6.0.5"
+    "styled-components": "^6.0.6"
   },
   "devDependencies": {
-    "@sanity/eslint-config-studio": "^2.0.4",
+    "@sanity/eslint-config-studio": "^3.0.0",
     "eslint": "^8.46.0",
     "prettier": "^3.0.0",
     "typescript": "^5.1.6"
