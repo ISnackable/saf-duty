@@ -1,10 +1,10 @@
 import type { NextApiResponse } from 'next'
 import { type Middleware, use } from 'next-api-route-middleware'
-import { getUserByIdQuery } from 'next-auth-sanity/queries'
+// import { getUserByIdQuery } from 'next-auth-sanity/queries'
 // import argon2 from 'argon2'
 
-import { checkPasswordValidation } from '@/pages/api/sanity/signUp'
-import { clientWithToken, getUserById } from '@/lib/sanity.client'
+// import { checkPasswordValidation } from '@/pages/api/sanity/signUp'
+import { /* clientWithToken, */ getUserById } from '@/lib/sanity.client'
 import { rateLimitMiddleware } from '../../rateLimitMiddleware'
 import { type NextApiRequestWithUser, withUser } from '../../authMiddleware'
 import { allowMethods } from '../../allowMethodsMiddleware'
