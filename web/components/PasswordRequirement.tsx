@@ -27,7 +27,7 @@ const requirements = [
 ]
 
 function getStrength(password: string) {
-  let multiplier = password.length > 5 ? 0 : 1
+  let multiplier = password.length > 9 ? 0 : 1
 
   requirements.forEach((requirement) => {
     if (!requirement.re.test(password)) {
@@ -67,7 +67,7 @@ export function PasswordStrength(props: PasswordInputStrengthProps) {
         </Popover.Target>
         <Popover.Dropdown>
           <Progress color={color} value={strength} size={5} style={{ marginBottom: 10 }} />
-          <PasswordRequirement label="Includes at least 6 characters" meets={value?.length > 5} />
+          <PasswordRequirement label="Includes at least 10 characters" meets={value?.length > 9} />
           {checks}
         </Popover.Dropdown>
       </Popover>

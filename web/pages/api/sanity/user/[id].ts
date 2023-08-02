@@ -1,7 +1,7 @@
 import type { NextApiResponse } from 'next'
 import { type Middleware, use } from 'next-api-route-middleware'
 import { getUserByIdQuery } from 'next-auth-sanity/queries'
-import argon2 from 'argon2'
+// import argon2 from 'argon2'
 
 import { checkPasswordValidation } from '@/pages/api/sanity/signUp'
 import { clientWithToken, getUserById } from '@/lib/sanity.client'
@@ -20,7 +20,10 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
       console.error(error)
       return res.status(500).json({ status: 'error', message: 'Something went wrong' })
     }
-  } else if (method === 'DELETE') {
+  } else if (method === 'PUT') {
+    console.log(body)
+  }
+  /* else if (method === 'DELETE') {
     try {
       const user = await clientWithToken.fetch(getUserByIdQuery, { id: req.id })
 
@@ -47,7 +50,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
       console.error(error)
       return res.status(500).json({ status: 'error', message: 'Something went wrong' })
     }
-  }
+  } */
 }
 
 const validateFields: Middleware<NextApiRequestWithUser> = async (req, res, next) => {
@@ -61,19 +64,23 @@ const validateFields: Middleware<NextApiRequestWithUser> = async (req, res, next
     })
   }
 
-  if (method === 'DELETE') {
-    const { oldPassword } = body
-    console.log('oldPassword', checkPasswordValidation(oldPassword))
+  if (method === 'PUT' && req.role === 'admin') {
+    // Check if role is admin
 
-    if (checkPasswordValidation(oldPassword) === null) {
-      return await next()
-    } else {
-      return res.status(400).json({
-        status: 'error',
-        message: 'Unproccesable request, fields are missing or invalid',
-      })
-    }
+    console.log(body)
   }
+
+  // if (method === 'DELETE') {
+  //   const { oldPassword } = body
+  //   console.log('oldPassword', checkPasswordValidation(oldPassword))
+
+  //   if (checkPasswordValidation(oldPassword) !== null) {
+  //     return res.status(400).json({
+  //       status: 'error',
+  //       message: 'Unproccesable request, fields are missing or invalid',
+  //     })
+  //   }
+  // }
 
   //  If the request is not a PUT request, which means it's a GET request, then just continue to the next middleware
   return await next()
@@ -81,8 +88,8 @@ const validateFields: Middleware<NextApiRequestWithUser> = async (req, res, next
 
 export default use(
   rateLimitMiddleware,
-  allowMethods(['GET', 'DELETE']),
+  allowMethods(['GET', 'DELETE', 'PUT']),
   withUser,
   validateFields,
-  handler
+  handler,
 )

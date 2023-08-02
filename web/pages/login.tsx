@@ -30,7 +30,7 @@ import svgImage from '@/public/undraw_fingerprint_re_uf3f.svg'
 import siteConfig from '../../site.config'
 
 const PasswordStrength = dynamic(() =>
-  import('@/components/PasswordRequirement').then((mod) => mod.PasswordStrength)
+  import('@/components/PasswordRequirement').then((mod) => mod.PasswordStrength),
 )
 
 // Function that checks if the password is valid, returns an error message if not

@@ -56,7 +56,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
           // send push notification all the users
           sendPushNotification(
             JSON.parse(calendar.dutyPersonnelSubscription),
-            `Duty Reminder: You have a duty on ${rosterLocaleDateString} at 8:00 AM.`,
+            `Duty Reminder: You have a duty tomorrow on ${rosterLocaleDateString} at 8:00 AM.`,
             calendar.id,
           )
         }),

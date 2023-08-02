@@ -13,6 +13,7 @@ import {
   Group,
   Textarea,
   Card,
+  Select,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Calendar, isSameMonth } from '@mantine/dates'
@@ -103,54 +104,63 @@ export default function IndexPage() {
         }}
       >
         <Flex direction="column">
-          <Card p="md">
-            <Group>
-              <IconCalendar size={50} />
-              <Box ml="lg">
-                <Card.Section>
-                  <Text component="span" size="lg">
-                    Date
-                  </Text>
-                </Card.Section>
-                <Card.Section>
-                  <Text component="span" size="md" c="dimmed">
-                    {drawerDateValue?.toLocaleDateString(undefined, {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </Text>
-                </Card.Section>
-              </Box>
-            </Group>
-          </Card>
+          <Group grow>
+            <Card p="lg">
+              <Group>
+                <IconCalendar size={50} />
+                <Box ml="lg">
+                  <Card.Section>
+                    <Text component="span" size="lg">
+                      Date
+                    </Text>
+                  </Card.Section>
+                  <Card.Section>
+                    <Text component="span" size="md" c="dimmed">
+                      {drawerDateValue?.toLocaleDateString(undefined, {
+                        weekday: 'short',
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })}
+                    </Text>
+                  </Card.Section>
+                </Box>
+              </Group>
+            </Card>
 
-          <Card p="md" mt="sm">
-            <Group>
-              <IconUser size={50} />
-              <Box ml="lg">
-                <Card.Section>
-                  <Text component="span" size="lg">
-                    Duty Personnel
-                  </Text>
-                </Card.Section>
-                <Card.Section>
-                  <Text component="span" size="md" c="dimmed">
-                    {drawerPersonnelValue}
-                  </Text>
-                </Card.Section>
-              </Box>
-            </Group>
-          </Card>
+            <Card p="lg">
+              <Group>
+                <IconUser size={50} />
+                <Box ml="lg">
+                  <Card.Section>
+                    <Text component="span" size="lg">
+                      Duty Personnel
+                    </Text>
+                  </Card.Section>
+                  <Card.Section>
+                    <Text component="span" size="md" c="dimmed">
+                      {drawerPersonnelValue}
+                    </Text>
+                  </Card.Section>
+                </Box>
+              </Group>
+            </Card>
+          </Group>
+
+          <Select
+            withAsterisk
+            withinPortal
+            label="Pick a date to swap"
+            placeholder="Pick one"
+            data={['Fri, 21 May 2021', 'Sat, 22 May 2021', 'Sun, 23 May 2021']}
+          />
 
           <Textarea
-            mt="xs"
             placeholder="I need to attend my friend's birthday on the 21st."
             label="Reason for swap (optional)"
           />
 
-          <Button mt="xl" size="md" fullWidth onClick={onRequestSwap}>
+          <Button mt="md" size="md" fullWidth onClick={onRequestSwap}>
             Request Swap
           </Button>
         </Flex>
