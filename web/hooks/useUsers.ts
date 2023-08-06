@@ -1,5 +1,5 @@
 import { useSession } from 'next-auth/react'
-import useSWRImmutable from 'swr/immutable'
+import useSWR from 'swr'
 
 import { type AllSanityUser } from '@/lib/sanity.queries'
 import siteConfig from '@/../site.config'
@@ -10,8 +10,8 @@ export default function useUsers() {
 
   const isDemo = session?.user?.id === siteConfig.demoUserId
 
-  const { data, error, isLoading } = useSWRImmutable<AllSanityUser[]>(
-    !isDemo && session?.user?.unit ? `/api/sanity/users` : null
+  const { data, error, isLoading } = useSWR<AllSanityUser[]>(
+    !isDemo && session?.user?.unit ? `/api/sanity/users` : null,
   )
 
   if (isDemo) {

@@ -1,5 +1,5 @@
 import { useSession } from 'next-auth/react'
-import useSWRImmutable from 'swr/immutable'
+import useSWR from 'swr'
 
 import { type Calendar as CalendarType } from '@/lib/sanity.queries'
 import siteConfig from '@/../site.config'
@@ -10,9 +10,7 @@ export default function useCalendar() {
 
   const isDemo = session?.user?.id === siteConfig.demoUserId
 
-  const { data, error, isLoading } = useSWRImmutable<CalendarType[]>(
-    !isDemo ? `/api/sanity/calendar` : null
-  )
+  const { data, error, isLoading } = useSWR<CalendarType[]>(!isDemo ? `/api/sanity/calendar` : null)
 
   if (isDemo) {
     return {

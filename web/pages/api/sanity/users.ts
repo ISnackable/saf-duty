@@ -11,7 +11,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     if (!req.unit) {
       return res.status(400).json({ status: 'error', message: 'Bad request, unit code not found' })
     }
-    console.log(req.unit)
+    console.log("user's unit", req.unit)
     const users = await getAllUsers(req.unit)
 
     return res.status(200).json({ status: 'success', data: users, message: 'ok' })

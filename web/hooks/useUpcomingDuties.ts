@@ -1,5 +1,5 @@
 import { useSession } from 'next-auth/react'
-import useSWRImmutable from 'swr/immutable'
+import useSWR from 'swr'
 
 import { type TDateISODate } from '@/lib/sanity.queries'
 import siteConfig from '@/../site.config'
@@ -10,8 +10,8 @@ export default function useUpcomingDuties() {
 
   const isDemo = session?.user?.id === siteConfig.demoUserId
 
-  const { data, error, isLoading } = useSWRImmutable<TDateISODate[]>(
-    !isDemo && session?.user?.id ? `/api/sanity/user/${session?.user?.id}/upcoming-duties` : null
+  const { data, error, isLoading } = useSWR<TDateISODate[]>(
+    !isDemo && session?.user?.id ? `/api/sanity/user/${session?.user?.id}/upcoming-duties` : null,
   )
 
   if (isDemo) {
