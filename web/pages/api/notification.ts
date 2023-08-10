@@ -54,15 +54,16 @@ export function sendPushNotification(
         message: payload,
       }),
     )
-    .catch((err) => {
+    .catch((err: webPush.WebPushError) => {
       if (err.statusCode === 404 || err.statusCode === 410) {
         console.log('Subscription has expired or is no longer valid: ', err)
 
-        return deleteSubscriptionFromDatabase(userId)
+        deleteSubscriptionFromDatabase(userId)
       } else {
         console.error(err)
         throw err
       }
+      return err
     })
 }
 
@@ -80,6 +81,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       console.warn(message)
       return res.status(401).send({ status: 'error', message: `Unauthorized, ${message}` })
     }
+
+    // TODO: swap-request and calendar are the only types that are allowed to be published
 
     // Locale date string formatted as "Month Year"
     const rosterLocaleDateString = new Date(body.date as string).toLocaleDateString('en-US', {

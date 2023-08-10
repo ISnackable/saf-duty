@@ -41,28 +41,37 @@ export default async function handler(request: NextApiRequest, response: NextApi
     })
 
     // send push notification all the users
-    await Promise.all(
-      result
-        .filter((calendar) => calendar.dutyPersonnelSubscription)
-        .map((calendar) => {
-          // Locale date string formatted as "Month Year"
-          const rosterLocaleDateString = new Date(calendar.date).toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })
 
-          // send push notification all the users
-          sendPushNotification(
-            JSON.parse(calendar.dutyPersonnelSubscription),
-            `Duty Reminder: You have a duty tomorrow on ${rosterLocaleDateString} at 8:00 AM.`,
-            calendar.id,
-          )
-        }),
-    )
+    const promises = result
+      .filter((calendar) => calendar.dutyPersonnelSubscription)
+      .map((calendar) => {
+        // Locale date string formatted as "Month Year"
+        const rosterLocaleDateString = new Date(calendar.date).toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        })
 
-    return response.status(200).json({ status: 'success', message: 'ok' })
+        console.log('sending push notification to', calendar.id)
+
+        // send push notification all the users
+        return sendPushNotification(
+          JSON.parse(calendar.dutyPersonnelSubscription),
+          `Duty Reminder: You have a duty on ${rosterLocaleDateString} at 8:00 AM.`,
+          calendar.id,
+        )
+      })
+
+    await Promise.all(promises)
+      .then((result) => {
+        console.log('push notifications sent', result)
+        return response.status(200).json({ status: 'success', message: 'ok' })
+      })
+      .catch((err) => {
+        console.error(err)
+        return response.status(500).json({ status: 'error', message: 'Something went wrong' })
+      })
   } catch (err) {
     console.error(err)
     return response.status(500).json({ status: 'error', message: 'Something went wrong' })
