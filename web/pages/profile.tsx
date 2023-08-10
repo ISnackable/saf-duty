@@ -19,6 +19,7 @@ import {
 // import { modals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import {
+  IconAlertCircle,
   IconCheck,
   IconInfoCircle,
   IconPhoto,
@@ -30,31 +31,6 @@ import { useSession } from 'next-auth/react'
 
 import { checkPasswordValidation } from '@/pages/login'
 
-/*
-// Function that checks if the date is valid, returns an error message if not
-export function validateEnlistmentDate(enlistmentDate?: Date, ordDate?: Date) {
-  if (!enlistmentDate || !ordDate) return "Dates cannot be empty";
-  /*
-  const minMonths = 22; // 1 year and 10 months in months
-  const maxMonths = 24; // 2 years in months
-  const timeDiff = ordDate.getTime() - enlistmentDate.getTime();
-  const monthsDiff = timeDiff / (1000 * 3600 * 24 * 30);
-
-  if (monthsDiff >= minMonths && monthsDiff <= maxMonths) {
-    return "Enlistment date must be between 1 year and 10 months and 2 years after ORD date";
-  }
-  
-}
-/*
-export function validateOrdDate(enlistmentDate?: Date, ordDate?: Date) {
-  if (!enlistmentDate || !ordDate) return "Dates cannot be empty";
-  
-  if (ordDate < enlistmentDate) {
-    return "ORD date cannot be less than enlistment date";
-  }
-  
-}
-*/
 const useStyles = createStyles((theme) => ({
   title: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
@@ -123,8 +99,14 @@ export default function ProfilePage() {
     },
     validate: {
       name: (value) => (value && value.length < 2 ? 'Name must have at least 2 letters' : null),
-      // enlistment: (value, values) => validateEnlistmentDate(value, values.ord),
-      //ord: (value, values) => validateOrdDate(values.enlistment, value),
+      enlistment: (value, values) =>
+        value && values?.ord && value?.getTime() >= values?.ord?.getTime()
+          ? 'Enlistment date must be before ORD date'
+          : null,
+      ord: (value, values) =>
+        value && values?.enlistment && value?.getTime() <= values?.enlistment?.getTime()
+          ? 'ORD date must be after Enlistment date'
+          : null,
     },
   })
   //user account form
@@ -343,7 +325,6 @@ export default function ProfilePage() {
               />
 
               <Group position="right" mt="lg">
-                <Button color="gray">Cancel</Button>
                 <Button type="submit" loading={isSubmitting}>
                   Save
                 </Button>
@@ -412,9 +393,19 @@ export default function ProfilePage() {
               />
 
               <Group position="apart" mt="lg">
-                {/* <Button onClick={openDeleteModal} color="red">
+                <Button
+                  onClick={() =>
+                    showNotification({
+                      title: 'Warning',
+                      message: 'Not implemented yet, please contact support to delete your account',
+                      color: 'yellow',
+                      icon: <IconAlertCircle />,
+                    })
+                  }
+                  color="red"
+                >
                   Delete account
-                </Button> */}
+                </Button>
                 <Button type="submit" loading={isSubmitting}>
                   Save
                 </Button>

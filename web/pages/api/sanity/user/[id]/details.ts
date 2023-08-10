@@ -23,7 +23,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
 
 const validateFields: Middleware<NextApiRequestWithUser> = async (req, res, next) => {
   const { body, query } = req
-  const { name } = body
+  const { name, enlistment, ord } = body
   const { id } = query
 
   if (id != req.id) {
@@ -35,14 +35,28 @@ const validateFields: Middleware<NextApiRequestWithUser> = async (req, res, next
 
   console.log('checkNameValidation:', checkNameValidation(name))
 
-  if (checkNameValidation(name) === null) {
-    return await next()
-  } else {
+  if (checkNameValidation(name) !== null) {
     return res.status(400).json({
       status: 'error',
       message: 'Unproccesable request, fields are missing or invalid',
     })
   }
+
+  if (enlistment && ord) {
+    // Convert enlistment and ord to a date object
+    const enlistmentDate = new Date(enlistment as string)
+    const ordDate = new Date(ord as string)
+
+    // Check if enlistmentDate is before ordDate
+    if (enlistmentDate.getTime() > ordDate.getTime()) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Unproccesable request, enlistment date is after ord date',
+      })
+    }
+  }
+
+  return await next()
 }
 
 export default use(rateLimitMiddleware, allowMethods(['PUT']), withUser, validateFields, handler)
