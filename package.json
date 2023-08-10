@@ -17,7 +17,7 @@
     "lint": "lerna run lint"
   },
   "devDependencies": {
-    "@sanity/cli": "^3.14.5",
-    "lerna": "^7.1.4"
+    "@sanity/cli": "^3.15.0",
+    "lerna": "^7.1.5"
   }
 }
