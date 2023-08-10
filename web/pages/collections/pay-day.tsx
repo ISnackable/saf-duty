@@ -58,50 +58,44 @@ const useStyles = createStyles((theme) => ({
 }))
 
 // Set the payday date to the 10th of every month
-const paydayDay = 10
+const PAYDAY_DAY = 10
 
 // Get the current date
 const today = dayjs()
 
 // Calculate the next payday date
-let nextPayday
-if (today.date() < paydayDay) {
-  nextPayday = today.date(paydayDay)
-} else {
-  if (today.month() === 11) {
-    nextPayday = today.add(1, 'year').startOf('year').date(paydayDay)
-  } else {
-    nextPayday = today.add(1, 'month').startOf('month').date(paydayDay)
-  }
+let nextPayday = today.date(PAYDAY_DAY)
+
+// If the 10th day of the current month has already passed, calculate the next month's payday
+if (today.date() > PAYDAY_DAY) {
+  nextPayday = today.add(1, 'month').date(PAYDAY_DAY)
 }
 
-// Calculate the progress towards the next payday as a percentage
-const progress: number = Math.floor(
-  ((today.valueOf() - today.startOf('month').date(paydayDay).valueOf()) /
-    (nextPayday.valueOf() - today.startOf('month').date(paydayDay).valueOf())) *
-    100
-)
 // Calculate the number of days left until the next payday
-const daysLeft: number = nextPayday.diff(today, 'day')
-// Calculate the total number of days until the next payday
-const daysTotal: number = nextPayday.diff(today.startOf('month').date(paydayDay), 'day')
+const daysLeft = nextPayday.diff(today, 'day')
+const daysTotal = nextPayday.daysInMonth()
 
-const currentdate = daysTotal - daysLeft
+// Calculate the progress towards the next PAYDAY_DAY as a percentage
+const progress = Math.floor(((daysTotal - daysLeft) / daysTotal) * 100)
 
 const elements = [
-  { rankStarting: 'Recruit or Private', rankaAllowance: '$580' },
-  { rankStarting: 'Lance Corporal', rankaAllowance: '$600' },
-  { rankStarting: 'Corporal', rankaAllowance: '$650' },
-  { rankStarting: 'Corporal First Class', rankaAllowance: '$690' },
+  { rankStarting: 'Recruit (REC) or Private (PTE)', rankaAllowance: '$755' },
+  { rankStarting: 'Lance-Corporal (LCP)', rankaAllowance: '$775' },
+  { rankStarting: 'Corporal (CPL)', rankaAllowance: '$825' },
+  { rankStarting: 'Corporal First Class (CFC)', rankAllowance: '$865' },
+  { rankStarting: '3rd Sergeant', rankaAllowance: '$1,075' },
+  { rankStarting: '2nd Sergeant', rankaAllowance: '$1,175' },
+  { rankStarting: '2nd Lieutenant (2LT)', rankaAllowance: '$1,275' },
+  { rankStarting: 'Lieutenant (LTA)', rankaAllowance: '$1,455' },
 ]
 const vocation = [
   {
     vocation: 'Service and Technical vocations',
-    vocationAllowance: '$50',
+    vocationAllowance: '$75',
   },
   {
     vocation: 'All combatants',
-    vocationAllowance: '$175',
+    vocationAllowance: '$225',
   },
 ]
 
@@ -130,12 +124,17 @@ export default function PayDayPage() {
         <Title className={classes.title}>Pay Day</Title>
       </div>
 
+      <Text color="dimmed" mt="md">
+        A countdown to the next Pay Day is shown below to help you survive your NS experience. Pay
+        Day is on the 10th of every month.
+      </Text>
+
       <Divider mt="sm" />
       <Paper withBorder p="md" radius="md" mt="xl">
         <Group position="apart">
           <Group align="flex-end" spacing="xs">
             <Text size="xl" weight={700}>
-              Next Pay Day
+              Pay Day Countdown
             </Text>
           </Group>
         </Group>
@@ -149,9 +148,7 @@ export default function PayDayPage() {
           mt={40}
         />
         <Group position="apart" mt="md">
-          <Text size="sm">
-            {currentdate} / {daysTotal}
-          </Text>
+          <Text size="sm">{today.format('D MMM YYYY')}</Text>
           <Badge size="sm">{daysLeft} days left</Badge>
         </Group>
       </Paper>
