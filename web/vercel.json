@@ -6,7 +6,7 @@
     },
     {
       "path": "/api/cron/dailyDutyReminder",
-      "schedule": "0 18 * * *"
+      "schedule": "0 9 * * *"
     }
   ]
 }

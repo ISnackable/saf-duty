@@ -7,7 +7,7 @@
   <h3 align="center">Duty Roster</h3>
 
   <p align="center">
-    A Duty Roster planner for the SAF. It's tailored for commando unit uses, however the code is highly customizable. MIT License.
+    A Duty Roster planner for the SAF. It's tailored for commando unit uses, however the code is customizable. MIT License.
     <br />
     <a href="https://afpn-cdo.vercel.app/"><strong>View Demo »</strong></a>
     <br />
@@ -65,13 +65,14 @@ yarn install
 
 5. Once the enviroment variables are set, and dependencies are installed. You can start the app in development mode.
 6. Change the title of the app in `site.config.ts` (optional)
+7. Change the name of the PWA in `public/manifest.json` (optional)
 
 ```sh
 yarn dev
 ```
 
-6. Visit `http://localhost:3000` and `http://localhost:3333` on your web browser.
-7. That's all.
+8. Visit `http://localhost:3000` and `http://localhost:3333` on your web browser.
+9. That's all.
 
 ## Deploy on Vercel / Sanity
 
