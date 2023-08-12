@@ -79,14 +79,14 @@ const daysTotal = nextPayday.daysInMonth()
 const progress = Math.floor(((daysTotal - daysLeft) / daysTotal) * 100)
 
 const elements = [
-  { rankStarting: 'Recruit (REC) or Private (PTE)', rankaAllowance: '$755' },
-  { rankStarting: 'Lance-Corporal (LCP)', rankaAllowance: '$775' },
-  { rankStarting: 'Corporal (CPL)', rankaAllowance: '$825' },
+  { rankStarting: 'Recruit (REC) or Private (PTE)', rankAllowance: '$755' },
+  { rankStarting: 'Lance-Corporal (LCP)', rankAllowance: '$775' },
+  { rankStarting: 'Corporal (CPL)', rankAllowance: '$825' },
   { rankStarting: 'Corporal First Class (CFC)', rankAllowance: '$865' },
-  { rankStarting: '3rd Sergeant', rankaAllowance: '$1,075' },
-  { rankStarting: '2nd Sergeant', rankaAllowance: '$1,175' },
-  { rankStarting: '2nd Lieutenant (2LT)', rankaAllowance: '$1,275' },
-  { rankStarting: 'Lieutenant (LTA)', rankaAllowance: '$1,455' },
+  { rankStarting: '3rd Sergeant (3SG)', rankAllowance: '$1,075' },
+  { rankStarting: '2nd Sergeant (2SG)', rankAllowance: '$1,175' },
+  { rankStarting: '2nd Lieutenant (2LT)', rankAllowance: '$1,275' },
+  { rankStarting: 'Lieutenant (LTA)', rankAllowance: '$1,455' },
 ]
 const vocation = [
   {
@@ -107,7 +107,7 @@ export default function PayDayPage() {
   const rows = elements.map((element) => (
     <tr key={element.rankStarting}>
       <td>{element.rankStarting}</td>
-      <td>{element.rankaAllowance}</td>
+      <td>{element.rankAllowance}</td>
     </tr>
   ))
   const vocations = vocation.map((vocation) => (
