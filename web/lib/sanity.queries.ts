@@ -39,6 +39,7 @@ export interface SanityUser extends User {
   weekdayPoints: number
   weekendPoints: number
   extra: number
+  maxBlockouts: number
   ord?: TDateISODate
   enlistment?: TDateISODate
   totalDutyDone?: number
@@ -108,6 +109,7 @@ export const getAllUsersQuery = groq`*[_type == "user" && _id != "${config.demoU
   weekdayPoints,
   weekendPoints,
   extra,
+  maxBlockouts,
   ord,
   enlistment,
   "totalDutyDone": count(*[_type == 'calendar' && references(^._id)].roster[^._id == dutyPersonnel._ref])

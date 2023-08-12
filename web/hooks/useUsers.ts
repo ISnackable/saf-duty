@@ -10,7 +10,7 @@ export default function useUsers() {
 
   const isDemo = session?.user?.id === siteConfig.demoUserId
 
-  const { data, error, isLoading } = useSWR<AllSanityUser[]>(
+  const { data, error, isLoading, mutate } = useSWR<AllSanityUser[]>(
     !isDemo && session?.user?.unit ? `/api/sanity/users` : null,
   )
 
@@ -26,5 +26,6 @@ export default function useUsers() {
     data,
     isLoading,
     error,
+    mutate,
   }
 }

@@ -23,6 +23,7 @@ export const users: AllSanityUser[] = [
     weekendPoints: 2,
     extra: 0,
     blockouts: ['2024-02-04'],
+    maxBlockouts: 12,
   },
   {
     id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
@@ -30,13 +31,14 @@ export const users: AllSanityUser[] = [
     role: Role.user,
     image:
       'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
-    enlistment: '2022-02-29',
+    enlistment: '2022-02-27',
     ord: '2024-02-28',
     totalDutyDone: 12,
     weekdayPoints: 0,
     weekendPoints: 1,
     extra: 0,
     blockouts: ['2024-02-13'],
+    maxBlockouts: 12,
   },
   {
     id: '5edaa132-bfc1-11ed-afa1-0242ac120002',
@@ -51,6 +53,7 @@ export const users: AllSanityUser[] = [
     weekendPoints: 1,
     extra: 2,
     blockouts: [],
+    maxBlockouts: 12,
   },
   {
     id: '5edaa2cc-bfc1-11ed-afa1-0242ac120002',
@@ -65,6 +68,7 @@ export const users: AllSanityUser[] = [
     weekendPoints: 1,
     extra: 0,
     blockouts: [],
+    maxBlockouts: 12,
   },
   {
     id: '5edaa416-bfc1-11ed-afa1-0242ac120002',
@@ -89,6 +93,7 @@ export const users: AllSanityUser[] = [
       '2024-02-17',
       '2024-02-18',
     ],
+    maxBlockouts: 12,
   },
   {
     id: '78c9dc16-bfc1-11ed-afa1-0242ac120002',
@@ -103,6 +108,7 @@ export const users: AllSanityUser[] = [
     weekendPoints: 2,
     extra: 0,
     blockouts: ['2024-02-01', '2024-02-27'],
+    maxBlockouts: 12,
   },
   {
     id: '9d658fae-c343-11ed-afa1-0242ac120002',
@@ -134,6 +140,7 @@ export const users: AllSanityUser[] = [
       '2024-02-15',
       '2024-02-16',
     ],
+    maxBlockouts: 12,
   },
   {
     id: 'a1196c88-c343-11ed-afa1-0242ac120002',
@@ -163,6 +170,7 @@ export const users: AllSanityUser[] = [
       '2024-02-18',
       '2024-02-25',
     ],
+    maxBlockouts: 12,
   },
 ]
 

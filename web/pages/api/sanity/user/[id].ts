@@ -4,13 +4,30 @@ import { type Middleware, use } from 'next-api-route-middleware'
 // import argon2 from 'argon2'
 
 // import { checkPasswordValidation } from '@/pages/api/sanity/signUp'
-import { /* clientWithToken, */ getUserById } from '@/lib/sanity.client'
+import type { TDateISODate } from '@/lib/sanity.queries'
+import { clientWithToken, getUserById } from '@/lib/sanity.client'
 import { rateLimitMiddleware } from '../../rateLimitMiddleware'
 import { type NextApiRequestWithUser, withUser } from '../../authMiddleware'
 import { allowMethods } from '../../allowMethodsMiddleware'
 
+interface User {
+  name: string
+  image: string
+  weekdayPoints: number
+  weekendPoints: number
+  extra: number
+  enlistment?: TDateISODate
+  ord?: TDateISODate
+  blockouts?: TDateISODate[]
+}
+
 async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
-  const { method, body } = req
+  const { method, body, query } = req
+  const { id } = query
+
+  if (!id || typeof id !== 'string')
+    return res.status(500).json({ status: 'error', message: 'Something went wrong' })
+
   if (method === 'GET') {
     try {
       const user = await getUserById(req.id)
@@ -21,7 +38,33 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
       return res.status(500).json({ status: 'error', message: 'Something went wrong' })
     }
   } else if (method === 'PUT') {
-    console.log(body)
+    const { name, image, weekdayPoints, weekendPoints, extra, enlistment, ord, blockouts }: User =
+      body
+
+    try {
+      const updatedUser = await clientWithToken
+        .patch(id)
+        .set({
+          name,
+          image,
+          weekdayPoints,
+          weekendPoints,
+          extra,
+          enlistment,
+          ord,
+          blockouts: blockouts ? blockouts : [],
+        })
+        // conditionally unset enlistment and ord if they are null
+        .unset(!enlistment || !ord ? ['enlistment', 'ord'] : [])
+        .commit()
+
+      console.log('updatedUser rev: ', updatedUser._rev)
+
+      return res.status(200).json({ status: 'success', message: 'ok' })
+    } catch (error) {
+      console.error(error)
+      return res.status(500).json({ status: 'error', message: 'Something went wrong' })
+    }
   }
   /* else if (method === 'DELETE') {
     try {
@@ -57,20 +100,39 @@ const validateFields: Middleware<NextApiRequestWithUser> = async (req, res, next
   const { method, body, query } = req
   const { id } = query
 
-  if (id != req.id) {
-    return res.status(401).json({
-      status: 'error',
-      message: 'Unauthorized, id in path does not match id in auth cookie',
-    })
+  if (method === 'GET') {
+    if (id != req.id) {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Unauthorized, id in path does not match id in auth cookie',
+      })
+    }
+  } else if (method === 'PUT') {
+    if (req.role !== 'admin') {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Unauthorized',
+      })
+    }
+
+    // Simple validation to check if all fields are present
+    const { name, image, weekdayPoints, weekendPoints, extra }: User = body
+
+    if (
+      !name ||
+      !image ||
+      typeof weekdayPoints !== 'number' ||
+      typeof weekendPoints !== 'number' ||
+      typeof extra !== 'number'
+    ) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Unproccesable request, fields are missing or invalid',
+      })
+    }
   }
 
-  if (method === 'PUT' && req.role === 'admin') {
-    // Check if role is admin
-
-    console.log(body)
-  }
-
-  // if (method === 'DELETE') {
+  // else if (method === 'DELETE') {
   //   const { oldPassword } = body
   //   console.log('oldPassword', checkPasswordValidation(oldPassword))
 
