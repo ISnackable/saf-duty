@@ -19,8 +19,8 @@ export interface Calendar {
 
 export interface Roster {
   date: TDateISODate
-  personnel: string
-  standby: string
+  personnel: Pick<SanityUser, 'id' | 'name'>
+  standby: Pick<SanityUser, 'id' | 'name'>
 }
 
 export interface Unit {
@@ -140,8 +140,14 @@ export const getAllCalendarQuery = groq`*[_type == 'calendar' && references($id)
   date,
   roster[]{
     date,
-    "personnel": dutyPersonnel->{name}.name,
-    "standby": dutyPersonnelStandIn->{name}.name
+    "personnel": dutyPersonnel->{
+      "id": _id,
+      name
+    },
+    "standby": dutyPersonnelStandIn->{
+      "id": _id,
+      name
+    }
   }
 }|order(_createdAt desc)[0..5]`
 

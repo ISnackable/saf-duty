@@ -26,6 +26,7 @@ import {
   IconAlertCircle,
 } from '@tabler/icons-react'
 
+import type { SanityUser } from '@/lib/sanity.queries'
 import useCalendar from '@/hooks/useCalendar'
 import { useSession } from 'next-auth/react'
 
@@ -73,7 +74,9 @@ export default function IndexPage() {
   const [opened, { open, close }] = useDisclosure(false)
 
   const [drawerDateValue, setDrawerDateValue] = useState<Date | null | undefined>(null)
-  const [drawerPersonnelValue, setDrawerPersonnelValue] = useState<string | null | undefined>(null)
+  const [drawerPersonnelValue, setDrawerPersonnelValue] = useState<
+    Pick<SanityUser, 'id' | 'name'> | null | undefined
+  >(null)
   const [month, setMonth] = useState(new Date())
 
   const { classes } = useStyles()
@@ -86,7 +89,9 @@ export default function IndexPage() {
     if (drawerDateValue !== null && drawerPersonnelValue !== null) {
       open()
     }
-  }, [open, drawerDateValue, drawerPersonnelValue])
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [drawerDateValue, drawerPersonnelValue])
 
   if (error) return <div>failed to load</div>
   const dutyDates = calendar?.find((cal) => isSameMonth(new Date(cal.date), month))
@@ -139,7 +144,7 @@ export default function IndexPage() {
                   </Card.Section>
                   <Card.Section>
                     <Text component="span" size="md" c="dimmed">
-                      {drawerPersonnelValue}
+                      {drawerPersonnelValue?.name}
                     </Text>
                   </Card.Section>
                 </Box>
@@ -232,11 +237,11 @@ export default function IndexPage() {
                     })
                   } else if (
                     username &&
-                    !(username === dutyDates?.roster?.[day - 1]?.personnel?.toLowerCase())
+                    !(username === dutyDates?.roster?.[day - 1]?.personnel?.name?.toLowerCase())
                   ) {
                     if (
-                      dutyDates?.roster?.[day - 2]?.personnel?.toLowerCase() === username ||
-                      dutyDates?.roster?.[day]?.personnel?.toLowerCase() === username
+                      dutyDates?.roster?.[day - 2]?.personnel?.name?.toLowerCase() === username ||
+                      dutyDates?.roster?.[day]?.personnel?.name?.toLowerCase() === username
                     ) {
                       showNotification({
                         title: 'Warning',
@@ -290,7 +295,7 @@ export default function IndexPage() {
               <ConditionalWrapper
                 condition={
                   session?.user?.name?.toLowerCase() ===
-                  dutyDates?.roster?.[day - 1]?.personnel?.toLowerCase()
+                  dutyDates?.roster?.[day - 1]?.personnel?.name?.toLowerCase()
                 }
                 wrapper={(children) => (
                   <Indicator size={6} offset={-2}>
@@ -304,8 +309,8 @@ export default function IndexPage() {
                   </Text>
                   {dutyDates && (
                     <Text size="xs" align="center" mb="auto">
-                      {dutyDates?.roster?.[day - 1]?.personnel} (
-                      {dutyDates?.roster?.[day - 1]?.standby})
+                      {dutyDates?.roster?.[day - 1]?.personnel?.name} (
+                      {dutyDates?.roster?.[day - 1]?.standby?.name})
                     </Text>
                   )}
                 </Flex>

@@ -110,8 +110,8 @@ export default function GenerateDutyPage() {
     if (dutyDates) {
       const roster = dutyDates.roster.map((date) => ({
         date: new Date(date.date),
-        personnel: date.personnel,
-        standby: date.standby,
+        personnel: date.personnel?.name,
+        standby: date.standby?.name,
         isExtra: false,
         blockout: [],
         isWeekend: false,
@@ -121,10 +121,10 @@ export default function GenerateDutyPage() {
 
       const dutyPersonnel = users?.map((user) => {
         const WD_DONE = dutyDates.roster.filter(
-          (date) => !isWeekend(new Date(date.date)) && date.personnel === user.name,
+          (date) => !isWeekend(new Date(date.date)) && date.personnel?.id === user.id,
         ).length
         const WE_DONE = dutyDates.roster.filter(
-          (date) => isWeekend(new Date(date.date)) && date.personnel === user.name,
+          (date) => isWeekend(new Date(date.date)) && date.personnel?.id === user.id,
         ).length
         const blockouts = user.blockouts?.map((blockout) => new Date(blockout))
 
@@ -147,7 +147,7 @@ export default function GenerateDutyPage() {
       }
 
       setMultiSelectValue(
-        Array.from(new Set(dutyDates.roster.map((date) => date.personnel).filter(Boolean))),
+        Array.from(new Set(dutyDates.roster.map((date) => date.personnel?.name).filter(Boolean))),
       )
     } else if (month) {
       setDutyRoster([])
