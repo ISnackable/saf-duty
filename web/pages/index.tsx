@@ -254,7 +254,7 @@ export default function UpcomingDutiesPage() {
         <Title order={4}>Duties Completed</Title>
         <Text color="dimmed" component="span">
           {indexOfUpcomingDate === -1 ? upcomingDuties?.length : indexOfUpcomingDate} of{' '}
-          {upcomingDuties?.length}
+          {upcomingDuties?.length || 0}
         </Text>
       </Group>
       <Progress

@@ -190,6 +190,7 @@ export const upcomingDuties: TDateISODate[] = [
 
 export const calendar: Calendar[] = [
   {
+    id: `calendar-2023-${todayMonth}-01`,
     date: `2023-${todayMonth}-01`,
     roster: [
       {

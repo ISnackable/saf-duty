@@ -66,7 +66,7 @@ export default function FaqWithImage() {
                 <Accordion.Panel>Yes, however it is generally not recommended.</Accordion.Panel>
               </Accordion.Item>
 
-              <Accordion.Item className={classes.item} value="another-account">
+              <Accordion.Item className={classes.item} value="report-bugs">
                 <Accordion.Control>
                   Whom do I contact if I find a bug on the website?
                 </Accordion.Control>

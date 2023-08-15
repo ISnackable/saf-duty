@@ -24,6 +24,7 @@ import {
   IconCalendarEvent,
   IconUser,
   IconAlertCircle,
+  IconCheck,
 } from '@tabler/icons-react'
 
 import type { SanityUser } from '@/lib/sanity.queries'
@@ -77,12 +78,82 @@ export default function IndexPage() {
   const [drawerPersonnelValue, setDrawerPersonnelValue] = useState<
     Pick<SanityUser, 'id' | 'name'> | null | undefined
   >(null)
+  const [drawerSelectValue, setDrawerSelectValue] = useState<string | null>(null)
+  const [reason, setReason] = useState('')
   const [month, setMonth] = useState(new Date())
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { classes } = useStyles()
 
-  function onRequestSwap() {
-    console.log(drawerDateValue, drawerPersonnelValue)
+  const dutyDates = calendar?.find((cal) => isSameMonth(new Date(cal.date), month))
+  const drawerSelectData = dutyDates?.roster
+    ?.filter((roster) => roster?.personnel?.id === session?.user?.id)
+    .map((roster) =>
+      new Date(roster.date).toLocaleDateString(undefined, {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      }),
+    )
+
+  async function onRequestSwap() {
+    if (
+      drawerSelectValue === null ||
+      !drawerDateValue ||
+      !drawerPersonnelValue?.id ||
+      !dutyDates?.id ||
+      !session?.user?.id
+    ) {
+      return showNotification({
+        title: 'Warning',
+        message: `Pick a date to swap and a personnel to swap with.`,
+        color: 'yellow',
+        icon: <IconAlertCircle />,
+      })
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      const res = await fetch(`/api/sanity/user/${session.user.id}/swap-request`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          calendar: dutyDates.id,
+          // Receiver is the target user
+          receiver: drawerPersonnelValue.id,
+          receiverDate: drawerDateValue.toLocaleDateString('sv-SE'),
+          // Requester is the current user
+          requester: session.user.id,
+          requesterDate: new Date(drawerSelectValue).toLocaleDateString('sv-SE'),
+          reason,
+        }),
+      })
+      const data = await res.json()
+
+      if (data?.status === 'error') {
+        showNotification({
+          title: 'Error',
+          message: data?.message || 'Cannot update user, something went wrong',
+          color: 'red',
+          icon: <IconX />,
+        })
+      } else {
+        showNotification({
+          title: 'Success',
+          message: 'User updated successfully',
+          color: 'green',
+          icon: <IconCheck />,
+        })
+      }
+    } catch (error) {
+      console.error(error)
+    }
+
+    setIsSubmitting(false)
   }
 
   useEffect(() => {
@@ -94,7 +165,6 @@ export default function IndexPage() {
   }, [drawerDateValue, drawerPersonnelValue])
 
   if (error) return <div>failed to load</div>
-  const dutyDates = calendar?.find((cal) => isSameMonth(new Date(cal.date), month))
 
   return (
     <>
@@ -157,15 +227,19 @@ export default function IndexPage() {
             withinPortal
             label="Pick a date to swap"
             placeholder="Pick one"
-            data={['Fri, 21 May 2021', 'Sat, 22 May 2021', 'Sun, 23 May 2021']}
+            value={drawerSelectValue}
+            onChange={setDrawerSelectValue}
+            data={drawerSelectData || []}
           />
 
           <Textarea
             placeholder="I need to attend my friend's birthday on the 21st."
             label="Reason for swap (optional)"
+            value={reason}
+            onChange={(event) => setReason(event.currentTarget.value)}
           />
 
-          <Button mt="md" size="md" fullWidth onClick={onRequestSwap}>
+          <Button mt="md" size="md" fullWidth onClick={onRequestSwap} loading={isSubmitting}>
             Request Swap
           </Button>
         </Flex>
@@ -224,7 +298,7 @@ export default function IndexPage() {
             const defaultDayProps = {
               onClick: () => {
                 const day = date.getDate()
-                const username = session?.user?.name?.toLowerCase()
+                const userId = session?.user?.id
 
                 if (dutyDates) {
                   // Check if date is past
@@ -235,13 +309,10 @@ export default function IndexPage() {
                       color: 'red',
                       icon: <IconX />,
                     })
-                  } else if (
-                    username &&
-                    !(username === dutyDates?.roster?.[day - 1]?.personnel?.name?.toLowerCase())
-                  ) {
+                  } else if (userId && !(userId === dutyDates?.roster?.[day - 1]?.personnel?.id)) {
                     if (
-                      dutyDates?.roster?.[day - 2]?.personnel?.name?.toLowerCase() === username ||
-                      dutyDates?.roster?.[day]?.personnel?.name?.toLowerCase() === username
+                      dutyDates?.roster?.[day - 2]?.personnel?.id === userId ||
+                      dutyDates?.roster?.[day]?.personnel?.id === userId
                     ) {
                       showNotification({
                         title: 'Warning',

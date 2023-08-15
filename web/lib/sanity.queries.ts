@@ -13,6 +13,7 @@ type TDay = `${number}${number}`
 export type TDateISODate = `${TYear}-${TMonth}-${TDay}`
 
 export interface Calendar {
+  id: string
   date: TDateISODate
   roster: Roster[]
 }
@@ -69,17 +70,9 @@ export interface SanitySwapRequest {
     date: TDateISODate
   }
   reason?: string
-  receiver: {
-    id: string
-    name: string
-    image: string
-  }
+  receiver: Pick<SanityUser, 'id' | 'name' | 'image'>
   receiverDate: TDateISODate
-  requester: {
-    id: string
-    name: string
-    image: string
-  }
+  requester: Pick<SanityUser, 'id' | 'name' | 'image'>
   requesterDate: TDateISODate
   status: 'pending' | 'approved' | 'declined'
 }
@@ -137,6 +130,7 @@ export const getUserBlockoutsQuery = groq`*[_type == "user" && _id == $id && !(_
 }[0]`
 
 export const getAllCalendarQuery = groq`*[_type == 'calendar' && references($id) && !(_id in path("drafts.**"))]{
+  "id": _id,
   date,
   roster[]{
     date,

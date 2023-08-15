@@ -12,7 +12,7 @@ export default function useSwapRequest() {
 
   const { data, error, isLoading } = useSWR<SanitySwapRequest[]>(
     !isDemo && session?.user?.id ? `/api/sanity/user/${session?.user?.id}/swap-request` : null,
-    { refreshInterval: 5000 },
+    // { refreshInterval: 5000 },
   )
 
   if (isDemo) {
