@@ -209,7 +209,7 @@ export default function AuthenticationForm() {
             icon: <IconCheck />,
           })
           await signIn('sanity-login', {
-            email,
+            email: email.toLowerCase(),
             password,
             redirect: false,
           })
