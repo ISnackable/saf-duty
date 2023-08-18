@@ -7,7 +7,7 @@ import {
   getUserUpcomingDutiesQuery,
   type Unit,
   type Calendar,
-  getAllCalendarQuery,
+  getAllUserCalendarQuery,
   getUserBlockoutsQuery,
   type AllSanityUser,
   type TDateISODate,
@@ -16,6 +16,7 @@ import {
   type SanityUserBlockouts,
   getUserSwapRequestQuery,
   type SanitySwapRequest,
+  getCalendarQuery,
   // getUserPushSubscriptionQuery,
 } from './sanity.queries'
 
@@ -66,8 +67,18 @@ export async function getUserBlockouts(id: string): Promise<SanityUserBlockouts>
 /**
  * @returns {Calendar[]} in descending order of creation date
  */
-export async function getAllCalendar(id: string): Promise<Calendar[]> {
-  const calendar: Calendar[] = await clientWithToken.fetch(getAllCalendarQuery, { id })
+export async function getAllUserCalendar(id: string): Promise<Calendar[]> {
+  const calendar: Calendar[] = await clientWithToken.fetch(getAllUserCalendarQuery, { id })
+
+  return calendar
+}
+
+/**
+ * @param {string} id - calendar id
+ * @returns {Calendar} in descending order of creation date
+ */
+export async function getCalendarById(id: string): Promise<Calendar> {
+  const calendar: Calendar = await clientWithToken.fetch(getCalendarQuery, { id })
 
   return calendar
 }

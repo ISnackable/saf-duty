@@ -14,6 +14,7 @@ export const users: AllSanityUser[] = [
     id: 'user.fdf11aae-d142-450b-87a4-559bc6e27f05',
     name: 'demo',
     role: Role.user,
+    unit: '0001',
     image:
       'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment: '2022-01-02',
@@ -29,6 +30,7 @@ export const users: AllSanityUser[] = [
     id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
     name: 'Zhi Hao',
     role: Role.user,
+    unit: '0001',
     image:
       'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment: '2022-02-27',
@@ -44,6 +46,7 @@ export const users: AllSanityUser[] = [
     id: '5edaa132-bfc1-11ed-afa1-0242ac120002',
     name: 'Jia Hui',
     role: Role.user,
+    unit: '0001',
     image:
       'https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment: '2023-05-11',
@@ -59,6 +62,7 @@ export const users: AllSanityUser[] = [
     id: '5edaa2cc-bfc1-11ed-afa1-0242ac120002',
     name: 'Jia Hao',
     role: Role.user,
+    unit: '0001',
     image:
       'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment: '2021-03-02',
@@ -74,6 +78,7 @@ export const users: AllSanityUser[] = [
     id: '5edaa416-bfc1-11ed-afa1-0242ac120002',
     name: 'Jun Kai',
     role: Role.user,
+    unit: '0001',
     image:
       'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment: '2022-04-02',
@@ -99,6 +104,7 @@ export const users: AllSanityUser[] = [
     id: '78c9dc16-bfc1-11ed-afa1-0242ac120002',
     name: 'Wang Li',
     role: Role.user,
+    unit: '0001',
     image:
       'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment: '2022-09-30',
@@ -114,6 +120,7 @@ export const users: AllSanityUser[] = [
     id: '9d658fae-c343-11ed-afa1-0242ac120002',
     name: 'Darryl Koh',
     role: Role.user,
+    unit: '0001',
     image:
       'https://images.unsplash.com/photo-1531727991582-cfd25ce79613?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
     enlistment: '2022-02-14',
@@ -146,6 +153,7 @@ export const users: AllSanityUser[] = [
     id: 'a1196c88-c343-11ed-afa1-0242ac120002',
     name: 'Elliot Tan',
     role: Role.user,
+    unit: '0001',
     image:
       'https://images.unsplash.com/photo-1614587185092-af24ed71c6e4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80',
     enlistment: '2022-06-24',

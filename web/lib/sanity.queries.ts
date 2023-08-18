@@ -35,7 +35,7 @@ export interface SanityUser extends User {
   email: string
   image: string
   role?: Role
-  unit?: string
+  unit: string
   blockouts?: TDateISODate[]
   weekdayPoints: number
   weekendPoints: number
@@ -129,7 +129,7 @@ export const getUserBlockoutsQuery = groq`*[_type == "user" && _id == $id && !(_
     blockouts
 }[0]`
 
-export const getAllCalendarQuery = groq`*[_type == 'calendar' && references($id) && !(_id in path("drafts.**"))]{
+export const getAllUserCalendarQuery = groq`*[_type == 'calendar' && references($id) && !(_id in path("drafts.**"))]{
   "id": _id,
   date,
   roster[]{
@@ -144,6 +144,22 @@ export const getAllCalendarQuery = groq`*[_type == 'calendar' && references($id)
     }
   }
 }|order(_createdAt desc)[0..5]`
+
+export const getCalendarQuery = groq`*[_type == 'calendar' && _id == $id && !(_id in path("drafts.**"))]{
+  "id": _id,
+  date,
+  roster[]{
+    date,
+    "personnel": dutyPersonnel->{
+      "id": _id,
+      name
+    },
+    "standby": dutyPersonnelStandIn->{
+      "id": _id,
+      name
+    }
+  }
+}[0]`
 
 export const getUserSwapRequestQuery = groq`*[_type == "swapRequest" && references($id)]{
   ...,

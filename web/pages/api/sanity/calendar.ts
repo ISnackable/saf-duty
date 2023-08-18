@@ -1,7 +1,7 @@
 import type { NextApiResponse } from 'next'
 import { type Middleware, use } from 'next-api-route-middleware'
 
-import { clientWithToken, getAllCalendar } from '@/lib/sanity.client'
+import { clientWithToken, getAllUserCalendar } from '@/lib/sanity.client'
 import type { DutyDate, Personnel } from '@/utils/dutyRoster'
 import { rateLimitMiddleware } from '../rateLimitMiddleware'
 import { type NextApiRequestWithUser, withUser } from '../authMiddleware'
@@ -11,7 +11,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   const { method } = req
   if (method === 'GET') {
     try {
-      const calendar = await getAllCalendar(req.id)
+      const calendar = await getAllUserCalendar(req.id)
 
       return res.status(200).json({ status: 'success', data: calendar, message: 'ok' })
     } catch (error) {
@@ -65,7 +65,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
 
       console.log(`Calendar was created, document ID is ${sanityRes._id}`)
 
-      return res.status(200).json({ status: 'success', message: 'Calendar updated' })
+      return res.status(201).json({ status: 'success', message: 'Calendar updated' })
     } catch (error) {
       console.error('Oh no, the update failed')
 

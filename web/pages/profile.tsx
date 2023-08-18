@@ -304,7 +304,7 @@ export default function ProfilePage() {
                 mt="sm"
                 label="Name"
                 placeholder="Name"
-                description="Your name as it is on your NRIC"
+                description="Preferably just your first name"
                 {...userDetailForm.getInputProps('name')}
               />
 

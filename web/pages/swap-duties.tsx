@@ -17,13 +17,16 @@ import {
   Input,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
+import { showNotification } from '@mantine/notifications'
 import {
   IconArrowBadgeLeft,
   IconArrowBadgeRight,
   IconCalendar,
+  IconCheck,
   IconClock,
   IconEdit,
   IconReplace,
+  IconX,
 } from '@tabler/icons-react'
 
 import useSwapRequest from '@/hooks/useSwapRequest'
@@ -73,12 +76,65 @@ export default function SwapDuties() {
   const { classes } = useStyles()
 
   const { data: session } = useSession()
-  const { data: swapRecords } = useSwapRequest()
+  const { data: swapRecords, mutate } = useSwapRequest()
   const { received, sentByMe } = sortSwapRequests(swapRecords, session?.user?.id)
 
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [activeTab, setActiveTab] = useState<string | null>('received')
   const [currentSwapRequest, setCurrentSwapRequest] = useState<SanitySwapRequest | null>(null)
   const [opened, { open, close }] = useDisclosure(false)
+
+  // function to handle the swap request, either approve or deny
+  async function handleSwapRequest(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    const action = e.currentTarget.innerText.toLowerCase()
+
+    if (!currentSwapRequest || !action || !session?.user?.id) return
+
+    setIsSubmitting(true)
+
+    try {
+      const res = await fetch(`/api/sanity/user/${session.user.id}/swap-request`, {
+        method: action === 'cancel request' ? 'DELETE' : 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          calendar: currentSwapRequest?.calendar?.id,
+          // Receiver is the target user
+          receiver: currentSwapRequest?.receiver?.id,
+          receiverDate: currentSwapRequest?.receiverDate,
+          // Requester is the current user
+          requester: currentSwapRequest?.requester?.id,
+          requesterDate: currentSwapRequest?.requesterDate,
+          action,
+        }),
+      })
+      const data = await res.json()
+
+      if (data?.status === 'error') {
+        showNotification({
+          title: 'Error',
+          message: data?.message || 'Cannot update user, something went wrong',
+          color: 'red',
+          icon: <IconX />,
+        })
+      } else {
+        showNotification({
+          title: 'Success',
+          message: data?.message || 'Swap request updated successfully',
+          color: 'green',
+          icon: <IconCheck />,
+        })
+        close()
+      }
+
+      if (mutate) mutate()
+    } catch (error) {
+      console.error(error)
+    }
+
+    setIsSubmitting(false)
+  }
 
   return (
     <>
@@ -174,15 +230,15 @@ export default function SwapDuties() {
             >
               {activeTab === 'received' ? (
                 <>
-                  <Button color="red" fullWidth>
+                  <Button color="red" fullWidth onClick={handleSwapRequest} loading={isSubmitting}>
                     Deny
                   </Button>
-                  <Button color="teal" fullWidth>
+                  <Button color="teal" fullWidth onClick={handleSwapRequest} loading={isSubmitting}>
                     Approve
                   </Button>
                 </>
               ) : (
-                <Button color="gray" fullWidth>
+                <Button color="gray" fullWidth onClick={handleSwapRequest} loading={isSubmitting}>
                   Cancel Request
                 </Button>
               )}
@@ -338,7 +394,10 @@ export default function SwapDuties() {
                             : theme.colors.gray[2],
                       },
                     })}
-                    onClick={open}
+                    onClick={() => {
+                      setCurrentSwapRequest(swapRequest)
+                      open()
+                    }}
                   >
                     <Group grow noWrap>
                       <div>

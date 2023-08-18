@@ -87,7 +87,11 @@ export default function IndexPage() {
 
   const dutyDates = calendar?.find((cal) => isSameMonth(new Date(cal.date), month))
   const drawerSelectData = dutyDates?.roster
-    ?.filter((roster) => roster?.personnel?.id === session?.user?.id)
+    ?.filter(
+      (roster) =>
+        roster?.personnel?.id === session?.user?.id &&
+        new Date(roster?.date).getTime() > new Date().getTime(),
+    )
     .map((roster) =>
       new Date(roster.date).toLocaleDateString(undefined, {
         weekday: 'short',
@@ -144,7 +148,7 @@ export default function IndexPage() {
       } else {
         showNotification({
           title: 'Success',
-          message: 'User updated successfully',
+          message: 'Swap request has been created',
           color: 'green',
           icon: <IconCheck />,
         })
