@@ -24,12 +24,9 @@ webPush.setVapidDetails(
  * -- Sanity Webhook Structure --
  * Name: New Calendar Roster Notification
  * Description: Sends a push notification to the user when a new calendar roster is published
+ * URL: https://<your-domain>/api/notification
  * Trigger On: Create
  * Filter: `_type == "calendar"`
- * // Projection: `{
- * //   date,
- * //   'dutyPersonnels': array::unique(roster[].dutyPersonnel._ref)
- * }`
  * Projection: `{
  *  date,
  *  "dutyPersonnels": roster[].dutyPersonnel {
@@ -80,7 +77,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       const message = 'Invalid signature'
       console.warn(message)
       return res.status(401).send({ status: 'error', message: `Unauthorized, ${message}` })
-    }
+    } else if (!body)
+      return res.status(400).json({ status: 'error', message: 'Bad request, empty body' })
 
     // TODO: swap-request and calendar are the only types that are allowed to be published
 
