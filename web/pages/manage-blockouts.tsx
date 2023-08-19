@@ -66,21 +66,24 @@ export default function ManageBlockoutPage() {
 
     const numWeekends = weekends.length
     const numSelectedWeekends = weekends.filter((w) =>
-      currentMonthSelected.some((s) => dayjs(s).isSame(w, 'date'))
+      currentMonthSelected.some((s) => dayjs(s).isSame(w, 'date')),
     ).length
-    const canSelectWeekend = numSelectedWeekends < numWeekends - 1
+    const canSelectWeekend = numSelectedWeekends < numWeekends - 2
 
     if (isSelected) {
       setSelected((current) => current.filter((d) => !dayjs(d).isSame(date, 'date')))
     } else if (
       currentMonthSelected.length !== maximumBlockouts &&
-      !currentMonthSelected.includes(date) &&
-      canSelectWeekend
+      !currentMonthSelected.includes(date)
     ) {
+      if (isWeekend(date) && !canSelectWeekend) {
+        return
+      }
+
       setSelected((current) =>
         current.includes(date)
           ? current.filter((d) => !dayjs(d).isSame(date, 'date'))
-          : [...current, date]
+          : [...current, date],
       )
     }
   }
@@ -90,7 +93,7 @@ export default function ManageBlockoutPage() {
     setIsSubmitting(true)
     try {
       const blockoutDates = selected.map((date) =>
-        date.toLocaleDateString('sv-SE')
+        date.toLocaleDateString('sv-SE'),
       ) as TDateISODate[]
 
       const res = await fetch(`/api/sanity/user/${session?.user?.id}/blockouts`, {
@@ -141,8 +144,7 @@ export default function ManageBlockoutPage() {
 
       <Text color="dimmed" mt="md">
         View and manage your blockouts. The day you selected will be your blockout date, make sure
-        to save after you are done. You are only able to block out dates within the current month
-        and next month.
+        to save after you are done.
       </Text>
       <List mt="lg">
         <List.Item>
@@ -160,8 +162,9 @@ export default function ManageBlockoutPage() {
         withCellSpacing={false}
         hideOutsideDates
         size="xl"
+        defaultDate={dayjs(new Date()).add(1, 'month').toDate()}
         minDate={dayjs(new Date()).startOf('month').toDate()}
-        maxDate={dayjs(new Date()).endOf('month').add(1, 'month').toDate()}
+        maxDate={dayjs(new Date()).endOf('month').add(2, 'month').toDate()}
         getDayProps={(date) => {
           const isWeekend = date.getDay() === 0 || date.getDay() === 6
 
