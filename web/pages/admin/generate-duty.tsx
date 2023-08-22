@@ -218,26 +218,34 @@ export default function GenerateDutyPage() {
     notifications.clean()
 
     if (personnel.length > 3 && month) {
-      try {
-        const { dutyPersonnel, dutyDates } = createDutyRoster(personnel, month, extraDate)
-        setDutyRoster(dutyDates)
-        setDutyPersonnelState(dutyPersonnel)
+      // Loop until no error is thrown, but max iteration is 100
+      for (let i = 0; i < 100; i++) {
+        try {
+          const { dutyPersonnel, dutyDates } = createDutyRoster(personnel, month, extraDate)
 
-        showNotification({
-          title: 'Success',
-          message: 'Successfully generated duty roster',
-          color: 'green',
-          icon: <IconCheck />,
-        })
-      } catch (error) {
-        if (error instanceof Error) {
-          console.error(error.message)
+          // If no error is thrown, set the duty roster and duty personnel
+          setDutyRoster(dutyDates)
+          setDutyPersonnelState(dutyPersonnel)
           showNotification({
-            title: 'Error',
-            message: `${error.message}, you can try again or contact the developer`,
-            color: 'red',
-            icon: <IconX />,
+            title: 'Success',
+            message: 'Successfully generated duty roster',
+            color: 'green',
+            icon: <IconCheck />,
           })
+          break
+        } catch (error) {
+          if (error instanceof Error) {
+            // Last iteration, show error
+            if (i === 99) {
+              console.error(error.message)
+              showNotification({
+                title: 'Error',
+                message: `${error.message}, you can try again or contact the developer`,
+                color: 'red',
+                icon: <IconX />,
+              })
+            }
+          }
         }
       }
     } else {

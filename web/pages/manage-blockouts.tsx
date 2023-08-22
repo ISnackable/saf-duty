@@ -29,6 +29,9 @@ const useStyles = createStyles((theme) => ({
 }))
 
 const MAXIMUM_BLOCKOUTS = 12
+const TODAY = new Date()
+const MIN_MONTH = dayjs(TODAY).startOf('month').toDate()
+const MAX_MONTH = dayjs(TODAY).endOf('month').add(2, 'month').toDate()
 
 ManageBlockoutPage.title = 'Manage Blockouts'
 
@@ -45,7 +48,17 @@ export default function ManageBlockoutPage() {
 
   useEffect(() => {
     if (data?.blockouts) {
-      setSelected(data.blockouts ? data.blockouts.map((date) => new Date(date)) : [])
+      setSelected(
+        data.blockouts
+          ? data.blockouts
+              .filter(
+                (date) =>
+                  new Date(date).getTime() >= MIN_MONTH.getTime() &&
+                  new Date(date).getTime() <= MAX_MONTH.getTime(),
+              )
+              .map((date) => new Date(date))
+          : [],
+      )
     }
   }, [data?.blockouts])
 
@@ -162,9 +175,9 @@ export default function ManageBlockoutPage() {
         withCellSpacing={false}
         hideOutsideDates
         size="xl"
-        defaultDate={dayjs(new Date()).add(1, 'month').toDate()}
-        minDate={dayjs(new Date()).startOf('month').toDate()}
-        maxDate={dayjs(new Date()).endOf('month').add(2, 'month').toDate()}
+        defaultDate={dayjs(TODAY).add(1, 'month').toDate()}
+        minDate={MIN_MONTH}
+        maxDate={MAX_MONTH}
         getDayProps={(date) => {
           const isWeekend = date.getDay() === 0 || date.getDay() === 6
 

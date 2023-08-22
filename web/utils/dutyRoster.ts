@@ -173,9 +173,12 @@ function createDutyPersonnel(personnel: AllSanityUser[]): Personnel[] {
  */
 function createDutyDate(personnel: Personnel[], date: Date[], extraDates: Date[]): DutyDate[] {
   return date.map((date) => {
-    const blockouts = personnel
+    const blockoutPersonnels = personnel
       .filter((person) => {
-        return person.blockouts?.includes(date)
+        const blockoutTime =
+          person.blockouts?.map((blockout) => blockout.setHours(0, 0, 0, 0)) ?? []
+
+        return blockoutTime.includes(date.setHours(0, 0, 0, 0))
       })
       .map((person) => person.name)
 
@@ -183,7 +186,7 @@ function createDutyDate(personnel: Personnel[], date: Date[], extraDates: Date[]
       date: date,
       isExtra: isDateInArray(extraDates, date),
       isWeekend: isWeekend(date),
-      blockout: blockouts,
+      blockout: blockoutPersonnels,
       personnel: null,
       standby: null,
       allocated: false,
