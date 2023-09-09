@@ -16,7 +16,7 @@ export default function useBlockouts() {
   if (isDemo) {
     return {
       data: {
-        maxBlockouts: 12,
+        maxBlockouts: 8,
         blockouts: demo.blockouts,
       },
       error: null,

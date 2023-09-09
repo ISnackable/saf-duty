@@ -28,7 +28,7 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-const MAXIMUM_BLOCKOUTS = 12
+export const MAXIMUM_BLOCKOUTS = 8
 const TODAY = new Date()
 const MIN_MONTH = dayjs(TODAY).startOf('month').toDate()
 const MAX_MONTH = dayjs(TODAY).endOf('month').add(2, 'month').toDate()

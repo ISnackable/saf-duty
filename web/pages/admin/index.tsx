@@ -26,6 +26,7 @@ import { showNotification } from '@mantine/notifications'
 import { IconCheck, IconPencil, IconTrash, IconUsers, IconX } from '@tabler/icons-react'
 
 import useUsers from '@/hooks/useUsers'
+import { MAXIMUM_BLOCKOUTS } from '@/pages/manage-blockouts'
 
 interface MaxBlockout {
   userId: string
@@ -287,11 +288,11 @@ export default function AdminPage() {
       <td>
         <NumberInput
           withAsterisk
-          placeholder="12"
+          placeholder={`${MAXIMUM_BLOCKOUTS}`}
           max={120}
           min={0}
           disabled={isSubmitting}
-          defaultValue={user.maxBlockouts ? user.maxBlockouts : 12}
+          defaultValue={user.maxBlockouts ? user.maxBlockouts : MAXIMUM_BLOCKOUTS}
           onChange={(value) => setValue({ userId: user.id, value })}
         />
       </td>

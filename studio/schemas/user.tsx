@@ -109,7 +109,7 @@ export default defineType({
       name: 'maxBlockouts',
       title: 'Maximum No. of Blockouts',
       type: 'number',
-      initialValue: 12,
+      initialValue: 8,
       validation: (Rule) => Rule.integer().positive().max(120),
     }),
     defineField({
