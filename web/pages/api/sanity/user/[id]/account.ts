@@ -17,7 +17,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   const { name, email, password, oldPassword } = req.body
 
   try {
-    const user = await clientWithToken.fetch(getUserByIdQuery, { id: req.id })
+    const user = await clientWithToken.fetch(getUserByIdQuery, { id: req.id, userSchema: 'user' })
     const isOldPasswordCorrect = await argon2.verify(user?.password, oldPassword)
 
     console.log('isOldPasswordCorrect', isOldPasswordCorrect)

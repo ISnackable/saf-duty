@@ -112,6 +112,42 @@ export default function AdminPage() {
       onConfirm: () => console.log('Confirmed'),
     })
 
+  async function onResetPassword(userId: string) {
+    if (!userId) return
+
+    setIsSubmitting(true)
+
+    try {
+      const res = await fetch(`/api/sanity/user/${userId}/reset-password`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      const data = await res.json()
+
+      if (data?.status === 'error') {
+        showNotification({
+          title: 'Error',
+          message: data?.message || 'Cannot reset password, something went wrong',
+          color: 'red',
+          icon: <IconX />,
+        })
+      } else {
+        showNotification({
+          title: 'Success',
+          message: 'Password reset successfully',
+          color: 'green',
+          icon: <IconCheck />,
+        })
+      }
+    } catch (error) {
+      console.error(error)
+    }
+
+    setIsSubmitting(false)
+  }
+
   async function onRoleChange(userId: string, value: string | null) {
     setIsSubmitting(true)
 
@@ -397,6 +433,13 @@ export default function AdminPage() {
           />
 
           <Group position="right" mt="lg">
+            <Button
+              color="red"
+              onClick={() => onResetPassword(form.values.id)}
+              loading={isSubmitting}
+            >
+              Reset Password
+            </Button>
             <Button color="gray" onClick={close}>
               Cancel
             </Button>
