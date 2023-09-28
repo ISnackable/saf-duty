@@ -66,22 +66,18 @@ export default function ManageBlockoutPage() {
     const isSelected = selected.some((s) => dayjs(date).isSame(s, 'date'))
     const currentMonthSelected = selected.filter((d) => dayjs(d).isSame(date, 'month'))
 
-    let firstDay = dayjs(date).startOf('month')
-    const lastDay = dayjs(date).endOf('month')
+    const currentMonth = dayjs(date).startOf('month')
+    const lastDayOfMonth = dayjs(date).endOf('month')
 
-    const weekends = []
-    while (firstDay.isBefore(lastDay, 'day')) {
-      if (isWeekend(firstDay.toDate())) {
-        weekends.push(firstDay.toDate())
-      }
-      firstDay = firstDay.add(1, 'day')
-    }
+    const { weekends, fridays } = calculateWeekendsAndFridays(currentMonth, lastDayOfMonth)
+    const numWeekends = weekends.size
+    const numFridays = fridays.size
 
-    const numWeekends = weekends.length
-    const numSelectedWeekends = weekends.filter((w) =>
-      currentMonthSelected.some((s) => dayjs(s).isSame(w, 'date')),
-    ).length
+    const numSelectedWeekends = countSelectedDates(weekends, currentMonthSelected)
+    const numSelectedFridays = countSelectedDates(fridays, currentMonthSelected)
+
     const canSelectWeekend = numSelectedWeekends < numWeekends - 2
+    const canSelectFriday = numSelectedFridays < numFridays - 1
 
     if (isSelected) {
       setSelected((current) => current.filter((d) => !dayjs(d).isSame(date, 'date')))
@@ -89,7 +85,7 @@ export default function ManageBlockoutPage() {
       currentMonthSelected.length !== maximumBlockouts &&
       !currentMonthSelected.includes(date)
     ) {
-      if (isWeekend(date) && !canSelectWeekend) {
+      if ((dayjs(date).day() === 5 && !canSelectFriday) || (isWeekend(date) && !canSelectWeekend)) {
         return
       }
 
@@ -99,6 +95,28 @@ export default function ManageBlockoutPage() {
           : [...current, date],
       )
     }
+  }
+
+  function calculateWeekendsAndFridays(currentMonth: dayjs.Dayjs, lastDayOfMonth: dayjs.Dayjs) {
+    const weekends = new Set<Date>()
+    const fridays = new Set<Date>()
+
+    while (currentMonth.isBefore(lastDayOfMonth, 'day')) {
+      if (isWeekend(currentMonth.toDate())) {
+        weekends.add(currentMonth.toDate())
+      } else if (currentMonth.day() === 5) {
+        fridays.add(currentMonth.toDate())
+      }
+      currentMonth = currentMonth.add(1, 'day')
+    }
+
+    return { weekends, fridays }
+  }
+
+  function countSelectedDates(dates: Set<Date>, currentMonthSelected: Date[]) {
+    return Array.from(dates).filter((d) =>
+      currentMonthSelected.some((s) => dayjs(s).isSame(d, 'date')),
+    ).length
   }
 
   //sent blockout date to back end
@@ -156,15 +174,20 @@ export default function ManageBlockoutPage() {
       </div>
 
       <Text color="dimmed" mt="md">
-        View and manage your blockouts. The day you selected will be your blockout date, make sure
-        to save after you are done.
+        View and manage your blockouts. The day you selected will be your blockout date,{' '}
+        <b>
+          <u>make sure to save</u>
+        </b>{' '}
+        after you are done.
       </Text>
       <List mt="lg">
         <List.Item>
           Only a maximum of {maximumBlockouts} blockouts date per month (subject to change)
         </List.Item>
         <List.Item>Inform the person-in-charge if you need more blockouts</List.Item>
-        <List.Item>You are not allowed to blockout every weekend of the month</List.Item>
+        <List.Item>
+          You are not allowed to blockout every <u>weekend & friday</u> of the month
+        </List.Item>
       </List>
       <Divider mt="sm" />
 
