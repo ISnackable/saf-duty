@@ -327,6 +327,7 @@ export default function AdminPage() {
           placeholder={`${MAXIMUM_BLOCKOUTS}`}
           max={120}
           min={0}
+          hideControls
           disabled={isSubmitting}
           defaultValue={user.maxBlockouts ? user.maxBlockouts : MAXIMUM_BLOCKOUTS}
           onChange={(value) => setValue({ userId: user.id, value })}

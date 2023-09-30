@@ -36,6 +36,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
       return {
         _key: dutyDate.date,
         date: dutyDate.date,
+        isExtra: dutyDate.isExtra,
         dutyPersonnel: { _type: 'reference', _ref: dutyPerson?.id, _weak: true },
         dutyPersonnelStandIn: { _type: 'reference', _ref: dutyPersonStandIn?.id, _weak: true },
       }

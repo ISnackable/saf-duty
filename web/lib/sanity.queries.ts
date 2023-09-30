@@ -20,6 +20,7 @@ export interface Calendar {
 
 export interface Roster {
   date: TDateISODate
+  isExtra: boolean
   personnel: Pick<SanityUser, 'id' | 'name'>
   standby: Pick<SanityUser, 'id' | 'name'>
 }
@@ -134,6 +135,7 @@ export const getAllUserCalendarQuery = groq`*[_type == 'calendar' && references(
   date,
   roster[]{
     date,
+    isExtra,
     "personnel": dutyPersonnel->{
       "id": _id,
       name
@@ -150,6 +152,7 @@ export const getCalendarQuery = groq`*[_type == 'calendar' && _id == $id && !(_i
   date,
   roster[]{
     date,
+    isExtra,
     "personnel": dutyPersonnel->{
       "id": _id,
       name
@@ -165,7 +168,8 @@ export const getUserSwapRequestQuery = groq`*[_type == "swapRequest" && referenc
   ...,
   calendar->{
     "id": _id,
-    date
+    date,
+    isExtra
   },
   "receiver": receiver->{
     "id": _id,

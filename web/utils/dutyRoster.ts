@@ -381,13 +381,14 @@ function assignExtraShift(personnel: Personnel[], dutyDates: DutyDate[]) {
     personnel = sortByKey(personnel, 'extra', true)
 
     let j = 0
-    while (dutyDates[i - 1].blockout.includes(personnel[j].name) || personnel[j].extra == 0) {
+    while (dutyDates[i - 1].blockout.includes(personnel[j].name) || personnel[j].extra === 0) {
       j += 1
+      // If no one can do extra shift, stop assigning extra shifts
       if (j === personnel.length - 1) return false
     }
 
     // Assign Extra shift to person who has worked the least Extras
-    dutyDates[i - 1].personnel = `${personnel[j].name} EX`
+    dutyDates[i - 1].personnel = personnel[j].name
 
     personnel[j].extra -= 1
     personnel[j].EX_DONE += 1
@@ -433,8 +434,16 @@ export function createDutyRoster(users: AllSanityUser[], month: Date, extraDates
   const dutyPersonnel = createDutyPersonnel(users)
   const dutyDates = createDutyDate(dutyPersonnel, getDatesInMonth(month), extraDates)
 
-  // Assign Extra shift
-  assignExtraShift(dutyPersonnel, dutyDates)
+  // Assign Extra shift if there are extra dates
+  if (extraDates.length > 0) {
+    assignExtraShift(dutyPersonnel, dutyDates)
+    // Mark all extra dates as false if they are not allocated
+    for (let k = 0; k < dutyDates.length; ++k) {
+      if (dutyDates[k].isExtra && !dutyDates[k].allocated) {
+        dutyDates[k].isExtra = false
+      }
+    }
+  }
 
   // Calculate WD and WE allocation
   const { weekdayAllocation, additionalWeekdayAllocation } = calculateWeekdayShift(

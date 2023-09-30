@@ -69,6 +69,12 @@ export default defineType({
             disableNew: true,
           },
         }),
+        defineField({
+          name: 'isExtra',
+          title: 'Is Extra',
+          type: 'boolean',
+          initialValue: false,
+        }),
       ],
       preview: {
         select: {
