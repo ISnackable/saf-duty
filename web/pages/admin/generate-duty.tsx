@@ -13,9 +13,11 @@ import {
   Table,
   Modal,
   ScrollArea,
+  Checkbox,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Calendar, MonthPickerInput, DatePickerInput, isSameMonth } from '@mantine/dates'
+import { useForm } from '@mantine/form'
 import { notifications, showNotification } from '@mantine/notifications'
 import { modals } from '@mantine/modals'
 import {
@@ -52,6 +54,13 @@ interface ItemProps extends React.ComponentPropsWithoutRef<'div'> {
   image: string
 }
 
+interface FormValues {
+  date: Date
+  dutyPersonnel: string | null
+  standbyPersonnel: string | null
+  isExtra: boolean
+}
+
 const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
   ({ image, label, ...others }: ItemProps, ref) => (
     <div ref={ref} {...others}>
@@ -76,9 +85,18 @@ export default function GenerateDutyPage() {
   const { data: users, error } = useUsers()
   const { data: calendar } = useCalendar()
 
+  const modalForm = useForm<FormValues>({
+    initialValues: {
+      date: firstDay,
+      dutyPersonnel: '',
+      standbyPersonnel: '',
+      isExtra: false,
+    },
+  })
+
   const data = users?.map((user) => ({
-    label: user.name || 'Default',
-    value: user.name || 'default',
+    label: user.name,
+    value: user.name,
     image: user.image || '',
   }))
   const { classes } = useStyles()
@@ -86,22 +104,12 @@ export default function GenerateDutyPage() {
   const [dutyRoster, setDutyRoster] = useState<DutyDate[]>([])
   const [dutyPersonnelState, setDutyPersonnelState] = useState<Personnel[]>([])
 
-  const [modalDateValue, setModalDateValue] = useState<Date>(firstDay)
-  const [modalDPValue, setModalDPValue] = useState<string | null | undefined>(null)
-  const [modalSBValue, setModalSBValue] = useState<string | null | undefined>(null)
   const [multiSelectValue, setMultiSelectValue] = useState<string[]>([])
-
   const [extraDate, setExtraDate] = useState<Date[]>([])
   const [month, onMonthChange] = useState<Date | null>(firstDay)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [opened, { open, close }] = useDisclosure(false)
-
-  useEffect(() => {
-    if (modalDPValue !== null && modalSBValue !== null) {
-      open()
-    }
-  }, [open, modalDPValue, modalSBValue])
 
   // Make sure extraDates is cleared whenever new month is selected
   useEffect(() => {
@@ -112,9 +120,9 @@ export default function GenerateDutyPage() {
         date: new Date(date.date),
         personnel: date.personnel?.name,
         standby: date.standby?.name,
-        isExtra: false,
+        isExtra: date.isExtra,
         blockout: [],
-        isWeekend: false,
+        isWeekend: isWeekend(new Date(date.date)),
         allocated: false,
       }))
       setDutyRoster(roster)
@@ -164,6 +172,7 @@ export default function GenerateDutyPage() {
 
     const dutyDates = [...dutyRoster].map((date) => ({
       date: date.date.toLocaleDateString('sv-SE'),
+      isExtra: date.isExtra,
       personnel: date.personnel,
       standby: date.standby,
     }))
@@ -210,7 +219,7 @@ export default function GenerateDutyPage() {
     setIsSubmitting(false)
   }
 
-  const handleClick = () => {
+  const handleGenerate = () => {
     const personnel = [...(users || [])].filter((user) =>
       multiSelectValue.includes(user.name || ''),
     )
@@ -263,32 +272,39 @@ export default function GenerateDutyPage() {
       <Modal
         opened={opened}
         onClose={close}
-        title={modalDateValue?.toLocaleDateString()}
+        title={modalForm.values.date?.toLocaleDateString()}
         centered
         size="xl"
       >
         <Text fz="sm" mb="sm">
           Please select the duty personnel and the stand in for{' '}
-          {modalDateValue?.toLocaleDateString()}. You should make sure that the stand in is not the
-          same person as the duty personnel. It is also recommended that the duty personnel/stand in
-          is not the same person as the next/previous person.
+          {modalForm.values.date?.toLocaleDateString()}. You should make sure that the stand in is
+          not the same person as the duty personnel. It is also recommended that the duty
+          personnel/stand in is not the same person as the next/previous person.
         </Text>
+
         <Group grow>
           <Select
             withinPortal
             label="Duty personnel"
-            value={modalDPValue}
-            onChange={setModalDPValue}
             data={data || []}
+            {...modalForm.getInputProps('dutyPersonnel')}
           />
           <Select
             withinPortal
             label="Stand in"
-            value={modalSBValue}
-            onChange={setModalSBValue}
             data={data || []}
+            {...modalForm.getInputProps('standbyPersonnel')}
           />
         </Group>
+
+        {modalForm.values.date && isWeekend(modalForm.values.date) && (
+          <Checkbox
+            mt="sm"
+            label="is Extra?"
+            {...modalForm.getInputProps('isExtra', { type: 'checkbox' })}
+          />
+        )}
 
         <Group position="right" mt="xl">
           <Button color="gray" onClick={close}>
@@ -296,36 +312,52 @@ export default function GenerateDutyPage() {
           </Button>
           <Button
             onClick={() => {
+              const day = modalForm.values.date.getDate()
+
               const newDutyRoster = [...dutyRoster]
               const newDutyPersonnel = [...dutyPersonnelState]
-              const index = newDutyRoster.findIndex(
-                (date) => date.date.setHours(0, 0, 0) === modalDateValue.setHours(0, 0, 0),
-              )
+
+              const index = day - 1
 
               const newPersonnel = newDutyPersonnel.find(
-                (personnel) => personnel.name === modalDPValue,
+                (personnel) => personnel.name === modalForm.values.dutyPersonnel,
               )
               const oldPersonnel = newDutyPersonnel.find(
                 (personnel) => personnel.name === newDutyRoster[index]?.personnel,
               )
 
-              // TODO: Figure out how to swap extras between personnel
-              if (index !== -1 && newPersonnel && oldPersonnel) {
-                newDutyRoster[index].personnel = modalDPValue || ''
-                newDutyRoster[index].standby = modalSBValue || ''
+              if (index > -1 && newPersonnel && oldPersonnel) {
+                newDutyRoster[index].personnel = modalForm.values.dutyPersonnel || ''
+                newDutyRoster[index].standby = modalForm.values.standbyPersonnel || ''
+                newDutyRoster[index].isExtra = modalForm.values.isExtra
 
-                if (isWeekend(modalDateValue)) {
+                if (isWeekend(modalForm.values.date)) {
+                  // Lower points mean more priority to be duty
                   newPersonnel.WE_DONE += 1
                   oldPersonnel.WE_DONE -= 1
-                  // Pts would be plus/minus by 2 as it would calcuate the points after the duty roster is generated
-                  newPersonnel.weekendPoints += 2
-                  oldPersonnel.weekendPoints -= 2
+                  newPersonnel.weekendPoints += 1
+                  oldPersonnel.weekendPoints -= 1
                 } else {
                   newPersonnel.WD_DONE += 1
                   oldPersonnel.WD_DONE -= 1
-                  // Pts would be plus/minus by 2 as it would calcuate the points after the duty roster is generated
-                  newPersonnel.weekdayPoints += 2
-                  oldPersonnel.weekdayPoints -= 2
+                  newPersonnel.weekdayPoints += 1
+                  oldPersonnel.weekdayPoints -= 1
+                }
+
+                if (modalForm.values.isExtra && newPersonnel.extra > 0) {
+                  newPersonnel.EX_DONE += 1
+                  newPersonnel.extra -= 1
+
+                  // Extra does not count as a weekend duty
+                  newPersonnel.WE_DONE -= 1
+                  newPersonnel.weekendPoints -= 1
+                } else if (!modalForm.values.isExtra && newPersonnel.extra > 0) {
+                  newPersonnel.EX_DONE -= 1
+                  newPersonnel.extra += 1
+
+                  // Revert back if the duty personnel is not extra and just a normal duty
+                  newPersonnel.WE_DONE += 1
+                  newPersonnel.weekendPoints += 1
                 }
 
                 setDutyRoster(newDutyRoster)
@@ -333,7 +365,7 @@ export default function GenerateDutyPage() {
 
                 showNotification({
                   title: 'Success',
-                  message: `Successfully updated ${modalDateValue?.toLocaleDateString()}`,
+                  message: `Successfully updated ${modalForm.values.date?.toLocaleDateString()}`,
                   color: 'green',
                   icon: <IconCheck />,
                 })
@@ -341,11 +373,11 @@ export default function GenerateDutyPage() {
                 // Check if the duty personnel/stand in has more than 2 consecutive days of duty/standby
                 if (
                   (newDutyRoster[index + 1] &&
-                    (newDutyRoster[index + 1].personnel === modalDPValue ||
-                      newDutyRoster[index + 1].standby === modalSBValue)) ||
+                    (newDutyRoster[index + 1].personnel === modalForm.values.dutyPersonnel ||
+                      newDutyRoster[index + 1].standby === modalForm.values.standbyPersonnel)) ||
                   (newDutyRoster[index - 1] &&
-                    (newDutyRoster[index - 1].personnel === modalDPValue ||
-                      newDutyRoster[index - 1].standby === modalSBValue))
+                    (newDutyRoster[index - 1].personnel === modalForm.values.dutyPersonnel ||
+                      newDutyRoster[index - 1].standby === modalForm.values.standbyPersonnel))
                 ) {
                   showNotification({
                     title: 'Warning',
@@ -364,6 +396,7 @@ export default function GenerateDutyPage() {
           </Button>
         </Group>
       </Modal>
+
       <Container my="xl" size="xl">
         <div className={classes.titleWrapper}>
           <IconChessKnight size={48} />
@@ -438,13 +471,14 @@ export default function GenerateDutyPage() {
               const day = date.getDate()
 
               if (dutyRoster.length > 0) {
-                if (date.valueOf() === modalDateValue.valueOf()) {
-                  open()
-                } else {
-                  setModalDateValue(date)
-                  setModalDPValue(dutyRoster?.[day - 1]?.personnel)
-                  setModalSBValue(dutyRoster?.[day - 1]?.standby)
-                }
+                modalForm.setValues({
+                  date: date,
+                  dutyPersonnel: dutyRoster?.[day - 1]?.personnel,
+                  standbyPersonnel: dutyRoster?.[day - 1]?.standby,
+                  isExtra: dutyRoster?.[day - 1]?.isExtra,
+                })
+                modalForm.resetDirty()
+                open()
               }
             },
           })}
@@ -496,7 +530,8 @@ export default function GenerateDutyPage() {
                   </Text>
 
                   <Text size="xs" align="center" mb="auto">
-                    {dutyRoster?.[day - 1]?.personnel} ({dutyRoster?.[day - 1]?.standby})
+                    {dutyRoster?.[day - 1]?.personnel} {dutyRoster?.[day - 1]?.isExtra ? 'EX' : ''}{' '}
+                    ({dutyRoster?.[day - 1]?.standby})
                   </Text>
                 </Flex>
               )
@@ -508,7 +543,7 @@ export default function GenerateDutyPage() {
           <Button
             mt="xl"
             color="teal.6"
-            onClick={handleClick}
+            onClick={handleGenerate}
             leftIcon={<IconDatabase size="1rem" />}
           >
             Generate

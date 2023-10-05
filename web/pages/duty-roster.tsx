@@ -299,9 +299,9 @@ export default function IndexPage() {
             },
           })}
           getDayProps={(date) => {
+            const day = date.getDate()
             const defaultDayProps = {
               onClick: () => {
-                const day = date.getDate()
                 const userId = session?.user?.id
 
                 if (dutyDates) {
@@ -335,6 +335,7 @@ export default function IndexPage() {
             // Check if date isWeekend
             const isWeekend = date.getDay() === 0 || date.getDay() === 6
             const isToday = date.toDateString() === new Date().toDateString()
+            const isExtra = dutyDates?.roster?.[day - 1]?.isExtra
 
             if (isToday) {
               return {
@@ -342,6 +343,17 @@ export default function IndexPage() {
                 sx: (theme) => ({
                   color: `${
                     theme.colorScheme === 'dark' ? theme.colors.blue[2] : theme.colors.blue[4]
+                  } !important`,
+                  backgroundColor:
+                    theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[2],
+                }),
+              }
+            } else if (isExtra) {
+              return {
+                ...defaultDayProps,
+                sx: (theme) => ({
+                  color: `${
+                    theme.colorScheme === 'dark' ? theme.colors.red[7] : theme.colors.indigo[7]
                   } !important`,
                   backgroundColor:
                     theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[2],
@@ -384,7 +396,8 @@ export default function IndexPage() {
                   </Text>
                   {dutyDates && (
                     <Text size="xs" align="center" mb="auto">
-                      {dutyDates?.roster?.[day - 1]?.personnel?.name} (
+                      {dutyDates?.roster?.[day - 1]?.personnel?.name}{' '}
+                      {dutyDates?.roster?.[day - 1]?.isExtra ? 'EX' : ''} (
                       {dutyDates?.roster?.[day - 1]?.standby?.name})
                     </Text>
                   )}
