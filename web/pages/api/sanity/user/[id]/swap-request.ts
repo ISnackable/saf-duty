@@ -128,10 +128,10 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
           if (user.id === requester) return false
           else if (!blockouts) return false
           else if (
-            previousRequesterRoster &&
-            previousRequesterRoster.standby.id === user.id &&
-            nextRequesterRoster &&
-            nextRequesterRoster.standby.id === user.id
+            (previousRequesterRoster && previousRequesterRoster.personnel.id === user.id) ||
+            (previousRequesterRoster && previousRequesterRoster.standby.id === user.id) ||
+            (nextRequesterRoster && nextRequesterRoster.personnel.id === user.id) ||
+            (nextRequesterRoster && nextRequesterRoster.standby.id === user.id)
           ) {
             return false
           }
@@ -148,10 +148,10 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
           if (user.id === receiver) return false
           else if (!blockouts) return false
           else if (
-            previousReceiverRoster &&
-            previousReceiverRoster.standby.id === user.id &&
-            nextReceiverRoster &&
-            nextReceiverRoster.standby.id === user.id
+            (previousRequesterRoster && previousRequesterRoster.personnel.id === user.id) ||
+            (previousRequesterRoster && previousRequesterRoster.standby.id === user.id) ||
+            (nextRequesterRoster && nextRequesterRoster.personnel.id === user.id) ||
+            (nextRequesterRoster && nextRequesterRoster.standby.id === user.id)
           ) {
             return false
           }
@@ -167,14 +167,19 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
           })
         }
 
+        // By default, the stand-in will be the same as the original standin
         let newRequesterStandIn = requesterRoster.standby.id
         let newReceiverStandIn = receiverRoster.standby.id
 
         if (
           requesterRoster.standby.id === receiver ||
           (previousRequesterRoster &&
-            requesterRoster.standby.id === previousRequesterRoster.standby.id) ||
-          (nextRequesterRoster && requesterRoster.standby.id === nextRequesterRoster.standby.id)
+            previousRequesterRoster.personnel.id === requesterRoster.standby.id) ||
+          (previousRequesterRoster &&
+            previousRequesterRoster.standby.id === requesterRoster.standby.id) ||
+          (nextRequesterRoster &&
+            nextRequesterRoster.personnel.id === requesterRoster.standby.id) ||
+          (nextRequesterRoster && nextRequesterRoster.standby.id === requesterRoster.standby.id)
         ) {
           // Assign a random user from the availableUsersOnRequesterDate
           newRequesterStandIn =
@@ -186,8 +191,11 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
         if (
           receiverRoster.standby.id === requester ||
           (previousReceiverRoster &&
-            receiverRoster.standby.id === previousReceiverRoster.standby.id) ||
-          (nextReceiverRoster && receiverRoster.standby.id === nextReceiverRoster.standby.id)
+            previousReceiverRoster.personnel.id === receiverRoster.standby.id) ||
+          (previousReceiverRoster &&
+            previousReceiverRoster.standby.id === receiverRoster.standby.id) ||
+          (nextReceiverRoster && nextReceiverRoster.personnel.id === receiverRoster.standby.id) ||
+          (nextReceiverRoster && nextReceiverRoster.standby.id === receiverRoster.standby.id)
         ) {
           // Assign a random user from the availableUsersOnReceiverDate
           newReceiverStandIn =
@@ -196,12 +204,53 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
             ].id
         }
 
+        // const newRoster = [...roster] as object[]
+
+        // newRoster[requesterRosterIndex] = {
+        //   _key: requesterRoster.date,
+        //   date: requesterRoster.date,
+        //   // TODO: Check if the date is a weekend, then it can be an extra, if not the swap should be allowed
+        //   isExtra: receiverRoster.isExtra,
+        //   dutyPersonnel: {
+        //     _type: 'reference',
+        //     _ref: receiver,
+        //     _weak: true,
+        //   },
+        //   dutyPersonnelStandIn: {
+        //     _type: 'reference',
+        //     _ref: newReceiverStandIn,
+        //     _weak: true,
+        //   },
+        // }
+
+        // newRoster[receiverRosterIndex] = {
+        //   _key: receiverRoster.date,
+        //   date: receiverRoster.date,
+        //   isExtra: requesterRoster.isExtra,
+        //   dutyPersonnel: {
+        //     _type: 'reference',
+        //     _ref: requester,
+        //     _weak: true,
+        //   },
+        //   dutyPersonnelStandIn: {
+        //     _type: 'reference',
+        //     _ref: newRequesterStandIn,
+        //     _weak: true,
+        //   },
+        // }
+
         const newRoster = roster.map((r) => {
           // If newRequesterStandIn or newReceiverStandIn is not defined, then just return the original stand-in
 
           return {
             _key: r.date,
             date: r.date,
+            isExtra:
+              r.date === requesterDate
+                ? receiverRoster.isExtra
+                : r.date === receiverDate
+                ? requesterRoster.isExtra
+                : r.isExtra,
             dutyPersonnel: {
               _type: 'reference',
               _ref:
