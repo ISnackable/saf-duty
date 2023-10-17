@@ -6,7 +6,6 @@ import {
   authentication,
   refreshAuthCookies,
 } from "next-firebase-auth-edge/lib/next/middleware"
-import { getTokens } from "next-firebase-auth-edge/lib/next/tokens"
 
 import { authConfig } from "@/config/server-config"
 
