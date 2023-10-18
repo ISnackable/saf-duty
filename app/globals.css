@@ -48,3 +48,13 @@
     --ring: 224.3 76.3% 48%;
   }
 }
+
+@media screen and (max-width: 767px) {
+  select,
+  textarea,
+  input[type='text'],
+  input[type='number'],
+  input {
+    font-size: 16px !important;
+  }
+}
