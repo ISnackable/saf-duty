@@ -1,3 +1,4 @@
+import { DatePicker } from "@/components/date-picker";
 import Header from "@/components/header";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
@@ -32,6 +33,7 @@ export default async function Index() {
 				<main className="flex-1 flex flex-col gap-6">
 					<h2 className="font-bold text-4xl mb-4">Next steps</h2>
 					A
+					<DatePicker mode="single" />
 				</main>
 			</div>
 

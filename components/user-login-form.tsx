@@ -42,6 +42,7 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
 			toast("Something went wrong.", {
 				description: "Your sign in request failed. Please try again.",
 			});
+			setIsLoading(false);
 		} else {
 			toast(message || "Successfully logged in.", {
 				description:
@@ -51,8 +52,6 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
 			// redirect to dashboard
 			router.replace("/");
 		}
-
-		setIsLoading(false);
 	}
 
 	return (
