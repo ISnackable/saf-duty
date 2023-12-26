@@ -22,61 +22,11 @@ import { Input } from "@/components/ui/input";
 import { PinInput } from "@/components/ui/pin-input";
 import { Popover, PopoverContent } from "@/components/ui/popover";
 import { Progress } from "@/components/ui/progress";
+import { RegisterFormSchema, requirements } from "@/utils/auth-validation";
 import { cn } from "@/utils/cn";
 import { toast } from "sonner";
 
 type UserRegisterFormProps = React.HTMLAttributes<HTMLDivElement>;
-
-const requirements = [
-	{ re: /[0-9]/, label: "Includes number" },
-	{ re: /[a-z]/, label: "Includes lowercase letter" },
-	{ re: /[A-Z]/, label: "Includes uppercase letter" },
-	{ re: /[$&+,:;=?@#|'<>.^*()%!-]/, label: "Includes special symbol" },
-];
-
-// name should be at least 2 characters and no numbers
-const RegisterFormSchema = z.object({
-	name: z
-		.string()
-		.min(2, {
-			message: "Name must be at least 2 characters",
-		})
-		.trim()
-		.refine(
-			(value) => {
-				return !/\d/.test(value);
-			},
-			{
-				message: "Name must not include numbers",
-			},
-		),
-	email: z
-		.string()
-		.email({
-			message: "Email must be a valid email",
-		})
-		.trim()
-		.toLowerCase(),
-	// Password must include a number, a lowercase letter, an uppercase letter, and a special character.
-	password: z
-		.string()
-		.min(6, {
-			message: "Password must be at least 6 characters",
-		})
-		.max(32, { message: "Password must be less than 32 characters" })
-		.refine(
-			(value) => {
-				return requirements.every((requirement) => requirement.re.test(value));
-			},
-			{
-				message:
-					"Password must include a number, a lowercase letter, an uppercase letter, and a special character",
-			},
-		),
-	unit: z.string().length(4, {
-		message: "Unit code must be 4 digits",
-	}),
-});
 
 export type RegisterFormData = z.infer<typeof RegisterFormSchema>;
 
@@ -140,10 +90,10 @@ export function UserRegisterForm({
 
 	async function handleRegisterForm(data: RegisterFormData) {
 		setIsLoading(true);
-		const { error, message } = await signUp(data);
+		const { status, message } = await signUp(data);
 
-		if (error) {
-			toast("Something went wrong.", {
+		if (status === "error") {
+			toast(message || "Something went wrong.", {
 				description: "Your sign up request failed. Please try again.",
 			});
 		} else {

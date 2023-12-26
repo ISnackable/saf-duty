@@ -1,8 +1,8 @@
-import { DatePicker } from "@/components/date-picker";
+import AuthButton from "@/components/AuthButton";
 import Header from "@/components/header";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
-import AuthButton from "../components/AuthButton";
+import { ClienTestPage } from "./client-page";
 
 export default async function Index() {
 	const cookieStore = cookies();
@@ -33,7 +33,7 @@ export default async function Index() {
 				<main className="flex-1 flex flex-col gap-6">
 					<h2 className="font-bold text-4xl mb-4">Next steps</h2>
 					A
-					<DatePicker mode="single" />
+					<ClienTestPage />
 				</main>
 			</div>
 

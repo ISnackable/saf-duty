@@ -12,14 +12,11 @@ import { Icons } from "@/components/icons";
 import { buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LoginFormSchema } from "@/utils/auth-validation";
 import { cn } from "@/utils/cn";
+import Link from "next/link";
 
 type UserLoginFormProps = React.HTMLAttributes<HTMLDivElement>;
-
-const LoginFormSchema = z.object({
-	email: z.string().email().trim().toLowerCase(),
-	password: z.string().min(1, { message: "Password is required" }),
-});
 
 export type LoginFormData = z.infer<typeof LoginFormSchema>;
 
@@ -36,10 +33,10 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
 
 	async function handleLoginForm(data: LoginFormData) {
 		setIsLoading(true);
-		const { error, message } = await signIn(data);
+		const { status, message } = await signIn(data);
 
-		if (error) {
-			toast("Something went wrong.", {
+		if (status === "error") {
+			toast(message || "Something went wrong.", {
 				description: "Your sign in request failed. Please try again.",
 			});
 			setIsLoading(false);
@@ -77,7 +74,16 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
 						)}
 					</div>
 					<div className="mb-2 grid gap-1">
-						<Label htmlFor="password">Password</Label>
+						<div className="flex justify-between">
+							<Label htmlFor="password">Password</Label>
+
+							<Link
+								href="/reset-password"
+								className="text-sm font-medium hover:underline"
+							>
+								Forgot Password?
+							</Link>
+						</div>
 						<Input
 							id="password"
 							type="password"

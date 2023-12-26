@@ -21,8 +21,11 @@ export async function GET(request: NextRequest) {
 		});
 
 		if (!error) {
+			redirectTo.searchParams.delete("token_hash");
 			return NextResponse.redirect(redirectTo);
 		}
+
+		console.error(error);
 	}
 
 	// return the user to an error page with some instructions

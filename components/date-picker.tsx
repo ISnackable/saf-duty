@@ -26,10 +26,23 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { DateState, useDateState } from "@/hooks/use-dates-state";
+import { DateState } from "@/hooks/use-dates-state";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/utils/cn";
-import { type DateRange, type DaySelectionMode } from "react-day-picker";
+import {
+	type DateRange,
+	DayPicker,
+	type DaySelectionMode,
+} from "react-day-picker";
+
+export type DatePickerProps = React.ComponentProps<typeof DayPicker> & {
+	mode?: DaySelectionMode;
+	value: DateState;
+	onChange:
+		| React.Dispatch<React.SetStateAction<Date>>
+		| React.Dispatch<React.SetStateAction<Date[]>>
+		| React.Dispatch<React.SetStateAction<DateRange>>;
+};
 
 function formatDate(mode: DaySelectionMode, date: DateState) {
 	if (mode === "single" && date instanceof Date) {
@@ -60,11 +73,16 @@ function formatDate(mode: DaySelectionMode, date: DateState) {
 	}
 }
 
-export function DatePicker({ mode = "single" }: { mode: DaySelectionMode }) {
+export function DatePicker({
+	mode = "single",
+	value: date,
+	onChange: setDate,
+	...props
+}: DatePickerProps) {
 	const [open, setOpen] = React.useState(false);
-	const [date, setDate] = useDateState(mode);
 
 	const isDesktop = useMediaQuery("(min-width: 768px)");
+	const formattedDate = formatDate(mode, date);
 
 	if (isDesktop) {
 		return (
@@ -73,12 +91,12 @@ export function DatePicker({ mode = "single" }: { mode: DaySelectionMode }) {
 					<Button
 						variant={"outline"}
 						className={cn(
-							"w-[240px] justify-start text-left h-fit font-normal whitespace-normal break-normal",
+							"w-[240px] justify-start text-left font-normal align-middle whitespace-nowrap overflow-hidden",
 							!date && "text-muted-foreground",
 						)}
 					>
 						<CalendarIcon className="mr-2 h-4 w-4" />
-						{formatDate(mode, date)}
+						<span className="truncate">{formattedDate}</span>
 					</Button>
 				</PopoverTrigger>
 				<PopoverContent
@@ -88,7 +106,10 @@ export function DatePicker({ mode = "single" }: { mode: DaySelectionMode }) {
 					{mode === "single" ? (
 						<Select
 							onValueChange={(value) =>
-								setDate(addDays(new Date(), parseInt(value)))
+								// setDate should only be React.Dispatch<React.SetStateAction<Date>> here
+								(setDate as React.Dispatch<React.SetStateAction<Date>>)(
+									addDays(new Date(), parseInt(value)),
+								)
 							}
 						>
 							<SelectTrigger>
@@ -104,12 +125,13 @@ export function DatePicker({ mode = "single" }: { mode: DaySelectionMode }) {
 					) : null}
 
 					<div className="rounded-md border">
-						{/* @ts-ignore */}
 						<Calendar
 							initialFocus
 							mode={mode}
 							selected={date}
+							/* @ts-ignore  */
 							onSelect={setDate}
+							{...props}
 						/>
 					</div>
 				</PopoverContent>
@@ -123,12 +145,12 @@ export function DatePicker({ mode = "single" }: { mode: DaySelectionMode }) {
 				<Button
 					variant={"outline"}
 					className={cn(
-						"w-[240px] justify-start text-left h-fit font-normal whitespace-normal break-normal",
+						"w-[240px] justify-start text-left font-normal align-middle whitespace-nowrap overflow-hidden",
 						!date && "text-muted-foreground",
 					)}
 				>
 					<CalendarIcon className="mr-2 h-4 w-4" />
-					{formatDate(mode, date)}
+					<span className="truncate">{formattedDate}</span>
 				</Button>
 			</DrawerTrigger>
 			<DrawerContent>
@@ -136,7 +158,9 @@ export function DatePicker({ mode = "single" }: { mode: DaySelectionMode }) {
 					<DrawerHeader className="text-left">
 						<Select
 							onValueChange={(value) =>
-								setDate(addDays(new Date(), parseInt(value)))
+								(setDate as React.Dispatch<React.SetStateAction<Date>>)(
+									addDays(new Date(), parseInt(value)),
+								)
 							}
 						>
 							<SelectTrigger>
@@ -152,33 +176,18 @@ export function DatePicker({ mode = "single" }: { mode: DaySelectionMode }) {
 					</DrawerHeader>
 				) : null}
 
-				{mode === "single" ? (
-					<Calendar
-						initialFocus
-						mode="single"
-						selected={date as Date}
-						onSelect={setDate}
-					/>
-				) : mode === "range" ? (
-					<Calendar
-						initialFocus
-						mode="range"
-						defaultMonth={(date as DateRange)?.from}
-						selected={date as DateRange}
-						onSelect={setDate}
-					/>
-				) : mode === "multiple" ? (
-					<Calendar
-						initialFocus
-						mode="multiple"
-						selected={date as Date[]}
-						onSelect={setDate}
-					/>
-				) : null}
+				<Calendar
+					initialFocus
+					mode={mode}
+					selected={date}
+					/* @ts-ignore  */
+					onSelect={setDate}
+					{...props}
+				/>
 
 				<DrawerFooter className="pt-2">
 					<DrawerClose asChild>
-						<Button variant="outline">Cancel</Button>
+						<Button variant="outline">Done</Button>
 					</DrawerClose>
 				</DrawerFooter>
 			</DrawerContent>

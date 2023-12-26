@@ -1,16 +1,21 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { GeistSans } from "geist/font/sans";
+import { type Metadata, type Viewport } from "next";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
 	? `https://${process.env.VERCEL_URL}`
 	: "http://localhost:3000";
 
-export const metadata = {
+export const metadata: Metadata = {
 	metadataBase: new URL(defaultUrl),
 	title: "Next.js and Supabase Starter Kit",
 	description: "The fastest way to build apps with Next.js and Supabase",
+};
+
+export const viewPort: Viewport = {
+	themeColor: "#0a0a0a",
 };
 
 export default function RootLayout({
@@ -20,11 +25,26 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en" className={GeistSans.className} suppressHydrationWarning>
+			<head>
+				<meta name="theme-color" content="#0a0a0a" />
+				<script
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: workaround for setting theme color meta tag
+					dangerouslySetInnerHTML={{
+						__html: `
+              try {
+                if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0a0a0a')
+                }
+              } catch (_) {}
+            `,
+					}}
+				/>
+			</head>
 			<body className="bg-background text-foreground">
-				<main className="min-h-screen flex flex-col items-center">
+				<main className="min-h-screen antialiased">
 					<ThemeProvider
 						attribute="class"
-						defaultTheme="dark"
+						defaultTheme="system"
 						enableSystem={true}
 						disableTransitionOnChange
 					>
