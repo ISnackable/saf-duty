@@ -1,8 +1,9 @@
 'use client';
 
-import { Icons } from '@/components/icons';
 import { useTheme } from 'next-themes';
 import * as React from 'react';
+
+import { Icons } from '@/components/icons';
 
 export const ThemeSwitcher = () => {
   const { theme, resolvedTheme, setTheme } = useTheme();

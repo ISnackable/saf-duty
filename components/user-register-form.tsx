@@ -5,6 +5,7 @@ import { PopoverAnchor } from '@radix-ui/react-popover';
 import { Check, X } from 'lucide-react';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import * as z from 'zod';
 
 import { signUp } from '@/app/(auth)/actions';
@@ -24,7 +25,6 @@ import { Popover, PopoverContent } from '@/components/ui/popover';
 import { Progress } from '@/components/ui/progress';
 import { RegisterFormSchema, requirements } from '@/utils/auth-validation';
 import { cn } from '@/utils/cn';
-import { toast } from 'sonner';
 
 type UserRegisterFormProps = React.HTMLAttributes<HTMLDivElement>;
 

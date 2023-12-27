@@ -1,11 +1,12 @@
 'use server';
 
+import { cookies, headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+
 import { type LoginFormData } from '@/components/user-login-form';
 import { type RegisterFormData } from '@/components/user-register-form';
 import { LoginFormSchema, RegisterFormSchema } from '@/utils/auth-validation';
 import { createClient } from '@/utils/supabase/server';
-import { cookies, headers } from 'next/headers';
-import { redirect } from 'next/navigation';
 
 export type State =
   | {

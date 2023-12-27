@@ -1,11 +1,14 @@
 'use client';
 
+// import { cn } from "@/utils/cn";
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTheme } from 'next-themes';
+import React from 'react';
 // import { ChevronDownIcon } from "@radix-ui/react-icons";
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import * as z from 'zod';
 
-// import { cn } from "@/utils/cn";
 import { Button, buttonVariants } from '@/components/ui/button';
 import {
   Form,
@@ -17,9 +20,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { toast } from 'sonner';
-import { useTheme } from 'next-themes';
-import React from 'react';
 
 const appearanceFormSchema = z.object({
   theme: z.enum(['system', 'light', 'dark'], {

@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
@@ -14,7 +15,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LoginFormSchema } from '@/utils/auth-validation';
 import { cn } from '@/utils/cn';
-import Link from 'next/link';
 
 type UserLoginFormProps = React.HTMLAttributes<HTMLDivElement>;
 

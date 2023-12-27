@@ -9,10 +9,6 @@ const withPWA = withPWAInit({
 });
 
 /** @type {import('next').NextConfig} */
-const nextConfig = withPWA({
-  experimental: {
-    typedRoutes: true,
-  },
-});
+const nextConfig = withPWA({});
 
 export default nextConfig;

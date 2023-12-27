@@ -1,7 +1,9 @@
+import { cookies } from 'next/headers';
+
 import AuthButton from '@/components/AuthButton';
 import Header from '@/components/header';
 import { createClient } from '@/utils/supabase/server';
-import { cookies } from 'next/headers';
+
 import { ClienTestPage } from './client-page';
 
 export default async function Index() {

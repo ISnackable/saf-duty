@@ -1,5 +1,6 @@
-import { createClient } from '@/utils/supabase/middleware';
 import { type NextRequest, NextResponse } from 'next/server';
+
+import { createClient } from '@/utils/supabase/middleware';
 
 const PUBLIC_PATHS = ['/register', '/login', '/reset-password'];
 

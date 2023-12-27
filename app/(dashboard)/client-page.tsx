@@ -1,5 +1,8 @@
 'use client';
 
+import { CalendarIcon } from 'lucide-react';
+import * as React from 'react';
+
 import { ComboBox, Item } from '@/components/combo-box';
 import { DatePicker } from '@/components/date-picker';
 import { Modal } from '@/components/modal';
@@ -9,8 +12,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/utils/cn';
-import { CalendarIcon } from 'lucide-react';
-import * as React from 'react';
 
 const statuses = [
   {
@@ -47,14 +48,14 @@ function AvatarIcon() {
 }
 
 export function ClienTestPage() {
-  const [date, setDate] = React.useState([new Date()]);
+  const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [selected, setSelected] = React.useState<Item | null>(null);
 
   return (
     <div>
       <ThemeSwitcher />
 
-      <DatePicker mode='multiple' value={date} onChange={setDate} />
+      <DatePicker mode='single' selected={date} onSelect={setDate} />
 
       <Modal
         title='Testing'

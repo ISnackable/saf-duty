@@ -4,10 +4,12 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
 import { DayPicker } from 'react-day-picker';
 
+import { type DayPickerProps } from '@/components/date-picker';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/utils/cn';
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+export type CalendarProps = DayPickerProps;
+const MyDayPicker = DayPicker as React.ComponentType<CalendarProps>;
 
 function Calendar({
   className,
@@ -18,7 +20,7 @@ function Calendar({
   const { numberOfMonths } = props;
 
   return (
-    <DayPicker
+    <MyDayPicker
       showOutsideDays={showOutsideDays}
       className={cn('p-3', className)}
       classNames={{

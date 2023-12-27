@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { cn } from '@/utils/cn';
 import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/utils/cn';
 
 interface SettingsNav extends React.HTMLAttributes<HTMLElement> {
   items: {

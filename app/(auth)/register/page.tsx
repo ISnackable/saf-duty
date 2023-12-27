@@ -1,6 +1,5 @@
-import Link from 'next/link';
-
 import { type Metadata } from 'next';
+import Link from 'next/link';
 
 import { Icons } from '@/components/icons';
 import { buttonVariants } from '@/components/ui/button';

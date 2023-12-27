@@ -1,8 +1,9 @@
-import { ThemeProvider } from '@/components/theme-provider';
-import { Toaster } from '@/components/ui/sonner';
+import './globals.css';
 import { GeistSans } from 'geist/font/sans';
 import { type Metadata, type Viewport } from 'next';
-import './globals.css';
+
+import { ThemeProvider } from '@/components/theme-provider';
+import { Toaster } from '@/components/ui/sonner';
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`

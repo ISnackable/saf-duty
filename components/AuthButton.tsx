@@ -1,7 +1,8 @@
-import { signOut } from '@/app/(auth)/actions';
-import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
+
+import { signOut } from '@/app/(auth)/actions';
+import { createClient } from '@/utils/supabase/server';
 
 export default async function AuthButton() {
   const cookieStore = cookies();

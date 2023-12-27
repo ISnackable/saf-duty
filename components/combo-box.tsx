@@ -1,5 +1,7 @@
 'use client';
 
+import { CaretSortIcon } from '@radix-ui/react-icons';
+import { type LucideIcon } from 'lucide-react';
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -18,7 +20,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { useMediaQuery } from '@/hooks/use-media-query';
-import { type LucideIcon } from 'lucide-react';
+import { cn } from '@/utils/cn';
 
 export type Item = {
   label: string;
@@ -51,9 +53,13 @@ export function ComboBox({
           <Button
             variant='outline'
             aria-expanded={open}
-            className='w-[150px] justify-start align-middle'
+            className={cn(
+              'w-[150px] justify-between align-middle',
+              !selected?.value && 'text-muted-foreground'
+            )}
           >
             {selected ? <>&#x3E; {selected.label}</> : <>+ Pick value</>}
+            <CaretSortIcon className='ml-2 h-4 w-4 shrink-0 opacity-50' />
           </Button>
         </PopoverTrigger>
         <PopoverContent className='w-[200px] p-0' align='start'>
@@ -96,9 +102,13 @@ export function ComboBox({
       <DrawerTrigger asChild>
         <Button
           variant='outline'
-          className='w-[150px] justify-start align-middle'
+          className={cn(
+            'w-[150px] justify-between align-middle',
+            !selected?.value && 'text-muted-foreground'
+          )}
         >
           {selected ? <>&#x3E; {selected.label}</> : <>+ Pick value</>}
+          <CaretSortIcon className='ml-2 h-4 w-4 shrink-0 opacity-50' />
         </Button>
       </DrawerTrigger>
       <DrawerContent>
