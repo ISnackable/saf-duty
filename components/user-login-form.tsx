@@ -10,6 +10,7 @@ import * as z from 'zod';
 
 import { signIn } from '@/app/(auth)/actions';
 import { Icons } from '@/components/icons';
+import { PasswordInput } from '@/components/password-input';
 import { buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -88,9 +89,8 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
                 Forgot Password?
               </Link>
             </div>
-            <Input
+            <PasswordInput
               id='password'
-              type='password'
               autoComplete='password'
               disabled={isLoading}
               {...register('password')}

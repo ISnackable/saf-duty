@@ -1,7 +1,7 @@
 'use client';
 
 import { CaretSortIcon } from '@radix-ui/react-icons';
-import { type LucideIcon } from 'lucide-react';
+import { CheckIcon, type LucideIcon } from 'lucide-react';
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -58,7 +58,7 @@ export function ComboBox({
               !selected?.value && 'text-muted-foreground'
             )}
           >
-            {selected ? <>&#x3E; {selected.label}</> : <>+ Pick value</>}
+            {selected ? <>{selected.label}</> : <>+ Pick value</>}
             <CaretSortIcon className='ml-2 h-4 w-4 shrink-0 opacity-50' />
           </Button>
         </PopoverTrigger>
@@ -87,6 +87,9 @@ export function ComboBox({
                       <item.icon className='mr-2 h-4 w-4 text-muted-foreground' />
                     )}
                     {item.label}
+                    {item.value === selected?.value ? (
+                      <CheckIcon className='h-4 w-4 absolute right-2 flexitems-center justify-center' />
+                    ) : null}
                   </CommandItem>
                 ))}
               </CommandGroup>
@@ -107,7 +110,7 @@ export function ComboBox({
             !selected?.value && 'text-muted-foreground'
           )}
         >
-          {selected ? <>&#x3E; {selected.label}</> : <>+ Pick value</>}
+          {selected ? <>{selected.label}</> : <>+ Pick value</>}
           <CaretSortIcon className='ml-2 h-4 w-4 shrink-0 opacity-50' />
         </Button>
       </DrawerTrigger>
@@ -137,6 +140,9 @@ export function ComboBox({
                       <item.icon className='mr-2 h-4 w-4 text-muted-foreground' />
                     )}
                     {item.label}
+                    {item.value === selected?.value ? (
+                      <CheckIcon className='h-4 w-4 absolute right-2 flexitems-center justify-center' />
+                    ) : null}
                   </CommandItem>
                 ))}
               </CommandGroup>

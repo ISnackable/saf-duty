@@ -89,8 +89,6 @@ function formatDate(mode: DaySelectionMode, date: DayPickerProps['selected']) {
 
       return format(range.from, 'LLL dd, y');
     }
-  } else {
-    return <span>Pick a date</span>;
   }
 }
 
@@ -102,7 +100,7 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
 }: DayPickerProps<T>) {
   const [open, setOpen] = React.useState(false);
   const [formattedDate, setFormattedDate] = React.useState<
-    string | JSX.Element
+    string | undefined
   >();
 
   const isDesktop = useMediaQuery('(min-width: 768px)');
@@ -124,7 +122,9 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
             )}
           >
             <CalendarIcon className='mr-2 h-4 w-4' />
-            <span className='truncate'>{formattedDate}</span>
+            <span className='truncate'>
+              {formattedDate ? formattedDate : <span>Pick a date</span>}
+            </span>
           </Button>
         </PopoverTrigger>
         <PopoverContent
@@ -177,7 +177,9 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
           )}
         >
           <CalendarIcon className='mr-2 h-4 w-4' />
-          <span className='truncate'>{formattedDate}</span>
+          <span className='truncate'>
+            {formattedDate ? formattedDate : <span>Pick a date</span>}
+          </span>
         </Button>
       </DrawerTrigger>
       <DrawerContent>

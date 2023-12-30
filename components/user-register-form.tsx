@@ -26,6 +26,8 @@ import { Progress } from '@/components/ui/progress';
 import { RegisterFormSchema, requirements } from '@/utils/auth-validation';
 import { cn } from '@/utils/cn';
 
+import { PasswordInput } from './password-input';
+
 type UserRegisterFormProps = React.HTMLAttributes<HTMLDivElement>;
 
 export type RegisterFormData = z.infer<typeof RegisterFormSchema>;
@@ -66,6 +68,11 @@ export function UserRegisterForm({
 }: UserRegisterFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [popoverOpened, setPopoverOpened] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(RegisterFormSchema),
@@ -164,10 +171,10 @@ export function UserRegisterForm({
                         <FormItem>
                           <FormLabel>Password</FormLabel>
                           <FormControl>
-                            <Input
+                            <PasswordInput
                               title='Password must include a number, a lowercase letter, an uppercase letter, and a special character.'
                               id='password'
-                              type='password'
+                              // type='password'
                               autoCapitalize='none'
                               autoComplete='password'
                               autoCorrect='off'
@@ -188,7 +195,7 @@ export function UserRegisterForm({
                   <Progress value={strength} className='w-80 text-zinc-300' />
                   <PasswordRequirement
                     label='Includes at least 6 characters'
-                    meets={passwordValue?.length > 5}
+                    meets={passwordValue?.length >= 6}
                   />
                   {checks}
                 </PopoverContent>
