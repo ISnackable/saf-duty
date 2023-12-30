@@ -29,8 +29,13 @@ function Calendar({
           numberOfMonths && numberOfMonths > 1 ? 'sm:flex-row' : ''
         ),
         month: 'space-y-4 grow',
-        caption: 'flex justify-center pt-1 relative items-center',
-        caption_label: 'text-sm font-medium',
+        caption: 'flex justify-center pt-1 relative items-center px-10',
+        caption_label: 'flex items-center gap-2 text-sm font-medium',
+        caption_dropdowns: 'flex gap-4 [&_.rdp-vhidden]:hidden',
+        dropdown_month: 'relative inline-flex items-center',
+        dropdown_year: 'relative inline-flex items-center',
+        dropdown:
+          'absolute inset-0 w-full appearance-none opacity-0 z-10 cursor-pointer',
         nav: 'space-x-1 flex items-center',
         nav_button: cn(
           buttonVariants({ variant: 'outline' }),

@@ -1,8 +1,9 @@
 import { type Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 
-import { Icons } from '@/components/icons';
 import { UserLoginForm } from '@/components/user-login-form';
+import svgImage from '@/public/undraw_fingerprint_re_uf3f.svg';
 
 export const metadata: Metadata = {
   title: 'Login',
@@ -14,7 +15,16 @@ export default function LoginPage() {
     <div className='container flex h-screen w-screen flex-col items-center justify-center'>
       <div className='mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]'>
         <div className='flex flex-col space-y-2 text-center'>
-          <Icons.logo className='mx-auto h-6 w-6' />
+          <div className='relative h-[30vh]'>
+            <Image
+              priority
+              src={svgImage}
+              fill={true}
+              alt='Undraw personal information logo'
+              className='object-contain'
+            />
+          </div>
+
           <h1 className='text-2xl font-semibold tracking-tight'>
             Welcome back
           </h1>

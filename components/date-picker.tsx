@@ -102,6 +102,7 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
   const [formattedDate, setFormattedDate] = React.useState<
     string | undefined
   >();
+  const currentYear = new Date().getFullYear();
 
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
@@ -158,6 +159,9 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
               mode={mode}
               selected={date}
               onSelect={setDate}
+              fromYear={currentYear - 5}
+              toYear={currentYear + 5}
+              captionLayout='dropdown-buttons'
               {...props}
             />
           </div>
@@ -210,6 +214,9 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
           mode={mode}
           selected={date}
           onSelect={setDate}
+          fromYear={currentYear - 5}
+          toYear={currentYear + 5}
+          captionLayout='dropdown-buttons'
           {...props}
         />
 

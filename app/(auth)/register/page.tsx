@@ -1,9 +1,10 @@
 import { type Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 
-import { Icons } from '@/components/icons';
 import { buttonVariants } from '@/components/ui/button';
 import { UserRegisterForm } from '@/components/user-register-form';
+import svgImage from '@/public/undraw_exciting_news_re_y1iw.svg';
 import { cn } from '@/utils/cn';
 
 export const metadata: Metadata = {
@@ -26,7 +27,16 @@ export default function RegisterPage() {
       <div className='lg:p-8'>
         <div className='mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]'>
           <div className='flex flex-col space-y-2 text-center'>
-            <Icons.logo className='mx-auto h-6 w-6' />
+            <div className='relative mt-12 h-[30vh]'>
+              <Image
+                priority
+                src={svgImage}
+                fill={true}
+                alt='Undraw personal information logo'
+                className='object-contain'
+              />
+            </div>
+
             <h1 className='text-2xl font-semibold tracking-tight'>
               Create an account
             </h1>

@@ -1,15 +1,16 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PopoverAnchor } from '@radix-ui/react-popover';
 import { Check, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
-import { signUp } from '@/app/(auth)/actions';
+import { changePassword } from '@/app/(auth)/actions';
 import { Icons } from '@/components/icons';
+import { PasswordInput } from '@/components/password-input';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -17,24 +18,23 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { PinInput } from '@/components/ui/pin-input';
-import { Popover, PopoverContent } from '@/components/ui/popover';
+import {
+  Popover,
+  PopoverAnchor,
+  PopoverContent,
+} from '@/components/ui/popover';
 import { Progress } from '@/components/ui/progress';
 import {
-  RegisterFormSchema,
+  ChangeFormSchema,
   getStrength,
   requirements,
 } from '@/utils/auth-validation';
 import { cn } from '@/utils/cn';
 
-import { PasswordInput } from './password-input';
+type UserChangeFormProps = React.HTMLAttributes<HTMLDivElement>;
 
-type UserRegisterFormProps = React.HTMLAttributes<HTMLDivElement>;
-
-export type RegisterFormData = z.infer<typeof RegisterFormSchema>;
+export type ChangeFormData = z.infer<typeof ChangeFormSchema>;
 
 function PasswordRequirement({
   meets,
@@ -53,22 +53,16 @@ function PasswordRequirement({
   );
 }
 
-export function UserRegisterForm({
-  className,
-  ...props
-}: UserRegisterFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [popoverOpened, setPopoverOpened] = React.useState(false);
-
-  const form = useForm<RegisterFormData>({
-    resolver: zodResolver(RegisterFormSchema),
+export function UserChangeForm({ className, ...props }: UserChangeFormProps) {
+  const form = useForm<ChangeFormData>({
+    resolver: zodResolver(ChangeFormSchema),
     defaultValues: {
-      name: '',
-      email: '',
       password: '',
-      unit: '',
     },
   });
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [popoverOpened, setPopoverOpened] = React.useState(false);
+  const router = useRouter();
 
   const passwordValue = form.watch('password');
 
@@ -81,69 +75,29 @@ export function UserRegisterForm({
     />
   ));
 
-  async function handleRegisterForm(data: RegisterFormData) {
+  async function handleChangeForm(data: ChangeFormData) {
     setIsLoading(true);
-    const { status, message } = await signUp(data);
+    const { status, message } = await changePassword(data);
 
     if (status === 'error') {
       toast(message || 'Something went wrong.', {
         description: 'Your sign up request failed. Please try again.',
       });
     } else {
-      toast(message || 'Check your email.', {
-        description:
-          'We sent you a login link. Be sure to check your spam too.',
+      toast(message || 'Successfully changed password', {
+        description: "You've successfully changed your password.",
       });
+      // redirect to dashboard
+      router.replace('/');
     }
-
-    setIsLoading(false);
   }
 
   return (
     <div className={cn('grid gap-6', className)} {...props}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleRegisterForm)}>
+        <form onSubmit={form.handleSubmit(handleChangeForm)}>
           <div className='grid gap-2'>
-            <div className='grid gap-2'>
-              <FormField
-                control={form.control}
-                name='name'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder='your name' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className='grid gap-2'>
-              <FormField
-                control={form.control}
-                name='email'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        id='email'
-                        placeholder='name@example.com'
-                        type='email'
-                        autoCapitalize='none'
-                        autoComplete='email'
-                        autoCorrect='off'
-                        disabled={isLoading}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className='grid gap-2'>
+            <div className='mb-2 grid gap-2'>
               <Popover open={popoverOpened}>
                 <PopoverAnchor asChild>
                   <div
@@ -187,35 +141,12 @@ export function UserRegisterForm({
                 </PopoverContent>
               </Popover>
             </div>
-            <div className='mb-2 grid gap-2'>
-              <FormField
-                control={form.control}
-                name='unit'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Unit code</FormLabel>
-                    <FormControl>
-                      <PinInput
-                        id='unit'
-                        type='text'
-                        inputMode='numeric'
-                        disabled={isLoading}
-                        placeholder='0'
-                        {...field}
-                        value={form.watch('unit')}
-                        onChange={(val: string) => form.setValue('unit', val)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+
             <Button type='submit' disabled={isLoading}>
               {isLoading && (
                 <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
               )}
-              Create account
+              Update Password
             </Button>
           </div>
         </form>

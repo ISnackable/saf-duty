@@ -3,9 +3,16 @@
 import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
+import { ChangeFormData } from '@/components/user-change-form';
 import { type LoginFormData } from '@/components/user-login-form';
 import { type RegisterFormData } from '@/components/user-register-form';
-import { LoginFormSchema, RegisterFormSchema } from '@/utils/auth-validation';
+import { ResetFormData } from '@/components/user-reset-form';
+import {
+  ChangeFormSchema,
+  LoginFormSchema,
+  RegisterFormSchema,
+  ResetFormSchema,
+} from '@/utils/auth-validation';
 import { createClient } from '@/utils/supabase/server';
 
 export type State =
@@ -96,4 +103,69 @@ export async function signOut(): Promise<State> {
   const supabase = createClient(cookieStore);
   await supabase.auth.signOut();
   return redirect('/login');
+}
+
+export async function resetPassword(formData: ResetFormData): Promise<State> {
+  const origin = headers().get('origin');
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+  const { email } = formData;
+
+  const validatedFields = ResetFormSchema.safeParse(formData);
+
+  // Return early if the form data is invalid
+  if (!validatedFields.success) {
+    return {
+      status: 'error',
+      message: 'Form data is invalid',
+    };
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/change-password`,
+  });
+
+  if (error) {
+    return {
+      status: 'error',
+      message: 'Could not reset password',
+    };
+  }
+
+  return {
+    status: 'success',
+    message: 'Check email to continue reset password process',
+  };
+}
+
+export async function changePassword(formData: ChangeFormData): Promise<State> {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+  const { password } = formData;
+
+  const validatedFields = ChangeFormSchema.safeParse(formData);
+
+  // Return early if the form data is invalid
+  if (!validatedFields.success) {
+    return {
+      status: 'error',
+      message: 'Form data is invalid',
+    };
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    password,
+  });
+
+  if (error) {
+    return {
+      status: 'error',
+      message: 'Could not change password',
+    };
+  }
+
+  return {
+    status: 'success',
+    message: 'Successfully changed password',
+  };
 }

@@ -12,6 +12,19 @@ export const requirements = [
   { re: /[$&+,:;=?@#|'<>.^*()%!-]/, label: 'Includes special symbol' },
 ];
 
+export function getStrength(password: string) {
+  let multiplier = password.length > 5 ? 0 : 1;
+
+  // for of loop
+  for (const requirement of requirements) {
+    if (!requirement.re.test(password)) {
+      multiplier += 1;
+    }
+  }
+
+  return Math.max(100 - (100 / (requirements.length + 1)) * multiplier, 10);
+}
+
 export const RegisterFormSchema = z.object({
   name: z
     .string()
@@ -53,4 +66,32 @@ export const RegisterFormSchema = z.object({
   unit: z.string().length(4, {
     message: 'Unit code must be 4 digits',
   }),
+});
+
+export const ResetFormSchema = z.object({
+  email: z
+    .string()
+    .email({
+      message: 'Email must be a valid email',
+    })
+    .trim()
+    .toLowerCase(),
+});
+
+export const ChangeFormSchema = z.object({
+  password: z
+    .string()
+    .min(6, {
+      message: 'Password must be at least 6 characters',
+    })
+    .max(32, { message: 'Password must be less than 32 characters' })
+    .refine(
+      (value) => {
+        return requirements.every((requirement) => requirement.re.test(value));
+      },
+      {
+        message:
+          'Password must include a number, a lowercase letter, an uppercase letter, and a special character',
+      }
+    ),
 });
