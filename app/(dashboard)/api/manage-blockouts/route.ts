@@ -1,0 +1,46 @@
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
+
+import { withAuth } from '@/lib/auth';
+import { Tables } from '@/types/supabase';
+import { createClient } from '@/utils/supabase/server';
+
+const dateSchema = z.array(z.coerce.date());
+
+export const PUT = withAuth(async ({ request, session }) => {
+  const {
+    blockout_dates,
+  }: { blockout_dates: Tables<'profiles'>['blockout_dates'] } =
+    await request.json();
+
+  const { success } = dateSchema.safeParse(blockout_dates);
+  if (!success) {
+    return NextResponse.json({
+      status: 'error',
+      message: 'Invalid blockout dates',
+    });
+  }
+
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({
+      blockout_dates,
+    })
+    .eq('id', session.user.id);
+
+  if (error) {
+    return NextResponse.json({
+      status: 'error',
+      message: 'Failed to update blockout dates',
+    });
+  }
+
+  return NextResponse.json({
+    status: 'success',
+    message: 'Successfully updated blockout dates',
+  });
+});

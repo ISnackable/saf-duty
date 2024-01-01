@@ -7,6 +7,7 @@ import { type LoginFormData } from '@/components/user-login-form';
 import { type RegisterFormData } from '@/components/user-register-form';
 import { ResetFormData } from '@/components/user-reset-form';
 import { MyCustomError, authAction } from '@/lib/safe-action';
+import { type State } from '@/types/api-route';
 import {
   ChangeFormSchema,
   LoginFormSchema,
@@ -14,16 +15,6 @@ import {
   ResetFormSchema,
 } from '@/utils/auth-validation';
 import { createClient } from '@/utils/supabase/server';
-
-export type State =
-  | {
-      status: 'success';
-      message: string;
-    }
-  | {
-      status: 'error';
-      message: string;
-    };
 
 export async function signIn(formData: LoginFormData): Promise<State> {
   const { email, password } = formData;

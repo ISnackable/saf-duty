@@ -44,17 +44,6 @@ export async function middleware(request: NextRequest) {
       return redirectToHome(request);
     }
 
-    // Only allow GET requests for demo user (protect from accidental data changes)
-    if (
-      request.nextUrl.pathname.startsWith('/api') &&
-      session.user.email === 'demo@example.com' &&
-      request.method !== 'GET'
-    ) {
-      return NextResponse.json(
-        { error: 'Demo user cannot modify data' },
-        { status: 400 }
-      );
-    }
     // Authenticated user should not be able to access /admin routes if not an "admin" role
     if (
       request.nextUrl.pathname.startsWith('/admin') &&

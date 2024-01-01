@@ -99,6 +99,7 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
   ...props
 }: DayPickerProps<T>) {
   const [open, setOpen] = React.useState(false);
+  const [month, setMonth] = React.useState(new Date());
   const [formattedDate, setFormattedDate] = React.useState<
     string | undefined
   >();
@@ -134,12 +135,13 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
         >
           {mode === 'single' && setDate ? (
             <Select
-              onValueChange={(value) =>
+              onValueChange={(value) => {
                 // setDate should only be React.Dispatch<React.SetStateAction<Date>> here
                 (setDate as React.Dispatch<React.SetStateAction<Date>>)(
                   addDays(new Date(), parseInt(value))
-                )
-              }
+                );
+                setMonth(addDays(new Date(), parseInt(value)));
+              }}
             >
               <SelectTrigger>
                 <SelectValue placeholder='Select' />
@@ -157,6 +159,8 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
             <Calendar
               initialFocus
               mode={mode}
+              month={month}
+              onMonthChange={setMonth}
               selected={date}
               onSelect={setDate}
               fromYear={currentYear - 5}
@@ -190,11 +194,12 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
         {mode === 'single' && setDate ? (
           <DrawerHeader className='text-left'>
             <Select
-              onValueChange={(value) =>
+              onValueChange={(value) => {
                 (setDate as React.Dispatch<React.SetStateAction<Date>>)(
                   addDays(new Date(), parseInt(value))
-                )
-              }
+                );
+                setMonth(addDays(new Date(), parseInt(value)));
+              }}
             >
               <SelectTrigger>
                 <SelectValue placeholder='Select' />
@@ -212,6 +217,8 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
         <Calendar
           initialFocus
           mode={mode}
+          month={month}
+          onMonthChange={setMonth}
           selected={date}
           onSelect={setDate}
           fromYear={currentYear - 5}
