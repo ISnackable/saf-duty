@@ -77,14 +77,15 @@ export function UserChangeForm({ className, ...props }: UserChangeFormProps) {
 
   async function handleChangeForm(data: ChangeFormData) {
     setIsLoading(true);
-    const { status, message } = await changePassword(data);
+    const { serverError } = await changePassword(data);
 
-    if (status === 'error') {
-      toast(message || 'Something went wrong.', {
-        description: 'Your sign up request failed. Please try again.',
+    if (serverError) {
+      toast('Could not change password.', {
+        description: serverError || 'Please try again.',
       });
+      setIsLoading(false);
     } else {
-      toast(message || 'Successfully changed password', {
+      toast('Successfully changed password', {
         description: "You've successfully changed your password.",
       });
       // redirect to dashboard

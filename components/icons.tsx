@@ -1,6 +1,7 @@
 import {
   AlertTriangle,
   ArrowRight,
+  CameraIcon,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -17,6 +18,7 @@ import {
   Monitor,
   Moon,
   MoreVertical,
+  PenSquare,
   Pizza,
   Plus,
   Settings,
@@ -210,6 +212,8 @@ export const Icons = {
   check: Check,
   eye: EyeIcon,
   eyeOff: EyeOffIcon,
+  edit: PenSquare,
+  camera: CameraIcon,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden='true'

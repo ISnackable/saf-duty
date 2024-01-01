@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 
 import AuthButton from '@/components/AuthButton';
-import Header from '@/components/header';
+// import Header from '@/components/header';
 import { createClient } from '@/utils/supabase/server';
 
 import { ClienTestPage } from './client-page';
@@ -31,27 +31,12 @@ export default async function Index() {
       </nav>
 
       <div className='flex max-w-4xl flex-1 flex-col gap-20  px-3 animate-in'>
-        <Header />
         <main className='flex flex-1 flex-col gap-6'>
           <h2 className='mb-4 text-4xl font-bold'>Next steps</h2>
           A
           <ClienTestPage />
         </main>
       </div>
-
-      <footer className='flex w-full justify-center border-t border-t-foreground/10 p-8 text-center text-xs'>
-        <p>
-          Powered by{' '}
-          <a
-            href='https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs'
-            target='_blank'
-            className='font-bold hover:underline'
-            rel='noreferrer'
-          >
-            Supabase
-          </a>
-        </p>
-      </footer>
     </div>
   );
 }

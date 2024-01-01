@@ -5,14 +5,16 @@ import { type Metadata, type Viewport } from 'next';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
 
+import {
+  APP_DEFAULT_TITLE,
+  APP_DESCRIPTION,
+  APP_NAME,
+  APP_TITLE_TEMPLATE,
+} from '../site.config';
+
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : 'http://localhost:3000';
-
-const APP_NAME = 'AFPN CDO';
-const APP_DEFAULT_TITLE = 'AFPN CDO';
-const APP_TITLE_TEMPLATE = `%s - ${APP_NAME}`;
-const APP_DESCRIPTION = 'Simplifying the way you manage your duties';
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
@@ -52,8 +54,11 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewPort: Viewport = {
+export const viewport: Viewport = {
   themeColor: '#0a0a0a',
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({
@@ -64,7 +69,6 @@ export default function RootLayout({
   return (
     <html lang='en' className={GeistSans.className} suppressHydrationWarning>
       <head>
-        <meta name='theme-color' content='#0a0a0a' />
         <script
           dangerouslySetInnerHTML={{
             __html: `

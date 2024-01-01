@@ -3,10 +3,10 @@
 import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import { ChangeFormData } from '@/components/user-change-form';
 import { type LoginFormData } from '@/components/user-login-form';
 import { type RegisterFormData } from '@/components/user-register-form';
 import { ResetFormData } from '@/components/user-reset-form';
+import { MyCustomError, authAction } from '@/lib/safe-action';
 import {
   ChangeFormSchema,
   LoginFormSchema,
@@ -46,8 +46,6 @@ export async function signIn(formData: LoginFormData): Promise<State> {
   });
 
   if (error) {
-    console.error(error);
-
     return {
       status: 'error',
       message: 'Invalid login credentials',
@@ -86,6 +84,9 @@ export async function signUp(formData: RegisterFormData): Promise<State> {
   });
 
   if (error) {
+    // We do not want to display if the email is already taken / unit code is already taken
+    // This is to prevent brute force attacks
+
     return {
       status: 'error',
       message: 'Could not authenticate user',
@@ -138,34 +139,22 @@ export async function resetPassword(formData: ResetFormData): Promise<State> {
   };
 }
 
-export async function changePassword(formData: ChangeFormData): Promise<State> {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-  const { password } = formData;
+// Only authenticated users can change their password (see middleware.ts)
+export const changePassword = authAction(
+  ChangeFormSchema,
+  async (formData, { userId }) => {
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
+    const { password } = formData;
 
-  const validatedFields = ChangeFormSchema.safeParse(formData);
+    const { error } = await supabase.auth.updateUser({
+      password,
+    });
 
-  // Return early if the form data is invalid
-  if (!validatedFields.success) {
-    return {
-      status: 'error',
-      message: 'Form data is invalid',
-    };
+    if (error) {
+      throw new MyCustomError(error.message || 'Could not change password');
+    }
+
+    return { userId };
   }
-
-  const { error } = await supabase.auth.updateUser({
-    password,
-  });
-
-  if (error) {
-    return {
-      status: 'error',
-      message: 'Could not change password',
-    };
-  }
-
-  return {
-    status: 'success',
-    message: 'Successfully changed password',
-  };
-}
+);
