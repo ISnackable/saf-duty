@@ -118,7 +118,7 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
           <Button
             variant={'outline'}
             className={cn(
-              'w-[240px] justify-start overflow-hidden whitespace-nowrap text-left align-middle font-normal',
+              'justify-start overflow-hidden whitespace-nowrap text-left align-middle font-normal',
               (!date || (Array.isArray(date) && date.length <= 0)) &&
                 'text-muted-foreground'
             )}
@@ -131,7 +131,10 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
         </PopoverTrigger>
         <PopoverContent
           align='start'
-          className='flex w-auto flex-col space-y-2 p-2'
+          className={cn(
+            'flex w-auto flex-col space-y-2',
+            mode === 'single' ? 'p-2' : 'p-0'
+          )}
         >
           {mode === 'single' && setDate ? (
             <Select
@@ -180,7 +183,7 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
         <Button
           variant={'outline'}
           className={cn(
-            'w-[240px] justify-start overflow-hidden whitespace-nowrap text-left align-middle font-normal',
+            'justify-start overflow-hidden whitespace-nowrap text-left align-middle font-normal',
             !date && 'text-muted-foreground'
           )}
         >

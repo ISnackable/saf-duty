@@ -5,6 +5,7 @@ import {
   addMonths,
   eachDayOfInterval,
   endOfMonth,
+  formatISO,
   isFriday,
   isSameDay,
   isSameMonth,
@@ -77,7 +78,7 @@ export function ManageBlockoutCalendar({
   const updateBlockoutDates = async () => {
     setLoading(true);
     const blockoutDates = selectedDays.map((date) =>
-      date.toLocaleDateString('sv-SE')
+      formatISO(date, { representation: 'date' })
     );
 
     const res = await fetch('/api/manage-blockouts', {

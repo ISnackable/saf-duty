@@ -17,6 +17,7 @@ export interface Database {
           id: string;
           max_blockouts: number;
           name: string | null;
+          no_of_extras: number | null;
           ord_date: string | null;
           role: Database['public']['Enums']['role'];
           unit_id: number;
@@ -31,6 +32,7 @@ export interface Database {
           id: string;
           max_blockouts?: number;
           name?: string | null;
+          no_of_extras?: number | null;
           ord_date?: string | null;
           role?: Database['public']['Enums']['role'];
           unit_id: number;
@@ -45,6 +47,7 @@ export interface Database {
           id?: string;
           max_blockouts?: number;
           name?: string | null;
+          no_of_extras?: number | null;
           ord_date?: string | null;
           role?: Database['public']['Enums']['role'];
           unit_id?: number;

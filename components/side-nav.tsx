@@ -38,6 +38,21 @@ interface MobileSidebarProps extends SidebarProps {
 
 export const sideNavLinks: SidebarNavItem[] = [
   {
+    title: 'Admin',
+    items: [
+      {
+        title: 'Manage Users',
+        href: '/admin/manage-users',
+        icon: Home,
+      },
+      {
+        title: 'Generate Duty',
+        href: '/admin/generate-duty',
+        icon: GanttChartSquare,
+      },
+    ],
+  },
+  {
     title: 'Dashboard',
     items: [
       {

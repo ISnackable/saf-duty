@@ -1,6 +1,19 @@
+import { Metadata, Viewport } from 'next';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
+
+export const metadata: Metadata = {
+  title: '404 Not Found',
+  description: 'Not Found',
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: 'cyan' },
+    { media: '(prefers-color-scheme: dark)', color: 'black' },
+  ],
+};
 
 export default function NotFound() {
   return (

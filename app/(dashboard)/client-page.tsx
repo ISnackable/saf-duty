@@ -5,7 +5,6 @@ import * as React from 'react';
 
 import { ComboBox, Item } from '@/components/combo-box';
 import { DatePicker } from '@/components/date-picker';
-import { Modal } from '@/components/modal';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -56,28 +55,6 @@ export function ClienTestPage() {
       <ThemeSwitcher />
 
       <DatePicker mode='single' selected={date} onSelect={setDate} />
-
-      <Modal
-        title='Testing'
-        description='This is a test modal.'
-        trigger={
-          <Button variant='outline' className='w-fit align-middle leading-none'>
-            Click me
-          </Button>
-        }
-      >
-        <form className={cn('grid items-start gap-4')}>
-          <div className='grid gap-2'>
-            <Label htmlFor='email'>Email</Label>
-            <Input type='email' id='email' defaultValue='shadcn@example.com' />
-          </div>
-          <div className='grid gap-2'>
-            <Label htmlFor='username'>Username</Label>
-            <Input id='username' defaultValue='@shadcn' />
-          </div>
-          <Button type='submit'>Save changes</Button>
-        </form>
-      </Modal>
 
       <ComboBox
         items={statuses}

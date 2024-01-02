@@ -82,6 +82,7 @@ export default async function DashboardPage() {
         </li>
       </ul>
 
+      {/* No Suspend Here as it's apparently super fast */}
       <ManageBlockoutCalendar profile={data} />
     </div>
   );

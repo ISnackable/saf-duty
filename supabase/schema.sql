@@ -212,6 +212,7 @@ CREATE TABLE IF NOT EXISTS "public"."profiles" (
     "weekday_points" integer DEFAULT 0 NOT NULL,
     "weekend_points" integer DEFAULT 0 NOT NULL,
     "enlistment_date" "date",
+    "no_of_extras" integer DEFAULT 0,
     CONSTRAINT "max_blockouts" CHECK (("max_blockouts" > 0)),
     CONSTRAINT "name_length" CHECK (("char_length"("name") >= 2))
 );
@@ -250,7 +251,11 @@ ALTER TABLE ONLY "public"."profiles"
 ALTER TABLE ONLY "public"."profiles"
     ADD CONSTRAINT "profiles_unit_id_fkey" FOREIGN KEY ("unit_id") REFERENCES "public"."units"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
-CREATE POLICY "Public profiles are viewable by everyone." ON "public"."profiles" FOR SELECT USING ("unit_id" = (( SELECT (("auth"."jwt()" -> 'app_metadata'::text) -> 'unit_id'::text)))::bigint);
+CREATE POLICY "Enable insert for elevated users only" ON "public"."units" FOR INSERT TO "service_role" WITH CHECK (true);
+
+CREATE POLICY "Enable read access for users based on their unit_id" ON "public"."units" FOR SELECT USING ((((("auth"."jwt"() -> 'app_metadata'::"text") -> 'unit_id'::"text"))::bigint = "id"));
+
+CREATE POLICY "Public profiles are viewable by everyone in the same unit." ON "public"."profiles" FOR SELECT USING (("unit_id" = (( SELECT (("auth"."jwt"() -> 'app_metadata'::"text") -> 'unit_id'::"text")))::bigint));
 
 CREATE POLICY "Users can insert their own profile." ON "public"."profiles" FOR INSERT WITH CHECK (("auth"."uid"() = "id"));
 

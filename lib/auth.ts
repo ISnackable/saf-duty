@@ -24,7 +24,7 @@ interface WithAuthHandler {
 }
 
 interface WithAuthOptions {
-  requiredRole?: Array<'admin' | 'user'>;
+  requiredRole?: Array<'admin' | 'manager' | 'user'>;
   needNotExceededUsage?: boolean;
   allowDemoUser?: boolean;
 }
