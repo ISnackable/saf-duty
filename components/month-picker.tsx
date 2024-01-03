@@ -14,7 +14,7 @@ import {
   MonthChangeEventHandler,
 } from 'react-day-picker';
 
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
   Drawer,
@@ -134,16 +134,17 @@ function MonthCalendar({ month, onMonthChange, ...props }: MonthPickerProps) {
                   {col.map((m) => (
                     <td
                       key={m.getMonth()}
-                      className='grow relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&amp;:has([aria-selected].day-outside)]:bg-accent/50 [&amp;:has([aria-selected].day-range-end)]:rounded-r-md [&amp;:has([aria-selected])]:rounded-md'
+                      className='grow relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md'
                       role='presentation'
                     >
                       <button
                         name='day'
                         className={cn(
-                          'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-full p-0 font-normal aria-selected:opacity-100',
+                          buttonVariants({ variant: 'ghost' }),
+                          'font-normal aria-selected:opacity-100',
                           m.getMonth() === month.getMonth() &&
                             year.getFullYear() === month.getFullYear() &&
-                            'bg-accent text-accent-foreground'
+                            'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground'
                         )}
                         role='gridcell'
                         tabIndex={-1}

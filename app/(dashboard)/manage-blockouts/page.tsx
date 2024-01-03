@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description: 'Example dashboard app built using the components.',
 };
 
-async function getUserData(session: Session) {
+async function getUserBlockoutData(session: Session) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
@@ -50,16 +50,16 @@ export default async function DashboardPage() {
   } = await supabase.auth.getSession();
 
   if (!session) {
-    return redirect('/login');
+    redirect('/login');
   }
 
-  const data = await getUserData(session);
+  const data = await getUserBlockoutData(session);
 
   return (
-    <div className='space-y-4 p-8 pt-6'>
+    <div className='space-y-4 p-8 pt-4'>
       <div className='flex items-center space-y-2 w-full'>
         <Icons.edit className='inline-block w-8 h-8 mr-3 align-middle items-center' />
-        <h1 className='scroll-m-20 border-b pb-2 text-4xl font-extrabold tracking-tight lg:text-5xl grow'>
+        <h1 className='scroll-m-20 border-b pb-2 text-2xl sm:text-4xl font-extrabold tracking-tight lg:text-5xl grow'>
           Manage Blockouts
         </h1>
       </div>
@@ -78,7 +78,10 @@ export default async function DashboardPage() {
         </li>
         <li>Inform the person-in-charge if you need more blockouts</li>
         <li>
-          You are not allowed to blockout every weekend & friday of the month
+          You are not allowed to blockout every{' '}
+          <u className='font-medium text-primary underline underline-offset-4'>
+            weekend & friday of the month
+          </u>{' '}
         </li>
       </ul>
 

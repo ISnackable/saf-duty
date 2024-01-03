@@ -1,42 +1,39 @@
-import { cookies } from 'next/headers';
-
-import AuthButton from '@/components/AuthButton';
-// import Header from '@/components/header';
-import { createClient } from '@/utils/supabase/server';
+import { Icons } from '@/components/icons';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 import { ClienTestPage } from './client-page';
 
 export default async function Index() {
-  const cookieStore = cookies();
-
-  const canInitSupabaseClient = () => {
-    // This function is just for the interactive tutorial.
-    // Feel free to remove it once you have Supabase connected.
-    try {
-      createClient(cookieStore);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
-
-  const isSupabaseConnected = canInitSupabaseClient();
-
   return (
-    <div className='flex w-full flex-1 flex-col items-center gap-20'>
-      <nav className='flex h-16 w-full justify-center border-b border-b-foreground/10'>
-        <div className='flex w-full max-w-4xl items-center justify-between p-3 text-sm'>
-          {isSupabaseConnected && <AuthButton />}
-        </div>
-      </nav>
-
-      <div className='flex max-w-4xl flex-1 flex-col gap-20  px-3 animate-in'>
-        <main className='flex flex-1 flex-col gap-6'>
-          <h2 className='mb-4 text-4xl font-bold'>Next steps</h2>
-          A
-          <ClienTestPage />
-        </main>
+    <div className='space-y-4 p-8 pt-4'>
+      <div className='flex items-center space-y-2 w-full'>
+        <Icons.edit className='inline-block w-8 h-8 mr-3 align-middle items-center' />
+        <h1 className='scroll-m-20 border-b pb-2 text-2xl sm:text-4xl font-extrabold tracking-tight lg:text-5xl grow'>
+          Index Page
+        </h1>
       </div>
+      <p className='leading-7 [&:not(:first-child)]:mt-6'>WORDS..</p>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Card Title</CardTitle>
+          <CardDescription>Card Description</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p>Card Content</p>
+        </CardContent>
+        <CardFooter>
+          <p>Card Footer</p>
+        </CardFooter>
+      </Card>
+      <ClienTestPage />
     </div>
   );
 }

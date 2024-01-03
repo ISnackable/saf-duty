@@ -40,7 +40,7 @@ function NavIcon({ icon: Icon, to, title, isActive }: IconProps) {
     >
       <div
         className={cn('flex flex-col items-center justify-start', {
-          'text-blue-600': isActive,
+          'text-primary': isActive,
         })}
       >
         <Icon
@@ -84,7 +84,7 @@ export function BottomNav() {
         maxHeight:
           'clamp(60px, calc(env(safe-area-inset-bottom) + 60px), 80px)',
       }}
-      className='fixed bottom-0 w-full z-10 bg-zinc-100 dark:bg-zinc-950 border-t dark:border-zinc-800 border-zinc-200 shadow-lg sm:hidden h-[60px]'
+      className='fixed bottom-0 w-full z-10 bg-card dark:bg-[#141517] border-t dark:border-zinc-800 border-zinc-200 shadow-lg sm:hidden h-[60px]'
     >
       <div className='flex flex-row gap-4 justify-start items-center h-full'>
         {links}

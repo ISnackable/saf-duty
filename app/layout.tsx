@@ -55,7 +55,6 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0a0a0a',
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
@@ -69,12 +68,13 @@ export default function RootLayout({
   return (
     <html lang='en' className={GeistSans.className} suppressHydrationWarning>
       <head>
+        <meta name='theme-color' content='#101214' />
         <script
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                  document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0a0a0a')
+                if (localStorage.theme === 'light' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+                  document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
                 }
               } catch (_) {}
             `,

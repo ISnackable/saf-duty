@@ -56,7 +56,7 @@ export function AppearanceForm() {
     if (resolvedTheme === 'dark') {
       document
         .querySelector('meta[name="theme-color"]')!
-        .setAttribute('content', '#0a0a0a');
+        .setAttribute('content', '#151719');
     } else {
       document
         .querySelector('meta[name="theme-color"]')!

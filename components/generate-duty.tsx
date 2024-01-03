@@ -246,7 +246,7 @@ export function GenerateDuty() {
               head_cell:
                 'grow text-muted-foreground w-8 font-normal text-lg border border-solid',
               row: 'flex w-full',
-              cell: ' w-full border border-solid grow relative p-0 text-center text-lg focus-within:relative focus-within:z-20 [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md h-24',
+              cell: 'w-full border border-solid grow relative p-0 text-center text-lg focus-within:relative focus-within:z-20 [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md h-24',
               day: cn(
                 buttonVariants({ variant: 'ghost' }),
                 'h-full w-full p-0 font-normal aria-selected:opacity-90 text-lg rounded-none aria-selected:bg-[#fa5858]'
