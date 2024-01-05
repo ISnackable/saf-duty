@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { DatePicker } from '@/components/date-picker';
 import { Icons } from '@/components/icons';
 import { LoadingButton } from '@/components/loading-button';
-import { MultipleSelector, Option } from '@/components/multi-select';
+import { MultipleSelector } from '@/components/multi-select';
 import { buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Input } from '@/components/ui/input';
@@ -84,9 +84,11 @@ export default function Loading() {
             row: 'flex w-full',
             cell: 'w-full border border-solid grow relative p-0 text-center text-lg focus-within:relative focus-within:z-20 [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md h-24',
             day: cn(
-              buttonVariants({ variant: 'ghost' }),
-              'h-full w-full p-0 font-normal aria-selected:opacity-90 text-lg rounded-none aria-selected:bg-[#fa5858]'
+              'absolute top-1 md:top:3 right-2 md:right-4 block',
+              // buttonVariants({ variant: 'ghost' }),
+              'p-0 font-normal aria-selected:opacity-90 text-lg rounded-none aria-selected:bg-[#fa5858]'
             ),
+            day_today: 'text-accent-foreground',
           }}
         />
 

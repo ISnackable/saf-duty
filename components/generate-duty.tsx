@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format, isSameMonth, startOfMonth } from 'date-fns';
+import { format, isSameMonth, lastDayOfMonth, startOfMonth } from 'date-fns';
 import { useRef, useState } from 'react';
 import {
   DayContent,
@@ -90,12 +90,21 @@ const CredenzaFormSchema = z.object({
   reserve: z.string(),
 });
 
-function DateTime(props: DayContentProps) {
+function DayWithTime(props: DayContentProps) {
   const dateTime = format(props.date, 'yyyy-MM-dd');
   return (
-    <time dateTime={dateTime}>
-      <DayContent {...props} />
-    </time>
+    <div className='relative h-full w-full'>
+      <time
+        dateTime={dateTime}
+        className='absolute top-1 md:top:3 right-2 md:right-4'
+      >
+        <DayContent {...props} />
+      </time>
+
+      {/* <p className='absolute bottom-1 mx-auto w-full md:bottom-3 text-xs md:text-base break-word whitespace-pre-wrap'>
+        Srinath EX (Joon Kang)
+      </p> */}
+    </div>
   );
 }
 
@@ -138,7 +147,6 @@ export function GenerateDuty() {
   });
 
   const monthDate = form.watch('monthDate');
-  const toggleCredenza = () => setOpen((prev) => !prev);
   const dutyDates = dutyRoster.find((cal) =>
     isSameMonth(new Date(cal.date), monthDate)
   );
@@ -161,7 +169,10 @@ export function GenerateDuty() {
                     <div className='flex h-full w-full flex-col rounded-md text-popover-foreground overflow-visible bg-transparent'>
                       <MonthPicker
                         month={field.value}
-                        onMonthChange={field.onChange}
+                        onMonthChange={(e) => {
+                          form.resetField('extraDates');
+                          field.onChange(e);
+                        }}
                       />
                     </div>
                   </FormControl>
@@ -181,6 +192,10 @@ export function GenerateDuty() {
                         disableNavigation
                         modifiers={{
                           disabled: [
+                            {
+                              after: lastDayOfMonth(monthDate),
+                              before: monthDate,
+                            },
                             {
                               dayOfWeek: [1, 2, 3, 4, 5],
                             },
@@ -227,12 +242,12 @@ export function GenerateDuty() {
             disableNavigation
             components={{
               Day: DayDisableOutside,
-              DayContent: DateTime,
+              DayContent: DayWithTime,
             }}
             onDayClick={(day) => {
               console.log(day);
 
-              if (dutyDates) toggleCredenza();
+              if (dutyDates) setOpen(true);
             }}
             mode='single'
             month={monthDate}
@@ -251,6 +266,7 @@ export function GenerateDuty() {
                 buttonVariants({ variant: 'ghost' }),
                 'h-full w-full p-0 font-normal aria-selected:opacity-90 text-lg rounded-none aria-selected:bg-[#fa5858]'
               ),
+              day_today: 'text-accent-foreground',
             }}
           />
 

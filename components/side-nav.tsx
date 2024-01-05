@@ -62,8 +62,8 @@ export const sideNavLinks: SidebarNavItem[] = [
             icon: Home,
           },
           {
-            title: 'Generate Duty',
-            href: '/admin/generate-duty',
+            title: 'Schedule Duty',
+            href: '/admin/schedule-duty',
             icon: GanttChartSquare,
           },
         ],

@@ -3,7 +3,7 @@
   "scripts": {
     "analyze": "ANALYZE=true next build",
     "preinstall": "npx only-allow pnpm",
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -12,8 +12,8 @@
     "type:generate": "supabase gen types typescript --linked --schema public > types/supabase.ts"
   },
   "dependencies": {
-    "@ducanh2912/next-pwa": "^10.0.2",
-    "@hookform/resolvers": "^3.3.3",
+    "@ducanh2912/next-pwa": "^10.1.0",
+    "@hookform/resolvers": "^3.3.4",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -36,20 +36,21 @@
     "@radix-ui/react-toggle-group": "^1.0.4",
     "@radix-ui/react-tooltip": "^1.0.7",
     "@supabase/ssr": "latest",
-    "@supabase/supabase-js": "latest",
-    "@tabler/icons-react": "^2.44.0",
+    "@supabase/supabase-js": "^2.39.2",
+    "@tabler/icons-react": "^2.45.0",
     "autoprefixer": "10.4.16",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cmdk": "^0.2.0",
-    "date-fns": "^3.0.6",
-    "embla-carousel-react": "8.0.0-rc17",
+    "date-fns": "^3.1.0",
+    "embla-carousel-react": "8.0.0-rc18",
     "geist": "^1.2.0",
-    "lucide-react": "^0.303.0",
+    "lucide-react": "^0.306.0",
+    "million": "^2.6.4",
     "next": "latest",
-    "next-safe-action": "^5.2.3",
+    "next-safe-action": "^6.0.0",
     "next-themes": "^0.2.1",
-    "postcss": "8.4.32",
+    "postcss": "8.4.33",
     "react": "18.2.0",
     "react-day-picker": "^8.10.0",
     "react-dom": "18.2.0",
@@ -72,6 +73,6 @@
     "eslint-config-next": "14.0.4",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.1.1",
-    "supabase": "^1.127.3"
+    "supabase": "^1.127.4"
   }
 }

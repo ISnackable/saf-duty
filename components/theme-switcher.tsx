@@ -5,7 +5,8 @@ import * as React from 'react';
 
 import { Icons } from '@/components/icons';
 
-export const ThemeSwitcher = () => {
+// million-ignore
+export function ThemeSwitcher() {
   const { theme, resolvedTheme, setTheme } = useTheme();
 
   const isChecked = (value: string) => theme === value;
@@ -113,4 +114,4 @@ export const ThemeSwitcher = () => {
       </span>
     </div>
   );
-};
+}

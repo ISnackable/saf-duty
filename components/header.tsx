@@ -47,7 +47,7 @@ export function Header({ session, profile }: HeaderProps) {
           'fixed right-0 top-0 z-50 flex h-16 w-full items-center border-b bg-popover px-3 xl:w-[calc(100%-240px)]'
         )}
       >
-        <div className='flex h-14 w-auto items-center'>
+        <div className='flex h-14 w-full items-center justify-between mr-0 sm:mr-2'>
           <Button
             role='button'
             aria-label='Menu'
@@ -59,8 +59,10 @@ export function Header({ session, profile }: HeaderProps) {
             <Menu size={30} />
           </Button>
 
-          <div className='ml-auto flex items-center space-x-4'>
+          <div className='xl:ml-auto'>
             <ThemeSwitcher />
+          </div>
+          <div className='xl:ml-auto'>
             <UserNav session={session} profile={profile} />
           </div>
         </div>

@@ -41,10 +41,16 @@ const PinInput = React.forwardRef<HTMLInputElement, InputProps>(
       index: number
     ) => {
       const elem = e.target;
-      const val = e.target.value;
+      let val = e.target.value;
 
       // check if the value is valid
       if (!validationPattern.test(val) && val !== '') return;
+
+      // If the value length is more than 1, take the character based on cursor position
+      if (val.length > 1) {
+        const cursorPosition = elem.selectionStart;
+        val = cursorPosition === 1 ? val[0] : val[val.length - 1];
+      }
 
       // change the value using onChange props
       const valueArr = value.split('');
@@ -101,7 +107,7 @@ const PinInput = React.forwardRef<HTMLInputElement, InputProps>(
               autoComplete='one-time-code'
               pattern={validationPattern.source}
               maxLength={size}
-              value={value?.at(index) ?? ''}
+              value={value?.[index] ?? ''}
               onChange={(e) => handleInputChange(e, index)}
               onKeyUp={handleKeyUp}
               onPaste={handlePaste}

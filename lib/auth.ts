@@ -58,6 +58,7 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
       );
     }
 
+    // TODO: Chane back to allowAnonymous instead of allowDemoUser, we will instead use a demo user that has no session and just use middleware to check for that if a certain demo cookie is set
     if (session.user.email === 'demo@example.com') {
       if (allowDemoUser) {
         return handler({

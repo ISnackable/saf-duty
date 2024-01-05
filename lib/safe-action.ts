@@ -1,5 +1,5 @@
-import { createSafeActionClient } from 'next-safe-action';
-import { cookies, headers } from 'next/headers';
+import { DEFAULT_SERVER_ERROR, createSafeActionClient } from 'next-safe-action';
+import { cookies } from 'next/headers';
 
 import { createClient } from '@/utils/supabase/server';
 
@@ -9,15 +9,11 @@ function handleReturnedServerError(e: Error) {
   // In this case, we can use the 'MyCustomError` class to unmask errors
   // and return them with their actual messages to the client.
   if (e instanceof MyCustomError) {
-    return {
-      serverError: e.message,
-    };
+    return e.message;
   }
 
-  // Every other error will be masked with this message.
-  return {
-    serverError: 'Oh no, something went wrong!',
-  };
+  // Every other error that occurs will be masked with the default message.
+  return DEFAULT_SERVER_ERROR;
 }
 
 function handleServerErrorLog(e: Error) {
@@ -45,6 +41,7 @@ export const authAction = createSafeActionClient({
       throw new MyCustomError('Session not found!');
     }
 
+    // TODO: remove this and use anonymous auth instead
     if (session.user.email === 'demo@example.com') {
       throw new MyCustomError(
         'Unauthorized, demo user cannot perform this action!'

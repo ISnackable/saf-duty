@@ -14,6 +14,7 @@ export const PUT = withAuth(async ({ request, session }) => {
   }: { blockout_dates: Tables<'profiles'>['blockout_dates'] } =
     await request.json();
 
+  // TODO: Suppose to also validate the max length of blockout_dates for each month :)
   const { success } = dateSchema.safeParse(blockout_dates);
   if (!success) {
     return NextResponse.json({

@@ -56,8 +56,6 @@ const rows = MONTHS.reduce<Date[][]>((accumulator, month, index: number) => {
 }, []);
 
 function MonthCalendar({ month, onMonthChange, ...props }: MonthPickerProps) {
-  console.log(month);
-
   const [year, setYear] = React.useState(month);
 
   return (
@@ -151,6 +149,7 @@ function MonthCalendar({ month, onMonthChange, ...props }: MonthPickerProps) {
                         type='button'
                         onClick={() =>
                           onMonthChange(
+                            // Return the first day of the selected month
                             new Date(year.getFullYear(), m.getMonth(), 1)
                           )
                         }

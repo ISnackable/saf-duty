@@ -67,13 +67,24 @@ export function ManageBlockoutCalendar({
           .map((date) => new Date(date))
       : []
   );
-  const [disabledDays, setDisabledDays] = useState<Date[]>([]);
   const [loading, setLoading] = useState(false);
 
   const maximumBlockouts = profile.max_blockouts || MAXIMUM_BLOCKOUTS;
   const currentMonthSelected = selectedDays.filter((d) =>
     isSameMonth(d, month)
   );
+
+  function disableDateExceedMatcher(day: Date) {
+    if (currentMonthSelected.length >= maximumBlockouts) {
+      // If the day is not selected, disable it.
+      return !selectedDays.find(
+        (date) =>
+          date.getDate() === day.getDate() && date.getMonth() === day.getMonth()
+      );
+    }
+
+    return false;
+  }
 
   const updateBlockoutDates = async () => {
     setLoading(true);
@@ -105,23 +116,12 @@ export function ManageBlockoutCalendar({
 
   useEffect(() => {
     if (currentMonthSelected.length >= maximumBlockouts) {
-      const start = startOfMonth(month);
-      const end = endOfMonth(month);
-
       toast('You have reached the maximum blockouts for this month.', {
         description:
           'Remove some "less important" blockouts or if you need more blockouts, please contact the person-in-charge.',
       });
-
-      setDisabledDays(
-        eachDayOfInterval({ start, end }).filter(
-          (d) => !selectedDays.some((s) => isSameDay(d, s))
-        )
-      );
-    } else {
-      setDisabledDays([]);
     }
-  }, [month, selectedDays, maximumBlockouts, currentMonthSelected.length]);
+  }, [maximumBlockouts, currentMonthSelected.length]);
 
   const handleDayClick: DayClickEventHandler = (day, modifiers) => {
     const newSelectedDays = [...selectedDays];
@@ -166,7 +166,9 @@ export function ManageBlockoutCalendar({
   return (
     <>
       <Calendar
-        disabled={disabledDays}
+        modifiers={{
+          disabled: disableDateExceedMatcher,
+        }}
         mode='multiple'
         showOutsideDays={false}
         onDayClick={handleDayClick}

@@ -32,6 +32,60 @@ CREATE TYPE "public"."role" AS ENUM (
 
 ALTER TYPE "public"."role" OWNER TO "postgres";
 
+CREATE OR REPLACE FUNCTION "public"."allow_updating_only"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $_$
+DECLARE
+  whitelist TEXT[] := TG_ARGV::TEXT[];
+  schema_table TEXT;
+  column_name TEXT;
+  rec RECORD;
+  new_value TEXT;
+  old_value TEXT;
+BEGIN
+  schema_table := concat(TG_TABLE_SCHEMA, '.', TG_TABLE_NAME);
+
+  -- If RLS is not active on current table for function invoker, early return
+  IF NOT row_security_active(schema_table) THEN
+    RETURN NEW;
+  END IF;
+
+  -- Then check whether the user is an 'admin', early return
+  IF (select get_my_claim('role') = '"admin"') THEN
+    RETURN NEW;
+  END IF;
+
+  -- Otherwise, loop on all columns of the table schema
+  FOR rec IN (
+    SELECT col.column_name
+    FROM information_schema.columns as col
+    WHERE table_schema = TG_TABLE_SCHEMA
+    AND table_name = TG_TABLE_NAME
+  ) LOOP
+    -- If the current column is whitelisted, early continue
+    column_name := rec.column_name;
+    IF column_name = ANY(whitelist) THEN
+      CONTINUE;
+    END IF;
+
+    -- If not whitelisted, execute dynamic SQL to get column value from OLD and NEW records
+    EXECUTE format('SELECT ($1).%I, ($2).%I', column_name, column_name)
+    INTO new_value, old_value
+    USING NEW, OLD;
+
+    -- Raise exception if column value changed
+    IF new_value IS DISTINCT FROM old_value THEN
+      RAISE EXCEPTION 'Unauthorized change to "%"', column_name;
+    END IF;
+  END LOOP;
+
+  -- RLS active, but no exception encountered, clear to proceed.
+  RETURN NEW;
+END;
+$_$;
+
+ALTER FUNCTION "public"."allow_updating_only"() OWNER TO "postgres";
+
 CREATE OR REPLACE FUNCTION "public"."delete_claim"("uid" "uuid", "claim" "text") RETURNS "text"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
@@ -203,7 +257,7 @@ CREATE TABLE IF NOT EXISTS "public"."profiles" (
     "id" "uuid" NOT NULL,
     "updated_at" timestamp with time zone,
     "name" "text",
-    "avatar_url" "text" DEFAULT "concat"('https://api.dicebear.com/7.x/big-smile/jpg?seed=', "substr"("md5"(("random"())::"text"), 0, 12)),
+    "avatar_url" "text" DEFAULT 'concat(''https://api.dicebear.com/7.x/adventurer/svg?seed='', substr(md5((random())::text), 0, 12), ''&backgroundColor=c0aede'')'::"text",
     "unit_id" bigint NOT NULL,
     "ord_date" "date",
     "blockout_dates" "date"[],
@@ -245,6 +299,8 @@ ALTER TABLE ONLY "public"."profiles"
 ALTER TABLE ONLY "public"."units"
     ADD CONSTRAINT "units_pkey" PRIMARY KEY ("id");
 
+CREATE OR REPLACE TRIGGER "profile_cls" BEFORE INSERT OR UPDATE ON "public"."profiles" FOR EACH ROW EXECUTE FUNCTION "public"."allow_updating_only"('name', 'avatar_url', 'enlistment_date', 'ord_date', 'blockout_dates');
+
 ALTER TABLE ONLY "public"."profiles"
     ADD CONSTRAINT "profiles_id_fkey" FOREIGN KEY ("id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
 
@@ -259,7 +315,7 @@ CREATE POLICY "Public profiles are viewable by everyone in the same unit." ON "p
 
 CREATE POLICY "Users can insert their own profile." ON "public"."profiles" FOR INSERT WITH CHECK (("auth"."uid"() = "id"));
 
-CREATE POLICY "Users can update own profile." ON "public"."profiles" FOR UPDATE USING (("auth"."uid"() = "id"));
+CREATE POLICY "Users can update own profile unless role is admin." ON "public"."profiles" FOR UPDATE USING ((("auth"."uid"() = "id") OR ("public"."get_my_claim"('role'::"text") = '"admin"'::"jsonb")));
 
 ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
 
@@ -270,6 +326,10 @@ GRANT USAGE ON SCHEMA "public" TO "postgres";
 GRANT USAGE ON SCHEMA "public" TO "anon";
 GRANT USAGE ON SCHEMA "public" TO "authenticated";
 GRANT USAGE ON SCHEMA "public" TO "service_role";
+
+GRANT ALL ON FUNCTION "public"."allow_updating_only"() TO "anon";
+GRANT ALL ON FUNCTION "public"."allow_updating_only"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."allow_updating_only"() TO "service_role";
 
 GRANT ALL ON FUNCTION "public"."delete_claim"("uid" "uuid", "claim" "text") TO "anon";
 GRANT ALL ON FUNCTION "public"."delete_claim"("uid" "uuid", "claim" "text") TO "authenticated";

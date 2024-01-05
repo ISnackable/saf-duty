@@ -2,7 +2,6 @@ import { type Session } from '@supabase/supabase-js';
 import { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
 
 import { GenerateDuty } from '@/components/generate-duty';
 import { Icons } from '@/components/icons';
@@ -12,8 +11,8 @@ import { createClient } from '@/utils/supabase/server';
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: 'Generate Duty',
-  description: 'Admin page to generate duty roster.',
+  title: 'Schedule Duty',
+  description: 'Admin page to schedule duty roster.',
 };
 
 async function getDutyRoster(session: Session) {}
@@ -35,7 +34,7 @@ export default async function DashboardPage() {
       <div className='flex items-center space-y-2 w-full'>
         <Icons.edit className='inline-block w-8 h-8 mr-3 align-middle items-center' />
         <h1 className='scroll-m-20 border-b pb-2 text-2xl sm:text-4xl font-extrabold tracking-tight lg:text-5xl grow'>
-          Generate Duty
+          Schedule Duty
         </h1>
       </div>
       <p className='leading-7 [&:not(:first-child)]:mt-6'>
