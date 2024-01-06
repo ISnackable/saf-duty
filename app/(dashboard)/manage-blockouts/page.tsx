@@ -11,8 +11,8 @@ import { createClient } from '@/utils/supabase/server';
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: 'Dashboard',
-  description: 'Example dashboard app built using the components.',
+  title: 'Manage Blockouts',
+  description: 'Manage your blockouts.',
 };
 
 async function getUserBlockoutData(session: Session) {
@@ -41,7 +41,7 @@ async function getUserBlockoutData(session: Session) {
   }
 }
 
-export default async function DashboardPage() {
+export default async function ManageBlockoutsPage() {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 

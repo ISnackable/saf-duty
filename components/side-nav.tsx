@@ -57,8 +57,8 @@ export const sideNavLinks: SidebarNavItem[] = [
         icon: Home,
         items: [
           {
-            title: 'Manage Users',
-            href: '/admin/manage-users',
+            title: 'Manage Personnel',
+            href: '/admin/manage-personnel',
             icon: Home,
           },
           {

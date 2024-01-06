@@ -97,3 +97,5 @@ podman system service --time=0
 export DOCKER_HOST=unix:///$XDG_RUNTIME_DIR/podman/podman.sock
 supabase db dump -f supabase/schema.sql
 ```
+
+You will need to enable supabase webhook manually because their config file doesn't yet support setting up of webhook: https://github.com/supabase/cli/issues/1190
