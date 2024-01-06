@@ -8,7 +8,6 @@ const bundleAnalyzer = withBundleAnalyzer({
 
 const PWA = withPWAInit({
   dest: 'public',
-  disable: process.env.NODE_ENV === 'development',
   cacheStartUrl: true,
   dynamicStartUrl: true,
   dynamicStartUrlRedirect: '/login',

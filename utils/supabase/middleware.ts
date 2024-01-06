@@ -26,11 +26,12 @@ export const createClient = (request: NextRequest) => {
             value,
             ...options,
           });
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          });
+          // https://github.com/supabase/supabase/issues/18981
+          // response = NextResponse.next({
+          //   request: {
+          //     headers: request.headers,
+          //   },
+          // });
           response.cookies.set({
             name,
             value,
@@ -44,11 +45,11 @@ export const createClient = (request: NextRequest) => {
             value: '',
             ...options,
           });
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          });
+          // response = NextResponse.next({
+          //   request: {
+          //     headers: request.headers,
+          //   },
+          // });
           response.cookies.set({
             name,
             value: '',
