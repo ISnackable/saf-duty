@@ -1,10 +1,10 @@
 'use client';
 
-import { CalendarIcon } from 'lucide-react';
 import * as React from 'react';
 
 import { ComboBox, Item } from '@/components/combo-box';
 import { DatePicker } from '@/components/date-picker';
+import { Icons } from '@/components/icons';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
@@ -12,7 +12,7 @@ const statuses = [
   {
     value: 'backlog',
     label: 'Backlog',
-    icon: CalendarIcon,
+    icon: Icons.calendar,
   },
   {
     value: 'todo',

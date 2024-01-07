@@ -1,11 +1,11 @@
-import { type Session } from '@supabase/supabase-js';
+// import { type Session } from '@supabase/supabase-js';
 import { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { GenerateDuty } from '@/components/generate-duty';
 import { Icons } from '@/components/icons';
-import { demoUsers, isDemoUser } from '@/lib/demo-data';
+// import { demoUsers, isDemoUser } from '@/lib/demo-data';
 import { createClient } from '@/utils/supabase/server';
 
 export const revalidate = 0;
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description: 'Admin page to schedule duty roster.',
 };
 
-async function getDutyRoster(session: Session) {}
+// async function getDutyRoster(session: Session) {}
 
 export default async function AdminScheduleDutyPage() {
   const cookieStore = cookies();

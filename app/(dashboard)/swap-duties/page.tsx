@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { Icons } from '@/components/icons';
-import { demoUsers, isDemoUser } from '@/lib/demo-data';
+// import { demoUsers, isDemoUser } from '@/lib/demo-data';
 import { createClient } from '@/utils/supabase/server';
 
 export const metadata: Metadata = {

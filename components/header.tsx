@@ -1,9 +1,9 @@
 'use client';
 
 import { type Session } from '@supabase/supabase-js';
-import { Menu } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
+import { Icons } from '@/components/icons';
 import { MobileSidebar } from '@/components/side-nav';
 import { Button } from '@/components/ui/button';
 import { Tables } from '@/types/supabase';
@@ -19,7 +19,7 @@ interface HeaderProps {
 
 export function Header({ session, profile }: HeaderProps) {
   const navRef = useRef(null);
-  const [scroll, setScroll] = useState(false);
+  const [_scroll, setScroll] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export function Header({ session, profile }: HeaderProps) {
             size='icon'
             onClick={() => setOpen(true)}
           >
-            <Menu size={30} />
+            <Icons.menu size={30} />
           </Button>
 
           <div className='xl:ml-auto'>

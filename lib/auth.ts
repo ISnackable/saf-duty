@@ -1,3 +1,4 @@
+/* eslint-disable unused-imports/no-unused-vars */
 // https://github.com/vercel/next.js/discussions/15286#discussioncomment-3831846
 import { type Session } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';

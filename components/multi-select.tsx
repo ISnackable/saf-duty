@@ -2,10 +2,10 @@
 
 // from https://shadcnui-expansions.typeart.cc/docs/multiple-selector
 import { Command as CommandPrimitive } from 'cmdk';
-import { X } from 'lucide-react';
 import * as React from 'react';
 import { useEffect } from 'react';
 
+import { Icons } from '@/components/icons';
 import { Badge } from '@/components/ui/badge';
 import {
   Command,
@@ -41,12 +41,12 @@ interface MultipleSelectorProps {
   /** Debounce time for async search. Only work with `onSearch`. */
   delay?: number;
   /** async search */
-  onSearch?: (value: string) => Promise<Option[]>;
-  onChange?: (options: Option[]) => void;
+  onSearch?: (_value: string) => Promise<Option[]>;
+  onChange?: (_options: Option[]) => void;
   /** Limit the maximum number of selected options. */
   maxSelected?: number;
   /** When the number of selected options exceeds the limit, the onMaxSelected will be called. */
-  onMaxSelected?: (maxLimit: number) => void;
+  onMaxSelected?: (_maxLimit: number) => void;
   /** Hide the placeholder when there are options selected. */
   hidePlaceholderWhenSelected?: boolean;
   disabled?: boolean;
@@ -308,7 +308,7 @@ export const MultipleSelector = React.forwardRef<
                     }}
                     onClick={() => handleUnselect(option)}
                   >
-                    <X className='h-3 w-3 text-muted-foreground hover:text-foreground' />
+                    <Icons.close className='h-3 w-3 text-muted-foreground hover:text-foreground' />
                   </button>
                 </Badge>
               );

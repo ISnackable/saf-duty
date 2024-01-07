@@ -6,14 +6,14 @@ import { usePathname } from 'next/navigation';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/utils/cn';
 
-interface SettingsNav extends React.HTMLAttributes<HTMLElement> {
+interface SettingsNavProps extends React.HTMLAttributes<HTMLElement> {
   items: {
     href: string;
     title: string;
   }[];
 }
 
-export function SettingsNav({ className, items, ...props }: SettingsNav) {
+export function SettingsNav({ className, items, ...props }: SettingsNavProps) {
   const pathname = usePathname();
 
   return (

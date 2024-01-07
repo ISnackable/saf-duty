@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import Image from 'next/image';
 
 import { SettingsNav } from '@/components/settings-nav';
 import { Separator } from '@/components/ui/separator';

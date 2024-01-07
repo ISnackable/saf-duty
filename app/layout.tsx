@@ -254,7 +254,7 @@ export default function RootLayout({
         />
       </head>
       <body className='bg-background text-foreground'>
-        <main className='min-h-screen antialiased'>
+        <main className='antialiased'>
           <ThemeProvider
             attribute='class'
             defaultTheme='system'

@@ -155,7 +155,7 @@ export function GenerateDuty() {
     <Credenza open={open} onOpenChange={setOpen}>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit((data) => console.log(data))}
+          onSubmit={form.handleSubmit(() => setLoading(true))}
           className='space-y-3'
         >
           <div className='grid grid-cols-2 gap-4'>
@@ -245,9 +245,7 @@ export function GenerateDuty() {
               DayContent: DayWithTime,
             }}
             onDayClick={(day) => {
-              console.log(day);
-
-              if (dutyDates) setOpen(true);
+              if (day && dutyDates) setOpen(true);
             }}
             mode='single'
             month={monthDate}
@@ -284,7 +282,7 @@ export function GenerateDuty() {
       <CredenzaContent className='min-w-[300px] md:min-w-[750px]'>
         <Form {...credenzaForm}>
           <form
-            onSubmit={credenzaForm.handleSubmit((data) => console.log(data))}
+            onSubmit={credenzaForm.handleSubmit(() => setLoading(true))}
             className='space-y-6'
           >
             <CredenzaHeader>

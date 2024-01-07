@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Check, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
@@ -48,7 +47,8 @@ function PasswordRequirement({
       className='mt-2 flex items-center text-sm'
       style={{ color: meets ? 'teal' : 'red' }}
     >
-      {meets ? <Check /> : <X />} <p className='ml-3'>{label}</p>
+      {meets ? <Icons.check /> : <Icons.close />}{' '}
+      <p className='ml-3'>{label}</p>
     </div>
   );
 }

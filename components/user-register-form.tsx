@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PopoverAnchor } from '@radix-ui/react-popover';
-import { Check, X } from 'lucide-react';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -48,7 +47,8 @@ function PasswordRequirement({
       className='mt-2 flex items-center text-sm'
       style={{ color: meets ? 'teal' : 'red' }}
     >
-      {meets ? <Check /> : <X />} <p className='ml-3'>{label}</p>
+      {meets ? <Icons.check /> : <Icons.close />}{' '}
+      <p className='ml-3'>{label}</p>
     </div>
   );
 }

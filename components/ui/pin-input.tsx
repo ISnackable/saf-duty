@@ -5,7 +5,7 @@ import { cn } from '@/utils/cn';
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   value: string;
-  onChange(value: string): void;
+  onChange(_value: string): void;
 
   /**
    * Number of characters/input for this component
@@ -28,7 +28,6 @@ const PinInput = React.forwardRef<HTMLInputElement, InputProps>(
       value,
       onChange,
       className,
-      type,
       ...props
     },
     ref

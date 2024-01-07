@@ -116,10 +116,7 @@ export function ProfileForm() {
                   <FormField
                     control={form.control}
                     name='avatar'
-                    render={({
-                      field: { value, onChange, ref, ...fieldProps },
-                      fieldState,
-                    }) => (
+                    render={({ field: { onChange, ref, ...fieldProps } }) => (
                       <FormItem>
                         <div
                           className='m-auto h-36 w-36 cursor-pointer rounded-full border border-dashed p-2 mb-5'

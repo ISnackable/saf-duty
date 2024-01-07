@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { Icons } from '@/components/icons';
-import { ManageBlockoutCalendar } from '@/components/manage-blockout-calendar';
+import { ManageBlockout } from '@/components/manage-blockout';
 import { demoUsers, isDemoUser } from '@/lib/demo-data';
 import { createClient } from '@/utils/supabase/server';
 
@@ -86,7 +86,7 @@ export default async function ManageBlockoutsPage() {
       </ul>
 
       {/* No Suspend Here as it's apparently super fast */}
-      <ManageBlockoutCalendar profile={data} />
+      <ManageBlockout profile={data} />
     </div>
   );
 }

@@ -52,7 +52,7 @@ export default async function DashboardLayout({
   const data = await getUserProfileData(session);
 
   return (
-    <section className='flex min-h-screen'>
+    <section className='flex'>
       <nav>
         <Header session={session} profile={data} />
 

@@ -1,9 +1,9 @@
 'use client';
 
 import { CaretSortIcon } from '@radix-ui/react-icons';
-import { CheckIcon, type LucideIcon } from 'lucide-react';
 import * as React from 'react';
 
+import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -13,7 +13,12 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerFooter,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
 import {
   Popover,
   PopoverContent,
@@ -25,7 +30,7 @@ import { cn } from '@/utils/cn';
 export type Item = {
   label: string;
   value: string;
-  icon?: LucideIcon | React.ComponentType<React.ComponentProps<'svg'>>;
+  icon?: React.ComponentType<React.ComponentProps<'svg'>>;
 };
 
 interface ComboBoxProps {
@@ -33,7 +38,7 @@ interface ComboBoxProps {
   searchable?: boolean;
   items: Item[];
   selected: Item | null;
-  onSelect: (item: Item | null) => void;
+  onSelect: (_item: Item | null) => void;
 }
 
 export function ComboBox({
@@ -88,7 +93,7 @@ export function ComboBox({
                     )}
                     {item.label}
                     {item.value === selected?.value ? (
-                      <CheckIcon className='h-4 w-4 absolute right-2 flexitems-center justify-center' />
+                      <Icons.check className='h-4 w-4 absolute right-2 flexitems-center justify-center' />
                     ) : null}
                   </CommandItem>
                 ))}
@@ -141,7 +146,7 @@ export function ComboBox({
                     )}
                     {item.label}
                     {item.value === selected?.value ? (
-                      <CheckIcon className='h-4 w-4 absolute right-2 flexitems-center justify-center' />
+                      <Icons.check className='h-4 w-4 absolute right-2 flexitems-center justify-center' />
                     ) : null}
                   </CommandItem>
                 ))}
@@ -149,6 +154,7 @@ export function ComboBox({
             </CommandList>
           </Command>
         </div>
+        <DrawerFooter className='bg-card' />
       </DrawerContent>
     </Drawer>
   );

@@ -28,7 +28,7 @@ const DEFAULT_MONTH = addMonths(TODAY, 1);
 const MIN_MONTH = startOfMonth(TODAY);
 const MAX_MONTH = endOfMonth(addMonths(MIN_MONTH, 2));
 
-interface ManageBlockoutCalendarProps {
+interface ManageBlockoutProps {
   profile: Pick<Tables<'profiles'>, 'max_blockouts' | 'blockout_dates'>;
 }
 
@@ -52,9 +52,7 @@ function countSelectedDates(dates: Date[], currentMonthSelected: Date[]) {
     .length;
 }
 
-export function ManageBlockoutCalendar({
-  profile,
-}: ManageBlockoutCalendarProps) {
+export function ManageBlockout({ profile }: ManageBlockoutProps) {
   const [month, setMonth] = useState<Date>(DEFAULT_MONTH);
   const [selectedDays, setSelectedDays] = useState<Date[]>(
     profile.blockout_dates

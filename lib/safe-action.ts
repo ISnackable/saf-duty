@@ -1,4 +1,7 @@
-import { DEFAULT_SERVER_ERROR, createSafeActionClient } from 'next-safe-action';
+import {
+  DEFAULT_SERVER_ERROR,
+  createSafeActionClient,
+} from 'next-safe-action/zod';
 import { cookies } from 'next/headers';
 
 import { createClient } from '@/utils/supabase/server';

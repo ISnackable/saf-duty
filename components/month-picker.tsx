@@ -1,27 +1,15 @@
 'use client';
 
-import { CalendarIcon } from '@radix-ui/react-icons';
-import { addDays, addYears, eachMonthOfInterval, format } from 'date-fns';
+import { addYears, eachMonthOfInterval, format } from 'date-fns';
 import * as React from 'react';
-import {
-  type DateRange,
-  type DayPickerBase,
-  type DayPickerDefaultProps,
-  type DayPickerMultipleProps,
-  type DayPickerRangeProps,
-  type DayPickerSingleProps,
-  type DaySelectionMode,
-  MonthChangeEventHandler,
-} from 'react-day-picker';
+import { MonthChangeEventHandler } from 'react-day-picker';
 
 import { Button, buttonVariants } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import {
   Drawer,
   DrawerClose,
   DrawerContent,
   DrawerFooter,
-  DrawerHeader,
   DrawerTrigger,
 } from '@/components/ui/drawer';
 import {
@@ -55,7 +43,7 @@ const rows = MONTHS.reduce<Date[][]>((accumulator, month, index: number) => {
   return accumulator;
 }, []);
 
-function MonthCalendar({ month, onMonthChange, ...props }: MonthPickerProps) {
+function MonthCalendar({ month, onMonthChange }: MonthPickerProps) {
   const [year, setYear] = React.useState(month);
 
   return (

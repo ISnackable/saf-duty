@@ -1,14 +1,19 @@
 'use client';
 
 import { type Session } from '@supabase/supabase-js';
+import { type Icon } from '@tabler/icons-react';
 import {
-  GanttChartSquare,
-  Home,
-  LineChart,
-  type LucideIcon,
-  Receipt,
-  Table,
-} from 'lucide-react';
+  IconArrowsExchange,
+  IconCalendarEvent,
+  IconCe,
+  IconChessKnight,
+  IconCloudLock,
+  IconEdit,
+  IconFingerprint,
+  IconHome2,
+  IconMessageCircleQuestion,
+  IconUsers,
+} from '@tabler/icons-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
@@ -31,7 +36,7 @@ export type SidebarNavItem = {
   admin?: boolean;
   disabled?: boolean;
   href?: string;
-  icon?: LucideIcon;
+  icon?: Icon;
   items?: SidebarNavItem[];
   collapsible?: boolean;
 };
@@ -43,7 +48,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 
 interface MobileSidebarProps extends SidebarProps {
   open: boolean;
-  onOpenChange: (flag: boolean) => void;
+  onOpenChange: (_flag: boolean) => void;
 }
 
 export const sideNavLinks: SidebarNavItem[] = [
@@ -54,17 +59,17 @@ export const sideNavLinks: SidebarNavItem[] = [
       {
         title: 'Admin Panel',
         collapsible: true,
-        icon: Home,
+        icon: IconFingerprint,
         items: [
           {
             title: 'Manage Personnel',
             href: '/admin/manage-personnel',
-            icon: Home,
+            icon: IconUsers,
           },
           {
             title: 'Schedule Duty',
             href: '/admin/schedule-duty',
-            icon: GanttChartSquare,
+            icon: IconChessKnight,
           },
         ],
       },
@@ -75,27 +80,27 @@ export const sideNavLinks: SidebarNavItem[] = [
       {
         title: 'Home',
         href: '/',
-        icon: Home,
+        icon: IconHome2,
       },
       {
         title: 'Duty Roster',
         href: '/duty-roster',
-        icon: GanttChartSquare,
+        icon: IconCalendarEvent,
       },
       {
         title: 'My Availability',
         href: '/manage-blockouts',
-        icon: Table,
+        icon: IconEdit,
       },
       {
         title: 'Swap Duties',
         href: '/swap-duties',
-        icon: LineChart,
+        icon: IconArrowsExchange,
       },
       {
         title: 'Duty Personnels',
         href: '/duty-personnels',
-        icon: Receipt,
+        icon: IconUsers,
       },
     ],
   },
@@ -122,17 +127,17 @@ export const sideNavLinks: SidebarNavItem[] = [
       {
         title: 'Privacy',
         href: '/privacy',
-        icon: Home,
+        icon: IconCloudLock,
       },
       {
         title: 'Terms and Conditions',
         href: '/terms-and-conditions',
-        icon: GanttChartSquare,
+        icon: IconCe,
       },
       {
         title: 'FAQ',
         href: '/faq',
-        icon: Table,
+        icon: IconMessageCircleQuestion,
       },
     ],
   },
