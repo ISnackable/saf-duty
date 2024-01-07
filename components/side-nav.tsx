@@ -30,6 +30,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { cn } from '@/utils/cn';
+import { isDemoUser } from '@/utils/demo';
 
 export type SidebarNavItem = {
   title?: string;
@@ -174,7 +175,11 @@ export function SideNav({ className, onClick, session }: SidebarProps) {
       </div>
       <ScrollArea className='py-2'>
         {sideNavLinks.map((item, index) => {
-          if (item.admin && session.user.app_metadata.role !== 'admin') {
+          if (
+            item.admin &&
+            session.user.app_metadata.role !== 'admin' &&
+            !isDemoUser(session.user?.id)
+          ) {
             return null;
           }
           return (

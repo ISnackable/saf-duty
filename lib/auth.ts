@@ -1,10 +1,13 @@
 /* eslint-disable unused-imports/no-unused-vars */
 // https://github.com/vercel/next.js/discussions/15286#discussioncomment-3831846
+import 'server-only';
+
 import { type Session } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 import { type State } from '@/types/api-route';
+import { isDemoUser } from '@/utils/demo';
 import { getSearchParams } from '@/utils/get-search-params';
 import { createClient } from '@/utils/supabase/server';
 
@@ -59,8 +62,7 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
       );
     }
 
-    // TODO: Chane back to allowAnonymous instead of allowDemoUser, we will instead use a demo user that has no session and just use middleware to check for that if a certain demo cookie is set
-    if (session.user.email === 'demo@example.com') {
+    if (isDemoUser(session.user.id)) {
       if (allowDemoUser) {
         return handler({
           request,

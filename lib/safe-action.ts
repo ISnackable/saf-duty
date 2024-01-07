@@ -1,9 +1,12 @@
+import 'server-only';
+
 import {
   DEFAULT_SERVER_ERROR,
   createSafeActionClient,
 } from 'next-safe-action/zod';
 import { cookies } from 'next/headers';
 
+import { isDemoUser } from '@/utils/demo';
 import { createClient } from '@/utils/supabase/server';
 
 export class MyCustomError extends Error {}
@@ -44,8 +47,7 @@ export const authAction = createSafeActionClient({
       throw new MyCustomError('Session not found!');
     }
 
-    // TODO: remove this and use anonymous auth instead
-    if (session.user.email === 'demo@example.com') {
+    if (isDemoUser(session.user?.id)) {
       throw new MyCustomError(
         'Unauthorized, demo user cannot perform this action!'
       );

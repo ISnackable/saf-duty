@@ -4,7 +4,8 @@ import { cookies } from 'next/headers';
 import { BottomNav } from '@/components/bottom-nav';
 import { Header } from '@/components/header';
 import { SideNav } from '@/components/side-nav';
-import { demoUsers, isDemoUser } from '@/lib/demo-data';
+import { demoUsers } from '@/lib/demo-data';
+import { isDemoUser } from '@/utils/demo';
 import { createClient } from '@/utils/supabase/server';
 
 async function getUserProfileData(session: Session) {
@@ -17,13 +18,11 @@ async function getUserProfileData(session: Session) {
       avatar_url: demoUsers[0].avatar_url,
     };
   } else {
-    const profileQuery = supabase
+    const { data, error } = await supabase
       .from('profiles')
       .select('name, avatar_url')
       .eq('id', session.user.id)
       .single();
-
-    const { data, error } = await profileQuery;
 
     if (!data || error) {
       throw new Error('Failed to fetch profile');

@@ -5,7 +5,8 @@ import { redirect } from 'next/navigation';
 
 import { Icons } from '@/components/icons';
 import { ManageBlockout } from '@/components/manage-blockout';
-import { demoUsers, isDemoUser } from '@/lib/demo-data';
+import { demoUsers } from '@/lib/demo-data';
+import { isDemoUser } from '@/utils/demo';
 import { createClient } from '@/utils/supabase/server';
 
 export const revalidate = 0;

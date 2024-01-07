@@ -23,10 +23,6 @@ export const blockouts: string[] = [
 
 type DemoUsersType = Omit<Tables<'profiles'>, 'updated_at'>[];
 
-export function isDemoUser(userId: string): boolean {
-  return userId === demoUsers[0].id;
-}
-
 export const demoUsers: DemoUsersType = [
   {
     id: '047d19aa-487c-4dd1-8816-01db79956532',

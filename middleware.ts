@@ -2,6 +2,8 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 import { createClient } from '@/utils/supabase/middleware';
 
+import { isDemoUser } from './utils/demo';
+
 // Public paths that do not require authentication, /change-password SHOULD be accessible only to authenticated users.
 const PUBLIC_PATHS = ['/register', '/login', '/reset-password'];
 
@@ -44,10 +46,11 @@ export async function middleware(request: NextRequest) {
       return redirectToHome(request);
     }
 
-    // Authenticated user should not be able to access /admin routes if not an "admin" role
+    // Authenticated user should not be able to access /admin routes if not an "admin" role (unless it's a demo user)
     if (
       request.nextUrl.pathname.startsWith('/admin') &&
-      session.user.app_metadata?.role !== 'admin'
+      session.user.app_metadata?.role !== 'admin' &&
+      !isDemoUser(session.user.id)
     ) {
       return redirectToHome(request);
     }
