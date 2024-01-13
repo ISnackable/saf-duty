@@ -34,10 +34,13 @@ export const PUT = withAuth(async ({ request, session }) => {
     .eq('id', session.user.id);
 
   if (error) {
-    return NextResponse.json({
-      status: 'error',
-      message: 'Failed to update blockout dates',
-    });
+    return NextResponse.json(
+      {
+        status: 'error',
+        message: 'Failed to update blockout dates',
+      },
+      { status: 500 }
+    );
   }
 
   return NextResponse.json({

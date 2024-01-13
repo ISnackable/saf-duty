@@ -153,7 +153,7 @@ export function MobileSidebar({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side='left'
-        className='p-0 sm:w-[240px] bg-popover'
+        className='bg-popover p-0 sm:w-[240px]'
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <SideNav onClick={() => onOpenChange(false)} session={session} />
@@ -167,9 +167,9 @@ export function SideNav({ className, onClick, session }: SidebarProps) {
 
   return (
     <div
-      className={cn('flex h-full sm:w-[240px] flex-col bg-popover', className)}
+      className={cn('flex h-full flex-col bg-popover sm:w-[240px]', className)}
     >
-      <div className='flex h-16 w-full items-center px-4 justify-start gap-1 border-b text-lg font-medium'>
+      <div className='flex h-16 w-full items-center justify-start gap-1 border-b px-4 text-lg font-medium'>
         <Icons.logo className='h-12 w-12' />
         {APP_NAME || 'APP NAME'}
       </div>
@@ -183,9 +183,9 @@ export function SideNav({ className, onClick, session }: SidebarProps) {
             return null;
           }
           return (
-            <div key={index} className='px-[6px] py-2 border-b-[1px]'>
+            <div key={index} className='border-b-[1px] px-[6px] py-2'>
               {item.title && (
-                <h2 className='mb-1 px-4 text-sm font-semibold tracking-tight underline underline-offset-4 decoration-wavy'>
+                <h2 className='mb-1 px-4 text-sm font-semibold tracking-tight underline decoration-wavy underline-offset-4'>
                   {item.title}
                 </h2>
               )}
@@ -221,14 +221,14 @@ function SidebarItems({
           <AccordionTrigger
             className={cn(
               buttonVariants({ variant: 'ghost' }),
-              'w-full justify-start text-sm font-medium px-[10px] py-2 duration-200 hover:no-underline',
+              'w-full justify-start px-[10px] py-2 text-sm font-medium duration-200 hover:no-underline',
               {
                 'text-primary': item.href === pathName,
               }
             )}
           >
             {item.icon && (
-              <span className='mr-2'>{<item.icon className='w-4 h-4' />}</span>
+              <span className='mr-2'>{<item.icon className='h-4 w-4' />}</span>
             )}
             {item.title}
           </AccordionTrigger>
@@ -250,7 +250,7 @@ function SidebarItems({
         onClick={onClick}
         variant='ghost'
         className={cn(
-          'w-full justify-start text-sm font-medium px-[10px] py-2',
+          'w-full justify-start px-[10px] py-2 text-sm font-medium',
           {
             'text-primary': item.href === pathName,
           }
@@ -259,7 +259,7 @@ function SidebarItems({
         {!item.disabled && item.href ? (
           <Link href={item.href}>
             {item.icon && (
-              <span className='mr-2'>{<item.icon className='w-4 h-4' />}</span>
+              <span className='mr-2'>{<item.icon className='h-4 w-4' />}</span>
             )}
             {item.title}
           </Link>

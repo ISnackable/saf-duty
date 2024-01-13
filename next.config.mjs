@@ -1,19 +1,14 @@
-import withPWAInit from '@ducanh2912/next-pwa';
 import withBundleAnalyzer from '@next/bundle-analyzer';
+import withSerwistInit from '@serwist/next';
 import million from 'million/compiler';
+
+const withSerwist = withSerwistInit({
+  swSrc: 'app/sw.ts',
+  swDest: 'public/sw.js',
+});
 
 const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
-});
-
-const PWA = withPWAInit({
-  dest: 'public',
-  cacheStartUrl: true,
-  dynamicStartUrl: true,
-  dynamicStartUrlRedirect: '/login',
-  workboxOptions: {
-    disableDevLogs: true,
-  },
 });
 
 const millionConfig = {
@@ -23,6 +18,6 @@ const millionConfig = {
 };
 
 /** @type {import('next').NextConfig} */
-const nextConfig = bundleAnalyzer(PWA({}));
+const nextConfig = bundleAnalyzer(withSerwist({}));
 
 export default million.next(nextConfig, millionConfig);

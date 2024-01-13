@@ -38,12 +38,12 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
     const { status, message } = await signIn(data);
 
     if (status === 'error') {
-      toast(message || 'Something went wrong.', {
+      toast.error(message || 'Something went wrong.', {
         description: 'Your sign in request failed. Please try again.',
       });
       setIsLoading(false);
     } else {
-      toast(message || 'Successfully logged in.', {
+      toast.success(message || 'Successfully logged in.', {
         description:
           'Your sign in request was successful. You will be redirected shortly.',
       });

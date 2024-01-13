@@ -80,12 +80,12 @@ export function UserChangeForm({ className, ...props }: UserChangeFormProps) {
     const { serverError } = await changePassword(data);
 
     if (serverError) {
-      toast('Could not change password.', {
+      toast.error('Could not change password.', {
         description: serverError || 'Please try again.',
       });
       setIsLoading(false);
     } else {
-      toast('Successfully changed password', {
+      toast.success('Successfully changed password', {
         description: "You've successfully changed your password.",
       });
       // redirect to dashboard

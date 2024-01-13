@@ -16,7 +16,7 @@ export interface Database {
           enlistment_date: string | null
           id: string
           max_blockouts: number
-          name: string | null
+          name: string
           no_of_extras: number | null
           ord_date: string | null
           role: Database["public"]["Enums"]["role"]
@@ -31,7 +31,7 @@ export interface Database {
           enlistment_date?: string | null
           id: string
           max_blockouts?: number
-          name?: string | null
+          name: string
           no_of_extras?: number | null
           ord_date?: string | null
           role?: Database["public"]["Enums"]["role"]
@@ -46,7 +46,7 @@ export interface Database {
           enlistment_date?: string | null
           id?: string
           max_blockouts?: number
-          name?: string | null
+          name?: string
           no_of_extras?: number | null
           ord_date?: string | null
           role?: Database["public"]["Enums"]["role"]
@@ -72,21 +72,154 @@ export interface Database {
           }
         ]
       }
+      roster: {
+        Row: {
+          created_at: string
+          duty_date: string
+          duty_personnel: string | null
+          id: number
+          is_extra: boolean
+          reserve_duty_personnel: string | null
+          unit_id: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          duty_date: string
+          duty_personnel?: string | null
+          id?: number
+          is_extra?: boolean
+          reserve_duty_personnel?: string | null
+          unit_id: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          duty_date?: string
+          duty_personnel?: string | null
+          id?: number
+          is_extra?: boolean
+          reserve_duty_personnel?: string | null
+          unit_id?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "roster_duty_personnel_fkey"
+            columns: ["duty_personnel"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "roster_reserve_duty_personnel_fkey"
+            columns: ["reserve_duty_personnel"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "roster_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      swap_requests: {
+        Row: {
+          created_at: string
+          id: number
+          reason: string | null
+          receiver_id: string
+          receiver_roster_id: number | null
+          requester_id: string
+          requester_roster_id: number
+          status: Database["public"]["Enums"]["status"]
+          unit_id: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          reason?: string | null
+          receiver_id: string
+          receiver_roster_id?: number | null
+          requester_id: string
+          requester_roster_id: number
+          status?: Database["public"]["Enums"]["status"]
+          unit_id: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          reason?: string | null
+          receiver_id?: string
+          receiver_roster_id?: number | null
+          requester_id?: string
+          requester_roster_id?: number
+          status?: Database["public"]["Enums"]["status"]
+          unit_id?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "swap_requests_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "swap_requests_receiver_roster_id_fkey"
+            columns: ["receiver_roster_id"]
+            isOneToOne: false
+            referencedRelation: "roster"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "swap_requests_requester_id_fkey"
+            columns: ["requester_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "swap_requests_requester_roster_id_fkey"
+            columns: ["requester_roster_id"]
+            isOneToOne: false
+            referencedRelation: "roster"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "swap_requests_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       units: {
         Row: {
           created_at: string
           id: number
           unit_code: string
+          updated_at: string | null
         }
         Insert: {
           created_at?: string
           id?: number
           unit_code: string
+          updated_at?: string | null
         }
         Update: {
           created_at?: string
           id?: number
           unit_code?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -140,6 +273,7 @@ export interface Database {
     }
     Enums: {
       role: "user" | "manager" | "admin"
+      status: "pending" | "accepted" | "declined"
     }
     CompositeTypes: {
       [_ in never]: never

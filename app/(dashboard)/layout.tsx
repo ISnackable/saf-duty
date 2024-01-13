@@ -51,14 +51,14 @@ export default async function DashboardLayout({
   const data = await getUserProfileData(session);
 
   return (
-    <section className='flex'>
-      <nav>
+    <section>
+      <nav className='flex'>
         <Header session={session} profile={data} />
 
         <SideNav className='fixed hidden border-r xl:flex' session={session} />
       </nav>
 
-      <div className='md:container md:mx-auto mt-16 pb-8 xl:pl-[256px] mb-12 sm:mb-0'>
+      <div className='mb-12 mt-16 pb-8 md:container sm:mb-0 md:mx-auto xl:pl-[256px]'>
         {children}
       </div>
       <BottomNav />

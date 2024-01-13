@@ -3,6 +3,7 @@ import {
   IconCamera,
   IconCheck,
   IconDeviceDesktop,
+  IconDownload,
   IconEdit,
   IconEye,
   IconEyeOff,
@@ -183,4 +184,5 @@ export const Icons = {
   edit: IconEdit,
   camera: IconCamera,
   calendar: IconCalendar,
+  download: IconDownload,
 };

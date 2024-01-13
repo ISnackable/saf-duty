@@ -33,11 +33,11 @@ export function UserResetForm({ className, ...props }: UserResetFormProps) {
     const { status, message } = await resetPassword(data);
 
     if (status === 'error') {
-      toast(message || 'Something went wrong.', {
+      toast.error(message || 'Something went wrong.', {
         description: 'Make sure you entered the correct email.',
       });
     } else {
-      toast(message || 'Check your email.', {
+      toast.success(message || 'Check your email.', {
         description:
           'We sent you a password reset link. Be sure to check your spam too.',
       });

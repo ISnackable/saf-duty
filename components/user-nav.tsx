@@ -51,13 +51,13 @@ export function UserNav({ session, profile }: UserNavProps) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href='/settings'>
-              Profile <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            <Link href='/settings/account'>
+              Account <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href='/settings/account'>
-              Account Settings <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+            <Link href='/settings'>
+              Profile <DropdownMenuShortcut>⌘P</DropdownMenuShortcut>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>

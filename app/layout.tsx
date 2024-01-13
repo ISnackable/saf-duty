@@ -12,7 +12,7 @@ import {
   APP_TITLE_TEMPLATE,
 } from '../site.config';
 
-const defaultUrl = process.env.VERCEL_URL
+export const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : 'http://localhost:3000';
 

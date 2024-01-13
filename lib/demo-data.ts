@@ -21,9 +21,9 @@ export const blockouts: string[] = [
   `${currentYear}-${nextMonth}-27`,
 ];
 
-type DemoUsersType = Omit<Tables<'profiles'>, 'updated_at'>[];
+type Users = Omit<Tables<'profiles'>, 'updated_at'>;
 
-export const demoUsers: DemoUsersType = [
+export const demoUsers: Users[] = [
   {
     id: '047d19aa-487c-4dd1-8816-01db79956532',
     name: 'demo',
@@ -56,7 +56,7 @@ export const demoUsers: DemoUsersType = [
     max_blockouts: 8,
   },
   {
-    id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+    id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
     name: 'Jia Hui',
     role: 'user',
     unit_id: 1,
@@ -72,7 +72,7 @@ export const demoUsers: DemoUsersType = [
     max_blockouts: 8,
   },
   {
-    id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+    id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
     name: 'Jia Hao',
     role: 'user',
     unit_id: 1,
@@ -88,7 +88,7 @@ export const demoUsers: DemoUsersType = [
     max_blockouts: 8,
   },
   {
-    id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+    id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
     name: 'Jun Kai',
     role: 'user',
     unit_id: 1,
@@ -114,7 +114,7 @@ export const demoUsers: DemoUsersType = [
     max_blockouts: 8,
   },
   {
-    id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+    id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
     name: 'Wang Li',
     role: 'user',
     unit_id: 1,
@@ -130,7 +130,7 @@ export const demoUsers: DemoUsersType = [
     max_blockouts: 8,
   },
   {
-    id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+    id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
     name: 'Darryl Koh',
     role: 'user',
     unit_id: 1,
@@ -163,7 +163,7 @@ export const demoUsers: DemoUsersType = [
     max_blockouts: 8,
   },
   {
-    id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+    id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
     name: 'Elliot Tan',
     role: 'user',
     unit_id: 1,
@@ -205,381 +205,406 @@ export const upcomingDuties: string[] = [
 export const dutyRoster = [
   {
     id: 1,
-    date: `${currentYear}-${todayMonth}-01`,
-    roster: [
-      {
-        date: `${currentYear}-${todayMonth}-01`,
-        isExtra: false,
-        personnel: {
-          id: '5edaa416-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jun Kai',
-        },
-        reserve_personnel: {
-          id: 'user.fdf11aae-d142-450b-87a4-559bc6e27f05',
-          name: 'demo',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-02`,
-        isExtra: false,
-        personnel: {
-          id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
-          name: 'Zhi Hao',
-        },
-        reserve_personnel: {
-          id: '9d658fae-c343-11ed-afa1-0242ac120002',
-          name: 'Darryl Koh',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-03`,
-        isExtra: false,
-        personnel: {
-          id: 'user.fdf11aae-d142-450b-87a4-559bc6e27f05',
-          name: 'demo',
-        },
-        reserve_personnel: {
-          id: '5edaa2cc-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jia Hao',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-04`,
-        isExtra: false,
-        personnel: {
-          id: 'a1196c88-c343-11ed-afa1-0242ac120002',
-          name: 'Elliot Tan',
-        },
-        reserve_personnel: {
-          id: '78c9dc16-bfc1-11ed-afa1-0242ac120002',
-          name: 'Wang Li',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-05`,
-        isExtra: false,
-        personnel: {
-          id: '5edaa416-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jun Kai',
-        },
-        reserve_personnel: {
-          id: '5edaa132-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jia Hui',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-06`,
-        isExtra: false,
-        personnel: {
-          id: '9d658fae-c343-11ed-afa1-0242ac120002',
-          name: 'Darryl Koh',
-        },
-        reserve_personnel: {
-          id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
-          name: 'Zhi Hao',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-07`,
-        isExtra: false,
-        personnel: {
-          id: '78c9dc16-bfc1-11ed-afa1-0242ac120002',
-          name: 'Wang Li',
-        },
-        reserve_personnel: {
-          id: '5edaa416-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jun Kai',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-08`,
-        isExtra: false,
-        personnel: {
-          id: '5edaa132-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jia Hui',
-        },
-        reserve_personnel: {
-          id: 'a1196c88-c343-11ed-afa1-0242ac120002',
-          name: 'Elliot Tan',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-09`,
-        isExtra: false,
-        personnel: {
-          id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
-          name: 'Zhi Hao',
-        },
-        reserve_personnel: {
-          id: '5edaa2cc-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jia Hao',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-10`,
-        isExtra: false,
-        personnel: {
-          id: 'a1196c88-c343-11ed-afa1-0242ac120002',
-          name: 'Elliot Tan',
-        },
-        reserve_personnel: {
-          id: '5edaa416-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jun Kai',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-11`,
-        isExtra: false,
-        personnel: {
-          id: '9d658fae-c343-11ed-afa1-0242ac120002',
-          name: 'Darryl Koh',
-        },
-        reserve_personnel: {
-          id: 'user.fdf11aae-d142-450b-87a4-559bc6e27f05',
-          name: 'demo',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-12`,
-        isExtra: false,
-        personnel: {
-          id: '78c9dc16-bfc1-11ed-afa1-0242ac120002',
-          name: 'Wang Li',
-        },
-        reserve_personnel: {
-          id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
-          name: 'Zhi Hao',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-13`,
-        isExtra: false,
-        personnel: {
-          id: 'user.fdf11aae-d142-450b-87a4-559bc6e27f05',
-          name: 'demo',
-        },
-        reserve_personnel: {
-          id: 'a1196c88-c343-11ed-afa1-0242ac120002',
-          name: 'Elliot Tan',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-14`,
-        isExtra: false,
-        personnel: {
-          id: '5edaa416-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jun Kai',
-        },
-        reserve_personnel: {
-          id: '78c9dc16-bfc1-11ed-afa1-0242ac120002',
-          name: 'Wang Li',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-15`,
-        isExtra: false,
-        personnel: {
-          id: '9d658fae-c343-11ed-afa1-0242ac120002',
-          name: 'Darryl Koh',
-        },
-        reserve_personnel: {
-          id: '5edaa132-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jia Hui',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-16`,
-        isExtra: false,
-        personnel: {
-          id: 'a1196c88-c343-11ed-afa1-0242ac120002',
-          name: 'Elliot Tan',
-        },
-        reserve_personnel: {
-          id: '78c9dc16-bfc1-11ed-afa1-0242ac120002',
-          name: 'Wang Li',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-17`,
-        isExtra: false,
-        personnel: {
-          id: '5edaa132-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jia Hui',
-        },
-        reserve_personnel: {
-          id: '9d658fae-c343-11ed-afa1-0242ac120002',
-          name: 'Darryl Koh',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-18`,
-        isExtra: false,
-        personnel: {
-          id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
-          name: 'Zhi Hao',
-        },
-        reserve_personnel: {
-          id: 'a1196c88-c343-11ed-afa1-0242ac120002',
-          name: 'Elliot Tan',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-19`,
-        isExtra: false,
-        personnel: {
-          id: '5edaa132-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jia Hui',
-        },
-        reserve_personnel: {
-          id: '5edaa416-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jun Kai',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-20`,
-        isExtra: false,
-        personnel: {
-          id: '78c9dc16-bfc1-11ed-afa1-0242ac120002',
-          name: 'Wang Li',
-        },
-        reserve_personnel: {
-          id: '5edaa2cc-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jia Hao',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-21`,
-        isExtra: false,
-        personnel: {
-          id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
-          name: 'Zhi Hao',
-        },
-        reserve_personnel: {
-          id: '9d658fae-c343-11ed-afa1-0242ac120002',
-          name: 'Darryl Koh',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-22`,
-        isExtra: false,
-        personnel: {
-          id: '5edaa2cc-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jia Hao',
-        },
-        reserve_personnel: {
-          id: '5edaa132-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jia Hui',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-23`,
-        isExtra: false,
-        personnel: {
-          id: '9d658fae-c343-11ed-afa1-0242ac120002',
-          name: 'Darryl Koh',
-        },
-        reserve_personnel: {
-          id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
-          name: 'Zhi Hao',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-24`,
-        isExtra: false,
-        personnel: {
-          id: '78c9dc16-bfc1-11ed-afa1-0242ac120002',
-          name: 'Wang Li',
-        },
-        reserve_personnel: {
-          id: 'user.fdf11aae-d142-450b-87a4-559bc6e27f05',
-          name: 'demo',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-25`,
-        isExtra: false,
-        personnel: {
-          id: '5edaa2cc-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jia Hao',
-        },
-        reserve_personnel: {
-          id: '9d658fae-c343-11ed-afa1-0242ac120002',
-          name: 'Darryl Koh',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-26`,
-        isExtra: false,
-        personnel: {
-          id: 'user.fdf11aae-d142-450b-87a4-559bc6e27f05',
-          name: 'demo',
-        },
-        reserve_personnel: {
-          id: '5edaa132-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jia Hui',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-27`,
-        isExtra: false,
-        personnel: {
-          id: '5edaa2cc-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jia Hao',
-        },
-        reserve_personnel: {
-          id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
-          name: 'Zhi Hao',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-28`,
-        isExtra: false,
-        personnel: {
-          id: 'user.fdf11aae-d142-450b-87a4-559bc6e27f05',
-          name: 'demo',
-        },
-        reserve_personnel: {
-          id: '78c9dc16-bfc1-11ed-afa1-0242ac120002',
-          name: 'Wang Li',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-29`,
-        isExtra: false,
-        personnel: {
-          id: '5edaa416-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jun Kai',
-        },
-        reserve_personnel: {
-          id: 'a1196c88-c343-11ed-afa1-0242ac120002',
-          name: 'Elliot Tan',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-30`,
-        isExtra: false,
-        personnel: {
-          id: '5edaa132-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jia Hui',
-        },
-        reserve_personnel: {
-          id: '5edaa2cc-bfc1-11ed-afa1-0242ac120002',
-          name: 'Jia Hao',
-        },
-      },
-      {
-        date: `${currentYear}-${todayMonth}-31`,
-        isExtra: false,
-        personnel: {
-          id: 'a1196c88-c343-11ed-afa1-0242ac120002',
-          name: 'Elliot Tan',
-        },
-        reserve_personnel: {
-          id: 'user.fdf11aae-d142-450b-87a4-559bc6e27f05',
-          name: 'demo',
-        },
-      },
-    ],
+    duty_date: `${currentYear}-${todayMonth}-01`,
+    is_extra: false,
+    duty_personnel: {
+      id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
+      name: 'Jun Kai',
+    },
+    reserve_duty_personnel: {
+      id: '047d19aa-487c-4dd1-8816-01db79956532',
+      name: 'demo',
+    },
+  },
+  {
+    id: 2,
+    duty_date: `${currentYear}-${todayMonth}-02`,
+    is_extra: false,
+    duty_personnel: {
+      id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+      name: 'Zhi Hao',
+    },
+    reserve_duty_personnel: {
+      id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
+      name: 'Darryl Koh',
+    },
+  },
+  {
+    id: 3,
+    duty_date: `${currentYear}-${todayMonth}-03`,
+    is_extra: false,
+    duty_personnel: {
+      id: '047d19aa-487c-4dd1-8816-01db79956532',
+      name: 'demo',
+    },
+    reserve_duty_personnel: {
+      id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
+      name: 'Jia Hao',
+    },
+  },
+  {
+    id: 4,
+    duty_date: `${currentYear}-${todayMonth}-04`,
+    is_extra: false,
+    duty_personnel: {
+      id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
+      name: 'Elliot Tan',
+    },
+    reserve_duty_personnel: {
+      id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
+      name: 'Wang Li',
+    },
+  },
+  {
+    id: 5,
+    duty_date: `${currentYear}-${todayMonth}-05`,
+    is_extra: false,
+    duty_personnel: {
+      id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
+      name: 'Jun Kai',
+    },
+    reserve_duty_personnel: {
+      id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
+      name: 'Jia Hui',
+    },
+  },
+  {
+    id: 6,
+    duty_date: `${currentYear}-${todayMonth}-06`,
+    is_extra: false,
+    duty_personnel: {
+      id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
+      name: 'Darryl Koh',
+    },
+    reserve_duty_personnel: {
+      id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+      name: 'Zhi Hao',
+    },
+  },
+  {
+    id: 7,
+    duty_date: `${currentYear}-${todayMonth}-07`,
+    is_extra: false,
+    duty_personnel: {
+      id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
+      name: 'Wang Li',
+    },
+    reserve_duty_personnel: {
+      id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
+      name: 'Jun Kai',
+    },
+  },
+  {
+    id: 8,
+    duty_date: `${currentYear}-${todayMonth}-08`,
+    is_extra: false,
+    duty_personnel: {
+      id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
+      name: 'Jia Hui',
+    },
+    reserve_duty_personnel: {
+      id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
+      name: 'Elliot Tan',
+    },
+  },
+  {
+    id: 9,
+    duty_date: `${currentYear}-${todayMonth}-09`,
+    is_extra: false,
+    duty_personnel: {
+      id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+      name: 'Zhi Hao',
+    },
+    reserve_duty_personnel: {
+      id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
+      name: 'Jia Hao',
+    },
+  },
+  {
+    id: 10,
+    duty_date: `${currentYear}-${todayMonth}-10`,
+    is_extra: false,
+    duty_personnel: {
+      id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
+      name: 'Elliot Tan',
+    },
+    reserve_duty_personnel: {
+      id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
+      name: 'Jun Kai',
+    },
+  },
+  {
+    id: 11,
+    duty_date: `${currentYear}-${todayMonth}-11`,
+    is_extra: false,
+    duty_personnel: {
+      id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
+      name: 'Darryl Koh',
+    },
+    reserve_duty_personnel: {
+      id: '047d19aa-487c-4dd1-8816-01db79956532',
+      name: 'demo',
+    },
+  },
+  {
+    id: 12,
+    duty_date: `${currentYear}-${todayMonth}-12`,
+    is_extra: false,
+    duty_personnel: {
+      id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
+      name: 'Wang Li',
+    },
+    reserve_duty_personnel: {
+      id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+      name: 'Zhi Hao',
+    },
+  },
+  {
+    id: 13,
+    duty_date: `${currentYear}-${todayMonth}-13`,
+    is_extra: false,
+    duty_personnel: {
+      id: '047d19aa-487c-4dd1-8816-01db79956532',
+      name: 'demo',
+    },
+    reserve_duty_personnel: {
+      id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
+      name: 'Elliot Tan',
+    },
+  },
+  {
+    id: 14,
+    duty_date: `${currentYear}-${todayMonth}-14`,
+    is_extra: false,
+    duty_personnel: {
+      id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
+      name: 'Jun Kai',
+    },
+    reserve_duty_personnel: {
+      id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
+      name: 'Wang Li',
+    },
+  },
+  {
+    id: 15,
+    duty_date: `${currentYear}-${todayMonth}-15`,
+    is_extra: false,
+    duty_personnel: {
+      id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
+      name: 'Darryl Koh',
+    },
+    reserve_duty_personnel: {
+      id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
+      name: 'Jia Hui',
+    },
+  },
+  {
+    id: 16,
+    duty_date: `${currentYear}-${todayMonth}-16`,
+    is_extra: false,
+    duty_personnel: {
+      id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
+      name: 'Elliot Tan',
+    },
+    reserve_duty_personnel: {
+      id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
+      name: 'Wang Li',
+    },
+  },
+  {
+    id: 17,
+    duty_date: `${currentYear}-${todayMonth}-17`,
+    is_extra: false,
+    duty_personnel: {
+      id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
+      name: 'Jia Hui',
+    },
+    reserve_duty_personnel: {
+      id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
+      name: 'Darryl Koh',
+    },
+  },
+  {
+    id: 18,
+    duty_date: `${currentYear}-${todayMonth}-18`,
+    is_extra: false,
+    duty_personnel: {
+      id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+      name: 'Zhi Hao',
+    },
+    reserve_duty_personnel: {
+      id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
+      name: 'Elliot Tan',
+    },
+  },
+  {
+    id: 19,
+    duty_date: `${currentYear}-${todayMonth}-19`,
+    is_extra: false,
+    duty_personnel: {
+      id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
+      name: 'Jia Hui',
+    },
+    reserve_duty_personnel: {
+      id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
+      name: 'Jun Kai',
+    },
+  },
+  {
+    id: 20,
+    duty_date: `${currentYear}-${todayMonth}-20`,
+    is_extra: false,
+    duty_personnel: {
+      id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
+      name: 'Wang Li',
+    },
+    reserve_duty_personnel: {
+      id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
+      name: 'Jia Hao',
+    },
+  },
+  {
+    id: 21,
+    duty_date: `${currentYear}-${todayMonth}-21`,
+    is_extra: false,
+    duty_personnel: {
+      id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+      name: 'Zhi Hao',
+    },
+    reserve_duty_personnel: {
+      id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
+      name: 'Darryl Koh',
+    },
+  },
+  {
+    id: 22,
+    duty_date: `${currentYear}-${todayMonth}-22`,
+    is_extra: false,
+    duty_personnel: {
+      id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
+      name: 'Jia Hao',
+    },
+    reserve_duty_personnel: {
+      id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
+      name: 'Jia Hui',
+    },
+  },
+  {
+    id: 23,
+    duty_date: `${currentYear}-${todayMonth}-23`,
+    is_extra: false,
+    duty_personnel: {
+      id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
+      name: 'Darryl Koh',
+    },
+    reserve_duty_personnel: {
+      id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+      name: 'Zhi Hao',
+    },
+  },
+  {
+    id: 24,
+    duty_date: `${currentYear}-${todayMonth}-24`,
+    is_extra: false,
+    duty_personnel: {
+      id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
+      name: 'Wang Li',
+    },
+    reserve_duty_personnel: {
+      id: '047d19aa-487c-4dd1-8816-01db79956532',
+      name: 'demo',
+    },
+  },
+  {
+    id: 25,
+    duty_date: `${currentYear}-${todayMonth}-25`,
+    is_extra: false,
+    duty_personnel: {
+      id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
+      name: 'Jia Hao',
+    },
+    reserve_duty_personnel: {
+      id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
+      name: 'Darryl Koh',
+    },
+  },
+  {
+    id: 26,
+    duty_date: `${currentYear}-${todayMonth}-26`,
+    is_extra: false,
+    duty_personnel: {
+      id: '047d19aa-487c-4dd1-8816-01db79956532',
+      name: 'demo',
+    },
+    reserve_duty_personnel: {
+      id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
+      name: 'Jia Hui',
+    },
+  },
+  {
+    id: 27,
+    duty_date: `${currentYear}-${todayMonth}-27`,
+    is_extra: false,
+    duty_personnel: {
+      id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
+      name: 'Jia Hao',
+    },
+    reserve_duty_personnel: {
+      id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+      name: 'Zhi Hao',
+    },
+  },
+  {
+    id: 28,
+    duty_date: `${currentYear}-${todayMonth}-28`,
+    is_extra: false,
+    duty_personnel: {
+      id: '047d19aa-487c-4dd1-8816-01db79956532',
+      name: 'demo',
+    },
+    reserve_duty_personnel: {
+      id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
+      name: 'Wang Li',
+    },
+  },
+  {
+    id: 29,
+    duty_date: `${currentYear}-${todayMonth}-29`,
+    is_extra: false,
+    duty_personnel: {
+      id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
+      name: 'Jun Kai',
+    },
+    reserve_duty_personnel: {
+      id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
+      name: 'Elliot Tan',
+    },
+  },
+  {
+    id: 30,
+    duty_date: `${currentYear}-${todayMonth}-30`,
+    is_extra: false,
+    duty_personnel: {
+      id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
+      name: 'Jia Hui',
+    },
+    reserve_duty_personnel: {
+      id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
+      name: 'Jia Hao',
+    },
+  },
+  {
+    id: 31,
+    duty_date: `${currentYear}-${todayMonth}-31`,
+    is_extra: false,
+    duty_personnel: {
+      id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
+      name: 'Elliot Tan',
+    },
+    reserve_duty_personnel: {
+      id: '047d19aa-487c-4dd1-8816-01db79956532',
+      name: 'demo',
+    },
   },
 ];
 
@@ -599,7 +624,7 @@ export const dutyRoster = [
 //       avatar_url:
 //         'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
 //     },
-//     receiverDate: `${currentYear}-${todayMonth}-27`,
+//     duty_date: `${currentYear}-${todayMonth}-27`,
 //     _id: '9c23238b-0f67-43f2-a281-7e3167c92680',
 //     requester: {
 //       id: 'user.fdf11aae-d142-450b-87a4-559bc6e27f05',
@@ -608,7 +633,7 @@ export const dutyRoster = [
 //         'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
 //     },
 //     _rev: 't2rWJTAb4uNhnFji5txjM4',
-//     requesterDate: `${currentYear}-${todayMonth}-04`,
+//     duty_date: `${currentYear}-${todayMonth}-04`,
 //     _createdAt: '${currentYear}-04-14',
 //   },
 //   {
@@ -632,10 +657,10 @@ export const dutyRoster = [
 //         'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
 //     },
 //     reason: 'abcdefg',
-//     requesterDate: `${currentYear}-${todayMonth}-27`,
+//     duty_date: `${currentYear}-${todayMonth}-27`,
 //     _id: 'f7b62509-b55c-4d69-8fbb-7268fa792c30',
 //     _updatedAt: '${currentYear}-04-15',
-//     receiverDate: `${currentYear}-${todayMonth}-21`,
+//     duty_date: `${currentYear}-${todayMonth}-21`,
 //     status: 'pending',
 //   },
 //   {
@@ -646,7 +671,7 @@ export const dutyRoster = [
 //       avatar_url:
 //         'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
 //     },
-//     receiverDate: `${currentYear}-${todayMonth}-10`,
+//     duty_date: `${currentYear}-${todayMonth}-10`,
 //     _id: 'f86b497e-adea-458d-a028-807e0d9395a1',
 //     calendar: {
 //       id: 'calendar-${currentYear}-03-01',
@@ -659,7 +684,7 @@ export const dutyRoster = [
 //         'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
 //     },
 //     reason: 'a',
-//     requesterDate: `${currentYear}-${todayMonth}-20`,
+//     duty_date: `${currentYear}-${todayMonth}-20`,
 //     status: 'pending',
 //     _createdAt: '${currentYear}-04-15',
 //     _rev: 'f5T2DmY3fkMt6I6qKjOpiP',

@@ -86,11 +86,11 @@ export function UserRegisterForm({
     const { status, message } = await signUp(data);
 
     if (status === 'error') {
-      toast(message || 'Something went wrong.', {
+      toast.error(message || 'Something went wrong.', {
         description: 'Your sign up request failed. Please try again.',
       });
     } else {
-      toast(message || 'Check your email.', {
+      toast.success(message || 'Check your email.', {
         description:
           'We sent you a login link. Be sure to check your spam too.',
       });

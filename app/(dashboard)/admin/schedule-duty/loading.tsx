@@ -1,5 +1,4 @@
-import { format } from 'date-fns';
-
+// import { format } from 'date-fns';
 import { DatePicker } from '@/components/date-picker';
 import { Icons } from '@/components/icons';
 import { LoadingButton } from '@/components/loading-button';
@@ -10,14 +9,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/utils/cn';
 
-const TODAY = new Date();
+// const TODAY = new Date();
 
 export default function Loading() {
   return (
     <div className='space-y-4 p-8 pt-4'>
-      <div className='flex items-center space-y-2 w-full'>
-        <Icons.edit className='inline-block w-8 h-8 mr-3 align-middle items-center' />
-        <h1 className='scroll-m-20 border-b pb-2 text-2xl sm:text-4xl font-extrabold tracking-tight lg:text-5xl grow'>
+      <div className='flex w-full items-center space-y-2'>
+        <Icons.edit className='mr-3 inline-block h-8 w-8 items-center align-middle' />
+        <h1 className='grow scroll-m-20 border-b pb-2 text-2xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl'>
           Generate Duty
         </h1>
       </div>
@@ -32,17 +31,18 @@ export default function Loading() {
         <div className='grid grid-cols-2 gap-4'>
           <div className='space-y-2'>
             <Label className='space-y-2'>Duty date</Label>
-            <div className='flex h-full w-full flex-col rounded-md text-popover-foreground overflow-visible bg-transparent'>
+            <div className='flex h-full w-full flex-col overflow-visible rounded-md bg-transparent text-popover-foreground'>
               <Input
-                value={format(TODAY, 'MMMM yyyy')}
-                className='justify-start text-left font-normal text-sm py-2 px-4 items-center'
+                // value={format(TODAY, 'MMMM yyyy')}
+                // defaultValue={format(TODAY, 'MMMM yyyy')}
+                className='items-center justify-start px-4 py-2 text-left text-sm font-normal'
               />
             </div>
           </div>
 
           <div className='space-y-2'>
             <Label className='space-y-2'>Extra date(s)</Label>
-            <div className='flex h-full w-full flex-col rounded-md text-popover-foreground overflow-visible bg-transparent'>
+            <div className='flex h-full w-full flex-col overflow-visible rounded-md bg-transparent text-popover-foreground'>
               <DatePicker
                 disableNavigation
                 modifiers={{
@@ -77,22 +77,22 @@ export default function Loading() {
             caption_label: 'flex items-center gap-2 text-lg font-medium',
             nav_button: cn(
               buttonVariants({ variant: 'outline' }),
-              'h-14 w-14 bg-transparent p-0 opacity-50 hover:opacity-100 border-none'
+              'h-14 w-14 border-none bg-transparent p-0 opacity-50 hover:opacity-100'
             ),
             head_cell:
               'grow text-muted-foreground w-8 font-normal text-lg border border-solid',
             row: 'flex w-full',
             cell: 'w-full border border-solid grow relative p-0 text-center text-lg focus-within:relative focus-within:z-20 [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md h-24',
             day: cn(
-              'absolute top-1 md:top:3 right-2 md:right-4 block',
+              'md:top:3 absolute right-2 top-1 block md:right-4',
               // buttonVariants({ variant: 'ghost' }),
-              'p-0 font-normal aria-selected:opacity-90 text-lg rounded-none aria-selected:bg-[#fa5858]'
+              'rounded-none p-0 text-lg font-normal aria-selected:bg-[#fa5858] aria-selected:opacity-90'
             ),
             day_today: 'text-accent-foreground',
           }}
         />
 
-        <div className='flex items-center justify-end mt-5 gap-4'>
+        <div className='mt-5 flex items-center justify-end gap-4'>
           <LoadingButton variant='secondary'>Generate</LoadingButton>
           <LoadingButton type='submit'>Save</LoadingButton>
         </div>

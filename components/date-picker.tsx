@@ -185,7 +185,8 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
           variant={'outline'}
           className={cn(
             'justify-start overflow-hidden whitespace-nowrap text-left align-middle font-normal',
-            !date && 'text-muted-foreground'
+            (!date || (Array.isArray(date) && date.length <= 0)) &&
+              'text-muted-foreground'
           )}
         >
           <CalendarIcon className='mr-2 h-4 w-4 flex-none shrink-0' />
