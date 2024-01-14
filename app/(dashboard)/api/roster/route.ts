@@ -4,13 +4,13 @@ import { NextResponse } from 'next/server';
 // import { useMonthYear } from '@/hooks/use-month-year';
 import { withAuth } from '@/lib/auth';
 // import { dutyRoster } from '@/lib/demo-data';
-import { DutyDate } from '@/lib/duty-roster';
-import { Tables } from '@/types/supabase';
+import { type DutyDate, type Personnel } from '@/lib/duty-roster';
+import { type Tables } from '@/types/supabase';
 // import { isDemoUser } from '@/utils/demo';
 import { createClient } from '@/utils/supabase/server';
 
 export interface RosterPatch
-  extends Pick<Tables<'roster'>, 'duty_date' | 'is_extra'> {
+  extends Pick<Tables<'roster'>, 'id' | 'duty_date' | 'is_extra'> {
   duty_personnel: { id: string; name: string } | null;
   reserve_duty_personnel: { id: string; name: string } | null;
 }
@@ -61,38 +61,65 @@ export interface RosterPatch
 //   { allowDemoUser: true }
 // );
 
-export const POST = withAuth(async ({ request, session }) => {
-  const { dutyDates, dutyPersonnels } = await request.json();
+export const POST = withAuth(
+  async ({ request, session }) => {
+    const { dutyDates, dutyPersonnels } = await request.json();
 
-  const roster = dutyDates?.map((item: DutyDate) => ({
-    ...(item.id && { id: item.id }),
-    duty_date: item.date,
-    is_extra: item.isExtra,
-    duty_personnel: item.personnel?.id,
-    reserve_duty_personnel: item.reservePersonnel?.id,
-    unit_id: session.user.app_metadata.unit_id,
-  }));
+    const roster: Tables<'roster'> = dutyDates?.map((item: DutyDate) => ({
+      ...(item.id && { id: item.id }),
+      duty_date: item.date,
+      is_extra: item.isExtra,
+      duty_personnel: item.personnel?.id,
+      reserve_duty_personnel: item.reservePersonnel?.id,
+      unit_id: session.user.app_metadata.unit_id,
+      updated_at: new Date().toISOString(),
+    }));
 
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-
-  const { error } = await supabase
-    .from('roster')
-    .upsert(roster, { onConflict: 'duty_date' });
-
-  if (error) {
-    console.error(error);
-    return NextResponse.json(
-      {
-        status: 'error',
-        message: 'Failed to add roster',
-      },
-      { status: 500 }
+    const personnels: Tables<'profiles'> = dutyPersonnels?.map(
+      (item: Personnel) => ({
+        id: item.id,
+        name: item.name,
+        weekday_points: item.weekdayPoints,
+        weekend_points: item.weekendPoints,
+        no_of_extras: item.extra,
+        unit_id: session.user.app_metadata.unit_id, // Since profiles are unit specific, we can use the unit_id from the session
+        updated_at: new Date().toISOString(),
+      })
     );
-  }
 
-  return NextResponse.json({
-    status: 'success',
-    message: 'Successfully added roster',
-  });
-});
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
+
+    const upsertRosterQuery = supabase
+      .from('roster')
+      .upsert(roster, { onConflict: 'duty_date' })
+      .select();
+
+    const upsertProfilesQuery = supabase
+      .from('profiles')
+      .upsert(personnels)
+      .select();
+
+    const [rosterResult, profilesResult] = await Promise.all([
+      upsertRosterQuery,
+      upsertProfilesQuery,
+    ]);
+
+    if (rosterResult.error || profilesResult.error) {
+      console.error(rosterResult.error, profilesResult.error);
+      return NextResponse.json(
+        {
+          status: 'error',
+          message: 'Failed to add roster',
+        },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      status: 'success',
+      message: 'Successfully added roster',
+    });
+  },
+  { requiredRole: ['admin'] }
+);

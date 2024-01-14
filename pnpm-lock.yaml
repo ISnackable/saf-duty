@@ -84,8 +84,8 @@ dependencies:
     specifier: ^2.39.3
     version: 2.39.3
   '@tabler/icons-react':
-    specifier: ^2.45.0
-    version: 2.45.0(react@18.2.0)
+    specifier: ^2.46.0
+    version: 2.46.0(react@18.2.0)
   autoprefixer:
     specifier: 10.4.16
     version: 10.4.16(postcss@8.4.33)
@@ -105,8 +105,8 @@ dependencies:
     specifier: 8.0.0-rc19
     version: 8.0.0-rc19(react@18.2.0)
   geist:
-    specifier: ^1.2.0
-    version: 1.2.0(next@14.0.4)
+    specifier: ^1.2.1
+    version: 1.2.1(next@14.0.4)
   million:
     specifier: ^2.6.4
     version: 2.6.4
@@ -165,7 +165,7 @@ devDependencies:
     version: 14.0.4
   '@trivago/prettier-plugin-sort-imports':
     specifier: ^4.3.0
-    version: 4.3.0(prettier@3.1.1)
+    version: 4.3.0(prettier@3.2.2)
   '@types/node':
     specifier: 20.11.0
     version: 20.11.0
@@ -188,11 +188,11 @@ devDependencies:
     specifier: ^3.0.0
     version: 3.0.0(eslint@8.56.0)
   prettier:
-    specifier: ^3.1.1
-    version: 3.1.1
+    specifier: ^3.2.2
+    version: 3.2.2
   prettier-plugin-tailwindcss:
     specifier: ^0.5.11
-    version: 0.5.11(@trivago/prettier-plugin-sort-imports@4.3.0)(prettier@3.1.1)
+    version: 0.5.11(@trivago/prettier-plugin-sort-imports@4.3.0)(prettier@3.2.2)
   supabase:
     specifier: ^1.131.4
     version: 1.131.4
@@ -2330,21 +2330,21 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@tabler/icons-react@2.45.0(react@18.2.0):
-    resolution: {integrity: sha512-1vSBsHnBi9AfMILeJQrQo1XIHtFOxuWNGOeIvNHpDcBXyFTfVvDuh64PjMl57xCh5y/PlQlu3Hpx9vSkpSYXYQ==}
+  /@tabler/icons-react@2.46.0(react@18.2.0):
+    resolution: {integrity: sha512-X8MRxuslIOFqMjAo+GvUZDpjlOwNYNJTuOsHXf/NBvVI6ygqUf0FUNsDLLA5fQ6k6KtRwxMlgGB+eR8ZG1UP0g==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:
-      '@tabler/icons': 2.45.0
+      '@tabler/icons': 2.46.0
       prop-types: 15.8.1
       react: 18.2.0
     dev: false
 
-  /@tabler/icons@2.45.0:
-    resolution: {integrity: sha512-J10UDghOni9wlrj5CpKAzychDCABCKYq897mGg0wGFsd+tYLaUdz0dt/HZeGnV8gZJo0hIiTPLGwBp5EW42Qsg==}
+  /@tabler/icons@2.46.0:
+    resolution: {integrity: sha512-Q5G8Pj5IO+Uhc6pszpu5/hGYY018JwEzzvmuqr+gKJtfIvAHA3umpwUilMRLEy89p+WCP+YsDhicMhfBCCv1qA==}
     dev: false
 
-  /@trivago/prettier-plugin-sort-imports@4.3.0(prettier@3.1.1):
+  /@trivago/prettier-plugin-sort-imports@4.3.0(prettier@3.2.2):
     resolution: {integrity: sha512-r3n0onD3BTOVUNPhR4lhVK4/pABGpbA7bW3eumZnYdKaHkf1qEC+Mag6DPbGNuuh0eG8AaYj+YqmVHSiGslaTQ==}
     peerDependencies:
       '@vue/compiler-sfc': 3.x
@@ -2359,7 +2359,7 @@ packages:
       '@babel/types': 7.17.0
       javascript-natural-sort: 0.7.1
       lodash: 4.17.21
-      prettier: 3.1.1
+      prettier: 3.2.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -3837,8 +3837,8 @@ packages:
     resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
     dev: true
 
-  /geist@1.2.0(next@14.0.4):
-    resolution: {integrity: sha512-RZsgCkGnSi1IV1Ozg3s6Ou4r/jzLff9+47ChjpJ5yX8ncEC/RwdStGwhdFzDcnSv0xU0+9J/fTX5Kht0NajTXA==}
+  /geist@1.2.1(next@14.0.4):
+    resolution: {integrity: sha512-xCl7zWfnWqc+TbCG5qqyeT5tnVlOO4pSJsT3Ei59DN1SR4N2VlauF8Fv0D1pPFXGUJgu6RMoeZX+wsR4T9bMhg==}
     peerDependencies:
       next: ^13.2 || ^14
     dependencies:
@@ -4993,7 +4993,7 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /prettier-plugin-tailwindcss@0.5.11(@trivago/prettier-plugin-sort-imports@4.3.0)(prettier@3.1.1):
+  /prettier-plugin-tailwindcss@0.5.11(@trivago/prettier-plugin-sort-imports@4.3.0)(prettier@3.2.2):
     resolution: {integrity: sha512-AvI/DNyMctyyxGOjyePgi/gqj5hJYClZ1avtQvLlqMT3uDZkRbi4HhGUpok3DRzv9z7Lti85Kdj3s3/1CeNI0w==}
     engines: {node: '>=14.21.3'}
     peerDependencies:
@@ -5042,12 +5042,12 @@ packages:
       prettier-plugin-twig-melody:
         optional: true
     dependencies:
-      '@trivago/prettier-plugin-sort-imports': 4.3.0(prettier@3.1.1)
-      prettier: 3.1.1
+      '@trivago/prettier-plugin-sort-imports': 4.3.0(prettier@3.2.2)
+      prettier: 3.2.2
     dev: true
 
-  /prettier@3.1.1:
-    resolution: {integrity: sha512-22UbSzg8luF4UuZtzgiUOfcGM8s4tjBv6dJRT7j275NXsy2jb4aJa4NNveul5x4eqlF1wuhuR2RElK71RvmVaw==}
+  /prettier@3.2.2:
+    resolution: {integrity: sha512-HTByuKZzw7utPiDO523Tt2pLtEyK7OibUD9suEJQrPUCYQqrHr74GGX6VidMrovbf/I50mPqr8j/II6oBAuc5A==}
     engines: {node: '>=14'}
     hasBin: true
     dev: true

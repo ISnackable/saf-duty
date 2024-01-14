@@ -4,9 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   format,
   formatISO,
+  isWeekend,
   lastDayOfMonth,
   parse,
   startOfMonth,
+  subDays,
 } from 'date-fns';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -63,15 +65,17 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import {
-  DefaultPersonnel,
-  DutyDate,
-  Personnel,
+  type DefaultPersonnel,
+  type DutyDate,
+  type Personnel,
   generateDutyRoster,
 } from '@/lib/duty-roster';
 import { fetcher } from '@/lib/fetcher';
-import { Tables } from '@/types/supabase';
+import { type Tables } from '@/types/supabase';
 import { cn } from '@/utils/cn';
 import { indexOnceWithKey } from '@/utils/helper';
+
+import { Checkbox } from './ui/checkbox';
 
 const optionSchema = z.object({
   label: z.string(),
@@ -92,6 +96,7 @@ const CredenzaFormSchema = z.object({
   date: z.date(),
   main: z.string(),
   reserve: z.string(),
+  isExtra: z.boolean().default(false),
 });
 
 function DayDisableOutside(props: DayProps) {
@@ -259,7 +264,13 @@ export function GenerateDuty({
   const monthDate = form.watch('monthDate');
 
   useEffect(() => {
-    if (roster) {
+    // Check whether the roster contains the same dates as the duty roster
+    // If not, reset the duty roster
+
+    if (
+      formatISO(monthDate, { representation: 'date' }) in roster ||
+      formatISO(subDays(monthDate, 1), { representation: 'date' }) in roster
+    ) {
       setDutyRoster(roster);
 
       const uniquePersonnels = Array.from(
@@ -278,7 +289,7 @@ export function GenerateDuty({
       setDutyRoster({});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roster, users]);
+  }, [roster, monthDate]);
 
   const createMonthURL = (month: Date) => {
     const params = new URLSearchParams(searchParams);
@@ -288,31 +299,39 @@ export function GenerateDuty({
   };
 
   const handleRosterSave = async () => {
+    if (Object.keys(dutyRoster).length === 0) {
+      return toast.warning('You need to generate a duty roster first.');
+    }
     setLoading(true);
 
-    if (Object.keys(roster).length > 0) {
+    if (formatISO(monthDate, { representation: 'date' }) in roster) {
       toast.warning('A duty roster already exists.', {
         duration: Infinity,
         important: true,
+        onDismiss: () => {
+          toast.dismiss();
+          setLoading(false);
+        },
         action: {
           label: 'Override',
           onClick: () => {
             updateRoster(dutyRoster, dutyPersonnel);
+            setLoading(false);
           },
         },
         cancel: {
           label: 'Cancel',
           onClick: () => {
             toast.dismiss();
+            setLoading(false);
           },
         },
         description: 'Do you want to override it?',
       });
     } else {
       updateRoster(dutyRoster, dutyPersonnel);
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const handleGenerate = async () => {
@@ -376,30 +395,81 @@ export function GenerateDuty({
     const date = formatISO(values.date, { representation: 'date' });
     const mainPersonnel = values.main;
     const reservePersonnel = values.reserve;
+    const prevDutyRoster = { ...dutyRoster };
 
+    const prevPersonnel = dutyPersonnel.find(
+      (personnel) => personnel.id === prevDutyRoster[date]?.personnel?.id
+    );
+    const newPersonnel = dutyPersonnel.find(
+      (personnel) => personnel.id === mainPersonnel
+    );
+    const newReservePersonnel = dutyPersonnel.find(
+      (personnel) => personnel.id === reservePersonnel
+    );
+
+    // Update the roster with the new personnel/stand in
     const updatedRoster = {
-      ...dutyRoster,
+      ...prevDutyRoster,
       [date]: {
-        ...dutyRoster[date],
+        ...prevDutyRoster[date],
+        isExtra: values.isExtra,
         personnel: {
           id: mainPersonnel,
-          name:
-            dutyPersonnel.find((personnel) => personnel.id === mainPersonnel)
-              ?.name || '',
+          name: newPersonnel?.name || '',
         },
         reservePersonnel: {
           id: reservePersonnel,
-          name:
-            dutyPersonnel.find((personnel) => personnel.id === reservePersonnel)
-              ?.name || '',
+          name: newReservePersonnel?.name || '',
         },
       },
     };
 
+    // Update the personnel with the new points
+    if (newPersonnel && prevPersonnel) {
+      if (isWeekend(new Date(date))) {
+        newPersonnel.totalWeekendAssigned += 1;
+        prevPersonnel.totalWeekendAssigned -= 1;
+
+        newPersonnel.weekendPoints += 1;
+        prevPersonnel.weekendPoints -= 1;
+      } else {
+        newPersonnel.totalWeekdayAssigned += 1;
+        prevPersonnel.totalWeekdayAssigned -= 1;
+
+        newPersonnel.weekdayPoints += 1;
+        prevPersonnel.weekdayPoints -= 1;
+      }
+
+      if (values.isExtra && newPersonnel.extra > 0) {
+        newPersonnel.extra -= 1;
+        newPersonnel.totalExtraAssigned += 1;
+        // Extra does not count as a normal weekend duty
+        newPersonnel.totalWeekendAssigned -= 1;
+        newPersonnel.weekendPoints -= 1;
+      }
+    }
+
+    const updatedPersonnel = dutyPersonnel.map((personnel) => {
+      if (personnel.id === newPersonnel?.id) {
+        return newPersonnel;
+      }
+      if (personnel.id === prevPersonnel?.id) {
+        return prevPersonnel;
+      }
+      return personnel;
+    });
+
     setDutyRoster(updatedRoster);
+    setDutyPersonnel(updatedPersonnel);
 
     toast.success('Successfully updated duty roster', {
       description: 'You can now close this popup.',
+      action: {
+        label: 'Undo',
+        onClick: () => {
+          setDutyRoster(prevDutyRoster);
+        },
+      },
     });
     setOpen(false);
   };
@@ -504,17 +574,18 @@ export function GenerateDuty({
             }}
             onDayClick={(day) => {
               if (day) {
-                const dateTime = formatISO(day, { representation: 'date' });
+                const date = formatISO(day, { representation: 'date' });
 
                 credenzaForm.setValue('date', day);
                 credenzaForm.setValue(
                   'main',
-                  dutyRoster[dateTime]?.personnel?.id || ''
+                  dutyRoster[date]?.personnel?.id || ''
                 );
                 credenzaForm.setValue(
                   'reserve',
-                  dutyRoster[dateTime]?.reservePersonnel?.id || ''
+                  dutyRoster[date]?.reservePersonnel?.id || ''
                 );
+                credenzaForm.setValue('isExtra', dutyRoster[date]?.isExtra);
                 setOpen(true);
               }
             }}
@@ -542,7 +613,7 @@ export function GenerateDuty({
           <div className='mt-5 flex items-center justify-end gap-4'>
             <LoadingButton
               type='button'
-              loading={loading}
+              disabled={loading}
               variant='secondary'
               onClick={handleGenerate}
             >
@@ -555,71 +626,73 @@ export function GenerateDuty({
         </form>
       </Form>
 
-      {form.watch('personnels').length > 0 && (
-        <ScrollArea>
-          <Table className='min-w-[700px] border'>
-            <TableHeader className='bg-secondary'>
-              <TableRow>
-                <TableHead>Personnel</TableHead>
-                <TableHead>Weekday Points</TableHead>
-                <TableHead>Weekend Points</TableHead>
-                <TableHead>Extras</TableHead>
-                <TableHead>No. of duties</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {form
-                .watch('personnels')
-                .toSorted((a, b) =>
-                  a.value < b.value ? -1 : a.value > b.value ? 1 : 0
-                )
-                .map((option) => {
-                  const personnel = dutyPersonnel?.find(
-                    (personnel) => personnel.id === option.value
-                  );
-                  const user = users?.find(
-                    (user) => user?.id === personnel?.id
-                  );
-                  if (!personnel || !user) return null;
+      {form.watch('personnels').length > 0 &&
+        Object.keys(dutyRoster).length !== 0 &&
+        formatISO(monthDate, { representation: 'date' }) in dutyRoster && (
+          <ScrollArea>
+            <Table className='min-w-[700px] border'>
+              <TableHeader className='bg-secondary'>
+                <TableRow>
+                  <TableHead>Personnel</TableHead>
+                  <TableHead>Weekday Points</TableHead>
+                  <TableHead>Weekend Points</TableHead>
+                  <TableHead>Extras</TableHead>
+                  <TableHead>No. of duties</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {form
+                  .watch('personnels')
+                  .toSorted((a, b) =>
+                    a.value < b.value ? -1 : a.value > b.value ? 1 : 0
+                  )
+                  .map((option) => {
+                    const personnel = dutyPersonnel?.find(
+                      (personnel) => personnel.id === option.value
+                    );
+                    const user = users?.find(
+                      (user) => user?.id === personnel?.id
+                    );
+                    if (!personnel || !user) return null;
 
-                  return (
-                    <TableRow key={personnel.id}>
-                      <TableCell>{personnel.name}</TableCell>
-                      <TableCell>{`${user.weekday_points} ${
-                        personnel ? ' ⟶ ' + personnel.weekdayPoints : ''
-                      }`}</TableCell>
-                      <TableCell>{`${user.weekend_points} ${
-                        personnel ? ' ⟶ ' + personnel.weekendPoints : ''
-                      }`}</TableCell>
-                      <TableCell>
-                        {`${user?.no_of_extras} ${
-                          personnel ? ' ⟶ ' + personnel.extra : ''
-                        }`}
-                      </TableCell>
-                      <TableCell>
-                        {`${
-                          personnel ? personnel.totalWeekdayAssigned : 0
-                        } weekday, ${
-                          personnel
-                            ? personnel.totalWeekendAssigned +
-                              personnel.totalExtraAssigned
-                            : 0
-                        } weekend --- Total: (${
-                          personnel
-                            ? personnel.totalWeekdayAssigned +
-                              personnel.totalWeekendAssigned +
-                              personnel.totalExtraAssigned
-                            : 0
-                        })`}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-          <ScrollBar orientation='horizontal' />
-        </ScrollArea>
-      )}
+                    return (
+                      <TableRow key={personnel.id}>
+                        <TableCell>{personnel.name}</TableCell>
+                        <TableCell>{`${user.weekday_points} ${
+                          personnel ? ' ⟶ ' + personnel.weekdayPoints : ''
+                        }`}</TableCell>
+                        <TableCell>{`${user.weekend_points} ${
+                          personnel ? ' ⟶ ' + personnel.weekendPoints : ''
+                        }`}</TableCell>
+                        <TableCell>
+                          {`${user?.no_of_extras} ${
+                            personnel ? ' ⟶ ' + personnel.extra : ''
+                          }`}
+                        </TableCell>
+                        <TableCell>
+                          {`${
+                            personnel ? personnel.totalWeekdayAssigned : 0
+                          } weekday, ${
+                            personnel
+                              ? personnel.totalWeekendAssigned +
+                                personnel.totalExtraAssigned
+                              : 0
+                          } weekend --- Total: (${
+                            personnel
+                              ? personnel.totalWeekdayAssigned +
+                                personnel.totalWeekendAssigned +
+                                personnel.totalExtraAssigned
+                              : 0
+                          })`}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+            <ScrollBar orientation='horizontal' />
+          </ScrollArea>
+        )}
 
       <CredenzaContent className='min-w-[300px] md:min-w-[750px]'>
         <Form {...credenzaForm}>
@@ -705,6 +778,26 @@ export function GenerateDuty({
                   />
                 </div>
               </div>
+
+              {isWeekend(new Date(credenzaForm.getValues('date'))) && (
+                <FormField
+                  control={credenzaForm.control}
+                  name='isExtra'
+                  render={({ field }) => (
+                    <FormItem className='flex flex-row items-start space-x-3 space-y-0 pt-4'>
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className='space-y-1 leading-none'>
+                        <FormLabel>Is Extra?</FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              )}
             </CredenzaBody>
 
             <CredenzaFooter>

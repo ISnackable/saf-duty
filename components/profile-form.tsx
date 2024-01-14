@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { ElementRef, useRef, useState } from 'react';
+import { ElementRef, useEffect, useRef, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
@@ -40,12 +40,14 @@ const ACCEPTED_IMAGE_TYPES = [
 
 const profileFormSchema = z.object({
   avatar: z
-    .any()
-    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+    .custom<File>((v) => v instanceof File, {
+      message: 'Image is required',
+    })
     .refine(
       (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
       'Only .jpg, .jpeg, .png and .webp formats are supported.'
-    ),
+    )
+    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`),
   username: z
     .string()
     .min(2, {
@@ -73,7 +75,7 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 // This can come from your database or API.
 const defaultValues: Partial<ProfileFormValues> = {
-  avatar: null,
+  avatar: undefined,
   bio: 'I own a computer.',
   urls: [
     { value: 'https://shadcn.com' },
@@ -88,7 +90,15 @@ export function ProfileForm() {
     defaultValues,
     mode: 'onChange',
   });
+
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  // revoke object URL to avoid memory leaks
+  useEffect(() => {
+    return () => {
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
+    };
+  }, [imagePreview]);
 
   const { fields, append } = useFieldArray({
     name: 'urls',
@@ -116,7 +126,7 @@ export function ProfileForm() {
                   <FormField
                     control={form.control}
                     name='avatar'
-                    render={({ field: { onChange, ref, ...fieldProps } }) => (
+                    render={({  field: { ref, name, onBlur, onChange } }) => (
                       <FormItem>
                         <div
                           className='m-auto h-36 w-36 cursor-pointer rounded-full border border-dashed p-2 mb-5'
@@ -127,25 +137,28 @@ export function ProfileForm() {
                           <FormControl>
                             <Input
                               type='file'
-                              accept='image/png,image/jpeg'
+                              accept={ACCEPTED_IMAGE_TYPES.join(',')}
                               className='hidden'
                               onChange={(event) => {
                                 const file =
                                   event.target.files && event.target.files[0];
+
                                 if (!file) return;
                                 onChange(file);
 
-                                if (file?.size <= MAX_FILE_SIZE) {
+                                if ( ACCEPTED_IMAGE_TYPES.includes(file.type) &&
+                                   file.size <= MAX_FILE_SIZE) {
                                   setImagePreview(
                                     file ? URL.createObjectURL(file) : null
                                   );
                                 }
                               }}
+                              name={name}
                               ref={(e) => {
                                 ref(e);
                                 refImageInput.current = e;
                               }}
-                              {...fieldProps}
+                              onBlur={onBlur}
                             />
                           </FormControl>
 

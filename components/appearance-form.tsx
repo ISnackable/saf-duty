@@ -129,17 +129,31 @@ export function AppearanceForm() {
                     <FormControl>
                       <RadioGroupItem value='system' className='sr-only' />
                     </FormControl>
-                    <div className='items-center rounded-md border-2 border-muted p-1 hover:border-accent'>
-                      <div className='space-y-2 rounded-sm bg-[#b3b4b6] p-2'>
-                        <div className='space-y-2 rounded-md bg-[#dde1e7] p-2 shadow-sm'>
-                          <div className='h-2 rounded-lg bg-[#ecedef] sm:w-fit md:w-[80px]' />
-                          <div className='h-2 rounded-lg bg-[#ecedef] sm:w-fit md:w-[100px]' />
+                    <div className='flex items-center rounded-md border-2 border-muted p-1 hover:border-accent'>
+                      <div className='w-6/12 space-y-2 rounded-sm bg-slate-950 p-2'>
+                        <div className='space-y-2 rounded-md bg-slate-800 p-2 shadow-sm'>
+                          <div className='h-2 rounded-lg bg-slate-400' />
+                          <div className='h-2 rounded-lg bg-slate-400' />
                         </div>
-                        <div className='flex items-center space-x-2 rounded-md bg-[#dde1e7] p-2 shadow-sm'>
+                        <div className='flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm'>
+                          <div className='h-4 w-4 rounded-full bg-slate-400' />
+                          <div className='h-2 w-[100px] rounded-lg bg-slate-400' />
+                        </div>
+                        <div className='flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm'>
+                          <div className='h-4 w-4 rounded-full bg-slate-400' />
+                          <div className='h-2 w-[100px] rounded-lg bg-slate-400' />
+                        </div>
+                      </div>
+                      <div className='w-6/12 space-y-2 rounded-sm bg-[#ecedef] p-2'>
+                        <div className='space-y-2 rounded-md bg-white p-2 shadow-sm'>
+                          <div className='h-2 rounded-lg bg-[#ecedef]' />
+                          <div className='h-2 rounded-lg bg-[#ecedef]' />
+                        </div>
+                        <div className='flex items-center space-x-2 rounded-md bg-white p-2 shadow-sm'>
                           <div className='h-4 w-4 rounded-full bg-[#ecedef]' />
                           <div className='h-2 w-[100px] rounded-lg bg-[#ecedef]' />
                         </div>
-                        <div className='flex items-center space-x-2 rounded-md bg-[#dde1e7] p-2 shadow-sm'>
+                        <div className='flex items-center space-x-2 rounded-md bg-white p-2 shadow-sm'>
                           <div className='h-4 w-4 rounded-full bg-[#ecedef]' />
                           <div className='h-2 w-[100px] rounded-lg bg-[#ecedef]' />
                         </div>
