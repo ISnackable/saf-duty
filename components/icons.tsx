@@ -1,4 +1,5 @@
 import {
+  IconBell,
   IconCalendar,
   IconCamera,
   IconCheck,
@@ -185,4 +186,5 @@ export const Icons = {
   camera: IconCamera,
   calendar: IconCalendar,
   download: IconDownload,
+  bell: IconBell,
 };

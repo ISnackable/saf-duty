@@ -1,7 +1,7 @@
 'use client';
 
 import { type Session } from '@supabase/supabase-js';
-import { type Icon } from '@tabler/icons-react';
+import { type Icon, IconClockHour1, IconSettings } from '@tabler/icons-react';
 import {
   IconArrowsExchange,
   IconCalendarEvent,
@@ -68,6 +68,11 @@ export const sideNavLinks: SidebarNavItem[] = [
             icon: IconUsers,
           },
           {
+            title: 'Manage Blockouts',
+            href: '/admin/manage-blockouts',
+            icon: IconClockHour1,
+          },
+          {
             title: 'Schedule Duty',
             href: '/admin/schedule-duty',
             icon: IconChessKnight,
@@ -125,6 +130,11 @@ export const sideNavLinks: SidebarNavItem[] = [
   {
     title: 'Others',
     items: [
+      {
+        title: 'Settings',
+        href: '/settings',
+        icon: IconSettings,
+      },
       {
         title: 'Privacy',
         href: '/privacy',

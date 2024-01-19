@@ -1,12 +1,9 @@
 'use client';
 
-// import { cn } from "@/utils/cn";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTheme } from 'next-themes';
 import React from 'react';
-// import { ChevronDownIcon } from "@radix-ui/react-icons";
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
 import * as z from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -66,14 +63,6 @@ export function AppearanceForm() {
 
   function onSubmit(data: AppearanceFormValues) {
     setTheme(data.theme);
-
-    toast('You submitted the following values:', {
-      description: (
-        <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-          <code className='text-white'>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
   }
 
   return (

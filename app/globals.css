@@ -177,7 +177,6 @@ html {
 
 body {
   margin: 0;
-  min-height: -webkit-fill-available;
 }
 
 body[style] {

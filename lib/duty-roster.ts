@@ -153,9 +153,12 @@ function createDutyPersonnel(personnel: DefaultPersonnel[]): Personnel[] {
 function createDutyDate(
   personnel: Personnel[],
   date: Date[],
-  extraDates: Date[]
+  extraDates: Date[],
+  omitDates: Date[]
 ): DutyDate[] {
-  return date.map((date) => {
+  return date.flatMap((date) => {
+    if (isDateInArray(omitDates, date)) return [];
+
     const blockoutPersonnelsId = personnel
       .filter((person) => {
         const blockoutTime =
@@ -466,7 +469,8 @@ export function generateDutyRoster({
   const dutyDates = createDutyDate(
     dutyPersonnel,
     getDatesInMonth(month),
-    extraDates
+    extraDates,
+    omitDates
   );
 
   // Assign Extra shift if there are extra dates

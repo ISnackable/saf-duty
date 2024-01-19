@@ -1,5 +1,6 @@
 'use client';
 
+import { CalendarIcon } from '@radix-ui/react-icons';
 import { addYears, eachMonthOfInterval, format } from 'date-fns';
 import * as React from 'react';
 import { MonthChangeEventHandler } from 'react-day-picker';
@@ -49,20 +50,20 @@ function MonthCalendar({ month, onMonthChange }: MonthPickerProps) {
   return (
     <div className='p-3'>
       <div className='flex flex-col space-y-4 sm:space-x-4 sm:space-y-0'>
-        <div className='space-y-4 grow'>
-          <div className='flex justify-center pt-1 relative items-center px-10'>
+        <div className='grow space-y-4'>
+          <div className='relative flex items-center justify-center px-10 pt-1'>
             <div
-              className='items-center text-center gap-2 text-sm font-medium min-w-[144px]'
+              className='min-w-[144px] items-center gap-2 text-center text-sm font-medium'
               aria-live='polite'
               role='presentation'
             >
               {format(year, 'yyyy')}
             </div>
-            <div className='space-x-1 flex items-center'>
+            <div className='flex items-center space-x-1'>
               <button
                 name='previous-month'
                 aria-label='Go to previous month'
-                className='inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input shadow-sm hover:bg-accent hover:text-accent-foreground h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 absolute left-1'
+                className='absolute left-1 inline-flex h-7 w-7 items-center justify-center whitespace-nowrap rounded-md border border-input bg-transparent p-0 text-sm font-medium opacity-50 shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50'
                 type='button'
                 onClick={() => setYear(addYears(year, -1))}
               >
@@ -86,7 +87,7 @@ function MonthCalendar({ month, onMonthChange }: MonthPickerProps) {
               <button
                 name='next-month'
                 aria-label='Go to next month'
-                className='inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input shadow-sm hover:bg-accent hover:text-accent-foreground h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 absolute right-1'
+                className='absolute right-1 inline-flex h-7 w-7 items-center justify-center whitespace-nowrap rounded-md border border-input bg-transparent p-0 text-sm font-medium opacity-50 shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50'
                 type='button'
                 onClick={() => setYear(addYears(year, 1))}
               >
@@ -116,11 +117,11 @@ function MonthCalendar({ month, onMonthChange }: MonthPickerProps) {
           >
             <tbody className='rdp-tbody'>
               {rows.map((col, index) => (
-                <tr key={index} className='flex w-full mt-2'>
+                <tr key={index} className='mt-2 flex w-full'>
                   {col.map((m) => (
                     <td
                       key={m.getMonth()}
-                      className='grow relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md'
+                      className='relative grow p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md'
                       role='presentation'
                     >
                       <button
@@ -192,7 +193,10 @@ export function MonthPicker({ month, onMonthChange }: MonthPickerProps) {
             !month && 'text-muted-foreground'
           )}
         >
-          {month ? format(month, 'MMMM yyyy') : <span>Pick a date</span>}
+          <CalendarIcon className='mr-2 h-4 w-4 flex-none shrink-0' />
+          <span className='truncate'>
+            {month ? format(month, 'MMMM yyyy') : `Pick a date`}
+          </span>
         </Button>
       </DrawerTrigger>
       <DrawerContent>

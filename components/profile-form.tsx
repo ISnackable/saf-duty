@@ -1,9 +1,8 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import Link from 'next/link';
 import { ElementRef, useEffect, useRef, useState } from 'react';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
@@ -20,15 +19,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { cn } from '@/utils/cn';
+
+import { DatePicker } from './date-picker';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = [
@@ -48,26 +40,18 @@ const profileFormSchema = z.object({
       'Only .jpg, .jpeg, .png and .webp formats are supported.'
     )
     .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`),
-  username: z
+  name: z
     .string()
     .min(2, {
-      message: 'Username must be at least 2 characters.',
+      message: 'Name must be at least 2 characters.',
     })
     .max(30, {
-      message: 'Username must not be longer than 30 characters.',
+      message: 'Name must not be longer than 30 characters.',
     }),
-  email: z
-    .string({
-      required_error: 'Please select an email to display.',
+  ord: z
+    .date({
+      required_error: 'A date of birth is required.',
     })
-    .email(),
-  bio: z.string().max(160).min(4),
-  urls: z
-    .array(
-      z.object({
-        value: z.string().url({ message: 'Please enter a valid URL.' }),
-      })
-    )
     .optional(),
 });
 
@@ -76,11 +60,6 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 // This can come from your database or API.
 const defaultValues: Partial<ProfileFormValues> = {
   avatar: undefined,
-  bio: 'I own a computer.',
-  urls: [
-    { value: 'https://shadcn.com' },
-    { value: 'http://twitter.com/shadcn' },
-  ],
 };
 
 export function ProfileForm() {
@@ -99,11 +78,6 @@ export function ProfileForm() {
       if (imagePreview) URL.revokeObjectURL(imagePreview);
     };
   }, [imagePreview]);
-
-  const { fields, append } = useFieldArray({
-    name: 'urls',
-    control: form.control,
-  });
 
   function onSubmit(data: ProfileFormValues) {
     toast('You submitted the following values:', {
@@ -126,10 +100,10 @@ export function ProfileForm() {
                   <FormField
                     control={form.control}
                     name='avatar'
-                    render={({  field: { ref, name, onBlur, onChange } }) => (
+                    render={({ field: { ref, name, onBlur, onChange } }) => (
                       <FormItem>
                         <div
-                          className='m-auto h-36 w-36 cursor-pointer rounded-full border border-dashed p-2 mb-5'
+                          className='m-auto mb-5 h-36 w-36 cursor-pointer rounded-full border border-dashed p-2'
                           onClick={() => {
                             refImageInput.current?.click();
                           }}
@@ -146,8 +120,10 @@ export function ProfileForm() {
                                 if (!file) return;
                                 onChange(file);
 
-                                if ( ACCEPTED_IMAGE_TYPES.includes(file.type) &&
-                                   file.size <= MAX_FILE_SIZE) {
+                                if (
+                                  ACCEPTED_IMAGE_TYPES.includes(file.type) &&
+                                  file.size <= MAX_FILE_SIZE
+                                ) {
                                   setImagePreview(
                                     file ? URL.createObjectURL(file) : null
                                   );
@@ -191,19 +167,19 @@ export function ProfileForm() {
             </Card>
           </div>
 
-          <div className='col-span-3 md:col-span-2 space-y-8'>
+          <div className='col-span-3 space-y-8 md:col-span-2'>
             <FormField
               control={form.control}
-              name='username'
+              name='name'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder='shadcn' {...field} />
+                    <Input placeholder='Your name' {...field} />
                   </FormControl>
                   <FormDescription>
                     This is your public display name. It can be your real name
-                    or a pseudonym. You can only change this once every 30 days.
+                    or a pseudonym.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -211,91 +187,28 @@ export function ProfileForm() {
             />
             <FormField
               control={form.control}
-              name='email'
+              name='ord'
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder='Select a verified email to display' />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value='m@example.com'>
-                        m@example.com
-                      </SelectItem>
-                      <SelectItem value='m@google.com'>m@google.com</SelectItem>
-                      <SelectItem value='m@support.com'>
-                        m@support.com
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+                <FormItem className='flex flex-col'>
+                  <FormLabel>ORD</FormLabel>
+
+                  <DatePicker
+                    mode='single'
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    disabled={(date) => date < new Date()}
+                    initialFocus
+                  />
+
                   <FormDescription>
-                    You can manage verified email addresses in your{' '}
-                    <Link href='/examples/forms'>email settings</Link>.
+                    Your date of ORD is used to calculate your progress till
+                    ORD.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name='bio'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bio</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder='Tell us a little bit about yourself'
-                      className='resize-none'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    You can <span>@mention</span> other users and organizations
-                    to link to them.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div>
-              {fields.map((field, index) => (
-                <FormField
-                  control={form.control}
-                  key={field.id}
-                  name={`urls.${index}.value`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className={cn(index !== 0 && 'sr-only')}>
-                        URLs
-                      </FormLabel>
-                      <FormDescription className={cn(index !== 0 && 'sr-only')}>
-                        Add links to your website, blog, or social media
-                        profiles.
-                      </FormDescription>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              ))}
-              <Button
-                type='button'
-                variant='outline'
-                size='sm'
-                className='mt-2'
-                onClick={() => append({ value: '' })}
-              >
-                Add URL
-              </Button>
-            </div>
+
             <Button type='submit'>Update profile</Button>
           </div>
         </div>

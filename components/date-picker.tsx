@@ -1,6 +1,5 @@
 'use client';
 
-import { CalendarIcon } from '@radix-ui/react-icons';
 import { addDays, format } from 'date-fns';
 import * as React from 'react';
 import {
@@ -124,7 +123,6 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
                 'text-muted-foreground'
             )}
           >
-            <CalendarIcon className='mr-2 h-4 w-4 flex-none shrink-0' />
             <span className='truncate'>
               {formattedDate ? formattedDate : <span>Pick a date</span>}
             </span>
@@ -189,7 +187,6 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
               'text-muted-foreground'
           )}
         >
-          <CalendarIcon className='mr-2 h-4 w-4 flex-none shrink-0' />
           <span className='truncate'>
             {formattedDate ? formattedDate : <span>Pick a date</span>}
           </span>

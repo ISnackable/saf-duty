@@ -90,6 +90,7 @@ const FormSchema = z.object({
     .min(4, { message: 'At least 4 personnels are required' }),
   monthDate: z.date(),
   extraDates: z.array(z.date()),
+  omitDates: z.array(z.date()),
 });
 
 const CredenzaFormSchema = z.object({
@@ -196,21 +197,23 @@ function DayWithTime(props: DayContentProps, roster: Record<string, DutyDate>) {
     <div className='relative h-full w-full'>
       <time
         dateTime={date}
-        className='md:top:3 absolute right-2 top-1 md:right-4'
+        className='sm:top:3 absolute right-2 top-1 text-sm sm:right-4 sm:text-lg'
       >
         <DayContent {...props} />
       </time>
 
       {roster && roster.hasOwnProperty(date) && (
-        <p
+        <div
           className={cn(
             'absolute bottom-1 mx-auto w-full whitespace-pre-wrap break-words p-1 text-xs md:bottom-3 md:text-base',
             roster[date]?.isExtra && 'text-red-600'
           )}
         >
-          {roster[date]?.personnel?.name} {roster[date]?.isExtra ? 'EX' : ''} (
-          {roster[date]?.reservePersonnel?.name})
-        </p>
+          <span>
+            {roster[date]?.personnel?.name} {roster[date]?.isExtra ? 'EX ' : ''}
+          </span>
+          <span>{`(${roster[date]?.reservePersonnel?.name})`}</span>
+        </div>
       )}
     </div>
   );
@@ -255,6 +258,7 @@ export function GenerateDuty({
       ),
       personnels: OPTIONS,
       extraDates: [],
+      omitDates: [],
     },
   });
   const credenzaForm = useForm<z.infer<typeof CredenzaFormSchema>>({
@@ -361,7 +365,7 @@ export function GenerateDuty({
           users: personnels,
           month: form.getValues('monthDate'),
           extraDates: form.getValues('extraDates'),
-          omitDates: [],
+          omitDates: form.getValues('omitDates'),
         });
 
         // If no error is thrown, set the duty roster and duty personnel
@@ -481,7 +485,7 @@ export function GenerateDuty({
           onSubmit={form.handleSubmit(handleRosterSave)}
           className='space-y-3'
         >
-          <div className='grid grid-cols-2 gap-4'>
+          <div className='grid grid-cols-3 gap-4'>
             <FormField
               control={form.control}
               name='monthDate'
@@ -495,6 +499,7 @@ export function GenerateDuty({
                         month={field.value}
                         onMonthChange={(e) => {
                           form.resetField('extraDates');
+                          form.resetField('omitDates');
                           field.onChange(e);
                           createMonthURL(e);
                         }}
@@ -523,6 +528,36 @@ export function GenerateDuty({
                             },
                             {
                               dayOfWeek: [1, 2, 3, 4, 5],
+                            },
+                          ],
+                        }}
+                        mode='multiple'
+                        defaultMonth={monthDate}
+                        month={monthDate}
+                        selected={field.value}
+                        onSelect={field.onChange}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='omitDates'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Omit date(s)</FormLabel>
+                  <FormControl>
+                    <div className='flex h-full w-full flex-col overflow-visible rounded-md bg-transparent text-popover-foreground'>
+                      <DatePicker
+                        disableNavigation
+                        modifiers={{
+                          disabled: [
+                            {
+                              after: lastDayOfMonth(monthDate),
+                              before: monthDate,
                             },
                           ],
                         }}

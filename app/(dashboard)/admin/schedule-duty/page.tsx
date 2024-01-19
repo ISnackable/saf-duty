@@ -3,7 +3,6 @@ import {
   addDays,
   endOfMonth,
   format,
-  isMatch,
   isWeekend,
   startOfMonth,
   subDays,
@@ -19,6 +18,7 @@ import { Icons } from '@/components/icons';
 import { demoUsers, dutyRoster } from '@/lib/demo-data';
 import { type DutyDate } from '@/lib/duty-roster';
 import { isDemoUser } from '@/utils/demo';
+import { getMonthYearParams } from '@/utils/get-search-params';
 import { indexOnceWithKey } from '@/utils/helper';
 import { createClient } from '@/utils/supabase/server';
 
@@ -110,15 +110,7 @@ export default async function AdminScheduleDutyPage({
     year?: string;
   };
 }) {
-  const today = new Date();
-  const month =
-    searchParams?.month && isMatch(searchParams.month, 'MMMM')
-      ? searchParams.month
-      : format(today, 'LLLL'); // December
-  const year =
-    searchParams?.year && isMatch(searchParams.year, 'yyyy')
-      ? searchParams.year
-      : today.getFullYear().toString();
+  const { month, year } = getMonthYearParams(searchParams);
 
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);

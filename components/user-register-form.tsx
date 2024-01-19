@@ -35,7 +35,7 @@ type UserRegisterFormProps = React.HTMLAttributes<HTMLDivElement>;
 
 export type RegisterFormData = z.infer<typeof RegisterFormSchema>;
 
-function PasswordRequirement({
+export function PasswordRequirement({
   meets,
   label,
 }: {

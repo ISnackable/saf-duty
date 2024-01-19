@@ -115,6 +115,7 @@ export function ManageBlockout({ profile }: ManageBlockoutProps) {
   useEffect(() => {
     if (currentMonthSelected.length >= maximumBlockouts) {
       toast.warning('You have reached the maximum blockouts for this month.', {
+        duration: 5000,
         description:
           'Remove some "less important" blockouts or if you need more blockouts, please contact the person-in-charge.',
       });

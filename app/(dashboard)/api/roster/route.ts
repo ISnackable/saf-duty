@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import * as z from 'zod';
 
 // import { useMonthYear } from '@/hooks/use-month-year';
 import { withAuth } from '@/lib/auth';
@@ -8,6 +9,30 @@ import { type DutyDate, type Personnel } from '@/lib/duty-roster';
 import { type Tables } from '@/types/supabase';
 // import { isDemoUser } from '@/utils/demo';
 import { createClient } from '@/utils/supabase/server';
+
+const DutyDateSchema = z.array(
+  z.object({
+    id: z.number().optional(),
+    duty_date: z.coerce.date(),
+    is_extra: z.boolean(),
+    duty_personnel: z.string(),
+    reserve_duty_personnel: z.string(),
+    unit_id: z.number(),
+    updated_at: z.string().datetime().optional(),
+  })
+);
+
+const PersonnelSchema = z.array(
+  z.object({
+    id: z.string(),
+    name: z.string(),
+    weekday_points: z.number(),
+    weekend_points: z.number(),
+    no_of_extras: z.number(),
+    unit_id: z.number(),
+    updated_at: z.string().datetime().optional(),
+  })
+);
 
 export interface RosterPatch
   extends Pick<Tables<'roster'>, 'id' | 'duty_date' | 'is_extra'> {
@@ -86,6 +111,16 @@ export const POST = withAuth(
         updated_at: new Date().toISOString(),
       })
     );
+
+    const { success: rosterSuccess } = DutyDateSchema.safeParse(roster);
+    const { success: profilesSuccess } = PersonnelSchema.safeParse(personnels);
+
+    if (!rosterSuccess || !profilesSuccess) {
+      return NextResponse.json({
+        status: 'error',
+        message: 'Invalid roster data',
+      });
+    }
 
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);

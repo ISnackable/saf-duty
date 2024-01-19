@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
+import { Highlight } from '@/components/highlight';
 import { Icons } from '@/components/icons';
 import { ManageBlockout } from '@/components/manage-blockout';
 import { demoUsers } from '@/lib/demo-data';
@@ -58,31 +59,28 @@ export default async function ManageBlockoutsPage() {
 
   return (
     <div className='space-y-4 p-8 pt-4'>
-      <div className='flex items-center space-y-2 w-full'>
-        <Icons.edit className='inline-block w-8 h-8 mr-3 align-middle items-center' />
-        <h1 className='scroll-m-20 border-b pb-2 text-2xl sm:text-4xl font-extrabold tracking-tight lg:text-5xl grow'>
+      <div className='flex w-full items-center space-y-2'>
+        <Icons.edit className='mr-3 inline-block h-8 w-8 items-center align-middle' />
+        <h1 className='grow scroll-m-20 border-b pb-2 text-2xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl'>
           Manage Blockouts
         </h1>
       </div>
       <p className='leading-7 [&:not(:first-child)]:mt-6'>
         View and manage your blockouts. The day you selected will be your
-        blockout date,{' '}
-        <u className='font-medium text-primary underline underline-offset-4'>
-          make sure to save
-        </u>{' '}
-        after you are done.
+        blockout date, <Highlight>make sure to save</Highlight> after you are
+        done.
       </p>
-      <ul className='list-disc ml-5 dark:text-gray-200'>
+      <ul className='ml-5 list-disc dark:text-gray-200'>
         <li>
           Only a maximum of {data.max_blockouts} blockouts date per month
           (subject to change)
         </li>
-        <li>Inform the person-in-charge if you need more blockouts</li>
         <li>
           You are not allowed to blockout every{' '}
           <u className='font-medium text-primary underline underline-offset-4'>
-            weekend & friday of the month
+            weekend & friday
           </u>{' '}
+          of the month
         </li>
       </ul>
 
