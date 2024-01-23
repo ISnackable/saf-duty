@@ -21,6 +21,7 @@ import {
 } from 'react-day-picker';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { useDebouncedCallback } from 'use-debounce';
 import * as z from 'zod';
 
 import { DatePicker } from '@/components/date-picker';
@@ -30,6 +31,7 @@ import { MultipleSelector, Option } from '@/components/multi-select';
 import { buttonVariants } from '@/components/ui/button';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Credenza,
   CredenzaBody,
@@ -74,8 +76,6 @@ import { fetcher } from '@/lib/fetcher';
 import { type Tables } from '@/types/supabase';
 import { cn } from '@/utils/cn';
 import { indexOnceWithKey } from '@/utils/helper';
-
-import { Checkbox } from './ui/checkbox';
 
 const optionSchema = z.object({
   label: z.string(),
@@ -295,12 +295,12 @@ export function GenerateDuty({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roster, monthDate]);
 
-  const createMonthURL = (month: Date) => {
+  const createMonthURL = useDebouncedCallback((month: Date) => {
     const params = new URLSearchParams(searchParams);
     params.set('month', format(month, 'LLLL'));
     params.set('year', month.getFullYear().toString());
     replace(`${pathname}?${params.toString()}`, { scroll: false });
-  };
+  }, 300);
 
   const handleRosterSave = async () => {
     if (Object.keys(dutyRoster).length === 0) {

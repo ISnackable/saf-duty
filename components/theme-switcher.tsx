@@ -19,6 +19,10 @@ export function ThemeSwitcher() {
       document
         .querySelector('meta[name="theme-color"]')!
         .setAttribute('content', '#151719');
+    } else if (resolvedTheme === 'discord-dark') {
+      document
+        .querySelector('meta[name="theme-color"]')!
+        .setAttribute('content', '#1e2124');
     } else {
       document
         .querySelector('meta[name="theme-color"]')!

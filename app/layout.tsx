@@ -35,6 +35,9 @@ export const metadata: Metadata = {
   formatDetection: {
     telephone: false,
   },
+  robots: {
+    index: false,
+  },
   openGraph: {
     type: 'website',
     siteName: APP_NAME,
@@ -260,8 +263,11 @@ export default function RootLayout({
             defaultTheme='system'
             enableSystem={true}
             disableTransitionOnChange
+            themes={['light', 'dark', 'discord-dark']}
           >
-            {children}
+            <div vaul-drawer-wrapper='' className='min-h-screen bg-background'>
+              {children}
+            </div>
             <Toaster closeButton duration={3000} />
           </ThemeProvider>
         </main>

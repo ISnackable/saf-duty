@@ -12,6 +12,7 @@ import {
   IconMenu2,
   IconMoon,
   IconSun,
+  IconUser,
   IconX,
 } from '@tabler/icons-react';
 
@@ -187,4 +188,5 @@ export const Icons = {
   calendar: IconCalendar,
   download: IconDownload,
   bell: IconBell,
+  user: IconUser,
 };

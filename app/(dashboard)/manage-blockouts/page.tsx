@@ -1,4 +1,3 @@
-import { type Session } from '@supabase/supabase-js';
 import { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -6,8 +5,7 @@ import { redirect } from 'next/navigation';
 import { Highlight } from '@/components/highlight';
 import { Icons } from '@/components/icons';
 import { ManageBlockout } from '@/components/manage-blockout';
-import { demoUsers } from '@/lib/demo-data';
-import { isDemoUser } from '@/utils/demo';
+import { getUserBlockoutData } from '@/lib/supabase/data';
 import { createClient } from '@/utils/supabase/server';
 
 export const revalidate = 0;
@@ -16,32 +14,6 @@ export const metadata: Metadata = {
   title: 'Manage Blockouts',
   description: 'Manage your blockouts.',
 };
-
-async function getUserBlockoutData(session: Session) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-
-  if (isDemoUser(session.user.id)) {
-    return {
-      max_blockouts: demoUsers[0].max_blockouts,
-      blockout_dates: demoUsers[0].blockout_dates,
-    };
-  } else {
-    const profileQuery = supabase
-      .from('profiles')
-      .select('max_blockouts, blockout_dates')
-      .eq('id', session.user.id)
-      .single();
-
-    const { data, error } = await profileQuery;
-
-    if (!data || error) {
-      throw new Error('Failed to fetch profile');
-    }
-
-    return data;
-  }
-}
 
 export default async function ManageBlockoutsPage() {
   const cookieStore = cookies();
@@ -55,7 +27,7 @@ export default async function ManageBlockoutsPage() {
     redirect('/login');
   }
 
-  const data = await getUserBlockoutData(session);
+  const data = await getUserBlockoutData(supabase, session);
 
   return (
     <div className='space-y-4 p-8 pt-4'>

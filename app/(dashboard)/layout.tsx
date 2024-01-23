@@ -1,36 +1,10 @@
-import { type Session } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 
 import { BottomNav } from '@/components/bottom-nav';
 import { Header } from '@/components/header';
 import { SideNav } from '@/components/side-nav';
-import { demoUsers } from '@/lib/demo-data';
-import { isDemoUser } from '@/utils/demo';
+import { getUserProfileData } from '@/lib/supabase/data';
 import { createClient } from '@/utils/supabase/server';
-
-async function getUserProfileData(session: Session) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-
-  if (isDemoUser(session.user.id)) {
-    return {
-      name: demoUsers[0].name,
-      avatar_url: demoUsers[0].avatar_url,
-    };
-  } else {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('name, avatar_url')
-      .eq('id', session.user.id)
-      .single();
-
-    if (!data || error) {
-      throw new Error('Failed to fetch profile');
-    }
-
-    return data;
-  }
-}
 
 export default async function DashboardLayout({
   children,
@@ -48,7 +22,7 @@ export default async function DashboardLayout({
     throw new Error('No session');
   }
 
-  const data = await getUserProfileData(session);
+  const data = await getUserProfileData(supabase, session);
 
   return (
     <section>

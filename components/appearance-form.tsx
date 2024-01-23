@@ -19,7 +19,7 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const appearanceFormSchema = z.object({
-  theme: z.enum(['system', 'light', 'dark'], {
+  theme: z.enum(['system', 'light', 'dark', 'discord-dark'], {
     required_error: 'Please select a theme.',
   }),
   // font: z.enum(["inter", "manrope", "system"], {
@@ -36,7 +36,7 @@ const defaultValues: Partial<AppearanceFormValues> = {
 };
 
 export function AppearanceForm() {
-  const { theme, resolvedTheme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const form = useForm<AppearanceFormValues>({
     resolver: zodResolver(appearanceFormSchema),
     defaultValues,
@@ -48,18 +48,6 @@ export function AppearanceForm() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [theme]);
-
-  React.useEffect(() => {
-    if (resolvedTheme === 'dark') {
-      document
-        .querySelector('meta[name="theme-color"]')!
-        .setAttribute('content', '#151719');
-    } else {
-      document
-        .querySelector('meta[name="theme-color"]')!
-        .setAttribute('content', '#ffffff');
-    }
-  }, [resolvedTheme]);
 
   function onSubmit(data: AppearanceFormValues) {
     setTheme(data.theme);
@@ -111,7 +99,7 @@ export function AppearanceForm() {
                 onValueChange={field.onChange}
                 defaultValue={field.value}
                 value={field.value}
-                className='grid max-w-xl grid-cols-3 gap-4 pt-2'
+                className='grid max-w-3xl grid-cols-2 gap-4 pt-2 sm:grid-cols-4'
               >
                 <FormItem>
                   <FormLabel className='[&:has([data-state=checked])>div]:border-primary'>
@@ -177,6 +165,36 @@ export function AppearanceForm() {
                     </div>
                     <span className='block w-full p-2 text-center font-normal'>
                       Dark
+                    </span>
+                  </FormLabel>
+                </FormItem>
+
+                <FormItem>
+                  <FormLabel className='[&:has([data-state=checked])>div]:border-primary'>
+                    <FormControl>
+                      <RadioGroupItem
+                        value='discord-dark'
+                        className='sr-only'
+                      />
+                    </FormControl>
+                    <div className='items-center rounded-md border-2 border-muted bg-popover p-1 hover:bg-accent hover:text-accent-foreground'>
+                      <div className='space-y-2 rounded-sm bg-[#1e2124] p-2'>
+                        <div className='space-y-2 rounded-md bg-[#282b30] p-2 shadow-sm'>
+                          <div className='h-2 rounded-lg bg-[#7289da] sm:w-fit md:w-[80px]' />
+                          <div className='h-2 rounded-lg bg-[#7289da] sm:w-fit md:w-[100px]' />
+                        </div>
+                        <div className='flex items-center space-x-2 rounded-md bg-[#282b30] p-2 shadow-sm'>
+                          <div className='h-4 w-4 rounded-full bg-[#7289da]' />
+                          <div className='h-2 w-[100px] rounded-lg bg-[#7289da]' />
+                        </div>
+                        <div className='flex items-center space-x-2 rounded-md bg-[#282b30] p-2 shadow-sm'>
+                          <div className='h-4 w-4 rounded-full bg-[#7289da]' />
+                          <div className='h-2 w-[100px] rounded-lg bg-[#7289da]' />
+                        </div>
+                      </div>
+                    </div>
+                    <span className='block w-full p-2 text-center font-normal'>
+                      Discord
                     </span>
                   </FormLabel>
                 </FormItem>

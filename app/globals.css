@@ -64,6 +64,39 @@
     --input: 208 10% 25%;
     --ring: 208 50% 45%;
   }
+
+
+  .discord-dark {
+    color-scheme: dark;
+
+    --background: 217.5 9.09% 17.25%;
+    --foreground: 334 34% 98%;
+
+    --card: 210 9.09% 12.94%;
+    --card-foreground: 334 34% 98%;
+
+    --popover: 210 9.09% 12.94%;
+    --popover-foreground: 334 34% 98%;
+
+    --primary: 226.73 58.43% 65.1%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 214.29 5.04% 27.25%;
+    --secondary-foreground: 334 0% 100%;
+
+    --muted: 210 9.09% 12.94%;
+    --muted-foreground: 334 0% 60.77%;
+
+    --accent: 217.5 9.09% 17.25%;
+    --accent-foreground: 226.73 58.43% 65.1%;
+
+    --destructive: 0 86.89% 48.16%;
+    --destructive-foreground: 0 0% 0%;
+
+    --border: 334 0% 18.46%;
+    --input: 214.29 5.04% 27.25%;
+    --ring: 217.5 9.09% 17.25%;
+  }
 }
 
 @layer base {
@@ -103,6 +136,10 @@
 
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .pb-safe-or-4 {
+    padding-bottom: max(env(safe-area-inset-bottom), 1rem);
   }
 
   .pl-safe {

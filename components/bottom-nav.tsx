@@ -1,25 +1,17 @@
 'use client';
 
 import {
-  type Icon,
   IconArrowsExchange,
   IconCalendarEvent,
   IconEdit,
   IconHome2,
 } from '@tabler/icons-react';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
 
 import { cn } from '@/utils/cn';
-
-export interface IconProps extends React.ComponentPropsWithoutRef<'button'> {
-  title?: string;
-  icon: Icon;
-  to: string;
-  isActive: boolean;
-  key: string;
-}
 
 const routes = [
   { link: '/', label: 'Home', icon: IconHome2 },
@@ -28,52 +20,8 @@ const routes = [
   { link: '/swap-duties', label: 'Swap Duties', icon: IconArrowsExchange },
 ];
 
-function NavIcon({ icon: Icon, to, title, isActive }: IconProps) {
-  return (
-    <Link
-      href={to}
-      prefetch={false}
-      style={{
-        maxWidth: 'calc(25% - 0.75rem)',
-      }}
-      className='grow'
-    >
-      <div
-        className={cn('flex flex-col items-center justify-start', {
-          'text-primary': isActive,
-        })}
-      >
-        <Icon
-          className={cn(
-            'mb-1 w-6 h-6 group-hover:text-blue-600 dark:group-hover:text-blue-500'
-          )}
-        />
-        <div
-          className={
-            'text-xs group-hover:text-blue-600 dark:group-hover:text-blue-500'
-          }
-        >
-          {title}
-        </div>
-      </div>
-    </Link>
-  );
-}
-
 export function BottomNav() {
   const pathname = usePathname();
-
-  const links = routes.map((route) => {
-    return (
-      <NavIcon
-        key={route.label}
-        icon={route.icon}
-        title={route.label}
-        to={route.link}
-        isActive={pathname === route.link}
-      />
-    );
-  });
 
   return (
     <footer
@@ -84,10 +32,44 @@ export function BottomNav() {
         maxHeight:
           'clamp(60px, calc(env(safe-area-inset-bottom) + 60px), 80px)',
       }}
-      className='fixed bottom-0 w-full z-10 bg-card dark:bg-[#141517] border-t dark:border-zinc-800 border-zinc-200 shadow-lg sm:hidden h-[60px]'
+      className='fixed bottom-0 z-30 h-[60px] w-full border-t border-border bg-card shadow-lg dark:border-zinc-800 dark:bg-[#141517] sm:hidden'
     >
-      <div className='flex flex-row gap-4 justify-start items-center h-full'>
-        {links}
+      <div
+        className={cn('flex h-full flex-row items-center justify-start gap-4')}
+      >
+        {routes.map((item) => (
+          <Link
+            key={item.label}
+            href={item.link}
+            prefetch={false}
+            style={{
+              maxWidth: 'calc(25% - 0.75rem)',
+              transformStyle: 'preserve-3d',
+            }}
+            className={cn('grow')}
+          >
+            {pathname === item.link && (
+              <motion.div
+                layoutId='clickedbutton'
+                transition={{ type: 'spring', bounce: 0.3, duration: 0.3 }}
+                className={cn(
+                  'absolute inset-x-0 inset-y-[-8.5px] border-t border-primary'
+                )}
+              />
+            )}
+
+            <div
+              className={cn('flex flex-col items-center justify-start', {
+                'text-primary': pathname === item.link,
+              })}
+            >
+              <item.icon className='mb-1 h-6 w-6 group-hover:text-blue-600 dark:group-hover:text-blue-500' />
+              <div className='text-xs group-hover:text-blue-600 dark:group-hover:text-blue-500'>
+                {item.label}
+              </div>
+            </div>
+          </Link>
+        ))}
       </div>
     </footer>
   );
