@@ -1,16 +1,10 @@
 {
-  "extends": [
-    "next/core-web-vitals",
-    "prettier"
-  ],
+  "extends": ["next/core-web-vitals", "prettier"],
   "rules": {
     "no-console": [
       "warn",
       {
-        "allow": [
-          "warn",
-          "error"
-        ]
+        "allow": ["warn", "error"]
       }
     ],
     "unused-imports/no-unused-imports": "error",
@@ -24,7 +18,5 @@
       }
     ]
   },
-  "plugins": [
-    "unused-imports"
-  ]
+  "plugins": ["unused-imports"]
 }

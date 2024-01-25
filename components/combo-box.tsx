@@ -93,7 +93,7 @@ export function ComboBox({
                     )}
                     {item.label}
                     {item.value === selected?.value ? (
-                      <Icons.check className='h-4 w-4 absolute right-2 flexitems-center justify-center' />
+                      <Icons.check className='flexitems-center absolute right-2 h-4 w-4 justify-center' />
                     ) : null}
                   </CommandItem>
                 ))}
@@ -146,7 +146,7 @@ export function ComboBox({
                     )}
                     {item.label}
                     {item.value === selected?.value ? (
-                      <Icons.check className='h-4 w-4 absolute right-2 flexitems-center justify-center' />
+                      <Icons.check className='flexitems-center absolute right-2 h-4 w-4 justify-center' />
                     ) : null}
                   </CommandItem>
                 ))}

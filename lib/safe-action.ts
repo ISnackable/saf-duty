@@ -1,9 +1,6 @@
 import 'server-only';
 
-import {
-  DEFAULT_SERVER_ERROR,
-  createSafeActionClient,
-} from 'next-safe-action/zod';
+import { DEFAULT_SERVER_ERROR, createSafeActionClient } from 'next-safe-action';
 import { cookies } from 'next/headers';
 
 import { isDemoUser } from '@/utils/demo';
@@ -25,12 +22,6 @@ function handleReturnedServerError(e: Error) {
 function handleServerErrorLog(e: Error) {
   console.error('Action error:', e.message);
 }
-
-// This is our base client.
-export const action = createSafeActionClient({
-  handleReturnedServerError,
-  handleServerErrorLog,
-});
 
 // This client ensures that the user is authenticated before running action server code.
 export const authAction = createSafeActionClient({

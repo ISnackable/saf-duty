@@ -65,7 +65,6 @@
     --ring: 208 50% 45%;
   }
 
-
   .discord-dark {
     color-scheme: dark;
 
@@ -110,10 +109,10 @@
 }
 
 @layer utilities {
-
   /* extra helper classes to account for mobile safe areas */
   .p-safe {
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    padding: env(safe-area-inset-top) env(safe-area-inset-right)
+      env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 
   .px-safe {
@@ -147,7 +146,8 @@
   }
 
   .m-safe {
-    margin: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    margin: env(safe-area-inset-top) env(safe-area-inset-right)
+      env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 
   .mx-safe {
@@ -198,7 +198,6 @@
 }
 
 @media screen and (max-width: 767px) {
-
   select,
   textarea,
   input[type='text'],

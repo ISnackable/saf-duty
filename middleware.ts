@@ -1,3 +1,4 @@
+import { addMinutes, isPast } from 'date-fns';
 import { type NextRequest, NextResponse } from 'next/server';
 
 import { createClient } from '@/utils/supabase/middleware';
@@ -44,6 +45,18 @@ export async function middleware(request: NextRequest) {
     // Authenticated user should not be able to access /login, /register and /reset-password routes
     if (PUBLIC_PATHS.includes(request.nextUrl.pathname)) {
       return redirectToHome(request);
+    }
+
+    // Authenticated user should not be able to access /change-password route unless they have requested a password reset
+    if (request.nextUrl.pathname === '/change-password') {
+      if (
+        !session.user?.recovery_sent_at ||
+        // Check if the password reset request is expired, with a 5 minute buffer
+        (session.user.recovery_sent_at &&
+          isPast(addMinutes(session.user.recovery_sent_at, 5)))
+      ) {
+        return redirectToHome(request);
+      }
     }
 
     // Authenticated user should not be able to access /admin routes if not an "admin" role (unless it's a demo user)

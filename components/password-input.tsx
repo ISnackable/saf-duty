@@ -32,7 +32,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
 
         <button
           type='button'
-          className='absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer'
+          className='absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3'
           onClick={togglePasswordVisibility}
         >
           {showPassword ? (
