@@ -69,7 +69,7 @@ export function DashboardOverview() {
         }}
       >
         <CarouselContent>
-          {Array.from({ length: 24 }).map((_, index) => (
+          {Array.from({ length: 5 }).map((_, index) => (
             <CarouselItem
               key={index}
               className='flex basis-[21%] flex-col items-center justify-center border-none p-4 sm:basis-[11%]'

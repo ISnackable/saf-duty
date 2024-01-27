@@ -1,7 +1,11 @@
+'use client';
+
 import { type Session } from '@supabase/supabase-js';
 import Link from 'next/link';
+import { useState } from 'react';
 
 import { signOut } from '@/app/(auth)/actions';
+import { InstallPWA } from '@/components/install-pwa';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,9 +18,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Tables } from '@/types/supabase';
-
-import { Switch } from './ui/switch';
+import { type Tables } from '@/types/supabase';
 
 interface UserNavProps {
   session: Session;
@@ -24,6 +26,8 @@ interface UserNavProps {
 }
 
 export function UserNav({ session, profile }: UserNavProps) {
+  const [open, setOpen] = useState(false);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -64,21 +68,18 @@ export function UserNav({ session, profile }: UserNavProps) {
               Account Settings <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            Install Web App
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            asChild
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-            }}
-          >
-            <div className='flex items-center justify-between'>
-              Push Notification <Switch />
-            </div>
-          </DropdownMenuItem>
+          <InstallPWA open={open} onOpenChange={setOpen}>
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                setOpen((prev) => !prev);
+              }}
+            >
+              Install Web App
+              <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </InstallPWA>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem

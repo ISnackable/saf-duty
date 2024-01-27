@@ -1,11 +1,21 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { type CheckedState } from '@radix-ui/react-checkbox';
+import { type Session } from '@supabase/supabase-js';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
+import {
+  deleteSubscription,
+  insertSubscription,
+} from '@/app/(dashboard)/actions';
+import { InstallPWA } from '@/components/install-pwa';
+import { usePushNotificationContext } from '@/components/push-notification-provider';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Form,
   FormControl,
@@ -15,6 +25,8 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { Switch } from '@/components/ui/switch';
+import { useOs } from '@/hooks/use.os';
+import { isDemoUser } from '@/utils/demo';
 
 const notificationsFormSchema = z.object({
   duty_roster_published: z.boolean().default(false).optional(),
@@ -31,11 +43,29 @@ const defaultValues: Partial<NotificationsFormValues> = {
   duty_reminder: false,
 };
 
-export function NotificationsForm() {
+export function NotificationsForm({ session }: { session: Session }) {
+  const {
+    userSubscription,
+    userConsent,
+    isPWAInstalled,
+    pushNotificationSupported,
+    onClickAskUserPermission,
+    onClickSubscribeToPushNotification,
+    onClickUnsubscribeToPushNotification,
+  } = usePushNotificationContext();
+  const [open, setOpen] = useState(false);
+  const [checked, setChecked] = useState<CheckedState>(false);
   const form = useForm<NotificationsFormValues>({
     resolver: zodResolver(notificationsFormSchema),
     defaultValues,
   });
+  const os = useOs();
+
+  useEffect(() => {
+    if (pushNotificationSupported && userSubscription) {
+      setChecked(true);
+    }
+  }, [pushNotificationSupported, userSubscription]);
 
   function onSubmit(data: NotificationsFormValues) {
     toast('You submitted the following values:', {
@@ -50,8 +80,96 @@ export function NotificationsForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+        <div className='items-top flex space-x-2'>
+          <InstallPWA open={open} onOpenChange={setOpen}>
+            <Checkbox
+              id='terms1'
+              checked={checked}
+              onCheckedChange={async (checkedState) => {
+                if (os === 'ios' || os === 'android' || os === 'undetermined') {
+                  if (!isPWAInstalled || !pushNotificationSupported) {
+                    setOpen((prev) => !prev);
+                    return;
+                  }
+                }
+
+                if (isDemoUser(session.user.id)) {
+                  toast.warning('Demo users cannot enable notifications');
+                  return;
+                }
+
+                setChecked(checkedState);
+
+                if (checkedState) {
+                  if (userConsent === 'default') {
+                    const permission = await onClickAskUserPermission();
+                    if (permission === 'granted') {
+                      const subscription =
+                        await onClickSubscribeToPushNotification();
+
+                      if (!subscription) {
+                        toast.error('You have blocked notifications');
+                        return;
+                      }
+
+                      const { serverError, validationErrors } =
+                        await insertSubscription(subscription?.toJSON() as any);
+
+                      if (serverError || validationErrors) {
+                        toast.error('Something went wrong');
+                        return;
+                      }
+
+                      toast.success(`subscribed to push notifications`);
+                    } else {
+                      toast.error('You have blocked notifications');
+                    }
+                  } else if (userConsent === 'granted') {
+                    const subscription =
+                      await onClickSubscribeToPushNotification();
+
+                    if (!subscription) {
+                      toast.error('You have blocked notifications');
+                      return;
+                    }
+
+                    const { serverError, validationErrors } =
+                      await insertSubscription(subscription?.toJSON() as any);
+
+                    if (serverError || validationErrors) {
+                      toast.error('Something went wrong');
+                      return;
+                    }
+
+                    toast.success(`subscribed to push notifications`);
+                  } else {
+                    toast.error('You have blocked notifications');
+                  }
+                } else {
+                  await onClickUnsubscribeToPushNotification();
+                  await deleteSubscription(userSubscription?.toJSON() as any);
+                  toast.success(`unsubscribe from push notifications`);
+                }
+              }}
+            />
+          </InstallPWA>
+
+          <div className='grid gap-1.5 leading-none'>
+            <label
+              htmlFor='terms1'
+              className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
+            >
+              Enable push notifications for this device
+            </label>
+            <p className='text-sm text-muted-foreground'>
+              The first time you enable push notifications, you will have to
+              grant permission to receive notifications.
+            </p>
+          </div>
+        </div>
+
         <div>
-          <h3 className='mb-4 text-lg font-medium'>Push Notifications</h3>
+          <h3 className='mb-4 text-lg font-medium'>Notifications Options</h3>
           <div className='space-y-4'>
             <FormField
               control={form.control}
@@ -60,15 +178,16 @@ export function NotificationsForm() {
                 <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
                   <div className='space-y-0.5'>
                     <FormLabel className='text-base'>
-                      New duty roster published
+                      On duty roster published
                     </FormLabel>
                     <FormDescription>
-                      Receive a notification when a new duty roster is
+                      Receive a notification whenever a new duty roster is
                       published.
                     </FormDescription>
                   </div>
                   <FormControl>
                     <Switch
+                      disabled={!userSubscription ? true : false}
                       checked={field.value}
                       onCheckedChange={field.onChange}
                     />
@@ -92,6 +211,7 @@ export function NotificationsForm() {
                   </div>
                   <FormControl>
                     <Switch
+                      disabled={!userSubscription ? true : false}
                       checked={field.value}
                       onCheckedChange={field.onChange}
                     />
@@ -115,6 +235,7 @@ export function NotificationsForm() {
                   </div>
                   <FormControl>
                     <Switch
+                      disabled={!userSubscription ? true : false}
                       checked={field.value}
                       onCheckedChange={field.onChange}
                     />

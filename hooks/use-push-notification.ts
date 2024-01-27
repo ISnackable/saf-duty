@@ -142,6 +142,8 @@ export default function usePushNotifications() {
     if (consent !== 'granted') {
       console.error('User denied push notification permission');
     }
+
+    return consent;
   };
 
   const onClickSubscribeToPushNotification = async () => {
@@ -165,7 +167,6 @@ export default function usePushNotifications() {
   const onClickUnsubscribeToPushNotification = async () => {
     if (!userConsent || userConsent !== 'granted') {
       console.error('You have to grant push notifications permissions.');
-      return null;
     }
 
     try {
@@ -174,6 +175,8 @@ export default function usePushNotifications() {
     } catch (error) {
       console.error('Failed to unsubscribe the user: ', error);
     }
+
+    return null;
   };
 
   return {

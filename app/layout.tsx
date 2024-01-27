@@ -2,6 +2,7 @@ import './globals.css';
 import { GeistSans } from 'geist/font/sans';
 import { type Metadata, type Viewport } from 'next';
 
+import { PushNotificationProvider } from '@/components/push-notification-provider';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
 
@@ -265,10 +266,15 @@ export default function RootLayout({
             disableTransitionOnChange
             themes={['light', 'dark', 'discord-dark']}
           >
-            <div vaul-drawer-wrapper='' className='min-h-screen bg-background'>
-              {children}
-            </div>
-            <Toaster closeButton duration={3000} />
+            <PushNotificationProvider>
+              <div
+                vaul-drawer-wrapper=''
+                className='min-h-screen bg-background'
+              >
+                {children}
+              </div>
+              <Toaster closeButton duration={3000} />
+            </PushNotificationProvider>
           </ThemeProvider>
         </main>
       </body>
