@@ -104,7 +104,7 @@ function DayWithTime(
         >
           <div
             className={cn(
-              'absolute bottom-1 mx-auto w-full whitespace-pre-wrap break-words text-xs md:bottom-3 md:text-base',
+              'absolute bottom-1 mx-auto w-full whitespace-pre-wrap break-words text-xs text-foreground/90 md:bottom-3 md:text-base',
               roster[date]?.isExtra && 'text-red-600'
             )}
           >

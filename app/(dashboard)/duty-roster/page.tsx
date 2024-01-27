@@ -44,7 +44,7 @@ export default async function DutyRosterPage({
           Duty Roster
         </h1>
       </div>
-      <p className='leading-7 [&:not(:first-child)]:mt-6'>
+      <p className='text-sm leading-7 sm:text-base [&:not(:first-child)]:mt-6'>
         View the duty roster, below the date indicate the duty personnel while
         the circle bracket indicates the duty stand in personnel. Click on the
         date to request for swap duty.

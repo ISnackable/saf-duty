@@ -109,10 +109,10 @@
 }
 
 @layer utilities {
+
   /* extra helper classes to account for mobile safe areas */
   .p-safe {
-    padding: env(safe-area-inset-top) env(safe-area-inset-right)
-      env(safe-area-inset-bottom) env(safe-area-inset-left);
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 
   .px-safe {
@@ -146,8 +146,7 @@
   }
 
   .m-safe {
-    margin: env(safe-area-inset-top) env(safe-area-inset-right)
-      env(safe-area-inset-bottom) env(safe-area-inset-left);
+    margin: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 
   .mx-safe {
@@ -198,6 +197,7 @@
 }
 
 @media screen and (max-width: 767px) {
+
   select,
   textarea,
   input[type='text'],
@@ -217,4 +217,38 @@ body {
 
 body[style] {
   margin-right: 0px !important;
+}
+
+.DropdownMenuContent {
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+  animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.PopoverContent {
+  transform-origin: var(--radix-popover-content-transform-origin);
+  animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

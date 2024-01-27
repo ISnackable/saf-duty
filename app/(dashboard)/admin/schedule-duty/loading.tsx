@@ -21,7 +21,7 @@ export default function Loading() {
           Schedule Duty
         </h1>
       </div>
-      <p className='leading-7 [&:not(:first-child)]:mt-6'>
+      <p className='text-sm leading-7 sm:text-base [&:not(:first-child)]:mt-6'>
         Generate the duty roster for the selected month & year with the given
         personnels. The algorithm uses &quot;points&quot; to determine the
         number of duty days. Personnel with lower &quot;points&quot; will have

@@ -205,7 +205,7 @@ function DayWithTime(props: DayContentProps, roster: Record<string, DutyDate>) {
       {roster && roster.hasOwnProperty(date) && (
         <div
           className={cn(
-            'absolute bottom-1 mx-auto w-full whitespace-pre-wrap break-words text-xs md:bottom-3 md:text-base',
+            'absolute bottom-1 mx-auto w-full whitespace-pre-wrap break-words text-xs text-foreground/90 md:bottom-3 md:text-base',
             roster[date]?.isExtra && 'text-red-600'
           )}
         >
@@ -510,6 +510,38 @@ export function GenerateDuty({
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name='omitDates'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Omit date(s)</FormLabel>
+                  <FormControl>
+                    <div className='flex h-full w-full flex-col overflow-visible rounded-md bg-transparent text-popover-foreground'>
+                      <DatePicker
+                        disableNavigation
+                        modifiers={{
+                          disabled: [
+                            {
+                              after: lastDayOfMonth(monthDate),
+                              before: monthDate,
+                            },
+                          ],
+                        }}
+                        mode='multiple'
+                        defaultMonth={monthDate}
+                        month={monthDate}
+                        selected={field.value}
+                        onSelect={field.onChange}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name='extraDates'
@@ -528,36 +560,6 @@ export function GenerateDuty({
                             },
                             {
                               dayOfWeek: [1, 2, 3, 4, 5],
-                            },
-                          ],
-                        }}
-                        mode='multiple'
-                        defaultMonth={monthDate}
-                        month={monthDate}
-                        selected={field.value}
-                        onSelect={field.onChange}
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='omitDates'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Omit date(s)</FormLabel>
-                  <FormControl>
-                    <div className='flex h-full w-full flex-col overflow-visible rounded-md bg-transparent text-popover-foreground'>
-                      <DatePicker
-                        disableNavigation
-                        modifiers={{
-                          disabled: [
-                            {
-                              after: lastDayOfMonth(monthDate),
-                              before: monthDate,
                             },
                           ],
                         }}

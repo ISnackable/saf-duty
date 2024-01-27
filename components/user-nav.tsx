@@ -20,15 +20,15 @@ import { Switch } from './ui/switch';
 
 interface UserNavProps {
   session: Session;
-  profile: Pick<Tables<'profiles'>, 'name' | 'avatar_url'>;
+  profile: Pick<Tables<'profiles'>, 'name' | 'avatar_url' | 'ord_date'>;
 }
 
 export function UserNav({ session, profile }: UserNavProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant='ghost' className='relative h-8 w-8 rounded-full'>
-          <Avatar className='h-8 w-8'>
+        <Button variant='ghost' className='relative h-9 w-9 rounded-full'>
+          <Avatar className='relative h-9 w-9 rounded-full'>
             <AvatarImage
               src={profile.avatar_url || ''}
               alt={`${profile.name} avtar image`}
@@ -37,7 +37,11 @@ export function UserNav({ session, profile }: UserNavProps) {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='w-56' align='end' forceMount>
+      <DropdownMenuContent
+        className='DropdownMenuContent w-56'
+        align='end'
+        forceMount
+      >
         <DropdownMenuLabel className='font-normal'>
           <div className='flex flex-col space-y-1'>
             <p className='text-sm font-medium leading-none'>
@@ -51,13 +55,13 @@ export function UserNav({ session, profile }: UserNavProps) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href='/settings/account'>
-              Account <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+            <Link href='/settings'>
+              Profile <DropdownMenuShortcut>⌘P</DropdownMenuShortcut>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href='/settings'>
-              Profile <DropdownMenuShortcut>⌘P</DropdownMenuShortcut>
+            <Link href='/settings/account'>
+              Account Settings <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
@@ -77,7 +81,10 @@ export function UserNav({ session, profile }: UserNavProps) {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={async () => await signOut()}>
+        <DropdownMenuItem
+          onClick={async () => await signOut()}
+          className='text-destructive'
+        >
           Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>

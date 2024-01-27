@@ -1,7 +1,21 @@
+import { cookies } from 'next/headers';
+
 import { AccountForm } from '@/components/account-form';
 import { Separator } from '@/components/ui/separator';
+import { createClient } from '@/utils/supabase/server';
 
-export default function SettingsAccountPage() {
+export default async function SettingsAccountPage() {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    throw new Error('No session');
+  }
+
   return (
     <div className='space-y-6'>
       <div>
@@ -12,7 +26,7 @@ export default function SettingsAccountPage() {
         </p>
       </div>
       <Separator />
-      <AccountForm />
+      <AccountForm session={session} />
     </div>
   );
 }

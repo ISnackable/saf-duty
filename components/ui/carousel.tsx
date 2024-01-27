@@ -1,4 +1,5 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@radix-ui/react-icons';
+import { type VariantProps, cva } from 'class-variance-authority';
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from 'embla-carousel-react';
@@ -155,7 +156,7 @@ const CarouselContent = React.forwardRef<
   const { carouselRef, orientation } = useCarousel();
 
   return (
-    <div ref={carouselRef} className='overflow-hidden'>
+    <div ref={carouselRef} className='overflow-x-hidden'>
       <div
         ref={ref}
         className={cn(
@@ -250,6 +251,87 @@ const CarouselNext = React.forwardRef<
 });
 CarouselNext.displayName = 'CarouselNext';
 
+const dotsVariants = cva('rounded-full transition-all duration-300', {
+  variants: {
+    size: {
+      default: 'h-2.5 w-2.5',
+      sm: 'h-2 w-2',
+      lg: 'h-3.5 w-3.5',
+    },
+    gap: {
+      default: 'mx-0.5',
+      sm: 'mx-[1px]',
+      lg: 'mx-1',
+    },
+  },
+  defaultVariants: {
+    size: 'default',
+    gap: 'default',
+  },
+});
+
+interface CarouselDotsProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof dotsVariants> {
+  dotsClassName?: string;
+}
+
+const CarouselDots = React.forwardRef<HTMLDivElement, CarouselDotsProps>(
+  ({ className, dotsClassName, size, gap, ...props }, ref) => {
+    const { api } = useCarousel();
+    const [current, setCurrent] = React.useState(0);
+    const [length, setLength] = React.useState(
+      api?.scrollSnapList().length ?? 1
+    );
+    // const length = api?.scrollSnapList().length ?? 1;
+
+    React.useEffect(() => {
+      if (!api) return;
+
+      setLength(api.scrollSnapList().length);
+      setCurrent(api.selectedScrollSnap());
+
+      api.on('resize', () => {
+        setCurrent(api.selectedScrollSnap());
+        setLength(api.scrollSnapList().length);
+      });
+      api.on('select', () => setCurrent(api.selectedScrollSnap()));
+
+      return () => {
+        api?.off('resize', () => setLength(api.scrollSnapList().length));
+        api?.off('select', () => setCurrent(api.selectedScrollSnap()));
+      };
+    }, [api]);
+
+    return (
+      <div
+        ref={ref}
+        role='tablist'
+        className={cn('my-2 flex justify-center', className)}
+        {...props}
+      >
+        {Array.from({ length }).map((_, index) => (
+          <button
+            key={index}
+            role='tab'
+            aria-selected={current === index ? 'true' : 'false'}
+            aria-label={`Slide ${index + 1}`}
+            onClick={() => api?.scrollTo(index)}
+            className={cn(
+              dotsVariants({ size, gap, className }),
+              dotsClassName,
+              current === index
+                ? 'w-10 bg-primary-foreground/90'
+                : 'bg-muted-foreground/40'
+            )}
+          />
+        ))}
+      </div>
+    );
+  }
+);
+CarouselDots.displayName = 'CarouselDots';
+
 export {
   type CarouselApi,
   Carousel,
@@ -257,4 +339,5 @@ export {
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
+  CarouselDots,
 };

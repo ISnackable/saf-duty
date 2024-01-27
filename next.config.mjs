@@ -18,6 +18,14 @@ const millionConfig = {
 };
 
 /** @type {import('next').NextConfig} */
-const nextConfig = bundleAnalyzer(withSerwist({}));
+const nextConfig = bundleAnalyzer(
+  withSerwist({
+    logging: {
+      fetches: {
+        fullUrl: false,
+      },
+    },
+  })
+);
 
 export default million.next(nextConfig, millionConfig);

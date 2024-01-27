@@ -60,7 +60,7 @@ export function getUserProfileById(
 ) {
   return client
     .from('profiles')
-    .select('name, avatar_url')
+    .select('name, avatar_url, ord_date')
     .eq('id', sessionId)
     .single();
 }

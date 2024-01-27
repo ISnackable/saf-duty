@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { type Session } from '@supabase/supabase-js';
 import { isWeekend } from 'date-fns';
 
@@ -100,6 +102,7 @@ export async function getUserProfileData(
     return {
       name: demoUsers[0].name,
       avatar_url: demoUsers[0].avatar_url,
+      ord_date: demoUsers[0].ord_date,
     };
   } else {
     const { data, error } = await getUserProfileById(client, session.user.id);

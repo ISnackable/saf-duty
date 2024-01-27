@@ -19,6 +19,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { type Tables } from '@/types/supabase';
 
 import { DatePicker } from './date-picker';
 
@@ -57,20 +58,25 @@ const profileFormSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
-// This can come from your database or API.
-const defaultValues: Partial<ProfileFormValues> = {
-  avatar: undefined,
-};
-
-export function ProfileForm() {
+export function ProfileForm({
+  profile,
+}: {
+  profile: Pick<Tables<'profiles'>, 'name' | 'avatar_url' | 'ord_date'>;
+}) {
   const refImageInput = useRef<ElementRef<'input'> | null>(null);
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues,
+    defaultValues: {
+      avatar: undefined,
+      name: profile.name,
+      ord: profile.ord_date ? new Date(profile.ord_date) : undefined,
+    },
     mode: 'onChange',
   });
 
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    profile.avatar_url
+  );
 
   // revoke object URL to avoid memory leaks
   useEffect(() => {

@@ -1,39 +1,40 @@
-import { Icons } from '@/components/icons';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { cookies } from 'next/headers';
 
-import { ClienTestPage } from './client-page';
+import { DashboardOverview } from '@/components/dashboard-overview';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getUserProfileData } from '@/lib/supabase/data';
+import { createClient } from '@/utils/supabase/server';
 
 export default async function Index() {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    throw new Error('No session');
+  }
+
+  const data = await getUserProfileData(supabase, session);
+
   return (
     <div className='space-y-4 p-8 pt-4'>
-      <div className='flex items-center space-y-2 w-full'>
-        <Icons.edit className='inline-block w-8 h-8 mr-3 align-middle items-center' />
-        <h1 className='scroll-m-20 border-b pb-2 text-2xl sm:text-4xl font-extrabold tracking-tight lg:text-5xl grow'>
-          Index Page
+      <div className='flex w-full items-center space-y-2'>
+        <Avatar className='mr-3 inline-block h-10 w-10 items-center align-middle'>
+          <AvatarImage src={data.avatar_url ?? ''} />
+          <AvatarFallback>{data.name}</AvatarFallback>
+        </Avatar>
+        <h1 className='grow scroll-m-20 border-b pb-2 text-2xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl'>
+          Howdy, {data.name}
         </h1>
       </div>
-      <p className='leading-7 [&:not(:first-child)]:mt-6'>WORDS..</p>
+      <p className='text-sm leading-7 sm:text-base [&:not(:first-child)]:mt-6'>
+        Review your upcoming duties and add them to your calendar.
+      </p>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Card Title</CardTitle>
-          <CardDescription>Card Description</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p>Card Content</p>
-        </CardContent>
-        <CardFooter>
-          <p>Card Footer</p>
-        </CardFooter>
-      </Card>
-      <ClienTestPage />
+      <DashboardOverview />
     </div>
   );
 }

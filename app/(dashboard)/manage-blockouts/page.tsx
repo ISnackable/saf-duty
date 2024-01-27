@@ -37,12 +37,12 @@ export default async function ManageBlockoutsPage() {
           Manage Blockouts
         </h1>
       </div>
-      <p className='leading-7 [&:not(:first-child)]:mt-6'>
+      <p className='text-sm leading-7 sm:text-base [&:not(:first-child)]:mt-6'>
         View and manage your blockouts. The day you selected will be your
         blockout date, <Highlight>make sure to save</Highlight> after you are
         done.
       </p>
-      <ul className='ml-5 list-disc dark:text-gray-200'>
+      <ul className='ml-5 list-disc text-sm dark:text-gray-200 sm:text-base'>
         <li>
           Only a maximum of {data.max_blockouts} blockouts date per month
           (subject to change)

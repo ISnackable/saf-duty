@@ -11,6 +11,7 @@ import {
   IconLoader2,
   IconMenu2,
   IconMoon,
+  IconSettings,
   IconSun,
   IconUser,
   IconX,
@@ -189,4 +190,5 @@ export const Icons = {
   download: IconDownload,
   bell: IconBell,
   user: IconUser,
+  settings: IconSettings,
 };

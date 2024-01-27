@@ -1,7 +1,24 @@
+import { cookies } from 'next/headers';
+
 import { ProfileForm } from '@/components/profile-form';
 import { Separator } from '@/components/ui/separator';
+import { getUserProfileData } from '@/lib/supabase/data';
+import { createClient } from '@/utils/supabase/server';
 
-export default function SettingsProfilePage() {
+export default async function SettingsProfilePage() {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    throw new Error('No session');
+  }
+
+  const data = await getUserProfileData(supabase, session);
+
   return (
     <div className='space-y-6'>
       <div>
@@ -11,7 +28,7 @@ export default function SettingsProfilePage() {
         </p>
       </div>
       <Separator />
-      <ProfileForm />
+      <ProfileForm profile={data} />
     </div>
   );
 }

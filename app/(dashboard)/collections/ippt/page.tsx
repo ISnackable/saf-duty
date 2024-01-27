@@ -31,7 +31,9 @@ export default async function CollectionsIPPTPage() {
           IPPT
         </h1>
       </div>
-      <p className='leading-7 [&:not(:first-child)]:mt-6'>... WORDS ...</p>
+      <p className='text-sm leading-7 sm:text-base [&:not(:first-child)]:mt-6'>
+        ... WORDS ...
+      </p>
     </div>
   );
 }

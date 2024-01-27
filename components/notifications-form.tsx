@@ -13,28 +13,22 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from '@/components/ui/form';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Switch } from '@/components/ui/switch';
 
 const notificationsFormSchema = z.object({
-  type: z.enum(['all', 'mentions', 'none'], {
-    required_error: 'You need to select a notification type.',
-  }),
-  mobile: z.boolean().default(false).optional(),
-  communication_emails: z.boolean().default(false).optional(),
-  social_emails: z.boolean().default(false).optional(),
-  security_emails: z.boolean(),
+  duty_roster_published: z.boolean().default(false).optional(),
+  swap_request_updates: z.boolean().default(false).optional(),
+  duty_reminder: z.boolean(),
 });
 
 type NotificationsFormValues = z.infer<typeof notificationsFormSchema>;
 
 // This can come from your database or API.
 const defaultValues: Partial<NotificationsFormValues> = {
-  communication_emails: false,
-  social_emails: false,
-  security_emails: true,
+  duty_roster_published: false,
+  swap_request_updates: false,
+  duty_reminder: false,
 };
 
 export function NotificationsForm() {
@@ -56,60 +50,21 @@ export function NotificationsForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-        <FormField
-          control={form.control}
-          name='type'
-          render={({ field }) => (
-            <FormItem className='space-y-3'>
-              <FormLabel>Notify me about...</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className='flex flex-col space-y-1'
-                >
-                  <FormItem className='flex items-center space-x-3 space-y-0'>
-                    <FormControl>
-                      <RadioGroupItem value='all' />
-                    </FormControl>
-                    <FormLabel className='font-normal'>
-                      All mentions (new duty, swap, and reminder)
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem className='flex items-center space-x-3 space-y-0'>
-                    <FormControl>
-                      <RadioGroupItem value='mentions' />
-                    </FormControl>
-                    <FormLabel className='font-normal'>
-                      Swap request and duty reminders
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem className='flex items-center space-x-3 space-y-0'>
-                    <FormControl>
-                      <RadioGroupItem value='none' />
-                    </FormControl>
-                    <FormLabel className='font-normal'>Nothing</FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <div>
-          <h3 className='mb-4 text-lg font-medium'>Email Notifications</h3>
+          <h3 className='mb-4 text-lg font-medium'>Push Notifications</h3>
           <div className='space-y-4'>
             <FormField
               control={form.control}
-              name='communication_emails'
+              name='duty_roster_published'
               render={({ field }) => (
                 <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
                   <div className='space-y-0.5'>
                     <FormLabel className='text-base'>
-                      Communication emails
+                      New duty roster published
                     </FormLabel>
                     <FormDescription>
-                      Receive emails about your account activity.
+                      Receive a notification when a new duty roster is
+                      published.
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -123,13 +78,16 @@ export function NotificationsForm() {
             />
             <FormField
               control={form.control}
-              name='social_emails'
+              name='swap_request_updates'
               render={({ field }) => (
                 <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
                   <div className='space-y-0.5'>
-                    <FormLabel className='text-base'>Social emails</FormLabel>
+                    <FormLabel className='text-base'>
+                      Duty swap requests and approvals
+                    </FormLabel>
                     <FormDescription>
-                      Receive emails for friend requests, follows, and more.
+                      Receive a notification when someone requests to swap a
+                      duty with you.
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -143,21 +101,22 @@ export function NotificationsForm() {
             />
             <FormField
               control={form.control}
-              name='security_emails'
+              name='duty_reminder'
               render={({ field }) => (
                 <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
                   <div className='space-y-0.5'>
-                    <FormLabel className='text-base'>Security emails</FormLabel>
+                    <FormLabel className='text-base'>
+                      Reminder of your duties
+                    </FormLabel>
                     <FormDescription>
-                      Receive emails about your account activity and security.
+                      Receive a reminder notification for your duties on the
+                      previous day.
                     </FormDescription>
                   </div>
                   <FormControl>
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      disabled
-                      aria-readonly
                     />
                   </FormControl>
                 </FormItem>

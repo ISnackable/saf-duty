@@ -5,7 +5,7 @@ import { type Database } from '@/types/supabase';
 
 export const createClient = (request: NextRequest) => {
   // Create an unmodified response
-  let response = NextResponse.next({
+  const response = NextResponse.next({
     request: {
       headers: request.headers,
     },
