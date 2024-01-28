@@ -1,5 +1,8 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import webPush from 'npm:web-push';
+import {
+  ApplicationServerKeys,
+  generatePushHTTPRequest,
+} from 'npm:webpush-webcrypto';
 
 interface Notification {
   id: string;
@@ -16,12 +19,6 @@ interface WebhookPayload {
   schema: 'public';
 }
 
-webPush.setVapidDetails(
-  `mailto:${Deno.env.get('WEB_PUSH_EMAIL')}`,
-  Deno.env.get('WEB_PUSH_PUBLIC_KEY')!,
-  Deno.env.get('WEB_PUSH_PRIVATE_KEY')!
-);
-
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL')!,
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
@@ -33,50 +30,75 @@ Deno.serve(async (req) => {
   const { data } = await supabase
     .from('push_subscriptions')
     .select('push_subscription_details')
-    .eq('id', payload.record.user_id)
+    .eq('user_id', payload.record.user_id)
     .single();
 
-  const fcmToken = data!.push_subscription_details;
+  if (!data) {
+    return new Response(
+      JSON.stringify({
+        status: 'error',
+        message: 'Subscription not found',
+      }),
+      { status: 404 }
+    );
+  }
 
-  const { statusCode, body } = await sendPushNotification(
-    JSON.parse(fcmToken),
+  const token = data.push_subscription_details;
+
+  const { status } = await sendPushNotification(
+    token,
     { title: payload.record.title, message: payload.record.message },
     payload.record.user_id
   );
 
-  if (statusCode < 200 || 299 < statusCode) {
-    throw body;
-  }
-
-  return new Response(JSON.stringify(body), {
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return new Response(
+    JSON.stringify({
+      status: status === 200 ? 'success' : 'error',
+      message: status === 200 ? 'Push notification sent' : 'Error sending push',
+    }),
+    {
+      status: status,
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
 });
 
-export function sendPushNotification(
-  subscription: webPush.PushSubscription,
+export async function sendPushNotification(
+  subscription: string,
   payload: { title: string; message: string },
   userId: string
 ) {
-  return webPush
-    .sendNotification(
-      subscription,
-      JSON.stringify({
-        title: payload.title,
-        message: payload.message,
-      })
-    )
-    .catch(async (err: webPush.WebPushError) => {
-      if (err.statusCode === 404 || err.statusCode === 410) {
-        console.warn('Subscription has expired or is no longer valid: ', err);
+  const applicationServerKeys = await ApplicationServerKeys.fromJSON({
+    publicKey: Deno.env.get('WEB_PUSH_PUBLIC_KEY')!,
+    privateKey: Deno.env.get('WEB_PUSH_PRIVATE_KEY')!,
+  });
 
-        await deleteSubscriptionFromDatabase(userId);
-      } else {
-        console.error(err);
-        throw err;
-      }
-      return err;
-    });
+  const { headers, body, endpoint } = await generatePushHTTPRequest({
+    applicationServerKeys: applicationServerKeys,
+    payload: JSON.stringify(payload),
+    target: subscription,
+    adminContact: `mailto:${Deno.env.get('WEB_PUSH_EMAIL')}`,
+    ttl: 60,
+    urgency: 'low',
+  });
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers,
+    body,
+  });
+
+  if (response.status === 404 || response.status === 410) {
+    console.warn('Subscription has expired or is no longer valid: ');
+
+    await deleteSubscriptionFromDatabase(userId);
+  }
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  return response;
 }
 
 export async function deleteSubscriptionFromDatabase(userId: string) {

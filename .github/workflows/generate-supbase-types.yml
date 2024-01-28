@@ -1,21 +1,41 @@
-name: generate-supabase-types
+name: Update database types
+
 on:
-  pull_request:
+  schedule:
+    # sets the action to run daily. You can modify this to run the action more or less frequently
+    - cron: '0 0 * * *'
 
 jobs:
-  build:
+  update:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      PROJECT_REF: <your-project-id>
     steps:
-      - uses: supabase/setup-cli@v1
+      - uses: actions/checkout@v2
         with:
-          version: latest
-      - run: supabase init
-      - run: supabase db start
-      - name: Verify generated types match Postgres schema
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@v2.1.5
+        with:
+          node-version: 16
+      - run: npx supabase gen types typescript > types/supabase.ts
+      - name: check for file changes
+        id: git_status
         run: |
-          supabase gen types typescript --local > schema.gen.ts
-          if ! git diff --ignore-space-at-eol --exit-code --quiet schema.gen.ts; then
-            echo "Detected uncommitted changes after build. See status below:"
-            git diff
-            exit 1
-          fi
+          echo "status=$(git status -s)" >> $GITHUB_OUTPUT
+      - name: Commit files
+        if: ${{contains(steps.git_status.outputs.status, ' ')}}
+        run: |
+          git add types/supabase.ts
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "Update database types" -a
+      - name: Push changes
+        if: ${{contains(steps.git_status.outputs.status, ' ')}}
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}

@@ -98,4 +98,26 @@ export DOCKER_HOST=unix:///$XDG_RUNTIME_DIR/podman/podman.sock
 supabase db dump -f supabase/schema.sql
 ```
 
-You will need to enable supabase webhook manually because their config file doesn't yet support setting up of webhook: https://github.com/supabase/cli/issues/1190
+**To Enable Push Notification with web-push. You will need to deploy Deploy the Supabase Edge Function and Create the database webhook manually.**
+
+### Deploy the Supabase Edge Function
+
+The database webhook handler to send push notifications is located in `supabase/functions/push/index.ts`. Deploy the function to your linked project and set the `WEB_PUSH_PUBLIC_KEY`, `WEB_PUSH_PRIVATE_KEY` & `WEB_PUSH_EMAIL` secret.
+
+1. `supabase functions deploy push`
+2. `supabase secrets set --env-file .env.local`
+
+### Create the database webhook
+
+Navigate to the [Database Webhooks settings](https://supabase.com/dashboard/project/_/database/hooks) in your Supabase Dashboard.
+
+1. Enable and create a new hook.
+1. Conditions to fire webhook: Select the `notifications` table and tick the `Insert` event.
+1. Webhook configuration: Supabase Edge Functions.
+1. Edge Function: Select the `push` edge function and leave the method as `POST` and timeout as `1000`.
+1. HTTP Headers: Click "Add new header" > "Add auth header with service key" and leave Content-type: `application/json`.
+1. Click "Create webhook".
+
+### Send push notification
+
+When a new row is added in your notifications table, a push notification will be sent to the user whom has subscribed to push notification.

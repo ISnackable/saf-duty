@@ -102,28 +102,9 @@ export function NotificationsForm({ session }: { session: Session }) {
 
                 if (checkedState) {
                   if (userConsent === 'default') {
-                    const permission = await onClickAskUserPermission();
-                    if (permission === 'granted') {
-                      const subscription =
-                        await onClickSubscribeToPushNotification();
+                    await onClickAskUserPermission();
 
-                      if (!subscription) {
-                        toast.error('You have blocked notifications');
-                        return;
-                      }
-
-                      const { serverError, validationErrors } =
-                        await insertSubscription(subscription?.toJSON() as any);
-
-                      if (serverError || validationErrors) {
-                        toast.error('Something went wrong');
-                        return;
-                      }
-
-                      toast.success(`subscribed to push notifications`);
-                    } else {
-                      toast.error('You have blocked notifications');
-                    }
+                    toast.warning('Please click again to enable notifications');
                   } else if (userConsent === 'granted') {
                     const subscription =
                       await onClickSubscribeToPushNotification();

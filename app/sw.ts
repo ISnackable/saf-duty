@@ -12,12 +12,12 @@ declare const self: ServiceWorkerGlobalScope & {
 self.addEventListener('push', (event) => {
   if (event.data) {
     const data = event?.data.json();
-    const unreadCount = data.unreadCount;
+    const unreadCount = data?.unreadCount;
 
     const notificationPromise = self.registration.showNotification(
-      APP_DEFAULT_TITLE || 'Default Title',
+      data.title || APP_DEFAULT_TITLE,
       {
-        body: data.message,
+        body: data.message || 'You have a new notification!',
         icon: '/icons/android-chrome-192x192.png',
         badge: '/icons/android-chrome-192x192.png',
       }
