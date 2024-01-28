@@ -29,18 +29,18 @@ import { useOs } from '@/hooks/use.os';
 import { isDemoUser } from '@/utils/demo';
 
 const notificationsFormSchema = z.object({
-  duty_roster_published: z.boolean().default(false).optional(),
-  swap_request_updates: z.boolean().default(false).optional(),
-  duty_reminder: z.boolean(),
+  duty_roster_published: z.boolean().default(true),
+  swap_request_updates: z.boolean().default(true),
+  duty_reminder: z.boolean().default(true),
 });
 
 type NotificationsFormValues = z.infer<typeof notificationsFormSchema>;
 
 // This can come from your database or API.
 const defaultValues: Partial<NotificationsFormValues> = {
-  duty_roster_published: false,
-  swap_request_updates: false,
-  duty_reminder: false,
+  duty_roster_published: true,
+  swap_request_updates: true,
+  duty_reminder: true,
 };
 
 export function NotificationsForm({ session }: { session: Session }) {

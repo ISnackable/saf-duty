@@ -52,5 +52,14 @@ export const PushNotificationProvider = (props: PropsWithChildren) => {
   );
 };
 
-export const usePushNotificationContext = () =>
-  useContext(PushNotificationContext);
+export const usePushNotificationContext = () => {
+  const context = useContext(PushNotificationContext);
+
+  if (!context) {
+    throw new Error(
+      'usePushNotificationContext must be used inside the PushNotificationProvider'
+    );
+  }
+
+  return context;
+};

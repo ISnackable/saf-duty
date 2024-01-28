@@ -318,7 +318,7 @@ const CarouselDots = React.forwardRef<HTMLDivElement, CarouselDotsProps>(
             aria-label={`Slide ${index + 1}`}
             onClick={() => api?.scrollTo(index)}
             className={cn(
-              dotsVariants({ size, gap, className }),
+              dotsVariants({ size, gap }),
               dotsClassName,
               current === index
                 ? 'w-10 bg-primary-foreground/90'
