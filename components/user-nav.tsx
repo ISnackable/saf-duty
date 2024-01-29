@@ -65,7 +65,12 @@ export function UserNav({ session, profile }: UserNavProps) {
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href='/settings/account'>
-              Account Settings <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+              Account Settings <DropdownMenuShortcut>⌘A</DropdownMenuShortcut>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href='/settings/account'>
+              Settings <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
             </Link>
           </DropdownMenuItem>
           <InstallPWA open={open} onOpenChange={setOpen}>
@@ -77,7 +82,7 @@ export function UserNav({ session, profile }: UserNavProps) {
               }}
             >
               Install Web App
-              <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+              <DropdownMenuShortcut>⌘T</DropdownMenuShortcut>
             </DropdownMenuItem>
           </InstallPWA>
         </DropdownMenuGroup>

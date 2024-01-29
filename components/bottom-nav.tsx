@@ -1,11 +1,5 @@
 'use client';
 
-import {
-  IconArrowsExchange,
-  IconCalendarEvent,
-  IconEdit,
-  IconHome2,
-} from '@tabler/icons-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -13,11 +7,21 @@ import * as React from 'react';
 
 import { cn } from '@/utils/cn';
 
+import { Icons } from './icons';
+
 const routes = [
-  { link: '/', label: 'Home', icon: IconHome2 },
-  { link: '/duty-roster', label: 'Duty Roster', icon: IconCalendarEvent },
-  { link: '/manage-blockouts', label: 'My Availability', icon: IconEdit },
-  { link: '/swap-duties', label: 'Swap Duties', icon: IconArrowsExchange },
+  { link: '/', label: 'Home', icon: Icons.homeFilled },
+  {
+    link: '/duty-roster',
+    label: 'Duty Roster',
+    icon: Icons.calendarEventFilled,
+  },
+  {
+    link: '/manage-blockouts',
+    label: 'My Availability',
+    icon: Icons.editFilled,
+  },
+  { link: '/swap-duties', label: 'Swap Duties', icon: Icons.arrowExchange },
 ];
 
 export function BottomNav() {

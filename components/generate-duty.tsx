@@ -180,13 +180,12 @@ function updateRoster(
 
   return toast.promise(resPromise, {
     loading: 'Loading...',
-    success: 'Successfully updated blockout dates.',
-    error: 'Failed to update blockout dates.',
-    // description(data) {
-    //   if (data instanceof Error)
-    //     return data.message;
-    //   return `You can now close this page.`;
-    // }
+    success: 'Successfully updated duty roster.',
+    error: 'Error updating duty roster.',
+    description(data) {
+      if (data instanceof Error) return data.message;
+      return `You can now close this page.`;
+    },
   });
 }
 

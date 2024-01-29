@@ -19,6 +19,7 @@ import { toast } from 'sonner';
 import { LoadingButton } from '@/components/loading-button';
 import { buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
+import { fetcher } from '@/lib/fetcher';
 import { Tables } from '@/types/supabase';
 import { cn } from '@/utils/cn';
 
@@ -90,24 +91,22 @@ export function ManageBlockout({ profile }: ManageBlockoutProps) {
       formatISO(date, { representation: 'date' })
     );
 
-    const res = await fetch('/api/manage-blockouts', {
+    const resPromise = fetcher('/api/manage-blockouts', {
       method: 'PUT',
       body: JSON.stringify({
         blockout_dates: blockoutDates,
       }),
     });
 
-    const { status, message } = await res.json();
-
-    if (status === 'error') {
-      toast.error('Failed to update blockout dates.', {
-        description: message,
-      });
-    } else {
-      toast.success('Successfully updated blockout dates.', {
-        description: 'You can now close this page.',
-      });
-    }
+    toast.promise(resPromise, {
+      loading: 'Loading...',
+      success: 'Blockout dates updated.',
+      error: 'An error occurred.',
+      description(data) {
+        if (data instanceof Error) return data.message;
+        return `You can now close this page.`;
+      },
+    });
 
     setLoading(false);
   };

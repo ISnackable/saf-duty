@@ -61,13 +61,13 @@ export function InstallPWA({
                 size='icon'
                 className='mx-2 h-8 w-8 bg-muted align-middle hover:bg-muted'
               >
-                {os === 'android' ? (
-                  <IconDotsVertical size='1rem' />
-                ) : (
+                {os === 'ios' ? (
                   <IconShare2 className='h-6 w-6 text-blue-400' />
+                ) : (
+                  <IconDotsVertical size='1rem' />
                 )}
               </Button>
-              {os === 'android' ? 'in Chrome nav bar' : 'in Safari tab bar'}
+              {os === 'ios' ? 'in Safari tab bar' : 'in Chrome nav bar'}
             </li>
             <li>
               Scroll and select{' '}

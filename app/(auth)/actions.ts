@@ -93,7 +93,7 @@ export async function signUp(formData: RegisterFormData): Promise<State> {
 export async function signOut(): Promise<State> {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
-  await supabase.auth.signOut();
+  await supabase.auth.signOut({ scope: 'local' });
   return redirect('/login');
 }
 

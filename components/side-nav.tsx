@@ -132,7 +132,7 @@ export const sideNavLinks: SidebarNavItem[] = [
     items: [
       {
         title: 'Settings',
-        href: '/settings',
+        href: '/settings/account',
         icon: IconSettings,
       },
       {
