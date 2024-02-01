@@ -4,11 +4,11 @@ import { z } from 'zod';
 
 import { withAuth } from '@/lib/auth';
 import { Tables } from '@/types/supabase';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/utils/supabase/actions';
 
 const dateSchema = z.array(z.coerce.date());
 
-export const PUT = withAuth(async ({ request, session }) => {
+export const PUT = withAuth(async ({ request, user }) => {
   const {
     blockout_dates,
   }: { blockout_dates: Tables<'profiles'>['blockout_dates'] } =
@@ -31,7 +31,7 @@ export const PUT = withAuth(async ({ request, session }) => {
     .update({
       blockout_dates,
     })
-    .eq('id', session.user.id);
+    .eq('id', user.id);
 
   if (error) {
     return NextResponse.json(

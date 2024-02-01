@@ -60,12 +60,17 @@ export async function middleware(request: NextRequest) {
     }
 
     // Authenticated user should not be able to access /admin routes if not an "admin" role (unless it's a demo user)
-    if (
-      request.nextUrl.pathname.startsWith('/admin') &&
-      session.user.app_metadata?.role !== 'admin' &&
-      !isDemoUser(session.user.id)
-    ) {
-      return redirectToHome(request);
+    if (request.nextUrl.pathname.startsWith('/admin')) {
+      // The server gets the user session from the cookies, which can be spoofed by anyone.
+      // It's safe to trust `getUser()` because it sends a request to the Supabase Auth server every time to revalidate the Auth token.
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      // user here shouldn't be null, as we've already checked for session above
+      if (user?.app_metadata?.role !== 'admin' && !isDemoUser(user?.id!)) {
+        return redirectToHome(request);
+      }
     }
 
     return response;

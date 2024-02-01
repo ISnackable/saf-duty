@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
+import { signOut } from '@/app/(auth)/actions';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -144,7 +145,7 @@ export function AccountForm({ session }: { session: Session }) {
             <Button type='submit'>Update account</Button>
             <AlertDialogTrigger asChild>
               <Button type='button' variant='destructive'>
-                Delete account
+                Sign out of all devices
               </Button>
             </AlertDialogTrigger>
           </div>
@@ -153,15 +154,19 @@ export function AccountForm({ session }: { session: Session }) {
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>Sign out everywhere?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            Are you sure? This will sign you out of all your sessions and all
+            devices. You will need to sign in again.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogAction
+            onClick={async () => await signOut({ scope: 'global' })}
+          >
+            Continue
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

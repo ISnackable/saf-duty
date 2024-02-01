@@ -40,7 +40,7 @@ export function Header({ session, profile }: HeaderProps) {
   }, []);
 
   return (
-    <>
+    <header>
       <div ref={navRef}></div>
       <aside
         className={cn(
@@ -73,6 +73,6 @@ export function Header({ session, profile }: HeaderProps) {
       </aside>
 
       <MobileSidebar open={open} onOpenChange={setOpen} session={session} />
-    </>
+    </header>
   );
 }

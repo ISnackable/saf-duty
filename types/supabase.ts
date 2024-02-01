@@ -1,4 +1,3 @@
-
 export type Json =
   | string
   | number
@@ -54,9 +53,10 @@ export interface Database {
           max_blockouts: number
           name: string
           no_of_extras: number | null
+          onboarded: boolean
           ord_date: string | null
           role: Database["public"]["Enums"]["role"]
-          unit_id: number
+          unit_id: string
           updated_at: string | null
           weekday_points: number
           weekend_points: number
@@ -69,9 +69,10 @@ export interface Database {
           max_blockouts?: number
           name: string
           no_of_extras?: number | null
+          onboarded?: boolean
           ord_date?: string | null
           role?: Database["public"]["Enums"]["role"]
-          unit_id: number
+          unit_id: string
           updated_at?: string | null
           weekday_points?: number
           weekend_points?: number
@@ -84,9 +85,10 @@ export interface Database {
           max_blockouts?: number
           name?: string
           no_of_extras?: number | null
+          onboarded?: boolean
           ord_date?: string | null
           role?: Database["public"]["Enums"]["role"]
-          unit_id?: number
+          unit_id?: string
           updated_at?: string | null
           weekday_points?: number
           weekend_points?: number
@@ -148,7 +150,7 @@ export interface Database {
           id: number
           is_extra: boolean
           reserve_duty_personnel: string | null
-          unit_id: number
+          unit_id: string
           updated_at: string | null
         }
         Insert: {
@@ -158,7 +160,7 @@ export interface Database {
           id?: number
           is_extra?: boolean
           reserve_duty_personnel?: string | null
-          unit_id: number
+          unit_id: string
           updated_at?: string | null
         }
         Update: {
@@ -168,7 +170,7 @@ export interface Database {
           id?: number
           is_extra?: boolean
           reserve_duty_personnel?: string | null
-          unit_id?: number
+          unit_id?: string
           updated_at?: string | null
         }
         Relationships: [
@@ -205,7 +207,7 @@ export interface Database {
           requester_id: string
           requester_roster_id: number
           status: Database["public"]["Enums"]["status"]
-          unit_id: number
+          unit_id: string
           updated_at: string | null
         }
         Insert: {
@@ -217,7 +219,7 @@ export interface Database {
           requester_id: string
           requester_roster_id: number
           status?: Database["public"]["Enums"]["status"]
-          unit_id: number
+          unit_id: string
           updated_at?: string | null
         }
         Update: {
@@ -229,7 +231,7 @@ export interface Database {
           requester_id?: string
           requester_roster_id?: number
           status?: Database["public"]["Enums"]["status"]
-          unit_id?: number
+          unit_id?: string
           updated_at?: string | null
         }
         Relationships: [
@@ -273,19 +275,19 @@ export interface Database {
       units: {
         Row: {
           created_at: string
-          id: number
+          id: string
           unit_code: string
           updated_at: string | null
         }
         Insert: {
           created_at?: string
-          id?: number
+          id?: string
           unit_code: string
           updated_at?: string | null
         }
         Update: {
           created_at?: string
-          id?: number
+          id?: string
           unit_code?: string
           updated_at?: string | null
         }

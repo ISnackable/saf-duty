@@ -4,7 +4,7 @@ import { DEFAULT_SERVER_ERROR, createSafeActionClient } from 'next-safe-action';
 import { cookies } from 'next/headers';
 
 import { isDemoUser } from '@/utils/demo';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/utils/supabase/actions';
 
 export class MyCustomError extends Error {}
 
@@ -31,20 +31,20 @@ export const authAction = createSafeActionClient({
     const supabase = createClient(cookieStore);
 
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (!session) {
+    if (!user) {
       throw new MyCustomError('Session not found!');
     }
 
-    if (isDemoUser(session.user?.id)) {
+    if (isDemoUser(user?.id)) {
       throw new MyCustomError(
         'Unauthorized, demo user cannot perform this action!'
       );
     }
 
-    return { userId: session.user.id };
+    return { userId: user.id };
   },
   handleReturnedServerError,
   handleServerErrorLog,

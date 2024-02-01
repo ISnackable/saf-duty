@@ -8,7 +8,7 @@ import { withAuth } from '@/lib/auth';
 import { type DutyDate, type Personnel } from '@/lib/duty-roster';
 import { type Tables } from '@/types/supabase';
 // import { isDemoUser } from '@/utils/demo';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/utils/supabase/actions';
 
 const DutyDateSchema = z.array(
   z.object({
@@ -17,7 +17,7 @@ const DutyDateSchema = z.array(
     is_extra: z.boolean(),
     duty_personnel: z.string(),
     reserve_duty_personnel: z.string(),
-    unit_id: z.number(),
+    unit_id: z.string(),
     updated_at: z.string().datetime().optional(),
   })
 );
@@ -29,7 +29,7 @@ const PersonnelSchema = z.array(
     weekday_points: z.number(),
     weekend_points: z.number(),
     no_of_extras: z.number(),
-    unit_id: z.number(),
+    unit_id: z.string(),
     updated_at: z.string().datetime().optional(),
   })
 );
@@ -87,7 +87,7 @@ export interface RosterPatch
 // );
 
 export const POST = withAuth(
-  async ({ request, session }) => {
+  async ({ request, user }) => {
     const { dutyDates, dutyPersonnels } = await request.json();
 
     const roster: Tables<'roster'> = dutyDates?.map((item: DutyDate) => ({
@@ -96,7 +96,7 @@ export const POST = withAuth(
       is_extra: item.isExtra,
       duty_personnel: item.personnel?.id,
       reserve_duty_personnel: item.reservePersonnel?.id,
-      unit_id: session.user.app_metadata.unit_id,
+      unit_id: user.app_metadata.unit_id,
       updated_at: new Date().toISOString(),
     }));
 
@@ -107,7 +107,7 @@ export const POST = withAuth(
         weekday_points: item.weekdayPoints,
         weekend_points: item.weekendPoints,
         no_of_extras: item.extra,
-        unit_id: session.user.app_metadata.unit_id, // Since profiles are unit specific, we can use the unit_id from the session
+        unit_id: user.app_metadata.unit_id, // Since profiles are unit specific, we can use the unit_id from the user
         updated_at: new Date().toISOString(),
       })
     );
@@ -116,10 +116,13 @@ export const POST = withAuth(
     const { success: profilesSuccess } = PersonnelSchema.safeParse(personnels);
 
     if (!rosterSuccess || !profilesSuccess) {
-      return NextResponse.json({
-        status: 'error',
-        message: 'Invalid roster data',
-      });
+      return NextResponse.json(
+        {
+          status: 'error',
+          message: 'Invalid roster data',
+        },
+        { status: 400 }
+      );
     }
 
     const cookieStore = cookies();

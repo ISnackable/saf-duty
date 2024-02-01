@@ -28,7 +28,7 @@ export const demoUsers: Users[] = [
     id: '047d19aa-487c-4dd1-8816-01db79956532',
     name: 'demo',
     role: 'user',
-    unit_id: 1,
+    unit_id: '1',
     avatar_url:
       'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment_date: '2022-01-02',
@@ -38,12 +38,13 @@ export const demoUsers: Users[] = [
     no_of_extras: 0,
     blockout_dates: blockouts,
     max_blockouts: 8,
+    onboarded: false,
   },
   {
     id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
     name: 'Zhi Hao',
     role: 'user',
-    unit_id: 1,
+    unit_id: '1',
     avatar_url:
       'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment_date: '2022-02-27',
@@ -54,12 +55,13 @@ export const demoUsers: Users[] = [
     no_of_extras: 0,
     blockout_dates: ['2024-02-13'],
     max_blockouts: 8,
+    onboarded: false,
   },
   {
     id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
     name: 'Jia Hui',
     role: 'user',
-    unit_id: 1,
+    unit_id: '1',
     avatar_url:
       'https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment_date: '${currentYear}-05-11',
@@ -70,12 +72,13 @@ export const demoUsers: Users[] = [
     no_of_extras: 2,
     blockout_dates: [],
     max_blockouts: 8,
+    onboarded: false,
   },
   {
     id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
     name: 'Jia Hao',
     role: 'user',
-    unit_id: 1,
+    unit_id: '1',
     avatar_url:
       'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment_date: '2021-03-02',
@@ -86,12 +89,13 @@ export const demoUsers: Users[] = [
     no_of_extras: 0,
     blockout_dates: [],
     max_blockouts: 8,
+    onboarded: false,
   },
   {
     id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
     name: 'Jun Kai',
     role: 'user',
-    unit_id: 1,
+    unit_id: '1',
     avatar_url:
       'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment_date: '2022-04-02',
@@ -112,12 +116,13 @@ export const demoUsers: Users[] = [
       '2024-02-18',
     ],
     max_blockouts: 8,
+    onboarded: false,
   },
   {
     id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
     name: 'Wang Li',
     role: 'user',
-    unit_id: 1,
+    unit_id: '1',
     avatar_url:
       'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment_date: '2022-09-30',
@@ -128,12 +133,13 @@ export const demoUsers: Users[] = [
     no_of_extras: 0,
     blockout_dates: ['2024-02-01', '2024-02-27'],
     max_blockouts: 8,
+    onboarded: false,
   },
   {
     id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
     name: 'Darryl Koh',
     role: 'user',
-    unit_id: 1,
+    unit_id: '1',
     avatar_url:
       'https://images.unsplash.com/photo-1531727991582-cfd25ce79613?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
     enlistment_date: '2022-02-14',
@@ -161,12 +167,13 @@ export const demoUsers: Users[] = [
       '2024-02-16',
     ],
     max_blockouts: 8,
+    onboarded: false,
   },
   {
     id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
     name: 'Elliot Tan',
     role: 'user',
-    unit_id: 1,
+    unit_id: '1',
     avatar_url:
       'https://images.unsplash.com/photo-1614587185092-af24ed71c6e4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80',
     enlistment_date: '2022-06-24',
@@ -192,6 +199,7 @@ export const demoUsers: Users[] = [
       '2024-02-25',
     ],
     max_blockouts: 8,
+    onboarded: false,
   },
 ];
 

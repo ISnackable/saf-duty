@@ -1,5 +1,6 @@
 'use server';
 
+import { type SignOut } from '@supabase/supabase-js';
 import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -14,7 +15,7 @@ import {
   RegisterFormSchema,
   ResetFormSchema,
 } from '@/utils/auth-validation';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/utils/supabase/actions';
 
 export async function signIn(formData: LoginFormData): Promise<State> {
   const { email, password } = formData;
@@ -90,10 +91,12 @@ export async function signUp(formData: RegisterFormData): Promise<State> {
   };
 }
 
-export async function signOut(): Promise<State> {
+export async function signOut(
+  options: SignOut = { scope: 'local' }
+): Promise<State> {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
-  await supabase.auth.signOut({ scope: 'local' });
+  await supabase.auth.signOut(options);
   return redirect('/login');
 }
 

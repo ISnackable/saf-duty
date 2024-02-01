@@ -73,6 +73,8 @@ export default function RootLayout({
     <html lang='en' className={GeistSans.className} suppressHydrationWarning>
       <head>
         <meta name='theme-color' content='#101214' />
+        <meta name='color-scheme' content='light dark' />
+
         <script
           dangerouslySetInnerHTML={{
             __html: `
