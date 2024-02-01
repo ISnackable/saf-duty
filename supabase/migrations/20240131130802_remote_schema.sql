@@ -442,6 +442,12 @@ ALTER TABLE ONLY "public"."swap_requests"
 ALTER TABLE ONLY "public"."units"
     ADD CONSTRAINT "units_pkey" PRIMARY KEY ("id");
 
+ALTER TABLE "storage"."objects" ALTER column "id" SET DEFAULT gen_random_uuid();
+
+CREATE TRIGGER on_after_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+CREATE TRIGGER on_before_auth_user_created BEFORE INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION public.handle_check_user();
+
 CREATE TRIGGER on_after_notifications_created AFTER INSERT ON public.notifications FOR EACH ROW EXECUTE FUNCTION supabase_functions.http_request('https://tscbuvxcsuxlqwcewtgu.supabase.co/functions/v1/push', 'POST', '{"Content-type":"application/json","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzY2J1dnhjc3V4bHF3Y2V3dGd1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY3OTU3MTUxNCwiZXhwIjoxOTk1MTQ3NTE0fQ.k1W-7WRVRYNey0BUhzWkU6VBLAELeYlvj5Gsjrm_0EI"}', '{}', '1000');
 
 CREATE TRIGGER on_before_swap_request_created BEFORE INSERT ON public.swap_requests FOR EACH ROW EXECUTE FUNCTION public.validate_swap_request();
@@ -513,6 +519,20 @@ CREATE POLICY "Public profiles are viewable by everyone in the same unit." ON "p
 CREATE POLICY "Users can insert their own profile." ON "public"."profiles" FOR INSERT WITH CHECK (((auth.uid() = id) OR (public.get_my_claim('role'::text) = '"admin"'::jsonb)));
 
 CREATE POLICY "Users can update own profile or role is admin." ON "public"."profiles" FOR UPDATE USING (((auth.uid() = id) OR (public.get_my_claim('role'::text) = '"admin"'::jsonb))) WITH CHECK (((auth.uid() = id) OR (public.get_my_claim('role'::text) = '"admin"'::jsonb)));
+
+CREATE POLICY "Authenticated can upload an avatar."
+on "storage"."objects"
+as permissive
+for insert
+to public
+with check (((bucket_id = 'avatars'::text) AND (auth.role() = 'authenticated'::text)));
+
+CREATE POLICY "Avatar images are accessible to authenticated."
+on "storage"."objects"
+as permissive
+for select
+to public
+using (((bucket_id = 'avatars'::text) AND (auth.role() = 'authenticated'::text)));
 
 ALTER TABLE "public"."notifications" ENABLE ROW LEVEL SECURITY;
 
