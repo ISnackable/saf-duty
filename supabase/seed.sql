@@ -1,10 +1,15 @@
 -- create test unit
 INSERT INTO
-    public.units (unit_code)
+    public.groups (name)
 VALUES
     ('demo');
 
 -- create test users
+DELETE FROM
+    auth.users
+WHERE
+    email LIKE 'user%';
+
 INSERT INTO
     auth.users (
         instance_id,
@@ -31,12 +36,17 @@ INSERT INTO
             'authenticated',
             'authenticated',
             'user' || (ROW_NUMBER() OVER ()) || '@example.com',
-            crypt ('password123', gen_salt ('bf')),
+            crypt ('Password@1234', gen_salt ('bf')),
             current_timestamp,
             null,
             current_timestamp,
             '{"provider":"email","providers":["email"]}',
-            jsonb_build_object('unit', 'demo', 'name', 'user' || ROW_NUMBER() OVER ()),
+            jsonb_build_object(
+                'unit',
+                'demo',
+                'name',
+                'user' || ROW_NUMBER() OVER ()
+            ),
             current_timestamp,
             current_timestamp,
             '',
