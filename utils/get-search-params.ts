@@ -15,10 +15,9 @@ export const getMonthYearParams = (
   params: Record<string, string> | undefined
 ) => {
   const today = new Date();
-  const currentMonth = today.getMonth() + 1;
   const currentYear = today.getFullYear();
-  // Get month and year from params
 
+  // Get month and year from params
   if (
     params?.month &&
     params?.year &&
@@ -27,7 +26,7 @@ export const getMonthYearParams = (
     return { month: params?.month, year: params?.year };
 
   return {
-    month: format(currentMonth, 'LLLL'),
+    month: format(today, 'LLLL'),
     year: currentYear.toString(),
   };
 };

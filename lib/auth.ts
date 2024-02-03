@@ -18,12 +18,14 @@ interface WithAuthHandler {
     searchParams,
     headers,
     user,
+    group,
   }: {
     request: Request;
     params: Record<string, string>;
     searchParams: Record<string, string>;
     headers?: Record<string, string>;
     user: User;
+    group: string[];
   }): Promise<NextResponse<State>>;
 }
 
@@ -70,6 +72,7 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
           searchParams,
           headers,
           user,
+          group: [],
         });
       }
 
@@ -82,7 +85,11 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
       );
     }
 
-    if (!requiredRole.includes(user.app_metadata?.role)) {
+    if (
+      !requiredRole.some((role) =>
+        Object.values(user.app_metadata?.groups).flat().includes(role)
+      )
+    ) {
       return NextResponse.json(
         {
           status: 'error',
@@ -92,12 +99,21 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
       );
     }
 
+    let matchingGroups = Object.keys(user.app_metadata?.groups).filter(
+      (groupId) => {
+        return user.app_metadata?.groups[groupId].some(
+          (role: 'user' | 'admin' | 'manager') => requiredRole.includes(role)
+        );
+      }
+    );
+
     return handler({
       request,
       params: params || {},
       searchParams,
       headers,
       user,
+      group: matchingGroups,
     });
   };
 }

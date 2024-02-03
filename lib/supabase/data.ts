@@ -16,6 +16,7 @@ import {
 import { isDemoUser } from '@/utils/demo';
 import { indexOnceWithKey } from '@/utils/helper';
 
+// TODO: Instead of relying on the unitId, we should be making use of RLS to ensure that the user can only access their own data.
 export async function getRosterData(
   client: TypedSupabaseClient,
   session: Session,
@@ -27,7 +28,6 @@ export async function getRosterData(
   if (!isDemoUser(session.user.id)) {
     const { data: roster, error } = await getRosterByUnitId(
       client,
-      session.user.app_metadata.unit_id,
       month,
       year
     );
@@ -62,10 +62,7 @@ export async function getUsersData(
     return demoUsers;
   }
 
-  const { data: users, error } = await getAllUsersByUnitId(
-    client,
-    session.user.app_metadata.unit_id
-  );
+  const { data: users, error } = await getAllUsersByUnitId(client);
 
   if (!users || error) {
     throw new Error('Failed to fetch profile');
@@ -103,6 +100,7 @@ export async function getUserProfileData(
       name: demoUsers[0].name,
       avatar_url: demoUsers[0].avatar_url,
       ord_date: demoUsers[0].ord_date,
+      onboarded: demoUsers[0].onboarded,
     };
   } else {
     const { data, error } = await getUserProfileById(client, session.user.id);

@@ -226,6 +226,13 @@ export function DutyRoster({
               toast.warning(
                 'You are the personnel on duty for the day before or after'
               );
+            } else if (
+              !Object.values(dutyRoster).some(
+                (v) => v?.personnel?.id === session.user.id
+              )
+            ) {
+              toast.warning("You don't have any duty to swap this month!");
+              return;
             }
 
             // Reset the form

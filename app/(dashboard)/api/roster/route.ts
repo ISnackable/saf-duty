@@ -17,7 +17,7 @@ const DutyDateSchema = z.array(
     is_extra: z.boolean(),
     duty_personnel: z.string(),
     reserve_duty_personnel: z.string(),
-    unit_id: z.string(),
+    group_id: z.string(),
     updated_at: z.string().datetime().optional(),
   })
 );
@@ -29,7 +29,7 @@ const PersonnelSchema = z.array(
     weekday_points: z.number(),
     weekend_points: z.number(),
     no_of_extras: z.number(),
-    unit_id: z.string(),
+    group_id: z.string(),
     updated_at: z.string().datetime().optional(),
   })
 );
@@ -87,27 +87,37 @@ export interface RosterPatch
 // );
 
 export const POST = withAuth(
-  async ({ request, user }) => {
+  async ({ request, group }) => {
     const { dutyDates, dutyPersonnels } = await request.json();
 
-    const roster: Tables<'roster'> = dutyDates?.map((item: DutyDate) => ({
+    if (!group.length) {
+      return NextResponse.json(
+        {
+          status: 'error',
+          message: 'User is not authorized',
+        },
+        { status: 401 }
+      );
+    }
+
+    const roster: Tables<'roster'>[] = dutyDates?.map((item: DutyDate) => ({
       ...(item.id && { id: item.id }),
       duty_date: item.date,
       is_extra: item.isExtra,
       duty_personnel: item.personnel?.id,
       reserve_duty_personnel: item.reservePersonnel?.id,
-      unit_id: user.app_metadata.unit_id,
+      group_id: group[0],
       updated_at: new Date().toISOString(),
     }));
 
-    const personnels: Tables<'profiles'> = dutyPersonnels?.map(
+    const personnels: Tables<'profiles'>[] = dutyPersonnels?.map(
       (item: Personnel) => ({
         id: item.id,
         name: item.name,
         weekday_points: item.weekdayPoints,
         weekend_points: item.weekendPoints,
         no_of_extras: item.extra,
-        unit_id: user.app_metadata.unit_id, // Since profiles are unit specific, we can use the unit_id from the user
+        group_id: group[0], // Since profiles are unit specific, we can use the unit_id from the user
         updated_at: new Date().toISOString(),
       })
     );

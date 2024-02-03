@@ -7,7 +7,7 @@ import { redirect } from 'next/navigation';
 import { type LoginFormData } from '@/components/user-login-form';
 import { type RegisterFormData } from '@/components/user-register-form';
 import { ResetFormData } from '@/components/user-reset-form';
-import { MyCustomError, authAction } from '@/lib/safe-action';
+import { ActionError, authAction } from '@/lib/safe-action';
 import { type State } from '@/types/api-route';
 import {
   ChangeFormSchema,
@@ -146,7 +146,7 @@ export const changePassword = authAction(
     });
 
     if (error) {
-      throw new MyCustomError(error.message || 'Could not change password');
+      throw new ActionError(error.message || 'Could not change password');
     }
 
     return { userId };

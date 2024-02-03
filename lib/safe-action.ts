@@ -6,13 +6,13 @@ import { cookies } from 'next/headers';
 import { isDemoUser } from '@/utils/demo';
 import { createClient } from '@/utils/supabase/actions';
 
-export class MyCustomError extends Error {}
+export class ActionError extends Error {}
 
 function handleReturnedServerError(e: Error) {
   // In this case, we can use the 'MyCustomError` class to unmask errors
   // and return them with their actual messages to the client.
-  if (e instanceof MyCustomError) {
-    return e.message;
+  if (e instanceof ActionError) {
+    throw e.message;
   }
 
   // Every other error that occurs will be masked with the default message.
@@ -35,11 +35,11 @@ export const authAction = createSafeActionClient({
     } = await supabase.auth.getUser();
 
     if (!user) {
-      throw new MyCustomError('Session not found!');
+      throw new ActionError('Session not found!');
     }
 
     if (isDemoUser(user?.id)) {
-      throw new MyCustomError(
+      throw new ActionError(
         'Unauthorized, demo user cannot perform this action!'
       );
     }

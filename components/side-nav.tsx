@@ -187,7 +187,9 @@ export function SideNav({ className, onClick, session }: SidebarProps) {
         {sideNavLinks.map((item, index) => {
           if (
             item.admin &&
-            session.user.app_metadata.role !== 'admin' &&
+            !Object.values(session.user.app_metadata.groups)
+              .flat()
+              .includes('admin') &&
             !isDemoUser(session.user?.id)
           ) {
             return null;

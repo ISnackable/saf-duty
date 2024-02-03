@@ -6,9 +6,9 @@ import type { Database } from '@/types/supabase';
 
 export type TypedSupabaseClient = SupabaseClient<Database>;
 
+// * With RLS in place, we should be able to remove the unitId from the query.
 export function getRosterByUnitId(
   client: TypedSupabaseClient,
-  unitId: string,
   month: string,
   year: string
 ) {
@@ -27,20 +27,15 @@ export function getRosterByUnitId(
     )
     .lte('duty_date', format(addDays(endOfMonth(monthDate), 8), 'yyyy-MM-dd'))
     .gte('duty_date', format(subDays(monthDate, 8), 'yyyy-MM-dd'))
-    .eq('unit_id', unitId)
     .returns<RosterPatch[]>();
 }
 
-export function getAllUsersByUnitId(
-  client: TypedSupabaseClient,
-  unitId: string
-) {
+export function getAllUsersByUnitId(client: TypedSupabaseClient) {
   return client
     .from('profiles')
     .select(
-      'id, name, avatar_url, unit_id, blockout_dates, role, max_blockouts, weekday_points, weekend_points, enlistment_date, ord_date, no_of_extras'
-    )
-    .eq('unit_id', unitId);
+      'id, name, avatar_url, group_id, blockout_dates, max_blockouts, weekday_points, weekend_points, enlistment_date, ord_date, no_of_extras, onboarded'
+    );
 }
 
 export function getUserBlockoutById(
@@ -60,7 +55,6 @@ export function getUserProfileById(
 ) {
   return client
     .from('profiles')
-    .select('name, avatar_url, ord_date')
     .eq('id', sessionId)
     .single();
 }

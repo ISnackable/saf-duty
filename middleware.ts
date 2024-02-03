@@ -68,7 +68,10 @@ export async function middleware(request: NextRequest) {
       } = await supabase.auth.getUser();
 
       // user here shouldn't be null, as we've already checked for session above
-      if (user?.app_metadata?.role !== 'admin' && !isDemoUser(user?.id!)) {
+      if (
+        !Object.values(user?.app_metadata?.groups).flat().includes('admin') &&
+        !isDemoUser(user?.id!)
+      ) {
         return redirectToHome(request);
       }
     }

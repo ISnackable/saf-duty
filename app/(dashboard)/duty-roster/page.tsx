@@ -13,6 +13,8 @@ export const metadata: Metadata = {
   description: 'Admin page to schedule duty roster.',
 };
 
+export const revalidate = 0;
+
 export default async function DutyRosterPage({
   searchParams,
 }: {

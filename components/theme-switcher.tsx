@@ -5,7 +5,6 @@ import * as React from 'react';
 
 import { Icons } from '@/components/icons';
 
-// million-ignore
 export function ThemeSwitcher() {
   const { theme, resolvedTheme, setTheme } = useTheme();
 
@@ -34,6 +33,7 @@ export function ThemeSwitcher() {
     <div className='flex h-9 w-fit rounded-full border-[1px] border-solid border-[#eaeaea] bg-[#fafafa] p-[3px] dark:border-[#333] dark:bg-[#111]'>
       <span style={{ height: '100%' }}>
         <input
+          name='theme-switcher'
           className='peer/system absolute m-0 appearance-none p-0 outline-none'
           type='radio'
           id='theme-switcher-system'
@@ -62,6 +62,7 @@ export function ThemeSwitcher() {
       </span>
       <span style={{ height: '100%' }}>
         <input
+          name='theme-switcher'
           className='peer/dark absolute m-0 appearance-none p-0 outline-none'
           type='radio'
           id='theme-switcher-dark'
@@ -90,6 +91,7 @@ export function ThemeSwitcher() {
       </span>
       <span style={{ height: '100%' }}>
         <input
+          name='theme-switcher'
           className='peer/light absolute m-0 appearance-none p-0 outline-none'
           type='radio'
           id='theme-switcher-light'

@@ -5,7 +5,6 @@ import {
   addMonths,
   eachDayOfInterval,
   endOfMonth,
-  formatISO,
   isFriday,
   isSameDay,
   isSameMonth,
@@ -16,10 +15,10 @@ import { useEffect, useState } from 'react';
 import { DayClickEventHandler } from 'react-day-picker';
 import { toast } from 'sonner';
 
+import { insertBlockoutDates } from '@/app/(dashboard)/actions';
 import { LoadingButton } from '@/components/loading-button';
 import { buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { fetcher } from '@/lib/fetcher';
 import { Tables } from '@/types/supabase';
 import { cn } from '@/utils/cn';
 
@@ -87,18 +86,8 @@ export function ManageBlockout({ profile }: ManageBlockoutProps) {
 
   const updateBlockoutDates = async () => {
     setLoading(true);
-    const blockoutDates = selectedDays.map((date) =>
-      formatISO(date, { representation: 'date' })
-    );
 
-    const resPromise = fetcher('/api/manage-blockouts', {
-      method: 'PUT',
-      body: JSON.stringify({
-        blockout_dates: blockoutDates,
-      }),
-    });
-
-    toast.promise(resPromise, {
+    toast.promise(insertBlockoutDates(selectedDays), {
       loading: 'Loading...',
       success: 'Blockout dates updated.',
       error: 'An error occurred.',
