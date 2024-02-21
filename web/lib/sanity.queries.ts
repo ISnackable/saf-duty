@@ -145,7 +145,7 @@ export const getAllUserCalendarQuery = groq`*[_type == 'calendar' && references(
       name
     }
   }
-}|order(_createdAt desc)[0..5]`
+}|order(date desc)[0..5]`
 
 export const getCalendarQuery = groq`*[_type == 'calendar' && _id == $id && !(_id in path("drafts.**"))]{
   "id": _id,
