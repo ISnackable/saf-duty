@@ -1,15 +1,17 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
+/* eslint-disable unused-imports/no-unused-vars */
 'use client';
 
 // from https://shadcnui-expansions.typeart.cc/docs/multiple-selector
-import { Command as CommandPrimitive } from 'cmdk';
+import { Command as CommandPrimitive, useCommandState } from 'cmdk';
 import * as React from 'react';
-import { useEffect } from 'react';
+import { forwardRef, useEffect } from 'react';
 
 import { Icons } from '@/components/icons';
 import { Badge } from '@/components/ui/badge';
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
   CommandItem,
   CommandList,
@@ -32,6 +34,8 @@ interface GroupOption {
 
 interface MultipleSelectorProps {
   value?: Option[];
+  defaultOptions?: Option[];
+  /** manually controlled options */
   options?: Option[];
   placeholder?: string;
   /** Loading component. */
@@ -46,12 +50,12 @@ interface MultipleSelectorProps {
    **/
   triggerSearchOnFocus?: boolean;
   /** async search */
-  onSearch?: (_value: string) => Promise<Option[]>;
-  onChange?: (_options: Option[]) => void;
+  onSearch?: (value: string) => Promise<Option[]>;
+  onChange?: (options: Option[]) => void;
   /** Limit the maximum number of selected options. */
   maxSelected?: number;
   /** When the number of selected options exceeds the limit, the onMaxSelected will be called. */
-  onMaxSelected?: (_maxLimit: number) => void;
+  onMaxSelected?: (maxLimit: number) => void;
   /** Hide the placeholder when there are options selected. */
   hidePlaceholderWhenSelected?: boolean;
   disabled?: boolean;
@@ -128,6 +132,33 @@ function removePickedOption(groupOption: GroupOption, picked: Option[]) {
   return cloneOption;
 }
 
+/**
+ * The `CommandEmpty` of shadcn/ui will cause the cmdk empty not rendering correctly.
+ * So we create one and copy the `Empty` implementation from `cmdk`.
+ *
+ * @reference: https://github.com/hsuanyi-chou/shadcn-ui-expansions/issues/34#issuecomment-1949561607
+ **/
+const CommandEmpty = forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof CommandPrimitive.Empty>
+>(({ className, ...props }, forwardedRef) => {
+  const render = useCommandState((state) => state.filtered.count === 0);
+
+  if (!render) return null;
+
+  return (
+    <div
+      ref={forwardedRef}
+      className={cn('py-6 text-center text-sm', className)}
+      cmdk-empty=''
+      role='presentation'
+      {...props}
+    />
+  );
+});
+
+CommandEmpty.displayName = 'CommandEmpty';
+
 export const MultipleSelector = React.forwardRef<
   MultipleSelectorRef,
   MultipleSelectorProps
@@ -137,7 +168,8 @@ export const MultipleSelector = React.forwardRef<
       value,
       onChange,
       placeholder,
-      options: arrayOptions = [],
+      defaultOptions: arrayDefaultOptions = [],
+      options: arrayOptions,
       delay,
       onSearch,
       loadingIndicator,
@@ -163,7 +195,7 @@ export const MultipleSelector = React.forwardRef<
 
     const [selected, setSelected] = React.useState<Option[]>(value || []);
     const [options, setOptions] = React.useState<GroupOption>(
-      transToGroupOption(arrayOptions, groupBy)
+      transToGroupOption(arrayDefaultOptions, groupBy)
     );
     const [inputValue, setInputValue] = React.useState('');
     const debouncedSearchTerm = useDebounce(inputValue, delay || 500);
@@ -183,7 +215,6 @@ export const MultipleSelector = React.forwardRef<
         setSelected(newOptions);
         onChange?.(newOptions);
       },
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       [selected]
     );
 
@@ -202,7 +233,6 @@ export const MultipleSelector = React.forwardRef<
           }
         }
       },
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       [selected]
     );
 
@@ -211,6 +241,17 @@ export const MultipleSelector = React.forwardRef<
         setSelected(value);
       }
     }, [value]);
+
+    useEffect(() => {
+      /** If `onSearch` is provided, do not trigger options updated. */
+      if (!arrayOptions || onSearch) {
+        return;
+      }
+      const newOption = transToGroupOption(arrayOptions || [], groupBy);
+      if (JSON.stringify(newOption) !== JSON.stringify(options)) {
+        setOptions(newOption);
+      }
+    }, [arrayDefaultOptions, arrayOptions, groupBy, onSearch, options]);
 
     useEffect(() => {
       const doSearch = async () => {
@@ -233,7 +274,6 @@ export const MultipleSelector = React.forwardRef<
       };
 
       void exec();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [debouncedSearchTerm, open]);
 
     const CreatableItem = () => {
@@ -273,7 +313,7 @@ export const MultipleSelector = React.forwardRef<
       return undefined;
     };
 
-    const EmptyItem = () => {
+    const EmptyItem = React.useCallback(() => {
       if (!emptyIndicator) return undefined;
 
       // For async search that showing emptyIndicator
@@ -286,12 +326,27 @@ export const MultipleSelector = React.forwardRef<
       }
 
       return <CommandEmpty>{emptyIndicator}</CommandEmpty>;
-    };
+    }, [creatable, emptyIndicator, onSearch, options]);
 
     const selectables = React.useMemo<GroupOption>(
       () => removePickedOption(options, selected),
       [options, selected]
     );
+
+    /** Avoid Creatable Selector freezing or lagging when paste a long string. */
+    const commandFilter = React.useCallback(() => {
+      if (commandProps?.filter) {
+        return commandProps.filter;
+      }
+
+      if (creatable) {
+        return (value: string, search: string) => {
+          return value.toLowerCase().includes(search.toLowerCase()) ? 1 : -1;
+        };
+      }
+      // Using default filter in `cmdk`. We don't have to provide it.
+      return undefined;
+    }, [creatable, commandProps?.filter]);
 
     return (
       <Command
@@ -309,6 +364,7 @@ export const MultipleSelector = React.forwardRef<
             ? commandProps.shouldFilter
             : !onSearch
         } // When onSearch is provided, we don't want to filter the options. You can still override it.
+        filter={commandFilter()}
       >
         <div
           className={cn(
@@ -453,3 +509,4 @@ export const MultipleSelector = React.forwardRef<
 );
 
 MultipleSelector.displayName = 'MultipleSelector';
+// export default MultipleSelector;

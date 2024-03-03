@@ -326,6 +326,7 @@ export function DutyRoster({
                               <SelectValue placeholder='Pick one...' />
                             </SelectTrigger>
                           </FormControl>
+
                           <SelectContent>
                             {Object.values(dutyRoster)
                               .filter(
@@ -341,6 +342,7 @@ export function DutyRoster({
                               ))}
                           </SelectContent>
                         </Select>
+
                         <FormMessage />
                       </FormItem>
                     )}

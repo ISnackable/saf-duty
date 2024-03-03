@@ -24,7 +24,7 @@ export default function Error({
           <h1 className='text-primary-600 dark:text-primary-500 mb-4 text-9xl font-black  tracking-tight lg:text-9xl'>
             500
           </h1>
-          <p className='mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-200 sm:text-4xl   md:text-4xl'>
+          <p className='mb-4 text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl md:text-4xl dark:text-gray-200'>
             Internal Server Error.
           </p>
           <p className='mb-4 text-lg font-light text-gray-500 dark:text-gray-400'>

@@ -36,7 +36,7 @@ export function BottomNav() {
         maxHeight:
           'clamp(60px, calc(env(safe-area-inset-bottom) + 60px), 80px)',
       }}
-      className='fixed bottom-0 z-30 h-[60px] w-full border-t border-border bg-card shadow-lg dark:border-zinc-800 dark:bg-[#141517] sm:hidden'
+      className='fixed bottom-0 z-30 h-[60px] w-full border-t border-border bg-card shadow-lg sm:hidden dark:border-zinc-800 dark:bg-[#141517]'
     >
       <div
         className={cn('flex h-full flex-row items-center justify-start gap-4')}

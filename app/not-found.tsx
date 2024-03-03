@@ -21,7 +21,7 @@ export default function NotFound() {
       <div className='text-center'>
         <h1 className='text-9xl font-black'>404</h1>
 
-        <p className='text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-200 sm:text-4xl'>
+        <p className='text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl dark:text-gray-200'>
           Uh-oh!
         </p>
 

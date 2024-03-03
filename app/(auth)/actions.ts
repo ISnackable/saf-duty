@@ -15,7 +15,7 @@ import {
   RegisterFormSchema,
   ResetFormSchema,
 } from '@/utils/auth-validation';
-import { createClient } from '@/utils/supabase/actions';
+import { createClient } from '@/utils/supabase/server';
 
 export async function signIn(formData: LoginFormData): Promise<State> {
   const { email, password } = formData;

@@ -11,7 +11,7 @@ import {
   subDays,
 } from 'date-fns';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   DayContent,
   DayContentProps,
@@ -170,7 +170,7 @@ function updateRoster(
   // TODO: Add validation to check if there are any empty dates
   // Maybe also only get the dates that are in the month
   const dutyDates = Object.values(dutyRoster);
-  const resPromise = fetcher('/api/roster', {
+  const resPromise = fetcher('/api/rosters', {
     method: 'POST',
     body: JSON.stringify({
       dutyDates,
@@ -243,11 +243,16 @@ export function GenerateDuty({
     createPersonnel(users, roster)
   );
 
-  const OPTIONS: Option[] = users.map((user) => ({
-    label: user.name || '',
-    value: user.id,
-    image: user.avatar_url || '',
-  }));
+  // Only map users that are in the current roster
+  const OPTIONS: Option[] = useMemo(
+    () =>
+      users.map((user) => ({
+        label: user.name || '',
+        value: user.id,
+        image: user.avatar_url || '',
+      })),
+    [users]
+  );
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),

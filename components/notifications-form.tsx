@@ -98,14 +98,16 @@ export function NotificationsForm({ session }: { session: Session }) {
                   return;
                 }
 
+                if (userConsent === 'default') {
+                  await onClickAskUserPermission();
+                  toast.warning('Please click again to enable notifications');
+                  return;
+                }
+
                 setChecked(checkedState);
 
                 if (checkedState) {
-                  if (userConsent === 'default') {
-                    await onClickAskUserPermission();
-
-                    toast.warning('Please click again to enable notifications');
-                  } else if (userConsent === 'granted') {
+                  if (userConsent === 'granted') {
                     const subscription =
                       await onClickSubscribeToPushNotification();
 

@@ -6,10 +6,11 @@ import { type User } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
+import { type TypedSupabaseClient } from '@/lib/supabase/queries';
 import { type State } from '@/types/api-route';
 import { isDemoUser } from '@/utils/demo';
 import { getSearchParams } from '@/utils/get-search-params';
-import { createClient } from '@/utils/supabase/actions';
+import { createClient } from '@/utils/supabase/server';
 
 interface WithAuthHandler {
   ({
@@ -24,6 +25,7 @@ interface WithAuthHandler {
     params: Record<string, string>;
     searchParams: Record<string, string>;
     headers?: Record<string, string>;
+    client: TypedSupabaseClient;
     user: User;
     group: string[];
   }): Promise<NextResponse<State>>;
@@ -71,6 +73,7 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
           params: params || {},
           searchParams,
           headers,
+          client: supabase,
           user,
           group: [],
         });
@@ -112,6 +115,7 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
       params: params || {},
       searchParams,
       headers,
+      client: supabase,
       user,
       group: matchingGroups,
     });

@@ -1,4 +1,5 @@
 import './globals.css';
+import { GeistMono } from 'geist/font/mono';
 import { GeistSans } from 'geist/font/sans';
 import { type Metadata, type Viewport } from 'next';
 
@@ -70,10 +71,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en' className={GeistSans.className} suppressHydrationWarning>
+    <html
+      lang='en'
+      className={`${GeistSans.variable} ${GeistMono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <meta name='theme-color' content='#101214' />
         <meta name='color-scheme' content='light dark' />
+        <meta
+          name='apple-mobile-web-app-status-bar-style'
+          content='black-translucent'
+        />
+        <meta name='apple-mobile-web-app-capable' content='yes' />
 
         <script
           dangerouslySetInnerHTML={{
@@ -269,12 +279,6 @@ export default function RootLayout({
             themes={['light', 'dark', 'discord-dark']}
           >
             <PushNotificationProvider>
-              <div
-                vaul-drawer-wrapper=''
-                className='min-h-screen bg-background'
-              >
-                {children}
-              </div>
               <Toaster closeButton duration={3000} />
             </PushNotificationProvider>
           </ThemeProvider>

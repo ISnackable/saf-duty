@@ -8,15 +8,15 @@ import { withAuth } from '@/lib/auth';
 import { type DutyDate, type Personnel } from '@/lib/duty-roster';
 import { type Tables } from '@/types/supabase';
 // import { isDemoUser } from '@/utils/demo';
-import { createClient } from '@/utils/supabase/actions';
+import { createClient } from '@/utils/supabase/server';
 
 const DutyDateSchema = z.array(
   z.object({
     id: z.number().optional(),
     duty_date: z.coerce.date(),
     is_extra: z.boolean(),
-    duty_personnel: z.string(),
-    reserve_duty_personnel: z.string(),
+    duty_personnel_id: z.string(),
+    reserve_duty_personnel_id: z.string(),
     group_id: z.string(),
     updated_at: z.string().datetime().optional(),
   })
@@ -35,7 +35,7 @@ const PersonnelSchema = z.array(
 );
 
 export interface RosterPatch
-  extends Pick<Tables<'roster'>, 'id' | 'duty_date' | 'is_extra'> {
+  extends Pick<Tables<'rosters'>, 'id' | 'duty_date' | 'is_extra'> {
   duty_personnel: { id: string; name: string } | null;
   reserve_duty_personnel: { id: string; name: string } | null;
 }
@@ -58,7 +58,7 @@ export interface RosterPatch
 //     const supabase = createClient(cookieStore);
 
 //     const { data, error } = await supabase
-//       .from('roster')
+//       .from('rosters')
 //       .select(
 //         `
 //   duty_date,
@@ -100,12 +100,12 @@ export const POST = withAuth(
       );
     }
 
-    const roster: Tables<'roster'>[] = dutyDates?.map((item: DutyDate) => ({
+    const roster: Tables<'rosters'>[] = dutyDates?.map((item: DutyDate) => ({
       ...(item.id && { id: item.id }),
       duty_date: item.date,
       is_extra: item.isExtra,
-      duty_personnel: item.personnel?.id,
-      reserve_duty_personnel: item.reservePersonnel?.id,
+      duty_personnel_id: item.personnel?.id,
+      reserve_duty_personnel_id: item.reservePersonnel?.id,
       group_id: group[0],
       updated_at: new Date().toISOString(),
     }));
@@ -139,7 +139,7 @@ export const POST = withAuth(
     const supabase = createClient(cookieStore);
 
     const upsertRosterQuery = supabase
-      .from('roster')
+      .from('rosters')
       .upsert(roster, { onConflict: 'duty_date' })
       .select();
 

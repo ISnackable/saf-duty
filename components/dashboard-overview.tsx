@@ -75,7 +75,7 @@ import { Separator } from './ui/separator';
 export function DashboardOverview() {
   return (
     <>
-      <div data-tour='home-page-upcoming-duties'>
+      <div>
         <h4 className='scroll-m-20 text-xl font-semibold tracking-tight'>
           Upcoming duties
         </h4>
