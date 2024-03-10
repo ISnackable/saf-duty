@@ -1,45 +1,60 @@
-import type { NextApiResponse } from 'next'
-import { type Middleware, use } from 'next-api-route-middleware'
+import type { NextApiResponse } from 'next';
+import { type Middleware, use } from 'next-api-route-middleware';
+
+import { clientWithToken, getUserById } from '@/lib/sanity.client';
 // import { getUserByIdQuery } from 'next-auth-sanity/queries'
 // import argon2 from 'argon2'
-
 // import { checkPasswordValidation } from '@/pages/api/sanity/signUp'
-import type { TDateISODate } from '@/lib/sanity.queries'
-import { clientWithToken, getUserById } from '@/lib/sanity.client'
-import { rateLimitMiddleware } from '../../rateLimitMiddleware'
-import { type NextApiRequestWithUser, withUser } from '../../authMiddleware'
-import { allowMethods } from '../../allowMethodsMiddleware'
+import type { TDateISODate } from '@/lib/sanity.queries';
+
+import { allowMethods } from '../../allowMethodsMiddleware';
+import { type NextApiRequestWithUser, withUser } from '../../authMiddleware';
+import { rateLimitMiddleware } from '../../rateLimitMiddleware';
 
 interface User {
-  name: string
-  image: string
-  weekdayPoints: number
-  weekendPoints: number
-  extra: number
-  enlistment?: TDateISODate
-  ord?: TDateISODate
-  blockouts?: TDateISODate[]
+  name: string;
+  image: string;
+  weekdayPoints: number;
+  weekendPoints: number;
+  extra: number;
+  enlistment?: TDateISODate;
+  ord?: TDateISODate;
+  blockouts?: TDateISODate[];
 }
 
 async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
-  const { method, body, query } = req
-  const { id } = query
+  const { method, body, query } = req;
+  const { id } = query;
 
   if (!id || typeof id !== 'string')
-    return res.status(500).json({ status: 'error', message: 'Something went wrong' })
+    return res
+      .status(500)
+      .json({ status: 'error', message: 'Something went wrong' });
 
   if (method === 'GET') {
     try {
-      const user = await getUserById(req.id)
+      const user = await getUserById(req.id);
 
-      return res.status(200).json({ status: 'success', data: user, message: 'ok' })
+      return res
+        .status(200)
+        .json({ status: 'success', data: user, message: 'ok' });
     } catch (error) {
-      console.error(error)
-      return res.status(500).json({ status: 'error', message: 'Something went wrong' })
+      console.error(error);
+      return res
+        .status(500)
+        .json({ status: 'error', message: 'Something went wrong' });
     }
   } else if (method === 'PUT') {
-    const { name, image, weekdayPoints, weekendPoints, extra, enlistment, ord, blockouts }: User =
-      body
+    const {
+      name,
+      image,
+      weekdayPoints,
+      weekendPoints,
+      extra,
+      enlistment,
+      ord,
+      blockouts,
+    }: User = body;
 
     try {
       const updatedUser = await clientWithToken
@@ -56,14 +71,16 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
         })
         // conditionally unset enlistment and ord if they are null
         .unset(!enlistment || !ord ? ['enlistment', 'ord'] : [])
-        .commit()
+        .commit();
 
-      console.log('updatedUser rev: ', updatedUser._rev)
+      console.log('updatedUser rev: ', updatedUser._rev);
 
-      return res.status(200).json({ status: 'success', message: 'ok' })
+      return res.status(200).json({ status: 'success', message: 'ok' });
     } catch (error) {
-      console.error(error)
-      return res.status(500).json({ status: 'error', message: 'Something went wrong' })
+      console.error(error);
+      return res
+        .status(500)
+        .json({ status: 'error', message: 'Something went wrong' });
     }
   }
   /* else if (method === 'DELETE') {
@@ -96,27 +113,31 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   } */
 }
 
-const validateFields: Middleware<NextApiRequestWithUser> = async (req, res, next) => {
-  const { method, body, query } = req
-  const { id } = query
+const validateFields: Middleware<NextApiRequestWithUser> = async (
+  req,
+  res,
+  next
+) => {
+  const { method, body, query } = req;
+  const { id } = query;
 
   if (method === 'GET') {
     if (id != req.id) {
       return res.status(401).json({
         status: 'error',
         message: 'Unauthorized, id in path does not match id in auth cookie',
-      })
+      });
     }
   } else if (method === 'PUT') {
     if (req.role !== 'admin') {
       return res.status(401).json({
         status: 'error',
         message: 'Unauthorized',
-      })
+      });
     }
 
     // Simple validation to check if all fields are present
-    const { name, image, weekdayPoints, weekendPoints, extra }: User = body
+    const { name, image, weekdayPoints, weekendPoints, extra }: User = body;
 
     if (
       !name ||
@@ -128,7 +149,7 @@ const validateFields: Middleware<NextApiRequestWithUser> = async (req, res, next
       return res.status(400).json({
         status: 'error',
         message: 'Unproccesable request, fields are missing or invalid',
-      })
+      });
     }
   }
 
@@ -145,13 +166,13 @@ const validateFields: Middleware<NextApiRequestWithUser> = async (req, res, next
   // }
 
   //  If the request is not a PUT request, which means it's a GET request, then just continue to the next middleware
-  return await next()
-}
+  return await next();
+};
 
 export default use(
   rateLimitMiddleware,
   allowMethods(['GET', 'DELETE', 'PUT']),
   withUser,
   validateFields,
-  handler,
-)
+  handler
+);

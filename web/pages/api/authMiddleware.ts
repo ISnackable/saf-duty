@@ -1,16 +1,21 @@
-import { NextApiRequest } from 'next'
-import type { User } from 'next-auth'
-import type { Middleware } from 'next-api-route-middleware'
-import { getServerSession } from 'next-auth/next'
+import { NextApiRequest } from 'next';
+import type { Middleware } from 'next-api-route-middleware';
+import type { User } from 'next-auth';
+import { getServerSession } from 'next-auth/next';
 
-import config from '@/../site.config'
-import { authOptions } from './auth/[...nextauth]'
+import config from '@/../site.config';
 
-export type NextApiRequestWithUser = NextApiRequest & User
+import { authOptions } from './auth/[...nextauth]';
 
-export const withUser: Middleware<NextApiRequestWithUser> = async (req, res, next) => {
-  const { method } = req
-  const session = await getServerSession(req, res, authOptions)
+export type NextApiRequestWithUser = NextApiRequest & User;
+
+export const withUser: Middleware<NextApiRequestWithUser> = async (
+  req,
+  res,
+  next
+) => {
+  const { method } = req;
+  const session = await getServerSession(req, res, authOptions);
 
   if (session && session.user) {
     // Only allow GET requests for demo user
@@ -18,16 +23,18 @@ export const withUser: Middleware<NextApiRequestWithUser> = async (req, res, nex
       return res.status(401).json({
         status: 'error',
         message: 'Unauthorized, demo user is not allowed to do this',
-      })
+      });
     }
 
-    req.id = session.user.id
-    req.role = session.user.role
-    req.unit = session.user.unit
-    return await next()
+    req.id = session.user.id;
+    req.role = session.user.role;
+    req.unit = session.user.unit;
+    return await next();
   } else {
-    return res.status(401).send({ status: 'error', message: 'Unauthorized, invalid auth cookie' })
+    return res
+      .status(401)
+      .send({ status: 'error', message: 'Unauthorized, invalid auth cookie' });
   }
-}
+};
 
-export default withUser
+export default withUser;

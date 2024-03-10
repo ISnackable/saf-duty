@@ -1,18 +1,17 @@
-import dayjs from 'dayjs'
-import { Table } from '@mantine/core'
-
+import { Table } from '@mantine/core';
 import {
-  createStyles,
-  Progress,
-  Text,
+  Badge,
+  Container,
+  Divider,
   Group,
   Paper,
-  Badge,
-  Divider,
+  Progress,
+  Text,
   Title,
-  Container,
-} from '@mantine/core'
-import { IconEdit } from '@tabler/icons-react'
+  createStyles,
+} from '@mantine/core';
+import { IconEdit } from '@tabler/icons-react';
+import dayjs from 'dayjs';
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -53,30 +52,33 @@ const useStyles = createStyles((theme) => ({
   },
 
   icon: {
-    color: theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[4],
+    color:
+      theme.colorScheme === 'dark'
+        ? theme.colors.dark[3]
+        : theme.colors.gray[4],
   },
-}))
+}));
 
 // Set the payday date to the 10th of every month
-const PAYDAY_DAY = 10
+const PAYDAY_DAY = 10;
 
 // Get the current date
-const today = dayjs()
+const today = dayjs();
 
 // Calculate the next payday date
-let nextPayday = today.date(PAYDAY_DAY)
+let nextPayday = today.date(PAYDAY_DAY);
 
 // If the 10th day of the current month has already passed, calculate the next month's payday
 if (today.date() > PAYDAY_DAY) {
-  nextPayday = today.add(1, 'month').date(PAYDAY_DAY)
+  nextPayday = today.add(1, 'month').date(PAYDAY_DAY);
 }
 
 // Calculate the number of days left until the next payday
-const daysLeft = nextPayday.diff(today, 'day')
-const daysTotal = nextPayday.daysInMonth()
+const daysLeft = nextPayday.diff(today, 'day');
+const daysTotal = nextPayday.daysInMonth();
 
 // Calculate the progress towards the next PAYDAY_DAY as a percentage
-const progress = Math.floor(((daysTotal - daysLeft) / daysTotal) * 100)
+const progress = Math.floor(((daysTotal - daysLeft) / daysTotal) * 100);
 
 const elements = [
   { rankStarting: 'Recruit (REC) or Private (PTE)', rankAllowance: '$755' },
@@ -87,7 +89,7 @@ const elements = [
   { rankStarting: '2nd Sergeant (2SG)', rankAllowance: '$1,175' },
   { rankStarting: '2nd Lieutenant (2LT)', rankAllowance: '$1,275' },
   { rankStarting: 'Lieutenant (LTA)', rankAllowance: '$1,455' },
-]
+];
 const vocation = [
   {
     vocation: 'Service and Technical vocations',
@@ -97,43 +99,43 @@ const vocation = [
     vocation: 'All combatants',
     vocationAllowance: '$225',
   },
-]
+];
 
-PayDayPage.title = 'Pay Day'
+PayDayPage.title = 'Pay Day';
 
 export default function PayDayPage() {
-  const { classes } = useStyles()
+  const { classes } = useStyles();
 
   const rows = elements.map((element) => (
     <tr key={element.rankStarting}>
       <td>{element.rankStarting}</td>
       <td>{element.rankAllowance}</td>
     </tr>
-  ))
+  ));
   const vocations = vocation.map((vocation) => (
     <tr key={vocation.vocation}>
       <td>{vocation.vocation}</td>
       <td>{vocation.vocationAllowance}</td>
     </tr>
-  ))
+  ));
 
   return (
-    <Container my="xl" size="xl">
+    <Container my='xl' size='xl'>
       <div className={classes.titleWrapper}>
         <IconEdit size={48} />
         <Title className={classes.title}>Pay Day</Title>
       </div>
 
-      <Text color="dimmed" mt="md">
-        A countdown to the next Pay Day is shown below to help you survive your NS experience. Pay
-        Day is on the 10th of every month.
+      <Text color='dimmed' mt='md'>
+        A countdown to the next Pay Day is shown below to help you survive your
+        NS experience. Pay Day is on the 10th of every month.
       </Text>
 
-      <Divider mt="sm" />
-      <Paper withBorder p="md" radius="md" mt="xl">
-        <Group position="apart">
-          <Group align="flex-end" spacing="xs">
-            <Text size="xl" weight={700}>
+      <Divider mt='sm' />
+      <Paper withBorder p='md' radius='md' mt='xl'>
+        <Group position='apart'>
+          <Group align='flex-end' spacing='xs'>
+            <Text size='xl' weight={700}>
               Pay Day Countdown
             </Text>
           </Group>
@@ -141,22 +143,22 @@ export default function PayDayPage() {
 
         <Progress
           value={progress}
-          color="#47d6ab"
+          color='#47d6ab'
           label={`${progress}%`}
           size={34}
           classNames={{ label: classes.progressLabel }}
           mt={40}
         />
-        <Group position="apart" mt="md">
-          <Text size="sm">{today.format('D MMM YYYY')}</Text>
-          <Badge size="sm">{daysLeft} days left</Badge>
+        <Group position='apart' mt='md'>
+          <Text size='sm'>{today.format('D MMM YYYY')}</Text>
+          <Badge size='sm'>{daysLeft} days left</Badge>
         </Group>
       </Paper>
 
-      <Paper withBorder p="md" radius="md" mt="xl">
-        <Group position="apart" mb="sm">
-          <Group align="flex-end" spacing="xs">
-            <Text size="xl" weight={700}>
+      <Paper withBorder p='md' radius='md' mt='xl'>
+        <Group position='apart' mb='sm'>
+          <Group align='flex-end' spacing='xs'>
+            <Text size='xl' weight={700}>
               Monthly rank allowance
             </Text>
           </Group>
@@ -173,10 +175,10 @@ export default function PayDayPage() {
         </Table>
       </Paper>
 
-      <Paper withBorder p="md" radius="md" mt="xl">
-        <Group position="apart" mb="sm">
-          <Group align="flex-end" spacing="xs">
-            <Text size="xl" weight={700}>
+      <Paper withBorder p='md' radius='md' mt='xl'>
+        <Group position='apart' mb='sm'>
+          <Group align='flex-end' spacing='xs'>
+            <Text size='xl' weight={700}>
               Monthly vocation allowance
             </Text>
           </Group>
@@ -193,5 +195,5 @@ export default function PayDayPage() {
         </Table>
       </Paper>
     </Container>
-  )
+  );
 }

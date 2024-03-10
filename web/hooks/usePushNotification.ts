@@ -1,30 +1,32 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react';
 
 function urlBase64ToUint8Array(base64String: string) {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
-  const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/')
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
 
-  const rawData = window.atob(base64)
-  const outputArray = new Uint8Array(rawData.length)
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
 
   for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i)
+    outputArray[i] = rawData.charCodeAt(i);
   }
-  return outputArray
+  return outputArray;
 }
 
 /**
  * checks if Push notification and service workers are supported by your browser
  */
 function isPushNotificationSupported() {
-  return 'serviceWorker' in navigator && 'PushManager' in window
+  return 'serviceWorker' in navigator && 'PushManager' in window;
 }
 
 /**
  * asks user consent to receive push notifications and returns the response of the user, one of granted, default, denied
  */
 async function askUserPermission() {
-  return await Notification.requestPermission()
+  return await Notification.requestPermission();
 }
 
 /**
@@ -34,12 +36,14 @@ async function askUserPermission() {
  */
 async function createNotificationSubscription() {
   //wait for service worker installation to be ready
-  const serviceWorker = await navigator?.serviceWorker?.ready
+  const serviceWorker = await navigator?.serviceWorker?.ready;
   // subscribe and return the subscription
   return await serviceWorker.pushManager.subscribe({
     userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY || ''),
-  })
+    applicationServerKey: urlBase64ToUint8Array(
+      process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY || ''
+    ),
+  });
 }
 
 /**
@@ -48,9 +52,9 @@ async function createNotificationSubscription() {
  *
  */
 async function removeNotificationSubscription() {
-  const pushSubscription = await getUserSubscription()
+  const pushSubscription = await getUserSubscription();
   if (pushSubscription) {
-    return pushSubscription.unsubscribe()
+    return pushSubscription.unsubscribe();
   }
 }
 
@@ -61,32 +65,35 @@ function getUserSubscription() {
   //wait for service worker installation to be ready, and then
   return navigator?.serviceWorker?.ready
     .then(function (serviceWorker) {
-      return serviceWorker.pushManager.getSubscription()
+      return serviceWorker.pushManager.getSubscription();
     })
     .then(function (pushSubscription) {
-      return pushSubscription
-    })
+      return pushSubscription;
+    });
 }
 
 export default function usePushNotifications() {
-  const [userConsent, setUserConsent] = useState<NotificationPermission>('default')
+  const [userConsent, setUserConsent] =
+    useState<NotificationPermission>('default');
   //to manage the user consent: Notification.permission is a JavaScript native function that return the current state of the permission
   //We initialize the userConsent with that value
-  const [userSubscription, setUserSubscription] = useState<PushSubscription | null>(null)
+  const [userSubscription, setUserSubscription] =
+    useState<PushSubscription | null>(null);
   //   //to manage the use push notification subscription
-  const [pushNotificationSupported, setPushNotificationSupported] = useState(false)
+  const [pushNotificationSupported, setPushNotificationSupported] =
+    useState(false);
 
   useEffect(() => {
     if (isPushNotificationSupported()) {
-      setPushNotificationSupported(true)
-      setUserConsent(Notification.permission)
+      setPushNotificationSupported(true);
+      setUserConsent(Notification.permission);
       const getExixtingSubscription = async () => {
-        const existingSubscription = await getUserSubscription()
-        setUserSubscription(existingSubscription)
-      }
-      getExixtingSubscription()
+        const existingSubscription = await getUserSubscription();
+        setUserSubscription(existingSubscription);
+      };
+      getExixtingSubscription();
     }
-  }, [])
+  }, []);
   //if the push notifications are supported, registers the service worker
   // then retrieve if there is any push notification subscription for the registered service worker
   // this effect runs only the first render
@@ -98,12 +105,12 @@ export default function usePushNotifications() {
    */
   const onClickAskUserPermission = () => {
     askUserPermission().then((consent) => {
-      setUserConsent(consent)
+      setUserConsent(consent);
       if (consent !== 'granted') {
-        console.error('User denied push notification permission')
+        console.error('User denied push notification permission');
       }
-    })
-  }
+    });
+  };
   //
 
   /**
@@ -113,9 +120,9 @@ export default function usePushNotifications() {
   const onClickSubscribeToPushNotification = async () => {
     return createNotificationSubscription()
       .then(function (subscription) {
-        setUserSubscription(subscription)
+        setUserSubscription(subscription);
 
-        return subscription
+        return subscription;
       })
       .catch((err) => {
         console.error(
@@ -127,11 +134,11 @@ export default function usePushNotifications() {
           err.message,
           'code:',
           err.code
-        )
+        );
 
-        return null
-      })
-  }
+        return null;
+      });
+  };
 
   /**
    * define a click handler that remove a push notification subscription.
@@ -141,7 +148,7 @@ export default function usePushNotifications() {
     return removeNotificationSubscription()
       .then((unsubscribed) => {
         if (unsubscribed) {
-          setUserSubscription(null)
+          setUserSubscription(null);
         }
       })
       .catch((err) => {
@@ -154,9 +161,9 @@ export default function usePushNotifications() {
           err.message,
           'code:',
           err.code
-        )
-      })
-  }
+        );
+      });
+  };
 
   /**
    * define a click handler that sends the push susbcribtion to the push server.
@@ -173,11 +180,11 @@ export default function usePushNotifications() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(userSubscription), // body data type must match "Content-Type" header
-      })
+      });
     } catch (error) {
-      console.error("Couldn't send the subscription to the server")
+      console.error("Couldn't send the subscription to the server");
     }
-  }
+  };
 
   /**
    * define a click handler that sends the push susbcribtion to the push server.
@@ -187,11 +194,11 @@ export default function usePushNotifications() {
     try {
       await fetch(`/api/sanity/user/${userId}/subscription`, {
         method: 'DELETE',
-      })
+      });
     } catch (error) {
-      console.error("Couldn't delete the subscription to the server")
+      console.error("Couldn't delete the subscription to the server");
     }
-  }
+  };
 
   /**
    * define a click handler that request the push server to send a notification, passing the id of the saved subscription
@@ -200,11 +207,11 @@ export default function usePushNotifications() {
     try {
       await fetch(`/api/notification`, {
         method: 'GET',
-      })
+      });
     } catch (error) {
-      console.error()
+      console.error();
     }
-  }
+  };
 
   /**
    * returns all the stuff needed by a Component
@@ -219,5 +226,5 @@ export default function usePushNotifications() {
     userConsent,
     pushNotificationSupported,
     userSubscription,
-  }
+  };
 }

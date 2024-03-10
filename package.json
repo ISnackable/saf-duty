@@ -5,19 +5,11 @@
   "author": "Tommy",
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "studio",
-    "web"
-  ],
   "scripts": {
-    "init": "lerna init",
-    "build": "lerna run build --parallel",
-    "dev": "lerna run dev --parallel",
-    "format": "lerna run format",
-    "lint": "lerna run lint"
+    "preinstall": "npx only-allow pnpm",
+    "dev": "pnpm run --parallel -r build"
   },
   "devDependencies": {
-    "@sanity/cli": "^3.15.1",
-    "lerna": "^7.1.5"
+    "@sanity/cli": "^3.32.0"
   }
 }

@@ -1,22 +1,22 @@
-import { withAuth } from 'next-auth/middleware'
+import { withAuth } from 'next-auth/middleware';
 
-import siteConfig from '@/../site.config'
+import siteConfig from '@/../site.config';
 
 export default withAuth({
   callbacks: {
     authorized({ req, token }) {
       if (req.nextUrl.pathname.startsWith('/admin')) {
         // Only allow admins to access the admin pages or demo user
-        return token?.role === 'admin' || token?.id === siteConfig.demoUserId
+        return token?.role === 'admin' || token?.id === siteConfig.demoUserId;
       }
-      return !!token
+      return !!token;
     },
   },
   pages: {
     signIn: '/login',
     error: '/login',
   },
-})
+});
 
 export const config = {
   matcher: [
@@ -29,4 +29,4 @@ export const config = {
     '/admin/:path*',
     '/collections/:path*',
   ],
-}
+};

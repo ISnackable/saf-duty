@@ -1,5 +1,12 @@
-import { createStyles, Title, Text, Button, Container, Group } from '@mantine/core'
-import Link from 'next/link'
+import {
+  Button,
+  Container,
+  Group,
+  Text,
+  Title,
+  createStyles,
+} from '@mantine/core';
+import Link from 'next/link';
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -13,7 +20,10 @@ const useStyles = createStyles((theme) => ({
     fontSize: 220,
     lineHeight: 1,
     marginBottom: `calc(${theme.spacing.xl} * 1.5)`,
-    color: theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[2],
+    color:
+      theme.colorScheme === 'dark'
+        ? theme.colors.dark[4]
+        : theme.colors.gray[2],
 
     [theme.fn.smallerThan('sm')]: {
       fontSize: 120,
@@ -37,26 +47,37 @@ const useStyles = createStyles((theme) => ({
     marginTop: theme.spacing.xl,
     marginBottom: `calc(${theme.spacing.xl} * 1.5)`,
   },
-}))
+}));
 
-FourOFourPage.title = 'Not Found'
+FourOFourPage.title = 'Not Found';
 
 export default function FourOFourPage() {
-  const { classes } = useStyles()
+  const { classes } = useStyles();
 
   return (
     <Container className={classes.root}>
       <div className={classes.label}>404</div>
       <Title className={classes.title}>You have found a secret place.</Title>
-      <Text color="dimmed" size="lg" align="center" className={classes.description}>
-        Unfortunately, this is only a 404 page. You may have mistyped the address, or the page has
-        been moved to another URL.
+      <Text
+        color='dimmed'
+        size='lg'
+        align='center'
+        className={classes.description}
+      >
+        Unfortunately, this is only a 404 page. You may have mistyped the
+        address, or the page has been moved to another URL.
       </Text>
-      <Group position="center">
-        <Button variant="subtle" size="md" component={Link} href="/login" prefetch={false}>
+      <Group position='center'>
+        <Button
+          variant='subtle'
+          size='md'
+          component={Link}
+          href='/login'
+          prefetch={false}
+        >
           Take me back to home page
         </Button>
       </Group>
     </Container>
-  )
+  );
 }

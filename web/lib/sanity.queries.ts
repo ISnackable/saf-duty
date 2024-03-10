@@ -1,97 +1,98 @@
-import { groq } from 'next-sanity'
-import config from '@/../site.config'
-import type { User } from 'next-auth'
-import type { Role } from '@/nextauth'
+import type { User } from 'next-auth';
+import { groq } from 'next-sanity';
 
-type TYear = `${number}${number}${number}${number}`
-type TMonth = `${number}${number}`
-type TDay = `${number}${number}`
+import config from '@/../site.config';
+import type { Role } from '@/nextauth';
+
+type TYear = `${number}${number}${number}${number}`;
+type TMonth = `${number}${number}`;
+type TDay = `${number}${number}`;
 
 /**
  * Represent a string like `2021-01-08`
  */
-export type TDateISODate = `${TYear}-${TMonth}-${TDay}`
+export type TDateISODate = `${TYear}-${TMonth}-${TDay}`;
 
 export interface Calendar {
-  id: string
-  date: TDateISODate
-  roster: Roster[]
+  id: string;
+  date: TDateISODate;
+  roster: Roster[];
 }
 
 export interface Roster {
-  date: TDateISODate
-  isExtra: boolean
-  personnel: Pick<SanityUser, 'id' | 'name'>
-  standby: Pick<SanityUser, 'id' | 'name'>
+  date: TDateISODate;
+  isExtra: boolean;
+  personnel: Pick<SanityUser, 'id' | 'name'>;
+  standby: Pick<SanityUser, 'id' | 'name'>;
 }
 
 export interface Unit {
-  id: string
-  unitCode: string
+  id: string;
+  unitCode: string;
 }
 
 export interface SanityUser extends User {
-  id: string
-  name: string
-  email: string
-  image: string
-  role?: Role
-  unit: string
-  blockouts?: TDateISODate[]
-  weekdayPoints: number
-  weekendPoints: number
-  extra: number
-  maxBlockouts: number
-  ord?: TDateISODate
-  enlistment?: TDateISODate
-  totalDutyDone?: number
+  id: string;
+  name: string;
+  email: string;
+  image: string;
+  role?: Role;
+  unit: string;
+  blockouts?: TDateISODate[];
+  weekdayPoints: number;
+  weekendPoints: number;
+  extra: number;
+  maxBlockouts: number;
+  ord?: TDateISODate;
+  enlistment?: TDateISODate;
+  totalDutyDone?: number;
 }
 
-export type AllSanityUser = Omit<SanityUser, 'email'>
+export type AllSanityUser = Omit<SanityUser, 'email'>;
 
 export interface SanityUserBlockouts {
-  maxBlockouts: number
-  blockouts: TDateISODate[]
+  maxBlockouts: number;
+  blockouts: TDateISODate[];
 }
 
 export interface SanityReference {
-  _ref: string
-  _type?: 'reference'
-  _weak?: boolean
+  _ref: string;
+  _type?: 'reference';
+  _weak?: boolean;
 }
 
 export interface SanitySwapRequest {
-  _createdAt: TDateISODate
-  _id: string
-  _rev: string
-  _type: string
-  _updatedAt: TDateISODate
+  _createdAt: TDateISODate;
+  _id: string;
+  _rev: string;
+  _type: string;
+  _updatedAt: TDateISODate;
   calendar: {
-    id: string
-    date: TDateISODate
-  }
-  reason?: string
-  receiver: Pick<SanityUser, 'id' | 'name' | 'image'>
-  receiverDate: TDateISODate
-  requester: Pick<SanityUser, 'id' | 'name' | 'image'>
-  requesterDate: TDateISODate
-  status: 'pending' | 'approved' | 'declined'
+    id: string;
+    date: TDateISODate;
+  };
+  reason?: string;
+  receiver: Pick<SanityUser, 'id' | 'name' | 'image'>;
+  receiverDate: TDateISODate;
+  requester: Pick<SanityUser, 'id' | 'name' | 'image'>;
+  requesterDate: TDateISODate;
+  status: 'pending' | 'approved' | 'declined';
 }
 
 export const getUserByEmailQuery = groq`*[_type == $userSchema && email == $email][0]{
   ...,
   "unit": unit->unitCode
-}`
+}`;
 
 export const getAllUnitsQuery = groq`*[_type == "unit"]{
   "id": _id,
   unitCode
-}`
+}`;
 
 // Get all calendar roster that is related to the given user id and is created within the last 30 days
 export const getUserUpcomingDutiesQuery = groq`*[_type == 'calendar' && date >= $firstDay && date <= $lastDay && !(_id in path("drafts.**"))]{
     roster[dutyPersonnel._ref == $id]{date}
-}.roster[].date`
+}.roster[].date`;
 
 export const getAllUsersQuery = groq`*[_type == "user" && _id != "${config.demoUserId}" && unit->unitCode == $unit && !(_id in path("drafts.**"))]{
   "id": _id,
@@ -107,7 +108,7 @@ export const getAllUsersQuery = groq`*[_type == "user" && _id != "${config.demoU
   ord,
   enlistment,
   "totalDutyDone": count(*[_type == 'calendar' && references(^._id)].roster[^._id == dutyPersonnel._ref])
-}`
+}`;
 
 export const getUserQuery = groq`*[_type == "user" && _id == $id && !(_id in path("drafts.**"))]{
   "id": _id,
@@ -123,12 +124,12 @@ export const getUserQuery = groq`*[_type == "user" && _id == $id && !(_id in pat
   ord,
   enlistment,
   "totalDutyDone": count(*[_type == 'calendar' && references($id)].roster[$id == dutyPersonnel._ref])
-}[0]`
+}[0]`;
 
 export const getUserBlockoutsQuery = groq`*[_type == "user" && _id == $id && !(_id in path("drafts.**"))]{
     maxBlockouts,
     blockouts
-}[0]`
+}[0]`;
 
 export const getAllUserCalendarQuery = groq`*[_type == 'calendar' && references($id) && !(_id in path("drafts.**"))]{
   "id": _id,
@@ -145,7 +146,7 @@ export const getAllUserCalendarQuery = groq`*[_type == 'calendar' && references(
       name
     }
   }
-}|order(date desc)[0..5]`
+}|order(date desc)[0..5]`;
 
 export const getCalendarQuery = groq`*[_type == 'calendar' && _id == $id && !(_id in path("drafts.**"))]{
   "id": _id,
@@ -162,7 +163,7 @@ export const getCalendarQuery = groq`*[_type == 'calendar' && _id == $id && !(_i
       name
     }
   }
-}[0]`
+}[0]`;
 
 export const getUserSwapRequestQuery = groq`*[_type == "swapRequest" && references($id)]{
   ...,
@@ -181,7 +182,7 @@ export const getUserSwapRequestQuery = groq`*[_type == "swapRequest" && referenc
     name,
     image
   }
-}`
+}`;
 
 // export const getUserPushSubscriptionQuery = groq`*[_type == "user" && _id == $id && !(_id in path("drafts.**"))]{
 //   pushSubscription

@@ -1,23 +1,21 @@
-import { useEffect, useState } from 'react'
-import Image from 'next/image'
-import { DatePickerInput } from '@mantine/dates'
-import { isEmail, useForm } from '@mantine/form'
 import {
-  createStyles,
+  AspectRatio,
+  Button,
   Card,
+  Container,
+  FileButton,
+  Group,
+  PasswordInput,
   Tabs,
   Text,
-  Title,
   TextInput,
-  Button,
-  Group,
-  Container,
-  PasswordInput,
-  AspectRatio,
-  FileButton,
-} from '@mantine/core'
+  Title,
+  createStyles,
+} from '@mantine/core';
+import { DatePickerInput } from '@mantine/dates';
+import { isEmail, useForm } from '@mantine/form';
 // import { modals } from '@mantine/modals'
-import { showNotification } from '@mantine/notifications'
+import { showNotification } from '@mantine/notifications';
 import {
   IconAlertCircle,
   IconCheck,
@@ -26,10 +24,12 @@ import {
   IconSettings,
   IconUpload,
   IconX,
-} from '@tabler/icons-react'
-import { useSession } from 'next-auth/react'
+} from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
-import { checkPasswordValidation } from '@/pages/login'
+import { checkPasswordValidation } from '@/pages/login';
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -48,23 +48,26 @@ const useStyles = createStyles((theme) => ({
   },
 
   form: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
+    backgroundColor:
+      theme.colorScheme === 'dark'
+        ? theme.colors.dark[8]
+        : theme.colors.gray[0],
     padding: theme.spacing.xl,
     borderRadius: theme.radius.md,
     boxShadow: theme.shadows.lg,
   },
-}))
+}));
 
-ProfilePage.title = 'Profile'
+ProfilePage.title = 'Profile';
 
 export default function ProfilePage() {
-  const { data: session, status, update } = useSession()
-  const { classes } = useStyles()
+  const { data: session, status, update } = useSession();
+  const { classes } = useStyles();
 
-  const user = session?.user
+  const user = session?.user;
 
-  const [file, setFile] = useState<File | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [file, setFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // // Listen for when the page is visible, if the user switches tabs
   // // and makes our tab visible again, re-fetch the session
@@ -98,17 +101,20 @@ export default function ProfilePage() {
       ord: user?.ord ? new Date(user?.ord) : null,
     },
     validate: {
-      name: (value) => (value && value.length < 2 ? 'Name must have at least 2 letters' : null),
+      name: (value) =>
+        value && value.length < 2 ? 'Name must have at least 2 letters' : null,
       enlistment: (value, values) =>
         value && values?.ord && value?.getTime() >= values?.ord?.getTime()
           ? 'Enlistment date must be before ORD date'
           : null,
       ord: (value, values) =>
-        value && values?.enlistment && value?.getTime() <= values?.enlistment?.getTime()
+        value &&
+        values?.enlistment &&
+        value?.getTime() <= values?.enlistment?.getTime()
           ? 'ORD date must be after Enlistment date'
           : null,
     },
-  })
+  });
   //user account form
   const userAccountForm = useForm({
     initialValues: {
@@ -121,7 +127,7 @@ export default function ProfilePage() {
       password: (value) => checkPasswordValidation(value),
       oldPassword: (value) => checkPasswordValidation(value),
     },
-  })
+  });
 
   useEffect(() => {
     if (user) {
@@ -129,19 +135,21 @@ export default function ProfilePage() {
         name: user?.name || '',
         enlistment: user?.enlistment ? new Date(user?.enlistment) : null,
         ord: user?.ord ? new Date(user?.ord) : null,
-      })
-      userDetailForm.resetDirty()
+      });
+      userDetailForm.resetDirty();
       userAccountForm.setValues({
         email: user?.email || '',
-      })
-      userAccountForm.resetDirty()
+      });
+      userAccountForm.resetDirty();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status])
+  }, [status]);
 
   //update user detail to backend
-  const handleUserDetailSubmit = async (values: typeof userDetailForm.values) => {
-    setIsSubmitting(true)
+  const handleUserDetailSubmit = async (
+    values: typeof userDetailForm.values
+  ) => {
+    setIsSubmitting(true);
     try {
       const res = await fetch(`/api/sanity/user/${user?.id}/details`, {
         method: 'PUT',
@@ -153,35 +161,38 @@ export default function ProfilePage() {
           enlistment: values.enlistment?.toLocaleDateString('sv-SE'),
           ord: values.ord?.toLocaleDateString('sv-SE'),
         }),
-      })
-      const data = await res.json()
+      });
+      const data = await res.json();
 
       if (data?.status === 'error') {
         showNotification({
           title: 'Error',
-          message: data?.message || 'Cannot update user details, something went wrong',
+          message:
+            data?.message || 'Cannot update user details, something went wrong',
           color: 'red',
           icon: <IconX />,
-        })
+        });
       } else {
-        update(values)
+        update(values);
         showNotification({
           title: 'Success',
           message: 'User details updated successfully',
           color: 'green',
           icon: <IconCheck />,
-        })
+        });
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
 
-    setIsSubmitting(false)
-  }
+    setIsSubmitting(false);
+  };
 
   //update user account to backend
-  const handlePasswordSubmit = async (values: typeof userAccountForm.values) => {
-    setIsSubmitting(true)
+  const handlePasswordSubmit = async (
+    values: typeof userAccountForm.values
+  ) => {
+    setIsSubmitting(true);
     try {
       const res = await fetch(`/api/sanity/user/${user?.id}/account`, {
         method: 'PUT',
@@ -192,34 +203,35 @@ export default function ProfilePage() {
           ...values,
         }),
         cache: 'no-cache',
-      })
-      const data = await res.json()
+      });
+      const data = await res.json();
 
       if (data?.status === 'error') {
         showNotification({
           title: 'Error',
-          message: data?.message || 'Cannot update user account, something went wrong',
+          message:
+            data?.message || 'Cannot update user account, something went wrong',
           color: 'red',
           icon: <IconX />,
-        })
+        });
       } else {
-        update(values)
+        update(values);
         showNotification({
           title: 'Success',
           message: 'User account updated successfully',
           color: 'green',
           icon: <IconCheck />,
-        })
+        });
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
 
-    setIsSubmitting(false)
-  }
+    setIsSubmitting(false);
+  };
 
   const handleAvatarSubmit = async () => {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     if (!file) {
       showNotification({
@@ -227,13 +239,13 @@ export default function ProfilePage() {
         message: 'Please select an image to upload',
         color: 'red',
         icon: <IconX />,
-      })
-      setIsSubmitting(false)
-      return
+      });
+      setIsSubmitting(false);
+      return;
     }
 
     try {
-      const arrayBuffer = await file.arrayBuffer()
+      const arrayBuffer = await file.arrayBuffer();
 
       const res = await fetch(`/api/sanity/user/${user?.id}/avatar`, {
         method: 'POST',
@@ -241,91 +253,92 @@ export default function ProfilePage() {
         headers: {
           'Content-Type': 'application/octet-stream',
         },
-      })
-      const data = await res.json()
+      });
+      const data = await res.json();
 
       if (data?.status === 'error') {
         showNotification({
           title: 'Error',
-          message: data?.message || 'Cannot update user avatar, something went wrong',
+          message:
+            data?.message || 'Cannot update user avatar, something went wrong',
           color: 'red',
           icon: <IconX />,
-        })
+        });
       } else {
         showNotification({
           title: 'Success',
           message: 'User avatar updated successfully',
           color: 'green',
           icon: <IconCheck />,
-        })
+        });
 
-        update({ ...user, image: imageUrl })
+        update({ ...user, image: imageUrl });
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
 
-    setIsSubmitting(false)
-  }
+    setIsSubmitting(false);
+  };
 
-  const imageUrl = file ? URL.createObjectURL(file) : user?.image
+  const imageUrl = file ? URL.createObjectURL(file) : user?.image;
 
   // As this page uses Server Side Rendering, the `session` will be already
   // populated on render without needing to go through a loading stage.
   return (
-    <Container my="xl" size="xl">
+    <Container my='xl' size='xl'>
       <div className={classes.titleWrapper}>
         <IconSettings size={48} />
         <Title className={classes.title}>Profile</Title>
       </div>
 
-      <Text color="dimmed" mt="md">
-        Update your profile information and settings here. You can also change your password.
-        Enlistment and ORD are optional but recommended.
+      <Text color='dimmed' mt='md'>
+        Update your profile information and settings here. You can also change
+        your password. Enlistment and ORD are optional but recommended.
       </Text>
 
-      <Tabs keepMounted={false} defaultValue="general" mt="xl">
+      <Tabs keepMounted={false} defaultValue='general' mt='xl'>
         <Tabs.List grow>
-          <Tabs.Tab value="general" icon={<IconInfoCircle size="0.8rem" />}>
+          <Tabs.Tab value='general' icon={<IconInfoCircle size='0.8rem' />}>
             General
           </Tabs.Tab>
-          <Tabs.Tab value="avatar" icon={<IconPhoto size="0.8rem" />}>
+          <Tabs.Tab value='avatar' icon={<IconPhoto size='0.8rem' />}>
             Avatar
           </Tabs.Tab>
-          <Tabs.Tab value="settings" icon={<IconSettings size="0.8rem" />}>
+          <Tabs.Tab value='settings' icon={<IconSettings size='0.8rem' />}>
             Account Settings
           </Tabs.Tab>
         </Tabs.List>
 
-        <Tabs.Panel value="general" pt="xs">
+        <Tabs.Panel value='general' pt='xs'>
           <div className={classes.form}>
             <form onSubmit={userDetailForm.onSubmit(handleUserDetailSubmit)}>
               <TextInput
-                mt="sm"
-                label="Name"
-                placeholder="Name"
-                description="Preferably just your first name"
+                mt='sm'
+                label='Name'
+                placeholder='Name'
+                description='Preferably just your first name'
                 {...userDetailForm.getInputProps('name')}
               />
 
               <DatePickerInput
                 clearable
-                mt="sm"
-                label="Enlistment date"
-                placeholder="Pick date"
+                mt='sm'
+                label='Enlistment date'
+                placeholder='Pick date'
                 {...userDetailForm.getInputProps('enlistment')}
               />
 
               <DatePickerInput
                 clearable
-                mt="sm"
-                label="ORD date"
-                placeholder="Pick date"
+                mt='sm'
+                label='ORD date'
+                placeholder='Pick date'
                 {...userDetailForm.getInputProps('ord')}
               />
 
-              <Group position="right" mt="lg">
-                <Button type="submit" loading={isSubmitting}>
+              <Group position='right' mt='lg'>
+                <Button type='submit' loading={isSubmitting}>
                   Save
                 </Button>
               </Group>
@@ -333,26 +346,26 @@ export default function ProfilePage() {
           </div>
         </Tabs.Panel>
 
-        <Tabs.Panel value="avatar" pt="xs">
+        <Tabs.Panel value='avatar' pt='xs'>
           <div className={classes.form}>
-            <Card shadow="sm" mt="lg">
+            <Card shadow='sm' mt='lg'>
               <Card.Section>
-                <AspectRatio ratio={350 / 350} sx={{ maxWidth: 350 }} mx="auto">
+                <AspectRatio ratio={350 / 350} sx={{ maxWidth: 350 }} mx='auto'>
                   <Image
                     priority
                     src={imageUrl || '/images/avatars/avatar-1.jpg'}
-                    alt="User avatar"
+                    alt='User avatar'
                     width={350}
                     height={350}
-                    className="rounded-full"
+                    className='rounded-full'
                     style={{ objectFit: 'cover' }}
                   />
                 </AspectRatio>
               </Card.Section>
             </Card>
 
-            <Group position="left" mt="lg">
-              <FileButton onChange={setFile} accept="image/png,image/jpeg">
+            <Group position='left' mt='lg'>
+              <FileButton onChange={setFile} accept='image/png,image/jpeg'>
                 {(props) => (
                   <Button {...props} leftIcon={<IconUpload size={14} />}>
                     Upload image
@@ -360,53 +373,58 @@ export default function ProfilePage() {
                 )}
               </FileButton>
             </Group>
-            <Group position="right">
-              <Button type="submit" onClick={handleAvatarSubmit} loading={isSubmitting}>
+            <Group position='right'>
+              <Button
+                type='submit'
+                onClick={handleAvatarSubmit}
+                loading={isSubmitting}
+              >
                 Save
               </Button>
             </Group>
           </div>
         </Tabs.Panel>
 
-        <Tabs.Panel value="settings" pt="xs">
+        <Tabs.Panel value='settings' pt='xs'>
           <div className={classes.form}>
             <form onSubmit={userAccountForm.onSubmit(handlePasswordSubmit)}>
               <TextInput
-                mt="sm"
-                label="Email"
-                placeholder="Email"
+                mt='sm'
+                label='Email'
+                placeholder='Email'
                 {...userAccountForm.getInputProps('email')}
               />
 
               <PasswordInput
-                mt="sm"
-                label="Old password"
-                placeholder="Old password"
+                mt='sm'
+                label='Old password'
+                placeholder='Old password'
                 {...userAccountForm.getInputProps('oldPassword')}
               />
 
               <PasswordInput
-                mt="sm"
-                label="New Password"
-                placeholder="New Password"
+                mt='sm'
+                label='New Password'
+                placeholder='New Password'
                 {...userAccountForm.getInputProps('password')}
               />
 
-              <Group position="apart" mt="lg">
+              <Group position='apart' mt='lg'>
                 <Button
                   onClick={() =>
                     showNotification({
                       title: 'Warning',
-                      message: 'Not implemented yet, please contact support to delete your account',
+                      message:
+                        'Not implemented yet, please contact support to delete your account',
                       color: 'yellow',
                       icon: <IconAlertCircle />,
                     })
                   }
-                  color="red"
+                  color='red'
                 >
                   Delete account
                 </Button>
-                <Button type="submit" loading={isSubmitting}>
+                <Button type='submit' loading={isSubmitting}>
                   Save
                 </Button>
               </Group>
@@ -415,5 +433,5 @@ export default function ProfilePage() {
         </Tabs.Panel>
       </Tabs>
     </Container>
-  )
+  );
 }

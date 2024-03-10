@@ -5,6 +5,7 @@
   "main": "package.json",
   "license": "MIT",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "sanity dev",
     "start": "sanity start",
     "build": "sanity build",

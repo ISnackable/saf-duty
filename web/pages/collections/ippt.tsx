@@ -1,7 +1,6 @@
-import { Container, createStyles, Divider, Text, Title } from '@mantine/core'
-import { IconSparkles } from '@tabler/icons-react'
-
-import Link from 'next/link'
+import { Container, Divider, Text, Title, createStyles } from '@mantine/core';
+import { IconSparkles } from '@tabler/icons-react';
+import Link from 'next/link';
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -20,45 +19,49 @@ const useStyles = createStyles((theme) => ({
   },
 
   link: {
-    color: theme.colorScheme === 'dark' ? theme.colors.blue[3] : theme.colors.blue[9],
+    color:
+      theme.colorScheme === 'dark'
+        ? theme.colors.blue[3]
+        : theme.colors.blue[9],
   },
-}))
+}));
 
-IpptPage.title = 'IPPT Calculator'
+IpptPage.title = 'IPPT Calculator';
 
 export default function IpptPage() {
-  const { classes } = useStyles()
+  const { classes } = useStyles();
 
   return (
     <>
-      <Container my="lg" size="xl">
+      <Container my='lg' size='xl'>
         <div className={classes.titleWrapper}>
           <IconSparkles size={48} />
           <Title className={classes.title}>IPPT Calculator</Title>
         </div>
 
-        <Text color="dimmed" mt="md">
+        <Text color='dimmed' mt='md'>
           This is an embed of{' '}
-          <Link href="https://ippt.yctay.com" className={classes.link}>
+          <Link href='https://ippt.yctay.com' className={classes.link}>
             ippt.yctay.com
           </Link>
-          . If you&apos;re exempted from any of the stations, check out the official{' '}
+          . If you&apos;re exempted from any of the stations, check out the
+          official{' '}
           <Link
-            href="https://www.ns.sg/web/portal/nsmen/home/nstopics/ippt-nsfit/ippt/ippt-stations-and-scoring-system/scoring-calculation"
+            href='https://www.ns.sg/web/portal/nsmen/home/nstopics/ippt-nsfit/ippt/ippt-stations-and-scoring-system/scoring-calculation'
             className={classes.link}
           >
             IPPT calculator on NS.SG
           </Link>
         </Text>
-        <Divider mt="sm" />
+        <Divider mt='sm' />
       </Container>
       <iframe
-        src="https://ippt.yctay.com/?age=20&situpReps=33&pushupReps=20&runMins=12&runSecs=30"
-        width="100%"
-        height="100%"
+        src='https://ippt.yctay.com/?age=20&situpReps=33&pushupReps=20&runMins=12&runSecs=30'
+        width='100%'
+        height='100%'
         style={{ border: 'none', marginBottom: 90 }}
-        sandbox="allow-scripts allow-same-origin"
+        sandbox='allow-scripts allow-same-origin'
       />
     </>
-  )
+  );
 }
