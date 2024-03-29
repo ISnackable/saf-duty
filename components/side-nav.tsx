@@ -1,25 +1,26 @@
 'use client';
 
-import { type Session } from '@supabase/supabase-js';
-import { type Icon, IconClockHour1, IconSettings } from '@tabler/icons-react';
 import {
   IconArrowsExchange,
   IconCalendarEvent,
   IconCe,
   IconChessKnight,
+  IconClockHour1,
   IconCloudLock,
   IconEdit,
   IconFingerprint,
   IconHome2,
   IconMessageCircleQuestion,
+  IconSettings,
   IconUsers,
 } from '@tabler/icons-react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 
 import { APP_NAME } from '@/app/../site.config';
-import { Icons } from '@/components/icons';
+import { Icons, type TablerIcon } from '@/components/icons';
+import { ProgressBarLink } from '@/components/progress-bar';
+import { useSession } from '@/components/session-provider';
 import {
   Accordion,
   AccordionContent,
@@ -37,14 +38,13 @@ export type SidebarNavItem = {
   admin?: boolean;
   disabled?: boolean;
   href?: string;
-  icon?: Icon;
+  icon?: TablerIcon;
   items?: SidebarNavItem[];
   collapsible?: boolean;
 };
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   onClick?: () => void;
-  session: Session;
 }
 
 interface MobileSidebarProps extends SidebarProps {
@@ -154,11 +154,7 @@ export const sideNavLinks: SidebarNavItem[] = [
   },
 ];
 
-export function MobileSidebar({
-  open,
-  onOpenChange,
-  session,
-}: MobileSidebarProps) {
+export function MobileSidebar({ open, onOpenChange }: MobileSidebarProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
@@ -166,17 +162,19 @@ export function MobileSidebar({
         className='bg-popover p-0 sm:w-[240px]'
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
-        <SideNav onClick={() => onOpenChange(false)} session={session} />
+        <SideNav onClick={() => onOpenChange(false)} />
       </SheetContent>
     </Sheet>
   );
 }
 
-export function SideNav({ className, onClick, session }: SidebarProps) {
+export function SideNav({ className }: SidebarProps) {
   const pathName = usePathname();
+  const session = useSession();
 
   return (
     <div
+      data-tour='side-nav'
       className={cn('flex h-full flex-col bg-popover sm:w-[240px]', className)}
     >
       <div className='flex h-16 w-full items-center justify-start gap-1 border-b px-4 text-lg font-medium'>
@@ -187,7 +185,8 @@ export function SideNav({ className, onClick, session }: SidebarProps) {
         {sideNavLinks.map((item, index) => {
           if (
             item.admin &&
-            !Object.values(session.user.app_metadata.groups)
+            session &&
+            !Object.values(session?.user.app_metadata.groups)
               .flat()
               .includes('admin') &&
             !isDemoUser(session.user?.id)
@@ -203,11 +202,7 @@ export function SideNav({ className, onClick, session }: SidebarProps) {
               )}
 
               {item.items ? (
-                <SidebarItems
-                  pathName={pathName}
-                  onClick={onClick}
-                  items={item.items}
-                />
+                <SidebarItems pathName={pathName} items={item.items} />
               ) : null}
             </div>
           );
@@ -220,9 +215,7 @@ export function SideNav({ className, onClick, session }: SidebarProps) {
 function SidebarItems({
   items,
   pathName,
-  onClick,
 }: {
-  onClick?: () => void;
   items: SidebarNavItem[];
   pathName: string | null;
 }) {
@@ -246,11 +239,7 @@ function SidebarItems({
           </AccordionTrigger>
           <AccordionContent className='ml-4 pb-0'>
             {item.items ? (
-              <SidebarItems
-                pathName={pathName}
-                onClick={onClick}
-                items={item.items}
-              />
+              <SidebarItems pathName={pathName} items={item.items} />
             ) : null}
           </AccordionContent>
         </AccordionItem>
@@ -259,7 +248,7 @@ function SidebarItems({
       <Button
         key={index}
         asChild
-        onClick={onClick}
+        // onClick={onClick}
         variant='ghost'
         className={cn(
           'w-full justify-start px-[10px] py-2 text-sm font-medium',
@@ -269,12 +258,12 @@ function SidebarItems({
         )}
       >
         {!item.disabled && item.href ? (
-          <Link href={item.href}>
+          <ProgressBarLink href={item.href}>
             {item.icon && (
               <span className='mr-2'>{<item.icon className='h-4 w-4' />}</span>
             )}
             {item.title}
-          </Link>
+          </ProgressBarLink>
         ) : (
           <span className='flex w-full cursor-not-allowed items-center rounded-md p-2 opacity-60'>
             {item.title}

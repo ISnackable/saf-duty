@@ -20,6 +20,17 @@ const millionConfig = {
 /** @type {import('next').NextConfig} */
 const nextConfig = bundleAnalyzer(
   withSerwist({
+    images: {
+      remotePatterns: [
+        {
+          hostname: 'api.dicebear.com',
+        },
+        {
+          hostname: '*.supabase.co',
+          pathname: '/storage/v1/**',
+        },
+      ],
+    },
     logging: {
       fetches: {
         fullUrl: false,

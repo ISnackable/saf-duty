@@ -5,32 +5,29 @@ import {
   addMonths,
   eachDayOfInterval,
   endOfMonth,
+  formatISO,
   isFriday,
   isSameDay,
   isSameMonth,
   isWeekend,
   startOfMonth,
 } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { DayClickEventHandler } from 'react-day-picker';
 import { toast } from 'sonner';
 
-import { insertBlockoutDates } from '@/app/(dashboard)/actions';
 import { LoadingButton } from '@/components/loading-button';
 import { buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { Tables } from '@/types/supabase';
+import { useProfiles } from '@/hooks/use-profiles';
+import { fetcher } from '@/lib/fetcher';
 import { cn } from '@/utils/cn';
 
-export const MAXIMUM_BLOCKOUTS = 12;
+export const MAXIMUM_BLOCKOUTS = 8;
 const TODAY = new Date();
 const DEFAULT_MONTH = addMonths(TODAY, 1);
 const MIN_MONTH = startOfMonth(TODAY);
 const MAX_MONTH = endOfMonth(addMonths(MIN_MONTH, 2));
-
-interface ManageBlockoutProps {
-  profile: Pick<Tables<'profiles'>, 'max_blockouts' | 'blockout_dates'>;
-}
 
 function eachWeekendAndFridayOfMonth(interval: Interval) {
   const dateInterval = eachDayOfInterval(interval);
@@ -52,42 +49,57 @@ function countSelectedDates(dates: Date[], currentMonthSelected: Date[]) {
     .length;
 }
 
-export function ManageBlockout({ profile }: ManageBlockoutProps) {
+export function ManageBlockout() {
+  const { data: profile, mutate } = useProfiles();
+
   const [month, setMonth] = useState<Date>(DEFAULT_MONTH);
-  const [selectedDays, setSelectedDays] = useState<Date[]>(
-    profile.blockout_dates
-      ? profile.blockout_dates
-          .filter(
-            (date) =>
-              new Date(date).getTime() >= MIN_MONTH.getTime() &&
-              new Date(date).getTime() <= MAX_MONTH.getTime()
-          )
-          .map((date) => new Date(date))
-      : []
-  );
+  const [selectedDays, setSelectedDays] = useState<Date[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const maximumBlockouts = profile.max_blockouts || MAXIMUM_BLOCKOUTS;
-  const currentMonthSelected = selectedDays.filter((d) =>
-    isSameMonth(d, month)
+  const maximumBlockouts = profile?.max_blockouts || MAXIMUM_BLOCKOUTS;
+  const currentMonthSelected = useMemo(
+    () => selectedDays.filter((d: Date) => isSameMonth(d, month)),
+    [selectedDays, month]
   );
 
-  function disableDateExceedMatcher(day: Date) {
-    if (currentMonthSelected.length >= maximumBlockouts) {
-      // If the day is not selected, disable it.
-      return !selectedDays.find(
-        (date) =>
-          date.getDate() === day.getDate() && date.getMonth() === day.getMonth()
-      );
-    }
+  const disableDateExceedMatcher = useCallback(
+    (day: Date) => {
+      if (currentMonthSelected.length >= maximumBlockouts) {
+        // If the day is not selected, disable it.
+        return !selectedDays.find(
+          (date) =>
+            date.getDate() === day.getDate() &&
+            date.getMonth() === day.getMonth()
+        );
+      }
 
-    return false;
-  }
+      return false;
+    },
+    [currentMonthSelected, maximumBlockouts, selectedDays]
+  );
 
   const updateBlockoutDates = async () => {
     setLoading(true);
 
-    toast.promise(insertBlockoutDates(selectedDays), {
+    const resPromise = fetcher(`/api/profiles/${profile?.id}/blockout-dates`, {
+      method: 'POST',
+      body: JSON.stringify({
+        blockoutDates: selectedDays.map((date) =>
+          formatISO(date, { representation: 'date' })
+        ),
+      }),
+    }).then(() => {
+      if (profile) {
+        mutate({
+          ...profile,
+          blockout_dates: selectedDays.map((date) =>
+            formatISO(date, { representation: 'date' })
+          ),
+        });
+      }
+    });
+
+    toast.promise(resPromise, {
       loading: 'Loading...',
       success: 'Blockout dates updated.',
       error: 'An error occurred.',
@@ -101,6 +113,22 @@ export function ManageBlockout({ profile }: ManageBlockoutProps) {
   };
 
   useEffect(() => {
+    if (profile?.blockout_dates) {
+      setSelectedDays(
+        profile?.blockout_dates
+          ? profile.blockout_dates
+              .filter(
+                (date) =>
+                  new Date(date).getTime() >= MIN_MONTH.getTime() &&
+                  new Date(date).getTime() <= MAX_MONTH.getTime()
+              )
+              .map((date) => new Date(date))
+          : []
+      );
+    }
+  }, [profile?.blockout_dates]);
+
+  useEffect(() => {
     if (currentMonthSelected.length >= maximumBlockouts) {
       toast.warning('You have reached the maximum blockouts for this month.', {
         duration: 5000,
@@ -110,45 +138,60 @@ export function ManageBlockout({ profile }: ManageBlockoutProps) {
     }
   }, [maximumBlockouts, currentMonthSelected.length]);
 
-  const handleDayClick: DayClickEventHandler = (day, modifiers) => {
-    const newSelectedDays = [...selectedDays];
+  const handleDayClick: DayClickEventHandler = useCallback(
+    (day, modifiers) => {
+      const newSelectedDays = [...selectedDays];
 
-    if (modifiers.selected) {
-      const index = selectedDays.findIndex((selectedDay) =>
-        isSameDay(day, selectedDay)
-      );
-      newSelectedDays.splice(index, 1);
-    } else {
-      const start = startOfMonth(day);
-      const end = endOfMonth(day);
-      const { weekends, fridays } = eachWeekendAndFridayOfMonth({ start, end });
-
-      const numSelectedWeekends = countSelectedDates(weekends, newSelectedDays);
-      const numSelectedFridays = countSelectedDates(fridays, newSelectedDays);
-
-      const canSelectWeekend = numSelectedWeekends < weekends.length - 2;
-      const canSelectFriday = numSelectedFridays < fridays.length - 1;
-
-      if (isWeekend(day) && !canSelectWeekend) {
-        toast.warning('You have reached the maximum weekends for this month.', {
-          description:
-            'If you need more blockouts, please contact the person-in-charge.',
+      if (modifiers.selected) {
+        const index = selectedDays.findIndex((selectedDay) =>
+          isSameDay(day, selectedDay)
+        );
+        newSelectedDays.splice(index, 1);
+      } else {
+        const start = startOfMonth(day);
+        const end = endOfMonth(day);
+        const { weekends, fridays } = eachWeekendAndFridayOfMonth({
+          start,
+          end,
         });
 
-        return;
-      } else if (isFriday(day) && !canSelectFriday) {
-        toast.warning('You have reached the maximum Fridays for this month.', {
-          description:
-            'If you need more blockouts, please contact the person-in-charge.',
-        });
+        const numSelectedWeekends = countSelectedDates(
+          weekends,
+          newSelectedDays
+        );
+        const numSelectedFridays = countSelectedDates(fridays, newSelectedDays);
 
-        return;
+        const canSelectWeekend = numSelectedWeekends < weekends.length - 2;
+        const canSelectFriday = numSelectedFridays < fridays.length - 1;
+
+        if (isWeekend(day) && !canSelectWeekend) {
+          toast.warning(
+            'You have reached the maximum weekends for this month.',
+            {
+              description:
+                'If you need more blockouts, please contact the person-in-charge.',
+            }
+          );
+
+          return;
+        } else if (isFriday(day) && !canSelectFriday) {
+          toast.warning(
+            'You have reached the maximum Fridays for this month.',
+            {
+              description:
+                'If you need more blockouts, please contact the person-in-charge.',
+            }
+          );
+
+          return;
+        }
+
+        newSelectedDays.push(day);
       }
-
-      newSelectedDays.push(day);
-    }
-    setSelectedDays(newSelectedDays);
-  };
+      setSelectedDays(newSelectedDays);
+    },
+    [selectedDays]
+  );
 
   return (
     <>

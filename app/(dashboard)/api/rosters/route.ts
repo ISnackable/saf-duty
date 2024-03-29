@@ -1,4 +1,3 @@
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import * as z from 'zod';
 
@@ -7,8 +6,8 @@ import { withAuth } from '@/lib/auth';
 // import { dutyRoster } from '@/lib/demo-data';
 import { type DutyDate, type Personnel } from '@/lib/duty-roster';
 import { type Tables } from '@/types/supabase';
+
 // import { isDemoUser } from '@/utils/demo';
-import { createClient } from '@/utils/supabase/server';
 
 const DutyDateSchema = z.array(
   z.object({
@@ -87,7 +86,7 @@ export interface RosterPatch
 // );
 
 export const POST = withAuth(
-  async ({ request, group }) => {
+  async ({ request, group, client }) => {
     const { dutyDates, dutyPersonnels } = await request.json();
 
     if (!group.length) {
@@ -135,15 +134,12 @@ export const POST = withAuth(
       );
     }
 
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
-
-    const upsertRosterQuery = supabase
+    const upsertRosterQuery = client
       .from('rosters')
       .upsert(roster, { onConflict: 'duty_date' })
       .select();
 
-    const upsertProfilesQuery = supabase
+    const upsertProfilesQuery = client
       .from('profiles')
       .upsert(personnels)
       .select();

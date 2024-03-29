@@ -1,11 +1,12 @@
 'use client';
 
-import { type Session } from '@supabase/supabase-js';
-import Link from 'next/link';
 import { useState } from 'react';
 
 import { signOut } from '@/app/(auth)/actions';
 import { InstallPWA } from '@/components/install-pwa';
+import { ProgressBarLink } from '@/components/progress-bar';
+import { customNotifyEvent } from '@/components/session-provider';
+import { useSession } from '@/components/session-provider';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,15 +19,12 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { type Tables } from '@/types/supabase';
+import { useProfiles } from '@/hooks/use-profiles';
 
-interface UserNavProps {
-  session: Session;
-  profile: Pick<Tables<'profiles'>, 'name' | 'avatar_url' | 'ord_date'>;
-}
-
-export function UserNav({ session, profile }: UserNavProps) {
+export function UserNav() {
   const [open, setOpen] = useState(false);
+  const session = useSession();
+  const { data: profile } = useProfiles();
 
   return (
     <DropdownMenu>
@@ -34,8 +32,8 @@ export function UserNav({ session, profile }: UserNavProps) {
         <Button variant='ghost' className='relative h-9 w-9 rounded-full'>
           <Avatar className='relative h-9 w-9 rounded-full'>
             <AvatarImage
-              src={profile.avatar_url || ''}
-              alt={`${profile.name} avtar image`}
+              src={profile?.avatar_url || ''}
+              alt={`${profile?.name} avtar image`}
             />
             <AvatarFallback>O</AvatarFallback>
           </Avatar>
@@ -49,30 +47,30 @@ export function UserNav({ session, profile }: UserNavProps) {
         <DropdownMenuLabel className='font-normal'>
           <div className='flex flex-col space-y-1'>
             <p className='text-sm font-medium leading-none'>
-              {profile.name || session.user.user_metadata.name || 'Anonymous'}
+              {profile?.name || session?.user.user_metadata.name || 'Anonymous'}
             </p>
             <p className='text-xs leading-none text-muted-foreground'>
-              {session.user.email || 'No email'}
+              {session?.user.email || 'No email'}
             </p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild>
-            <Link href='/settings'>
+          <ProgressBarLink href='/settings'>
+            <DropdownMenuItem>
               Profile <DropdownMenuShortcut>⌘P</DropdownMenuShortcut>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href='/settings/account'>
+            </DropdownMenuItem>
+          </ProgressBarLink>
+          <ProgressBarLink href='/settings/account'>
+            <DropdownMenuItem>
               Account Settings <DropdownMenuShortcut>⌘A</DropdownMenuShortcut>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href='/settings/account'>
+            </DropdownMenuItem>
+          </ProgressBarLink>
+          <ProgressBarLink href='/settings/account'>
+            <DropdownMenuItem>
               Settings <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-            </Link>
-          </DropdownMenuItem>
+            </DropdownMenuItem>
+          </ProgressBarLink>
           <InstallPWA open={open} onOpenChange={setOpen}>
             <DropdownMenuItem
               onClick={(e) => {
@@ -88,7 +86,11 @@ export function UserNav({ session, profile }: UserNavProps) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={async () => await signOut()}
+          onClick={async () => {
+            await signOut();
+            // custom event to notify the session provider to update the session
+            customNotifyEvent('SIGNED_OUT', null);
+          }}
           className='text-destructive'
         >
           Log out

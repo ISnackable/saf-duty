@@ -1,10 +1,10 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
 
+import { ProgressBarLink } from '@/components/progress-bar';
 import { cn } from '@/utils/cn';
 
 import { Icons } from './icons';
@@ -42,7 +42,7 @@ export function BottomNav() {
         className={cn('flex h-full flex-row items-center justify-start gap-4')}
       >
         {routes.map((item) => (
-          <Link
+          <ProgressBarLink
             key={item.label}
             href={item.link}
             prefetch={false}
@@ -72,7 +72,7 @@ export function BottomNav() {
                 {item.label}
               </div>
             </div>
-          </Link>
+          </ProgressBarLink>
         ))}
       </div>
     </footer>

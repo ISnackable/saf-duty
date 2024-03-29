@@ -1,14 +1,11 @@
-import { Metadata } from 'next';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import type { Metadata } from 'next';
 
 import { Highlight } from '@/components/highlight';
 import { Icons } from '@/components/icons';
-import { ManageBlockout } from '@/components/manage-blockout';
-import { getUserBlockoutData } from '@/lib/supabase/data';
-import { createClient } from '@/utils/supabase/server';
-
-export const revalidate = 0;
+import {
+  MAXIMUM_BLOCKOUTS,
+  ManageBlockout,
+} from '@/components/manage-blockout';
 
 export const metadata: Metadata = {
   title: 'Manage Blockouts',
@@ -16,24 +13,13 @@ export const metadata: Metadata = {
 };
 
 export default async function ManageBlockoutsPage() {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session) {
-    redirect('/login');
-  }
-
-  const data = await getUserBlockoutData(supabase, session);
-
   return (
     <div className='space-y-4 p-8 pt-4'>
       <div className='flex w-full items-center space-y-2'>
         <Icons.edit className='mr-3 inline-block h-8 w-8 items-center align-middle' />
-        <h1 className='grow scroll-m-20 border-b pb-2 text-2xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl'>
+        <h1
+          className='grow scroll-m-20 border-b pb-2 text-2xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl'
+        >
           Manage Blockouts
         </h1>
       </div>
@@ -42,10 +28,13 @@ export default async function ManageBlockoutsPage() {
         blockout date, <Highlight>make sure to save</Highlight> after you are
         done.
       </p>
-      <ul className='ml-5 list-disc text-sm dark:text-gray-200 sm:text-base'>
+      <ul className='ml-5 list-disc text-sm sm:text-base dark:text-gray-200'>
         <li>
-          Only a maximum of {data.max_blockouts} blockouts date per month
-          (subject to change)
+          Only a maximum of{' '}
+          <u className='font-medium text-primary underline underline-offset-4'>
+            {MAXIMUM_BLOCKOUTS}
+          </u>{' '}
+          blockouts date per month (can request for more, but subject to review)
         </li>
         <li>
           You are not allowed to blockout every{' '}
@@ -56,8 +45,7 @@ export default async function ManageBlockoutsPage() {
         </li>
       </ul>
 
-      {/* No Suspend Here as it's apparently super fast */}
-      <ManageBlockout profile={data} />
+      <ManageBlockout />
     </div>
   );
 }

@@ -18,6 +18,10 @@ import {
 } from '@/components/ui/command';
 import { cn } from '@/utils/cn';
 
+/* eslint-disable react-hooks/exhaustive-deps */
+
+/* eslint-disable unused-imports/no-unused-vars */
+
 export interface Option {
   value: string;
   label: string;

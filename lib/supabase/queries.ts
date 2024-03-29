@@ -38,17 +38,6 @@ export function getAllUsersByUnitId(client: TypedSupabaseClient) {
     );
 }
 
-export function getUserBlockoutById(
-  client: TypedSupabaseClient,
-  sessionId: string
-) {
-  return client
-    .from('profiles')
-    .select('max_blockouts, blockout_dates')
-    .eq('id', sessionId)
-    .single();
-}
-
 // TODO: Instead of relying on the sessionId, we should be making use of RLS to ensure that the user can only access their own data.
 export function getUserProfileById(
   client: TypedSupabaseClient,

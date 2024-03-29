@@ -1,17 +1,18 @@
 'use client';
 
-import { type Session } from '@supabase/supabase-js';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { insertSubscription } from '@/app/(dashboard)/actions';
 import { InstallPWA } from '@/components/install-pwa';
 import { usePushNotificationContext } from '@/components/push-notification-provider';
+import { useSession } from '@/components/session-provider';
 import { Button } from '@/components/ui/button';
 import { useOs } from '@/hooks/use.os';
 import { isDemoUser } from '@/utils/demo';
 
-export function NotificationsButton({ session }: { session: Session }) {
+export function NotificationsButton() {
+  const session = useSession();
   const {
     userSubscription,
     userConsent,
@@ -24,7 +25,7 @@ export function NotificationsButton({ session }: { session: Session }) {
   const [open, setOpen] = useState(false);
 
   return (
-    (isDemoUser(session.user.id) || userSubscription === null) && (
+    ((session && isDemoUser(session.user.id)) || userSubscription === null) && (
       <InstallPWA open={open} onOpenChange={setOpen}>
         <Button
           variant='outline'
@@ -39,6 +40,8 @@ export function NotificationsButton({ session }: { session: Session }) {
                 return;
               }
             }
+
+            if (!session) return;
 
             if (isDemoUser(session.user.id)) {
               toast.warning('Demo users cannot enable notifications');

@@ -1,21 +1,7 @@
-import { cookies } from 'next/headers';
-
 import { NotificationsForm } from '@/components/notifications-form';
 import { Separator } from '@/components/ui/separator';
-import { createClient } from '@/utils/supabase/server';
 
 export default async function SettingsNotificationsPage() {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session) {
-    throw new Error('No session');
-  }
-
   return (
     <div className='space-y-6'>
       <div>
@@ -25,7 +11,7 @@ export default async function SettingsNotificationsPage() {
         </p>
       </div>
       <Separator />
-      <NotificationsForm session={session} />
+      <NotificationsForm />
     </div>
   );
 }

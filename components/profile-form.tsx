@@ -1,7 +1,8 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ElementRef, useEffect, useRef, useState } from 'react';
+import { formatISO } from 'date-fns';
+import { ElementRef, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
@@ -19,7 +20,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { type Tables } from '@/types/supabase';
+import { useProfiles } from '@/hooks/use-profiles';
 
 import { DatePicker } from './date-picker';
 
@@ -40,7 +41,8 @@ const profileFormSchema = z.object({
       (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
       'Only .jpg, .jpeg, .png and .webp formats are supported.'
     )
-    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`),
+    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+    .optional(),
   name: z
     .string()
     .min(2, {
@@ -58,34 +60,45 @@ const profileFormSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
-export function ProfileForm({
-  profile,
-}: {
-  profile: Pick<Tables<'profiles'>, 'name' | 'avatar_url' | 'ord_date'>;
-}) {
+export function ProfileForm() {
+  const { data: profile, mutate } = useProfiles();
+
   const refImageInput = useRef<ElementRef<'input'> | null>(null);
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues: {
+    // defaultValues: {
+    //   avatar: undefined,
+    //   name: profile?.name || '',
+    //   ord: profile?.ord_date ? new Date(profile.ord_date) : undefined,
+    // },
+    values: {
       avatar: undefined,
-      name: profile.name,
-      ord: profile.ord_date ? new Date(profile.ord_date) : undefined,
+      name: profile?.name || '',
+      ord: profile?.ord_date ? new Date(profile.ord_date) : undefined,
+    },
+    resetOptions: {
+      keepDirtyValues: true, // keep dirty fields unchanged, but update defaultValues
     },
     mode: 'onChange',
   });
 
-  const [imagePreview, setImagePreview] = useState<string | null>(
-    profile.avatar_url
-  );
-
-  // revoke object URL to avoid memory leaks
-  useEffect(() => {
-    return () => {
-      if (imagePreview) URL.revokeObjectURL(imagePreview);
-    };
-  }, [imagePreview]);
+  const imagePreview = form.watch('avatar')
+    ? URL.createObjectURL(form.getValues('avatar') as File)
+    : profile?.avatar_url;
 
   function onSubmit(data: ProfileFormValues) {
+    if (profile && data) {
+      const ord_date = data.ord
+        ? formatISO(data.ord, { representation: 'date' })
+        : null;
+
+      mutate({
+        ...profile,
+        name: data.name,
+        ord_date,
+      });
+    }
+
     toast('You submitted the following values:', {
       description: (
         <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
@@ -125,15 +138,6 @@ export function ProfileForm({
 
                                 if (!file) return;
                                 onChange(file);
-
-                                if (
-                                  ACCEPTED_IMAGE_TYPES.includes(file.type) &&
-                                  file.size <= MAX_FILE_SIZE
-                                ) {
-                                  setImagePreview(
-                                    file ? URL.createObjectURL(file) : null
-                                  );
-                                }
                               }}
                               name={name}
                               ref={(e) => {

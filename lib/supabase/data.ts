@@ -1,16 +1,17 @@
+'use server';
+
 import 'server-only';
 
-import { type Session } from '@supabase/supabase-js';
+import { type User } from '@supabase/supabase-js';
 import { isWeekend } from 'date-fns';
 
-import { type RosterPatch } from '@/app/(dashboard)/api/roster/route';
+import { type RosterPatch } from '@/app/(dashboard)/api/rosters/route';
 import { demoUsers, dutyRoster } from '@/lib/demo-data';
 import { type DutyDate } from '@/lib/duty-roster';
 import {
   type TypedSupabaseClient,
   getAllUsersByUnitId,
   getRosterByUnitId,
-  getUserBlockoutById,
   getUserProfileById,
 } from '@/lib/supabase/queries';
 import { isDemoUser } from '@/utils/demo';
@@ -19,13 +20,13 @@ import { indexOnceWithKey } from '@/utils/helper';
 // TODO: Instead of relying on the unitId, we should be making use of RLS to ensure that the user can only access their own data.
 export async function getRosterData(
   client: TypedSupabaseClient,
-  session: Session,
+  user: User,
   month: string,
   year: string
 ) {
   let data: RosterPatch[] = dutyRoster;
 
-  if (!isDemoUser(session.user.id)) {
+  if (!isDemoUser(user.id)) {
     const { data: roster, error } = await getRosterByUnitId(
       client,
       month,
@@ -33,7 +34,7 @@ export async function getRosterData(
     );
 
     if (!data || error) {
-      throw new Error('Failed to fetch profile');
+      throw new Error('Failed to fetch roster');
     }
 
     data = roster;
@@ -54,48 +55,25 @@ export async function getRosterData(
   return JSON.parse(JSON.stringify(roster));
 }
 
-export async function getUsersData(
-  client: TypedSupabaseClient,
-  session: Session
-) {
-  if (isDemoUser(session.user.id)) {
+export async function getUsersData(client: TypedSupabaseClient, user: User) {
+  if (isDemoUser(user.id)) {
     return demoUsers;
   }
 
   const { data: users, error } = await getAllUsersByUnitId(client);
 
   if (!users || error) {
-    throw new Error('Failed to fetch profile');
+    throw new Error('Failed to fetch users');
   }
 
   return users;
 }
 
-export async function getUserBlockoutData(
-  client: TypedSupabaseClient,
-  session: Session
-) {
-  if (isDemoUser(session.user.id)) {
-    return {
-      max_blockouts: demoUsers[0].max_blockouts,
-      blockout_dates: demoUsers[0].blockout_dates,
-    };
-  } else {
-    const { data, error } = await getUserBlockoutById(client, session.user.id);
-
-    if (!data || error) {
-      throw new Error('Failed to fetch profile');
-    }
-
-    return data;
-  }
-}
-
 export async function getUserProfileData(
   client: TypedSupabaseClient,
-  session: Session
+  user: User
 ) {
-  if (isDemoUser(session.user.id)) {
+  if (isDemoUser(user.id)) {
     return {
       name: demoUsers[0].name,
       avatar_url: demoUsers[0].avatar_url,
@@ -103,7 +81,7 @@ export async function getUserProfileData(
       onboarded: demoUsers[0].onboarded,
     };
   } else {
-    const { data, error } = await getUserProfileById(client, session.user.id);
+    const { data, error } = await getUserProfileById(client, user.id);
 
     if (!data || error) {
       throw new Error('Failed to fetch profile');

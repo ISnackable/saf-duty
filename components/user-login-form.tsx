@@ -11,6 +11,7 @@ import * as z from 'zod';
 import { signIn } from '@/app/(auth)/actions';
 import { Icons } from '@/components/icons';
 import { PasswordInput } from '@/components/password-input';
+import { customNotifyEvent } from '@/components/session-provider';
 import { buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -35,7 +36,7 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
 
   async function handleLoginForm(data: LoginFormData) {
     setIsLoading(true);
-    const { status, message } = await signIn(data);
+    const { data: session, status, message } = await signIn(data);
 
     if (status === 'error') {
       toast.error(message || 'Something went wrong.', {
@@ -48,6 +49,7 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
           'Your sign in request was successful. You will be redirected shortly.',
       });
 
+      customNotifyEvent('SIGNED_IN', session);
       const redirect = searchParams.get('redirect');
 
       // redirect to dashboard

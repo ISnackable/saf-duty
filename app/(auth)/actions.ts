@@ -32,7 +32,10 @@ export async function signIn(formData: LoginFormData): Promise<State> {
     };
   }
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const {
+    data: { session },
+    error,
+  } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -45,6 +48,7 @@ export async function signIn(formData: LoginFormData): Promise<State> {
   }
 
   return {
+    data: session,
     status: 'success',
     message: 'Successfully authenticated',
   };

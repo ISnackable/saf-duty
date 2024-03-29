@@ -2,10 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PopoverAnchor } from '@radix-ui/react-popover';
-import {
-  OTPInput, // REGEXP_ONLY_DIGITS_AND_CHARS,
-  type RenderProps,
-} from 'input-otp';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -23,6 +19,11 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from '@/components/ui/input-otp';
 import { Popover, PopoverContent } from '@/components/ui/popover';
 import { Progress } from '@/components/ui/progress';
 import {
@@ -203,41 +204,21 @@ export function UserRegisterForm({
                   <FormItem>
                     <FormLabel>Unit code</FormLabel>
                     <FormControl>
-                      <OTPInput
-                        allowNavigation={false}
-                        // pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
-                        // inputMode='text'
+                      <InputOTP
                         maxLength={4}
-                        containerClassName='group flex items-center has-[:disabled]:opacity-30'
-                        render={({ slots }: RenderProps) => (
-                          <div className='flex h-9 w-full'>
-                            {slots.map((slot, idx) => (
-                              <div
-                                key={idx}
-                                className={cn(
-                                  'relative w-full',
-                                  'flex items-center justify-center',
-                                  'transition-all duration-300',
-                                  'border-y border-r border-input first:rounded-l-md first:border-l last:rounded-r-md',
-                                  'group-focus-within:border-accent-foreground/20 group-hover:border-accent-foreground/20',
-                                  'outline outline-0 outline-accent-foreground/20',
-                                  {
-                                    'outline-1 outline-accent-foreground':
-                                      slot.isActive,
-                                  }
-                                )}
-                              >
-                                <div>{slot.char}</div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
                         {...field}
                         spellCheck='false'
                         value={form.watch('unit')}
                         onChange={(val: string) => form.setValue('unit', val)}
                         disabled={isLoading}
-                      />
+                      >
+                        <InputOTPGroup className='w-full'>
+                          <InputOTPSlot className='w-full' index={0} />
+                          <InputOTPSlot className='w-full' index={1} />
+                          <InputOTPSlot className='w-full' index={2} />
+                          <InputOTPSlot className='w-full' index={3} />
+                        </InputOTPGroup>
+                      </InputOTP>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

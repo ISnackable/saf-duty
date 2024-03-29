@@ -1,12 +1,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { type Session } from '@supabase/supabase-js';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
 import { signOut } from '@/app/(auth)/actions';
+import { PasswordInput } from '@/components/password-input';
+import { customNotifyEvent, useSession } from '@/components/session-provider';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,8 +31,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { requirements } from '@/utils/auth-validation';
-
-import { PasswordInput } from './password-input';
 
 const accountFormSchema = z
   .object({
@@ -71,11 +70,18 @@ const accountFormSchema = z
 
 type AccountFormValues = z.infer<typeof accountFormSchema>;
 
-export function AccountForm({ session }: { session: Session }) {
+export function AccountForm() {
+  const session = useSession();
+
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
-    defaultValues: {
-      email: session.user.email,
+    values: {
+      email: session?.user.email || '',
+      old_password: '',
+      new_password: '',
+    },
+    resetOptions: {
+      keepDirtyValues: true, // keep dirty fields unchanged, but update defaultValues
     },
   });
 
@@ -163,7 +169,10 @@ export function AccountForm({ session }: { session: Session }) {
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            onClick={async () => await signOut({ scope: 'global' })}
+            onClick={async () => {
+              await signOut({ scope: 'global' });
+              customNotifyEvent('SIGNED_OUT', null);
+            }}
           >
             Continue
           </AlertDialogAction>

@@ -36,8 +36,8 @@ export default async function AdminScheduleDutyPage({
     redirect('/login');
   }
   const [roster, users] = await Promise.all([
-    getRosterData(supabase, session, month, year),
-    getUsersData(supabase, session),
+    getRosterData(supabase, session.user, month, year),
+    getUsersData(supabase, session.user),
   ]);
 
   return (

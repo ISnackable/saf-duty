@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type CheckedState } from '@radix-ui/react-checkbox';
-import { type Session } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -14,6 +13,7 @@ import {
 } from '@/app/(dashboard)/actions';
 import { InstallPWA } from '@/components/install-pwa';
 import { usePushNotificationContext } from '@/components/push-notification-provider';
+import { useSession } from '@/components/session-provider';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -43,7 +43,9 @@ const defaultValues: Partial<NotificationsFormValues> = {
   duty_reminder: true,
 };
 
-export function NotificationsForm({ session }: { session: Session }) {
+export function NotificationsForm() {
+  const session = useSession();
+
   const {
     userSubscription,
     userConsent,
@@ -92,6 +94,8 @@ export function NotificationsForm({ session }: { session: Session }) {
                     return;
                   }
                 }
+
+                if (!session) return;
 
                 if (isDemoUser(session.user.id)) {
                   toast.warning('Demo users cannot enable notifications');

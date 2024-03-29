@@ -1,5 +1,4 @@
 import { PopoverClose } from '@radix-ui/react-popover';
-import { type Session } from '@supabase/supabase-js';
 import Link from 'next/link';
 
 import { Icons } from '@/components/icons';
@@ -12,7 +11,7 @@ import {
 } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 
-export function NotificationsPopover({ session }: { session: Session }) {
+export function NotificationsPopover() {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -46,7 +45,7 @@ export function NotificationsPopover({ session }: { session: Session }) {
               have an upcoming duty.
             </p>
 
-            <NotificationsButton session={session} />
+            <NotificationsButton />
           </div>
           {/* <div className='grid gap-2'></div> */}
         </div>
