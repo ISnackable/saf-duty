@@ -1,51 +1,42 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
-
+<br />
 <p align="center">
- The fastest way to build apps with Next.js and Supabase
+  <a href="https://github.com/ISnackable/duty-roster/">
+    <img src="./public/icons/icon512_rounded.png" alt="Logo" width="96" height="96">
+  </a>
+
+  <h3 align="center">SAF Duty Roster</h3>
+
+  <p align="center">
+    A Duty Roster planner for the SAF. It's tailored for unit uses, however the code is customizable. MIT License.
+    <br />
+    <a href="https://afpn-cdo.vercel.app/"><strong>View Demo »</strong></a>
+    <br />
+
+  </p>
 </p>
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
+## About The Project
+
+In SAF, soldiers are required to do duties, be it guard duty or 24hr ops duty. This project is tailored for unit, where they are required to do 24hr ops duty. The duty roster has these requirements:
+
+1. The duty roster should be spread out in a month of a calendar
+2. It is a 24-hour duty shift
+3. There must be a duty personnel for each day from the start to the end of the month
+4. There should not be any back-to-back duty for the same duty personnel.
+5. There should be an equal number of duties for everyone if possible.
+6. Personnel should be shuffled to avoid the first person always having the most number of duties
+7. Personnel can have block out dates where they should not have duties on the date they have blocked out.
+
 <br/>
 
-## Features
+![preview](./images/preview.png)
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Middleware
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+## Dependencies
 
-## Demo
+To get started, the following tools/account should be installed/created:
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
-
-## Deploy to Vercel
-
-Vercel deployment will guide you through creating a Supabase account and project.
-
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This%20starter%20configures%20Supabase%20Auth%20to%20use%20cookies%2C%20making%20the%20user's%20session%20available%20throughout%20the%20entire%20Next.js%20app%20-%20Client%20Components%2C%20Server%20Components%2C%20Route%20Handlers%2C%20Server%20Actions%20and%20Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png&integration-ids=oac_VqOgBHqhEoFTPzGkPd7L0iH6)
-
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
-
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+- [NodeJS](https://nodejs.org/en/)
+- [Sanity.io](https://supabase.com/)
 
 ## Clone and run locally
 
@@ -82,21 +73,16 @@ If you wish to just develop locally and not deploy to Vercel, [follow the steps 
 
 > Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
 
-## Feedback and issues
+## License
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
+Distributed under the **MIT** License. See `LICENSE` for more information.
 
-## More Supabase examples
+## Acknowledgements
 
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+- [supabase | Postgres Database & Authentication](https://supabase.com/)
+- [shadcn/ui | React Component Library](https://mantine.dev/)
 
-```
-podman system service --time=0
-export DOCKER_HOST=unix:///$XDG_RUNTIME_DIR/podman/podman.sock
-supabase db dump -f supabase/schema.sql
-```
+## Features
 
 **To Enable Push Notification with web-push. You will need to deploy Deploy the Supabase Edge Function and Create the database webhook manually.**
 
@@ -121,3 +107,5 @@ Navigate to the [Database Webhooks settings](https://supabase.com/dashboard/proj
 ### Send push notification
 
 When a new row is added in your notifications table, a push notification will be sent to the user whom has subscribed to push notification.
+
+- _Note: There's a cron job for daily duty reminder if a user is subscribed to push notification._

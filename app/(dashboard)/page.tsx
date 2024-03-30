@@ -1,9 +1,15 @@
+import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 
 import { DashboardOverview } from '@/components/dashboard-overview';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getUserProfileData } from '@/lib/supabase/data';
 import { createClient } from '@/utils/supabase/server';
+
+export const metadata: Metadata = {
+  title: 'Overview',
+  description: 'Dashboard overview for duty personnels',
+};
 
 export default async function Index() {
   const cookieStore = cookies();

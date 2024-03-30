@@ -142,7 +142,7 @@ export const sideNavLinks: SidebarNavItem[] = [
       },
       {
         title: 'Terms and Conditions',
-        href: '/terms-and-conditions',
+        href: '/terms',
         icon: IconCe,
       },
       {
