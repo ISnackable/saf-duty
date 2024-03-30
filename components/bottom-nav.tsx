@@ -29,6 +29,7 @@ export function BottomNav() {
 
   return (
     <footer
+      data-tour='bottom-nav'
       style={{
         paddingBottom:
           'clamp(0px, calc(env(safe-area-inset-bottom, 0px)), 20px)',

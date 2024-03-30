@@ -59,7 +59,10 @@ export function Header() {
             <ThemeSwitcher />
           </div>
 
-          <div className='flex flex-grow basis-0 justify-end space-x-2 align-middle'>
+          <div
+            className='flex flex-grow basis-0 justify-end space-x-2 align-middle'
+            data-tour='header'
+          >
             <NotificationsPopover />
             <UserNav />
           </div>

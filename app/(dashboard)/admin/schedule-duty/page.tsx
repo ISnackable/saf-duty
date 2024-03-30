@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 
 import { GenerateDuty } from '@/components/generate-duty';
 import { Icons } from '@/components/icons';
-import { getRosterData, getUsersData } from '@/lib/supabase/data';
+import { getRosterData, getUsersProfileData } from '@/lib/supabase/data';
 import { getMonthYearParams } from '@/utils/get-search-params';
 import { createClient } from '@/utils/supabase/server';
 
@@ -37,7 +37,7 @@ export default async function AdminScheduleDutyPage({
   }
   const [roster, users] = await Promise.all([
     getRosterData(supabase, session.user, month, year),
-    getUsersData(supabase, session.user),
+    getUsersProfileData(supabase, session.user),
   ]);
 
   return (

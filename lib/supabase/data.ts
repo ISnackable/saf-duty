@@ -17,7 +17,6 @@ import {
 import { isDemoUser } from '@/utils/demo';
 import { indexOnceWithKey } from '@/utils/helper';
 
-// TODO: Instead of relying on the unitId, we should be making use of RLS to ensure that the user can only access their own data.
 export async function getRosterData(
   client: TypedSupabaseClient,
   user: User,
@@ -52,10 +51,13 @@ export async function getRosterData(
   }));
 
   const roster = indexOnceWithKey(transformedData, 'date');
-  return JSON.parse(JSON.stringify(roster));
+  return JSON.parse(JSON.stringify(roster)) as Record<string, DutyDate>;
 }
 
-export async function getUsersData(client: TypedSupabaseClient, user: User) {
+export async function getUsersProfileData(
+  client: TypedSupabaseClient,
+  user: User
+) {
   if (isDemoUser(user.id)) {
     return demoUsers;
   }

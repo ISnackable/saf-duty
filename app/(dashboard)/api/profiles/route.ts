@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 
 import { withAuth } from '@/lib/auth';
-import { getUsersData } from '@/lib/supabase/data';
+import { getUsersProfileData } from '@/lib/supabase/data';
 
 export const GET = withAuth(
   async ({ client, user }) => {
     try {
-      const data = await getUsersData(client, user);
+      const data = await getUsersProfileData(client, user);
 
       return NextResponse.json(
         {

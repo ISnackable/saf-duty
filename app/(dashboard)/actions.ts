@@ -47,3 +47,22 @@ export const deleteSubscription = authAction(
     }
   }
 );
+
+export const updateOnboarded = authAction(
+  z.boolean(),
+  async (data, { userId }) => {
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
+
+    const { error } = await supabase
+      .from('profiles')
+      .update({ onboarded: data })
+      .eq('id', userId);
+
+    if (error) {
+      throw new ActionError(
+        error.message || 'Failed to update user onboarded status'
+      );
+    }
+  }
+);
