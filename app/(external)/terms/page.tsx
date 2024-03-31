@@ -68,7 +68,13 @@ export default function TermsPage() {
 
       <p className='leading-7 [&:not(:first-child)]:mt-6'>
         You may want to also read the{' '}
-        <Link href='/privacy'>privacy policy</Link> page.
+        <Link
+          href='/privacy'
+          className='font-medium text-primary underline underline-offset-4'
+        >
+          privacy policy
+        </Link>{' '}
+        page.
       </p>
 
       <h2 className='mt-4 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0'>

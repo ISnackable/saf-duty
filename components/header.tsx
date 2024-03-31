@@ -1,5 +1,6 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
 import { Icons } from '@/components/icons';
@@ -8,12 +9,20 @@ import { MobileSidebar } from '@/components/side-nav';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { Button } from '@/components/ui/button';
 import { UserNav } from '@/components/user-nav';
+import { useMediaQuery } from '@/hooks/use-media-query';
 import { cn } from '@/utils/cn';
 
 export function Header() {
   const navRef = useRef(null);
   const [_scroll, setScroll] = useState(false);
   const [open, setOpen] = useState(false);
+  const isDesktop = useMediaQuery('(min-width: 1280px)');
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (open && !isDesktop) setOpen(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   useEffect(() => {
     const intersectionObserver = new IntersectionObserver(

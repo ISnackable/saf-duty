@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/form';
 import { Switch } from '@/components/ui/switch';
 import { useOs } from '@/hooks/use.os';
-import { isDemoUser } from '@/utils/demo';
+import { isDemoUser } from '@/utils/helper';
 
 const notificationsFormSchema = z.object({
   duty_roster_published: z.boolean().default(true),

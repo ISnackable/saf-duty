@@ -1,3 +1,5 @@
+import { demo } from '../site.config';
+
 export function indexOnce<T extends { id: string }>(data: T[]) {
   return data.reduce(
     (acc, item) => {
@@ -16,4 +18,8 @@ export function indexOnceWithKey<T, K extends keyof T>(data: T[], key: K) {
     },
     {} as Record<string, T>
   );
+}
+
+export function isDemoUser(userId: string): boolean {
+  return userId === demo.id;
 }

@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -9,12 +8,12 @@ import * as z from 'zod';
 
 import { resetPassword } from '@/app/(auth)/actions';
 import { Icons } from '@/components/icons';
+import { customNotifyEvent } from '@/components/session-provider';
 import { buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ResetFormSchema } from '@/utils/auth-validation';
 import { cn } from '@/utils/cn';
-import { createClient } from '@/utils/supabase/client';
 
 type UserResetFormProps = React.HTMLAttributes<HTMLDivElement>;
 
@@ -29,29 +28,28 @@ export function UserResetForm({ className, ...props }: UserResetFormProps) {
     resolver: zodResolver(ResetFormSchema),
   });
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const supabase = createClient();
-  const router = useRouter();
 
-  React.useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event) => {
-      // In local development, we doesn't see "PASSWORD_RECOVERY" event because:
-      // Effect run twice and break listener chain
-      if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
-        router.push('/change-password');
-      }
-    });
+  // React.useEffect(() => {
+  //   const {
+  //     data: { subscription },
+  //   } = supabase.auth.onAuthStateChange(async (event) => {
+  //     // In local development, we doesn't see "PASSWORD_RECOVERY" event because:
+  //     // Effect run twice and break listener chain
+  //     if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
+  //       router.push('/change-password');
+  //     }
+  //   });
 
-    return () => {
-      subscription.unsubscribe();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //   return () => {
+  //     subscription.unsubscribe();
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   async function handleResetForm(data: ResetFormData) {
     setIsLoading(true);
     const { status, message } = await resetPassword(data);
+    customNotifyEvent('PASSWORD_RECOVERY', null);
 
     if (status === 'error') {
       toast.error(message || 'Something went wrong.', {

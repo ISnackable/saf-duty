@@ -8,8 +8,8 @@ import { NextResponse } from 'next/server';
 
 import { type TypedSupabaseClient } from '@/lib/supabase/queries';
 import { type State } from '@/types/api-route';
-import { isDemoUser } from '@/utils/demo';
 import { getSearchParams } from '@/utils/get-search-params';
+import { isDemoUser } from '@/utils/helper';
 import { createClient } from '@/utils/supabase/server';
 
 interface WithAuthHandler {

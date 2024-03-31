@@ -3,7 +3,7 @@ import 'server-only';
 import { DEFAULT_SERVER_ERROR, createSafeActionClient } from 'next-safe-action';
 import { cookies } from 'next/headers';
 
-import { isDemoUser } from '@/utils/demo';
+import { isDemoUser } from '@/utils/helper';
 import { createClient } from '@/utils/supabase/server';
 
 export class ActionError extends Error {}

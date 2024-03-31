@@ -136,7 +136,7 @@ export function SessionProvider({
         } else if (session) {
           // Try to subscribe to push notifications if the user has consent and user is first time logging in
           if (
-            event === 'INITIAL_SESSION' &&
+            (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') &&
             isPWAInstalled &&
             userConsent === 'granted' &&
             !userSubscription

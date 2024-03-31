@@ -9,7 +9,7 @@ import { usePushNotificationContext } from '@/components/push-notification-provi
 import { useSession } from '@/components/session-provider';
 import { Button } from '@/components/ui/button';
 import { useOs } from '@/hooks/use.os';
-import { isDemoUser } from '@/utils/demo';
+import { isDemoUser } from '@/utils/helper';
 
 export function NotificationsButton() {
   const session = useSession();

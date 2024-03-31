@@ -14,7 +14,7 @@ import {
   getRosterByUnitId,
   getUserProfileById,
 } from '@/lib/supabase/queries';
-import { isDemoUser } from '@/utils/demo';
+import { isDemoUser } from '@/utils/helper';
 import { indexOnceWithKey } from '@/utils/helper';
 
 export async function getRosterData(

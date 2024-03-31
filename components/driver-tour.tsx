@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState, useTransition } from 'react';
 
 import { updateOnboarded } from '@/app/(dashboard)/actions';
+import '@/app/driverjs.css';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { APP_NAME } from '@/site.config';
 

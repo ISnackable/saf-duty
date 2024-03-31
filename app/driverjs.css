@@ -1,0 +1,67 @@
+.driver-popover.driverjs-theme {
+  @apply bg-card md:min-w-[500px];
+}
+
+.driver-popover.driverjs-theme .driver-popover-title {
+  @apply scroll-m-20 border-b pb-2 text-xl font-semibold tracking-tight first:mt-0 sm:text-2xl;
+}
+
+.driver-popover.driverjs-theme .driver-popover-description {
+  @apply text-base leading-7 md:text-lg [&:not(:first-child)]:mt-3;
+}
+
+.driver-popover.driverjs-theme .driver-popover-title,
+.driver-popover.driverjs-theme .driver-popover-description,
+.driver-popover.driverjs-theme .driver-popover-progress-text {
+  @apply px-2 text-primary-foreground;
+}
+
+.driver-popover.driverjs-theme button {
+  text-align: center;
+  text-shadow: none;
+  border-radius: 6px;
+  @apply border border-input bg-card text-sm text-primary-foreground shadow-sm sm:text-base;
+}
+
+.driver-popover.driverjs-theme button:hover {
+  @apply bg-card text-primary-foreground;
+}
+
+.driver-popover.driverjs-theme button:focus {
+  @apply bg-card text-primary-foreground;
+}
+
+.driver-popover.driverjs-theme .driver-popover-navigation-btns {
+  flex: 1;
+  flex-grow: 1;
+  justify-content: flex-end;
+  gap: 3px;
+}
+
+.driver-popover.driverjs-theme .driver-popover-close-btn {
+  @apply bg-card text-primary-foreground sm:text-xl;
+}
+
+.driver-popover.driverjs-theme .driver-popover-close-btn:hover {
+  @apply bg-card text-primary-foreground;
+}
+
+.driver-popover.driverjs-theme
+  .driver-popover-arrow-side-left.driver-popover-arrow {
+  @apply border-l-card;
+}
+
+.driver-popover.driverjs-theme
+  .driver-popover-arrow-side-right.driver-popover-arrow {
+  @apply border-r-card;
+}
+
+.driver-popover.driverjs-theme
+  .driver-popover-arrow-side-top.driver-popover-arrow {
+  @apply border-t-card;
+}
+
+.driver-popover.driverjs-theme
+  .driver-popover-arrow-side-bottom.driver-popover-arrow {
+  @apply border-b-card;
+}

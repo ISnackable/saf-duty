@@ -1,19 +1,5 @@
 'use client';
 
-import {
-  IconArrowsExchange,
-  IconCalendarEvent,
-  IconCe,
-  IconChessKnight,
-  IconClockHour1,
-  IconCloudLock,
-  IconEdit,
-  IconFingerprint,
-  IconHome2,
-  IconMessageCircleQuestion,
-  IconSettings,
-  IconUsers,
-} from '@tabler/icons-react';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 
@@ -31,7 +17,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { cn } from '@/utils/cn';
-import { isDemoUser } from '@/utils/demo';
+import { isDemoUser } from '@/utils/helper';
 
 export type SidebarNavItem = {
   title?: string;
@@ -60,22 +46,22 @@ export const sideNavLinks: SidebarNavItem[] = [
       {
         title: 'Admin Panel',
         collapsible: true,
-        icon: IconFingerprint,
+        icon: Icons.fingerprint,
         items: [
           {
             title: 'Manage Personnel',
             href: '/admin/manage-personnel',
-            icon: IconUsers,
+            icon: Icons.user,
           },
           {
             title: 'Manage Blockouts',
             href: '/admin/manage-blockouts',
-            icon: IconClockHour1,
+            icon: Icons.clockHour,
           },
           {
             title: 'Schedule Duty',
             href: '/admin/schedule-duty',
-            icon: IconChessKnight,
+            icon: Icons.chessKnight,
           },
         ],
       },
@@ -86,27 +72,27 @@ export const sideNavLinks: SidebarNavItem[] = [
       {
         title: 'Home',
         href: '/',
-        icon: IconHome2,
+        icon: Icons.home,
       },
       {
         title: 'Duty Roster',
         href: '/duty-roster',
-        icon: IconCalendarEvent,
+        icon: Icons.calendarEvent,
       },
       {
         title: 'My Availability',
         href: '/manage-blockouts',
-        icon: IconEdit,
+        icon: Icons.edit,
       },
       {
         title: 'Swap Duties',
         href: '/swap-duties',
-        icon: IconArrowsExchange,
+        icon: Icons.arrowExchange,
       },
       {
         title: 'Duty Personnels',
         href: '/duty-personnels',
-        icon: IconUsers,
+        icon: Icons.users,
       },
     ],
   },
@@ -133,22 +119,22 @@ export const sideNavLinks: SidebarNavItem[] = [
       {
         title: 'Settings',
         href: '/settings/account',
-        icon: IconSettings,
+        icon: Icons.settings,
       },
       {
         title: 'Privacy',
         href: '/privacy',
-        icon: IconCloudLock,
+        icon: Icons.cloudLock,
       },
       {
         title: 'Terms and Conditions',
         href: '/terms',
-        icon: IconCe,
+        icon: Icons.ce,
       },
       {
         title: 'FAQ',
         href: '/faq',
-        icon: IconMessageCircleQuestion,
+        icon: Icons.messageCircleQuestion,
       },
     ],
   },

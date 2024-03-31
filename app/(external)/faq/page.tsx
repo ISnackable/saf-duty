@@ -42,7 +42,7 @@ export default function FAQPage() {
                 className='border-t border-gray-200 dark:border-gray-800'
               >
                 <AccordionItem value='item-1'>
-                  <AccordionTrigger>
+                  <AccordionTrigger className='text-left'>
                     How can I reset my password?
                   </AccordionTrigger>
                   <AccordionContent>
@@ -61,7 +61,26 @@ export default function FAQPage() {
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value='item-2'>
-                  <AccordionTrigger>
+                  <AccordionTrigger className='text-left'>
+                    Can I create more than one account?
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    Yes, you can create more than one account. However, we
+                    recommend that you use only one account to access our
+                    services. If you have forgotten your login details, please
+                    use the password recovery option{' '}
+                    <Link
+                      href='/reset-password'
+                      className='text-brand text-sm underline underline-offset-4'
+                      tabIndex={-1}
+                    >
+                      here
+                    </Link>
+                    .
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value='item-3'>
+                  <AccordionTrigger className='text-left'>
                     Whom do I contact if I find a bug on the website?
                   </AccordionTrigger>
                   <AccordionContent>

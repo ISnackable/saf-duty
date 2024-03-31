@@ -10,6 +10,7 @@ import * as z from 'zod';
 import { changePassword } from '@/app/(auth)/actions';
 import { Icons } from '@/components/icons';
 import { PasswordInput } from '@/components/password-input';
+import { customNotifyEvent } from '@/components/session-provider';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -78,6 +79,7 @@ export function UserChangeForm({ className, ...props }: UserChangeFormProps) {
   async function handleChangeForm(data: ChangeFormData) {
     setIsLoading(true);
     const { serverError } = await changePassword(data);
+    customNotifyEvent('USER_UPDATED', null);
 
     if (serverError) {
       toast.error('Could not change password.', {

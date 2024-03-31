@@ -30,3 +30,26 @@ export const getMonthYearParams = (
     year: currentYear.toString(),
   };
 };
+
+export function useMonthYear(searchParams: URLSearchParams) {
+  const month = searchParams.get('month');
+  const year = searchParams.get('year');
+
+  if (month && year && isMatch(`${month}-${year}`, 'MMMM-yyyy')) {
+    return { month, year };
+  } else if (month && isMatch(month, 'MMMM')) {
+    const currentYear = new Date().getFullYear();
+    return { month, year: currentYear.toString() };
+  } else if (year && isMatch(year, 'yyyy')) {
+    const currentMonth = format(new Date(), 'LLLL');
+    return { month: currentMonth, year };
+  }
+
+  const today = new Date();
+  const currentYear = today.getFullYear();
+
+  return {
+    month: format(today, 'LLLL'),
+    year: currentYear.toString(),
+  };
+}
