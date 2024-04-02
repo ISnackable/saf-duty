@@ -3,8 +3,12 @@ import { addDays, endOfMonth, format, startOfMonth, subDays } from 'date-fns';
 
 import { type RosterPatch } from '@/app/(dashboard)/api/rosters/route';
 import type { Database } from '@/types/supabase';
+import type { Tables } from '@/types/supabase';
 
 export type TypedSupabaseClient = SupabaseClient<Database>;
+export type Profiles = Omit<Tables<'profiles'>, 'updated_at'> & {
+  role: 'admin' | 'user' | 'manager';
+};
 
 // * With RLS in place, we should be able to remove the unitId from the query.
 export function getRosterByUnitId(
@@ -34,7 +38,7 @@ export function getAllUsersByUnitId(client: TypedSupabaseClient) {
   return client
     .from('profiles')
     .select(
-      'id, name, avatar_url, group_id, blockout_dates, max_blockouts, weekday_points, weekend_points, enlistment_date, ord_date, no_of_extras, onboarded'
+      'id, name, avatar_url, group_id, blockout_dates, max_blockouts, weekday_points, weekend_points, enlistment_date, ord_date, no_of_extras, onboarded, ...group_users(role)'
     );
 }
 
@@ -46,8 +50,9 @@ export function getUserProfileById(
   return client
     .from('profiles')
     .select(
-      'id, name, avatar_url, group_id, blockout_dates, max_blockouts, weekday_points, weekend_points, enlistment_date, ord_date, no_of_extras, onboarded'
+      'id, name, avatar_url, group_id, blockout_dates, max_blockouts, weekday_points, weekend_points, enlistment_date, ord_date, no_of_extras, onboarded, ...group_users(role)'
     )
     .eq('id', sessionId)
-    .single();
+    .eq('group_users.user_id', sessionId)
+    .single<Profiles>();
 }

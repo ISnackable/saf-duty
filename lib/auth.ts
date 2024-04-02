@@ -2,7 +2,7 @@
 // https://github.com/vercel/next.js/discussions/15286#discussioncomment-3831846
 import 'server-only';
 
-import { type User } from '@supabase/supabase-js';
+import type { User } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
@@ -11,6 +11,17 @@ import { type State } from '@/types/api-route';
 import { getSearchParams } from '@/utils/get-search-params';
 import { isDemoUser } from '@/utils/helper';
 import { createClient } from '@/utils/supabase/server';
+
+declare module '@supabase/supabase-js' {
+  // eslint-disable-next-line unused-imports/no-unused-vars
+  interface UserAppMetadata {
+    groups: Group;
+  }
+}
+export interface Group {
+  id: string;
+  role: 'admin' | 'manager' | 'user';
+}
 
 interface WithAuthHandler {
   ({
@@ -27,7 +38,7 @@ interface WithAuthHandler {
     headers?: Record<string, string>;
     client: TypedSupabaseClient;
     user: User;
-    group: string[];
+    group: Group;
   }): Promise<NextResponse<State>>;
 }
 
@@ -75,7 +86,10 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
           headers,
           client: supabase,
           user,
-          group: [],
+          group: {
+            id: 'demo',
+            role: 'user',
+          },
         });
       }
 
@@ -89,9 +103,7 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
     }
 
     if (
-      !requiredRole.some((role) =>
-        Object.values(user.app_metadata?.groups).flat().includes(role)
-      )
+      !requiredRole.some((role) => user.app_metadata?.groups?.role === role)
     ) {
       return NextResponse.json(
         {
@@ -102,14 +114,6 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
       );
     }
 
-    let matchingGroups = Object.keys(user.app_metadata?.groups).filter(
-      (groupId) => {
-        return user.app_metadata?.groups[groupId].some(
-          (role: 'user' | 'admin' | 'manager') => requiredRole.includes(role)
-        );
-      }
-    );
-
     return handler({
       request,
       params: params || {},
@@ -117,7 +121,7 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
       headers,
       client: supabase,
       user,
-      group: matchingGroups,
+      group: user.app_metadata?.groups,
     });
   };
 }

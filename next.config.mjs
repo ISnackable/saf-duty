@@ -12,9 +12,7 @@ const bundleAnalyzer = withBundleAnalyzer({
 });
 
 const millionConfig = {
-  auto: {
-    rsc: true,
-  },
+  auto: { rsc: true },
 };
 
 /** @type {import('next').NextConfig} */

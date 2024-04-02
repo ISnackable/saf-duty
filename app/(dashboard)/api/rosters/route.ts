@@ -1,13 +1,11 @@
 import { NextResponse } from 'next/server';
 import * as z from 'zod';
 
-// import { useMonthYear } from '@/hooks/use-month-year';
 import { withAuth } from '@/lib/auth';
-// import { dutyRoster } from '@/lib/demo-data';
 import { type DutyDate, type Personnel } from '@/lib/duty-roster';
+import { getRosterData } from '@/lib/supabase/data';
 import { type Tables } from '@/types/supabase';
-
-// import { isDemoUser } from '@/utils/demo';
+import { useMonthYear } from '@/utils/get-search-params';
 
 const DutyDateSchema = z.array(
   z.object({
@@ -39,65 +37,38 @@ export interface RosterPatch
   reserve_duty_personnel: { id: string; name: string } | null;
 }
 
-// export const GET = withAuth(
-//   async ({ request, session }) => {
-//     const { searchParams } = new URL(request.url);
-//     const { month, year } = useMonthYear(searchParams);
+export const GET = withAuth(
+  async ({ request, user, client }) => {
+    const { searchParams } = new URL(request.url);
+    const { month, year } = useMonthYear(searchParams);
 
-//     // Early return demo data if user is demo
-//     if (isDemoUser(session.user.id)) {
-//       return NextResponse.json({
-//         status: 'success',
-//         message: 'Successfully retrieved roster',
-//         data: dutyRoster,
-//       });
-//     }
+    try {
+      const roster = await getRosterData(client, user, month, year);
 
-//     const cookieStore = cookies();
-//     const supabase = createClient(cookieStore);
-
-//     const { data, error } = await supabase
-//       .from('rosters')
-//       .select(
-//         `
-//   duty_date,
-//   is_extra,
-//   duty_personnel(id, name),
-//   reserve_duty_personnel (id, name)
-// `
-//       )
-//       .eq('unit_id', session.user.app_metadata.unit_id)
-//       .returns<RosterPatch[]>();
-
-//     if (!data || error) {
-//       return NextResponse.json({
-//         status: 'error',
-//         message: 'Failed to retrieve roster',
-//       });
-//     }
-
-//     return NextResponse.json({
-//       status: 'success',
-//       message: 'Successfully retrieved roster',
-//       data: data,
-//     });
-//   },
-//   { allowDemoUser: true }
-// );
+      return NextResponse.json(
+        {
+          status: 'success',
+          message: 'Successfully retrieved roster',
+          data: roster,
+        },
+        { status: 200 }
+      );
+    } catch (error) {
+      return NextResponse.json(
+        {
+          status: 'error',
+          message: 'Failed to retrieve roster',
+        },
+        { status: 500 }
+      );
+    }
+  },
+  { allowDemoUser: true }
+);
 
 export const POST = withAuth(
   async ({ request, group, client }) => {
     const { dutyDates, dutyPersonnels } = await request.json();
-
-    if (!group.length) {
-      return NextResponse.json(
-        {
-          status: 'error',
-          message: 'User is not authorized',
-        },
-        { status: 401 }
-      );
-    }
 
     const roster: Tables<'rosters'>[] = dutyDates?.map((item: DutyDate) => ({
       ...(item.id && { id: item.id }),
@@ -105,7 +76,7 @@ export const POST = withAuth(
       is_extra: item.isExtra,
       duty_personnel_id: item.personnel?.id,
       reserve_duty_personnel_id: item.reservePersonnel?.id,
-      group_id: group[0],
+      group_id: group.id,
       updated_at: new Date().toISOString(),
     }));
 
@@ -116,7 +87,7 @@ export const POST = withAuth(
         weekday_points: item.weekdayPoints,
         weekend_points: item.weekendPoints,
         no_of_extras: item.extra,
-        group_id: group[0], // Since profiles are unit specific, we can use the unit_id from the user
+        group_id: group.id, // Since profiles are unit specific, we can use the unit_id from the user
         updated_at: new Date().toISOString(),
       })
     );

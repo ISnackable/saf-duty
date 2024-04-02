@@ -42,7 +42,7 @@ export type Database = {
           {
             foreignKeyName: 'group_users_user_id_fkey';
             columns: ['user_id'];
-            isOneToOne: false;
+            isOneToOne: true;
             referencedRelation: 'users';
             referencedColumns: ['id'];
           },
@@ -330,7 +330,6 @@ export type Database = {
     Views: {
       user_roles: {
         Row: {
-          email: string | null;
           group_id: string | null;
           group_name: string | null;
           id: string | null;
@@ -348,7 +347,7 @@ export type Database = {
           {
             foreignKeyName: 'group_users_user_id_fkey';
             columns: ['user_id'];
-            isOneToOne: false;
+            isOneToOne: true;
             referencedRelation: 'users';
             referencedColumns: ['id'];
           },
@@ -363,6 +362,14 @@ export type Database = {
           group_role: string;
         };
         Returns: string;
+      };
+      db_pre_request: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
+      };
+      get_req_groups: {
+        Args: Record<PropertyKey, never>;
+        Returns: Json;
       };
       has_group_role: {
         Args: {

@@ -144,7 +144,7 @@ return new;
 end;
 $$;
 
-CREATE OR REPLACE FUNCTION handle_rosters_notification() RETURNS TRIGGER
+CREATE OR REPLACE FUNCTION "public"."handle_rosters_notification"() RETURNS TRIGGER
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
     AS $$
@@ -245,6 +245,26 @@ CREATE TABLE IF NOT EXISTS "public"."profiles" (
 );
 
 ALTER TABLE "public"."profiles" OWNER TO "postgres";
+
+CREATE OR REPLACE VIEW
+  "public"."user_roles"
+WITH
+  (security_invoker) as
+SELECT
+  gu.id,
+  g.name AS group_name,
+  gu.name,
+  gu.role,
+  gu.group_id,
+  gu.user_id
+FROM
+  (
+    (
+      public.group_users gu
+      JOIN public.profiles u ON ((u.id = gu.user_id))
+    )
+    JOIN "public"."groups" g ON ((g.id = gu.group_id))
+  );
 
 CREATE TABLE IF NOT EXISTS "public"."push_subscriptions" (
     "id" bigint NOT NULL,
@@ -349,6 +369,10 @@ CREATE TRIGGER on_before_swap_request_created BEFORE INSERT ON public.swap_reque
 
 CREATE TRIGGER profile_cls BEFORE INSERT OR UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION public.allow_updating_only('name', 'avatar_url', 'ord_date', 'blockout_dates', 'updated_at', 'onboarded');
 
+CREATE TRIGGER on_change_update_user_metadata AFTER INSERT OR DELETE OR UPDATE ON public.group_users FOR EACH ROW EXECUTE FUNCTION public.update_user_roles();
+
+CREATE TRIGGER on_delete_user INSTEAD OF DELETE ON public.user_roles FOR EACH ROW EXECUTE FUNCTION public.delete_group_users();
+
 ALTER TABLE ONLY "public"."notifications"
     ADD CONSTRAINT "notifications_user_id_fkey" FOREIGN KEY (user_id) REFERENCES public.profiles(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -385,6 +409,12 @@ ALTER TABLE ONLY "public"."swap_requests"
 ALTER TABLE ONLY "public"."swap_requests"
     ADD CONSTRAINT "swap_requests_group_id_fkey" FOREIGN KEY (group_id) REFERENCES public.groups(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
+ALTER TABLE ONLY "public"."group_users"
+    DROP CONSTRAINT "group_users_user_id_fkey";
+
+ALTER TABLE ONLY "public"."group_users"
+    ADD CONSTRAINT "group_users_user_id_fkey" foreign key (user_id) references public.profiles (id);
+
 CREATE POLICY "Enable delete for users based on requester_id" ON "public"."swap_requests" FOR DELETE USING ((auth.uid() = requester_id));
 
 CREATE POLICY "Enable delete for users based on user_id" ON "public"."push_subscriptions" FOR DELETE USING ((auth.uid() = user_id));
@@ -410,6 +440,8 @@ CREATE POLICY "Public profiles are viewable by everyone in the same unit." ON "p
 CREATE POLICY "Users can insert their own profile." ON "public"."profiles" FOR INSERT WITH CHECK (((auth.uid() = id) OR (public.has_group_role(group_id, 'admin'::text))));
 
 CREATE POLICY "Users can update own profile or role is admin." ON "public"."profiles" FOR UPDATE USING (((auth.uid() = id) OR (public.has_group_role(group_id, 'admin'::text)))) WITH CHECK (((auth.uid() = id) OR (public.has_group_role(group_id, 'admin'::text))));
+
+CREATE POLICY "Enable read access for user based on their group_id or admin" ON "public"."group_users" FOR SELECT USING (((auth.uid() = user_id) OR public.has_group_role(group_id, 'admin'::text)));
 
 CREATE POLICY "Authenticated can upload an avatar."
 on "storage"."objects"

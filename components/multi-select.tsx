@@ -1,6 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-
-/* eslint-disable unused-imports/no-unused-vars */
 'use client';
 
 // from https://shadcnui-expansions.typeart.cc/docs/multiple-selector
@@ -9,6 +6,7 @@ import * as React from 'react';
 import { forwardRef, useEffect } from 'react';
 
 import { Icons } from '@/components/icons';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import {
   Command,
@@ -372,7 +370,7 @@ export const MultipleSelector = React.forwardRef<
       >
         <div
           className={cn(
-            'group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
+            'group rounded-md border border-input px-3 py-2 text-sm',
             className
           )}
         >
@@ -380,6 +378,7 @@ export const MultipleSelector = React.forwardRef<
             {selected.map((option) => {
               return (
                 <Badge
+                  variant='secondary'
                   key={option.value}
                   className={cn(
                     'data-[disabled]:bg-muted-foreground data-[disabled]:text-muted data-[disabled]:hover:bg-muted-foreground',
@@ -389,7 +388,7 @@ export const MultipleSelector = React.forwardRef<
                   data-fixed={option.fixed}
                   data-disabled={disabled}
                 >
-                  {option.label}
+                  <span className='text-xs'>{option.label}</span>
                   <button
                     className={cn(
                       'ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2',
@@ -406,7 +405,10 @@ export const MultipleSelector = React.forwardRef<
                     }}
                     onClick={() => handleUnselect(option)}
                   >
-                    <Icons.close className='h-3 w-3 text-muted-foreground hover:text-foreground' />
+                    <span className='sr-only'>
+                      Remove {option.value} option
+                    </span>
+                    <Icons.close className='h-4 w-4 hover:stroke-destructive' />
                   </button>
                 </Badge>
               );
@@ -436,7 +438,7 @@ export const MultipleSelector = React.forwardRef<
                   : placeholder
               }
               className={cn(
-                'ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground',
+                'ml-2 w-full flex-1 bg-transparent outline-none placeholder:text-muted-foreground',
                 inputProps?.className
               )}
             />
@@ -444,7 +446,7 @@ export const MultipleSelector = React.forwardRef<
         </div>
         <div className='relative mt-2'>
           {open && (
-            <CommandList className='absolute top-0 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in'>
+            <CommandList className='scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted-foreground dark:scrollbar-thumb-muted scrollbar-thumb-rounded-lg absolute top-0 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none transition-colors animate-in'>
               {isLoading ? (
                 <>{loadingIndicator}</>
               ) : (
@@ -488,12 +490,13 @@ export const MultipleSelector = React.forwardRef<
                               )}
                             >
                               {option.image && (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img
-                                  className='mr-2 h-8 w-8 rounded-full'
-                                  src={option.image}
-                                  alt={option.label}
-                                />
+                                <Avatar className='mr-2 size-8'>
+                                  <AvatarImage
+                                    src={option.image}
+                                    alt={option.label}
+                                  />
+                                  <AvatarFallback>CN</AvatarFallback>
+                                </Avatar>
                               )}
                               {option.label}
                             </CommandItem>

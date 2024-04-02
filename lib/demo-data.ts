@@ -1,5 +1,5 @@
 // All the demo data that used as fallbacks when there's nothing in the dataset yet
-import { Tables } from '@/types/supabase';
+import type { Profiles } from '@/lib/supabase/queries';
 
 const todayMonth = (new Date().getMonth() + 1)
   .toString()
@@ -21,9 +21,7 @@ export const blockouts: string[] = [
   `${currentYear}-${nextMonth}-27`,
 ];
 
-type Users = Omit<Tables<'profiles'>, 'updated_at'>;
-
-export const demoUsers: Users[] = [
+export const demoUsers: Profiles[] = [
   {
     id: '047d19aa-487c-4dd1-8816-01db79956532',
     name: 'demo',
@@ -38,6 +36,7 @@ export const demoUsers: Users[] = [
     blockout_dates: blockouts,
     max_blockouts: 8,
     onboarded: false,
+    role: 'user',
   },
   {
     id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
@@ -54,6 +53,7 @@ export const demoUsers: Users[] = [
     blockout_dates: ['2024-02-13'],
     max_blockouts: 8,
     onboarded: false,
+    role: 'user',
   },
   {
     id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
@@ -70,6 +70,7 @@ export const demoUsers: Users[] = [
     blockout_dates: [],
     max_blockouts: 8,
     onboarded: false,
+    role: 'user',
   },
   {
     id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
@@ -86,6 +87,7 @@ export const demoUsers: Users[] = [
     blockout_dates: [],
     max_blockouts: 8,
     onboarded: false,
+    role: 'user',
   },
   {
     id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
@@ -112,6 +114,7 @@ export const demoUsers: Users[] = [
     ],
     max_blockouts: 8,
     onboarded: false,
+    role: 'user',
   },
   {
     id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
@@ -128,6 +131,7 @@ export const demoUsers: Users[] = [
     blockout_dates: ['2024-02-01', '2024-02-27'],
     max_blockouts: 8,
     onboarded: false,
+    role: 'user',
   },
   {
     id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
@@ -161,6 +165,7 @@ export const demoUsers: Users[] = [
     ],
     max_blockouts: 8,
     onboarded: false,
+    role: 'user',
   },
   {
     id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
@@ -192,6 +197,7 @@ export const demoUsers: Users[] = [
     ],
     max_blockouts: 8,
     onboarded: false,
+    role: 'user',
   },
 ];
 

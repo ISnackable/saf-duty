@@ -172,9 +172,7 @@ export function SideNav({ className }: SidebarProps) {
           if (
             item.admin &&
             session &&
-            !Object.values(session?.user.app_metadata.groups)
-              .flat()
-              .includes('admin') &&
+            session.user.app_metadata?.groups?.role !== 'admin' &&
             !isDemoUser(session.user?.id)
           ) {
             return null;

@@ -54,7 +54,6 @@ export async function middleware(request: NextRequest) {
       return redirectToHome(request);
     }
   }
-
   // Authenticated user should not be able to access /admin routes if not an "admin" role (unless it's a demo user)
   if (request.nextUrl.pathname.startsWith('/admin')) {
     //! The server gets the user session from the cookies, which can be spoofed by anyone.
@@ -65,7 +64,7 @@ export async function middleware(request: NextRequest) {
 
     // user here shouldn't be null, as we've already checked for session above
     if (
-      !Object.values(user?.app_metadata?.groups).flat().includes('admin') &&
+      user?.app_metadata?.groups?.role !== 'admin' &&
       !isDemoUser(user?.id!)
     ) {
       return redirectToHome(request);

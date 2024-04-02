@@ -3,9 +3,7 @@
 import useSWR from 'swr';
 
 import { useUser } from '@/components/session-provider';
-import { Tables } from '@/types/supabase';
-
-type Profiles = Omit<Tables<'profiles'>, 'updated_at'>;
+import { Profiles } from '@/lib/supabase/queries';
 
 export function useProfiles() {
   const user = useUser();
