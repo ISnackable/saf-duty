@@ -7,7 +7,7 @@ import type { Tables } from '@/types/supabase';
 
 export type TypedSupabaseClient = SupabaseClient<Database>;
 export type Profiles = Omit<Tables<'profiles'>, 'updated_at'> & {
-  role: 'admin' | 'user' | 'manager';
+  role: 'admin' | 'user' | 'manager' | null;
 };
 
 // * With RLS in place, we should be able to remove the unitId from the query.
@@ -39,7 +39,8 @@ export function getAllUsersByUnitId(client: TypedSupabaseClient) {
     .from('profiles')
     .select(
       'id, name, avatar_url, group_id, blockout_dates, max_blockouts, weekday_points, weekend_points, enlistment_date, ord_date, no_of_extras, onboarded, ...group_users(role)'
-    );
+    )
+    .returns<Profiles[]>();
 }
 
 // TODO: Instead of relying on the sessionId, we should be making use of RLS to ensure that the user can only access their own data.

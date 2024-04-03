@@ -18,7 +18,7 @@ import {
   CredenzaHeader,
   CredenzaTitle,
 } from '@/components/ui/credenza';
-import { useOs } from '@/hooks/use.os';
+import { useOs } from '@/hooks/use-os';
 import { APP_NAME } from '@/site.config';
 
 export function InstallPWA({

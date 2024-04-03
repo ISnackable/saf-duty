@@ -54,11 +54,6 @@ export const sideNavLinks: SidebarNavItem[] = [
             icon: Icons.user,
           },
           {
-            title: 'Manage Blockouts',
-            href: '/admin/manage-blockouts',
-            icon: Icons.clockHour,
-          },
-          {
             title: 'Schedule Duty',
             href: '/admin/schedule-duty',
             icon: Icons.chessKnight,

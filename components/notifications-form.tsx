@@ -25,7 +25,7 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { Switch } from '@/components/ui/switch';
-import { useOs } from '@/hooks/use.os';
+import { useOs } from '@/hooks/use-os';
 import { isDemoUser } from '@/utils/helper';
 
 const notificationsFormSchema = z.object({

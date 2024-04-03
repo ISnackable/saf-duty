@@ -97,6 +97,7 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
   mode,
   selected: date,
   onSelect: setDate,
+  className,
   ...props
 }: DayPickerProps<T>) {
   const [open, setOpen] = React.useState(false);
@@ -120,7 +121,8 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
             className={cn(
               'justify-start overflow-hidden whitespace-nowrap text-left align-middle font-normal',
               (!date || (Array.isArray(date) && date.length <= 0)) &&
-                'text-muted-foreground'
+                'text-muted-foreground',
+              className
             )}
           >
             <span className='truncate'>
@@ -184,7 +186,8 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
           className={cn(
             'justify-start overflow-hidden whitespace-nowrap text-left align-middle font-normal',
             (!date || (Array.isArray(date) && date.length <= 0)) &&
-              'text-muted-foreground'
+              'text-muted-foreground',
+            className
           )}
         >
           <span className='truncate'>

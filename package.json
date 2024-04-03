@@ -11,7 +11,7 @@
     "format": "prettier --check .",
     "format:fix": "prettier --write --list-different .",
     "type-check": "tsc --noEmit",
-    "type:generate": "supabase gen types typescript --linked --schema public > types/supabase.ts",
+    "type:generate": "supabase gen types typescript --linked > types/supabase.ts",
     "ui:diff": "shadcn-ui diff | grep -oP '(?<=ui/)(\\w+)(?=\\.tsx)' | xargs -L 1 npx shadcn-ui diff"
   },
   "dependencies": {
@@ -39,7 +39,7 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@serwist/next": "9.0.0-preview.21",
     "@supabase/ssr": "^0.1.0",
-    "@supabase/supabase-js": "^2.41.1",
+    "@supabase/supabase-js": "^2.42.0",
     "@tabler/icons-react": "^3.1.0",
     "@tanstack/react-table": "^8.15.3",
     "add-to-calendar-button-react": "^2.6.9",
@@ -80,8 +80,8 @@
     "@serwist/precaching": "9.0.0-preview.21",
     "@serwist/sw": "9.0.0-preview.21",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-    "@types/node": "20.12.2",
-    "@types/react": "18.2.73",
+    "@types/node": "20.12.3",
+    "@types/react": "18.2.74",
     "@types/react-dom": "18.2.23",
     "encoding": "^0.1.13",
     "eslint-config-next": "14.1.4",
@@ -90,6 +90,6 @@
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.13",
     "shadcn-ui": "^0.8.0",
-    "supabase": "^1.151.1"
+    "supabase": "^1.153.1"
   }
 }
