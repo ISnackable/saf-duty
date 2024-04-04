@@ -4,9 +4,9 @@ import { redirect } from 'next/navigation';
 
 import { GenerateDuty } from '@/components/generate-duty';
 import { Icons } from '@/components/icons';
+import { createClient } from '@/lib/supabase/clients/server';
 import { getRosterData, getUsersProfileData } from '@/lib/supabase/data';
-import { getMonthYearParams } from '@/utils/get-search-params';
-import { createClient } from '@/utils/supabase/server';
+import { getMonthYearParams } from '@/utils/helper';
 
 export const revalidate = 0;
 

@@ -14,7 +14,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 
 /* eslint-disable react-hooks/exhaustive-deps */
 

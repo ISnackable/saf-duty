@@ -35,7 +35,7 @@ import {
 import type { Icon, IconProps } from '@tabler/icons-react';
 
 // https://heroicons.com/
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 
 export type TablerIcon = React.ForwardRefExoticComponent<
   Omit<IconProps, 'ref'> & React.RefAttributes<Icon>

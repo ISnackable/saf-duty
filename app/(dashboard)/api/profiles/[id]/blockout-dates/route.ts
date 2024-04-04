@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { withAuth } from '@/lib/auth';
+import { withAuth } from '@/lib/auth-handler';
 
 export const POST = withAuth(
   async ({ request, params, client, user }) => {

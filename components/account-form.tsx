@@ -30,7 +30,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { requirements } from '@/utils/auth-validation';
+import { requirements } from '@/lib/validation';
 
 const accountFormSchema = z
   .object({

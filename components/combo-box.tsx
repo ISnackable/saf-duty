@@ -25,7 +25,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { useMediaQuery } from '@/hooks/use-media-query';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 
 export type Item = {
   label: string;

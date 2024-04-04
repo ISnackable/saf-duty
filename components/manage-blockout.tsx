@@ -21,7 +21,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { useProfiles } from '@/hooks/use-profiles';
 import { fetcher } from '@/lib/fetcher';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 
 export const MAXIMUM_BLOCKOUTS = 8;
 const TODAY = new Date();

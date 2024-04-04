@@ -7,15 +7,15 @@ import { redirect } from 'next/navigation';
 import { type LoginFormData } from '@/components/user-login-form';
 import { type RegisterFormData } from '@/components/user-register-form';
 import { ResetFormData } from '@/components/user-reset-form';
-import { ActionError, authAction } from '@/lib/safe-action';
-import { type State } from '@/types/api-route';
+import { ActionError, authAction } from '@/lib/auth-action';
+import { createClient } from '@/lib/supabase/clients/server';
 import {
   ChangeFormSchema,
   LoginFormSchema,
   RegisterFormSchema,
   ResetFormSchema,
-} from '@/utils/auth-validation';
-import { createClient } from '@/utils/supabase/server';
+} from '@/lib/validation';
+import { type State } from '@/types/api-route';
 
 export async function signIn(formData: LoginFormData): Promise<State> {
   const { email, password } = formData;

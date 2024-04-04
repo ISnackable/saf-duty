@@ -3,9 +3,9 @@
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 
-import { ActionError, authAction } from '@/lib/safe-action';
-import { PushSubscriptionSchema } from '@/utils/push-validation';
-import { createClient } from '@/utils/supabase/server';
+import { ActionError, authAction } from '@/lib/auth-action';
+import { createClient } from '@/lib/supabase/clients/server';
+import { PushSubscriptionSchema } from '@/lib/validation';
 
 export const insertSubscription = authAction(
   PushSubscriptionSchema,

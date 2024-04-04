@@ -89,7 +89,7 @@ export function DriverTour() {
       {
         popover: {
           title: 'Yeah 😎',
-          description: 'Roughly that is all you need to know to get started!',
+          description: 'That is all you roughly need to know to get started!',
         },
         onDeselected: () => {
           updateOnboarded(true);

@@ -4,8 +4,8 @@ import { BottomNav } from '@/components/bottom-nav';
 import { DriverTour } from '@/components/driver-tour';
 import { Header } from '@/components/header';
 import { SideNav } from '@/components/side-nav';
+import { createClient } from '@/lib/supabase/clients/server';
 import { getUserProfileData } from '@/lib/supabase/data';
-import { createClient } from '@/utils/supabase/server';
 
 export default async function DashboardLayout({
   children,

@@ -73,8 +73,8 @@ import {
   generateDutyRoster,
 } from '@/lib/duty-roster';
 import { fetcher } from '@/lib/fetcher';
+import { cn } from '@/lib/utils';
 import { type Tables } from '@/types/supabase';
-import { cn } from '@/utils/cn';
 import { indexOnceWithKey } from '@/utils/helper';
 
 const optionSchema = z.object({

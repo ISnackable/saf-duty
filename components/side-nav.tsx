@@ -16,7 +16,7 @@ import {
 import { Button, buttonVariants } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 import { isDemoUser } from '@/utils/helper';
 
 export type SidebarNavItem = {

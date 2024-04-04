@@ -1,8 +1,8 @@
 import { addMinutes, isPast } from 'date-fns';
 import { type NextRequest, NextResponse } from 'next/server';
 
+import { createClient } from '@/lib/supabase/clients/middleware';
 import { isDemoUser } from '@/utils/helper';
-import { createClient } from '@/utils/supabase/middleware';
 
 // Public paths that do not require authentication, /change-password SHOULD be accessible only to authenticated users.
 const PUBLIC_PATHS = ['/register', '/login', '/reset-password'];

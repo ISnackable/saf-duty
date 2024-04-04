@@ -26,12 +26,12 @@ import {
 } from '@/components/ui/input-otp';
 import { Popover, PopoverContent } from '@/components/ui/popover';
 import { Progress } from '@/components/ui/progress';
+import { cn } from '@/lib/utils';
 import {
   RegisterFormSchema,
   getStrength,
   requirements,
-} from '@/utils/auth-validation';
-import { cn } from '@/utils/cn';
+} from '@/lib/validation';
 
 import { PasswordInput } from './password-input';
 

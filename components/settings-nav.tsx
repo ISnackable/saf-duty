@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { buttonVariants } from '@/components/ui/button';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 
 interface SettingsNavProps extends React.HTMLAttributes<HTMLElement> {
   items: {

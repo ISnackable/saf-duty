@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import * as React from 'react';
 
 import { ProgressBarLink } from '@/components/progress-bar';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 
 import { Icons } from './icons';
 

@@ -8,7 +8,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 
 const TODAY = new Date();
 

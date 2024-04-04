@@ -9,6 +9,7 @@ import { SessionProvider } from '@/components/session-provider';
 import { SWRProvider } from '@/components/swr-provider';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
+import { cn } from '@/lib/utils';
 
 import {
   APP_DEFAULT_TITLE,
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
   icons: { icon: '/icons/icon512_maskable.png', apple: '/apple-icon.png' },
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'default',
+    statusBarStyle: 'black-translucent',
     title: APP_DEFAULT_TITLE,
     startupImage: [
       {
@@ -234,6 +235,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  colorScheme: 'dark light',
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
@@ -247,8 +249,8 @@ export default function RootLayout({
   return (
     <html
       lang='en'
-      className={`${GeistSans.variable} ${GeistMono.variable}`}
       suppressHydrationWarning
+      className={cn(GeistSans.variable, GeistMono.variable)}
     >
       <head>
         <meta
@@ -261,12 +263,6 @@ export default function RootLayout({
           media='(prefers-color-scheme: light)'
           content='#ffffff'
         />
-        <meta name='color-scheme' content='light dark' />
-        <meta
-          name='apple-mobile-web-app-status-bar-style'
-          content='black-translucent'
-        />
-        <meta name='apple-mobile-web-app-capable' content='yes' />
 
         <script
           dangerouslySetInnerHTML={{

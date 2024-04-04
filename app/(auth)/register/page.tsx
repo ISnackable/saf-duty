@@ -4,8 +4,8 @@ import Link from 'next/link';
 
 import { buttonVariants } from '@/components/ui/button';
 import { UserRegisterForm } from '@/components/user-register-form';
+import { cn } from '@/lib/utils';
 import svgImage from '@/public/undraw_exciting_news_re_y1iw.svg';
-import { cn } from '@/utils/cn';
 
 export const metadata: Metadata = {
   title: 'Create an account',

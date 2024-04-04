@@ -25,12 +25,8 @@ import {
   PopoverContent,
 } from '@/components/ui/popover';
 import { Progress } from '@/components/ui/progress';
-import {
-  ChangeFormSchema,
-  getStrength,
-  requirements,
-} from '@/utils/auth-validation';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
+import { ChangeFormSchema, getStrength, requirements } from '@/lib/validation';
 
 type UserChangeFormProps = React.HTMLAttributes<HTMLDivElement>;
 

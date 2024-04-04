@@ -6,11 +6,10 @@ import type { User } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
+import { createClient } from '@/lib/supabase/clients/server';
 import { type TypedSupabaseClient } from '@/lib/supabase/queries';
 import { type State } from '@/types/api-route';
-import { getSearchParams } from '@/utils/get-search-params';
 import { isDemoUser } from '@/utils/helper';
-import { createClient } from '@/utils/supabase/server';
 
 declare module '@supabase/supabase-js' {
   // eslint-disable-next-line unused-imports/no-unused-vars
@@ -34,7 +33,7 @@ interface WithAuthHandler {
   }: {
     request: Request;
     params: Record<string, string>;
-    searchParams: Record<string, string>;
+    searchParams: URLSearchParams;
     headers?: Record<string, string>;
     client: TypedSupabaseClient;
     user: User;
@@ -58,7 +57,7 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
     request: Request,
     { params }: { params: Record<string, string> | undefined }
   ) => {
-    const searchParams = getSearchParams(request.url);
+    const { searchParams } = new URL(request.url);
     let headers = {};
 
     const cookieStore = cookies();

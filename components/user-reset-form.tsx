@@ -12,8 +12,8 @@ import { customNotifyEvent } from '@/components/session-provider';
 import { buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ResetFormSchema } from '@/utils/auth-validation';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
+import { ResetFormSchema } from '@/lib/validation';
 
 type UserResetFormProps = React.HTMLAttributes<HTMLDivElement>;
 

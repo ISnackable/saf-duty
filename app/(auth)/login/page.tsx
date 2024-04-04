@@ -8,8 +8,8 @@ import { buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { UserLoginForm } from '@/components/user-login-form';
+import { cn } from '@/lib/utils';
 import svgImage from '@/public/undraw_fingerprint_re_uf3f.svg';
-import { cn } from '@/utils/cn';
 
 export const metadata: Metadata = {
   title: 'Login',

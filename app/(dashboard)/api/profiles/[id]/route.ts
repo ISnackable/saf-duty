@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { withAuth } from '@/lib/auth';
+import { withAuth } from '@/lib/auth-handler';
 import { getUserProfileData } from '@/lib/supabase/data';
 
 export const GET = withAuth(

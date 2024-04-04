@@ -10,7 +10,7 @@ import { ThemeSwitcher } from '@/components/theme-switcher';
 import { Button } from '@/components/ui/button';
 import { UserNav } from '@/components/user-nav';
 import { useMediaQuery } from '@/hooks/use-media-query';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils';
 
 export function Header() {
   const navRef = useRef(null);

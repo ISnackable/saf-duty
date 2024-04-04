@@ -3,8 +3,8 @@ import { cookies } from 'next/headers';
 
 import { DashboardOverview } from '@/components/dashboard-overview';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { createClient } from '@/lib/supabase/clients/server';
 import { getUserProfileData } from '@/lib/supabase/data';
-import { createClient } from '@/utils/supabase/server';
 
 export const metadata: Metadata = {
   title: 'Overview',

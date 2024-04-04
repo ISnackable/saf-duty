@@ -16,7 +16,7 @@ import {
 } from 'react';
 
 import { usePushNotificationContext } from '@/components/push-notification-provider';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/lib/supabase/clients/client';
 
 export type SessionContext =
   | {
