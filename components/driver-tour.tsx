@@ -8,7 +8,7 @@ import { useEffect, useState, useTransition } from 'react';
 import { updateOnboarded } from '@/app/(dashboard)/actions';
 import '@/app/driverjs.css';
 import { useMediaQuery } from '@/hooks/use-media-query';
-import { APP_NAME } from '@/site.config';
+import { name } from '@/lib/config';
 
 export function DriverTour() {
   const router = useRouter();
@@ -26,7 +26,7 @@ export function DriverTour() {
     steps: [
       {
         popover: {
-          title: `Welcome to ${APP_NAME} 🎉`,
+          title: `Welcome to ${name} 🎉`,
           description: 'Let us walk you through a short tour of the app.',
         },
       },

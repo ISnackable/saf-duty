@@ -7,6 +7,7 @@ import * as z from 'zod';
 
 import { signOut } from '@/app/(auth)/actions';
 import { PasswordInput } from '@/components/password-input';
+import { usePushNotificationContext } from '@/components/push-notification-provider';
 import { customNotifyEvent, useSession } from '@/components/session-provider';
 import {
   AlertDialog,
@@ -72,6 +73,7 @@ type AccountFormValues = z.infer<typeof accountFormSchema>;
 
 export function AccountForm() {
   const session = useSession();
+  const { onClickUnsubscribeToPushNotification } = usePushNotificationContext();
 
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
@@ -170,6 +172,7 @@ export function AccountForm() {
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={async () => {
+              await onClickUnsubscribeToPushNotification().catch(console.error);
               await signOut({ scope: 'global' });
               customNotifyEvent('SIGNED_OUT', null);
             }}

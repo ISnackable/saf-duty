@@ -19,7 +19,7 @@ import {
   CredenzaTitle,
 } from '@/components/ui/credenza';
 import { useOs } from '@/hooks/use-os';
-import { APP_NAME } from '@/site.config';
+import { name } from '@/lib/config';
 
 export function InstallPWA({
   children,
@@ -41,7 +41,7 @@ export function InstallPWA({
           <CredenzaTitle>
             <div className='flex w-full items-center justify-center gap-1 text-3xl font-medium'>
               <Icons.logo className='h-12 w-12' />
-              {APP_NAME || 'APP NAME'}
+              {name || 'DEFAULT TITLE'}
             </div>
           </CredenzaTitle>
           <CredenzaDescription>

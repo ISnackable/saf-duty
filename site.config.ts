@@ -1,9 +1,18 @@
-export const APP_NAME = 'AFPN CDO';
-export const APP_DEFAULT_TITLE = 'AFPN CDO';
-export const APP_TITLE_TEMPLATE = `%s - ${APP_NAME}`;
-export const APP_DESCRIPTION = 'Simplifying the way you manage your duties';
+import { siteConfig } from '@/lib/site-config';
 
-export const demo = {
-  id: '047d19aa-487c-4dd1-8816-01db79956532',
-  email: 'demo@example.com',
-};
+export default siteConfig({
+  // basic site info (required)
+  name: 'AFPN CDO',
+  shortName: 'AFPN',
+  domain: 'localhost:3000',
+  description: 'The official app of the AFPN CDO',
+
+  demo: {
+    id: 'a8692dad-d019-4122-9f31-a1a350452461',
+    email: 'demo@example.com',
+  },
+
+  // analytics (optional)
+  enableVercelAnalytics: true,
+  enableVercelSpeedInsights: true,
+});

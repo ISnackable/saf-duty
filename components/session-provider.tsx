@@ -59,8 +59,13 @@ export const storageKey = process.env.NEXT_PUBLIC_SUPABASE_URL
   ? `sb-${new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname.split('.')[0]}-auth-token`
   : 'supabase.auth.token';
 
+type CustomAuthChangeEvent =
+  | AuthChangeEvent
+  | 'BEFORE_SIGNED_IN'
+  | 'BEFORE_SIGNED_OUT';
+
 export function customNotifyEvent(
-  event: AuthChangeEvent,
+  event: CustomAuthChangeEvent,
   session: Session | null
 ) {
   const channel = new BroadcastChannel(storageKey);
@@ -87,13 +92,8 @@ export function SessionProvider({
     }
   }, [session, initialSession]);
 
-  const {
-    userSubscription,
-    userConsent,
-    isPWAInstalled,
-    onClickSubscribeToPushNotification,
-    onClickUnsubscribeToPushNotification,
-  } = usePushNotificationContext();
+  const { userSubscription, onClickSubscribeToPushNotification } =
+    usePushNotificationContext();
 
   useEffect(() => {
     let mounted = true;
@@ -130,18 +130,16 @@ export function SessionProvider({
       (event, session) => {
         // console.log('SessionProvider: onAuthStateChange', event, session);
         if (event === 'SIGNED_OUT') {
-          // Try to unsubscribe from push notifications
+          // We will unsubscribe from push notifications in the signOut buttons in the app instead of here
+          // Due to session race conditions
           setSession(null);
-          onClickUnsubscribeToPushNotification().catch(console.error);
         } else if (session) {
-          // Try to subscribe to push notifications if the user has consent and user is first time logging in
+          // Try to subscribe to push notifications if the user has already given consent and user is logging in
           if (
             (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') &&
-            isPWAInstalled &&
-            userConsent === 'granted' &&
+            Notification.permission === 'granted' &&
             !userSubscription
           ) {
-            // console.log('Attempting to subscribe to push notifications');
             onClickSubscribeToPushNotification().catch(console.error);
           }
 

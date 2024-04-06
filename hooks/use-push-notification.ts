@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from 'react';
 
-import { useMediaQuery } from './use-media-query';
+import {
+  deleteSubscription,
+  insertSubscription,
+} from '@/app/(dashboard)/actions';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 const WEB_PUSH_PUBLIC_KEY = process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY || '';
 
@@ -75,7 +79,7 @@ async function createNotificationSubscription() {
 
 /**
  *
- * unsubsribe the user from push notifications
+ * unsubscribe the user from push notifications
  *
  */
 async function removeNotificationSubscription() {
@@ -102,6 +106,7 @@ async function getUserSubscription() {
     throw new Error('Push notifications are not supported.');
   }
 
+  //* Note: Host must be HTTPS then serviceWorker.ready will be available. Otherwise, it will hang forever
   const serviceWorker = await navigator.serviceWorker.ready;
   if (!serviceWorker.pushManager) {
     throw new Error('Push manager unavailable.');
@@ -121,12 +126,13 @@ export default function usePushNotifications() {
     useState<PushSubscription | null>(null);
   const isPWAInstalled = useMediaQuery('(display-mode: standalone)');
 
-  //if the push notifications are supported, registers the service worker
+  // if the push notifications are supported, registers the service worker
   // then retrieve if there is any push notification subscription for the registered service worker
   // this effect runs only the first render
   useEffect(() => {
     if (pushNotificationSupported) {
       setUserConsent(Notification.permission);
+
       const getExixtingSubscription = async () => {
         const existingSubscription = await getUserSubscription();
         setUserSubscription(existingSubscription);
@@ -147,13 +153,23 @@ export default function usePushNotifications() {
   };
 
   const onClickSubscribeToPushNotification = async () => {
-    if (!userConsent || userConsent !== 'granted') {
-      console.error('You have to grant push notifications permissions.');
+    if (!userConsent || Notification.permission !== 'granted') {
+      console.error(
+        `You have to grant push notifications permissions. Permission: ${Notification.permission}`
+      );
       return null;
     }
 
     try {
       const subscription = await createNotificationSubscription();
+      const { serverError, validationErrors } = await insertSubscription(
+        subscription?.toJSON() as any
+      );
+
+      if (serverError || validationErrors) {
+        console.error('Failed to save the subscription to the server');
+        throw new Error('Failed to save the subscription to the server');
+      }
       setUserSubscription(subscription);
 
       return subscription;
@@ -165,12 +181,18 @@ export default function usePushNotifications() {
   };
 
   const onClickUnsubscribeToPushNotification = async () => {
-    if (!userConsent || userConsent !== 'granted') {
-      console.error('You have to grant push notifications permissions.');
+    if (!userConsent || Notification.permission !== 'granted') {
+      // Attempting to unsubscribe when the user hasn't granted permissions, or the user has denied permissions
+      // However, the user can still unsubscribe even if they haven't granted permissions provided they have a subscription
+      console.warn(
+        `You have to grant push notifications permissions. Permission: ${Notification.permission}`
+      );
     }
 
     try {
       await removeNotificationSubscription();
+      await deleteSubscription(userSubscription?.toJSON() as any);
+
       setUserSubscription(null);
     } catch (error) {
       console.error('Failed to unsubscribe the user: ', error);

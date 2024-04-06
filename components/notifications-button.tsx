@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { insertSubscription } from '@/app/(dashboard)/actions';
 import { InstallPWA } from '@/components/install-pwa';
 import { usePushNotificationContext } from '@/components/push-notification-provider';
 import { useSession } from '@/components/session-provider';
@@ -56,21 +55,19 @@ export function NotificationsButton() {
               const subscription = await onClickSubscribeToPushNotification();
 
               if (!subscription) {
-                toast.error('You have blocked notifications');
+                toast.error('You have blocked notifications', {
+                  description:
+                    'Please enable notifications in your browser/OS settings app.',
+                });
                 return;
               }
 
-              const { serverError, validationErrors } =
-                await insertSubscription(subscription?.toJSON() as any);
-
-              if (serverError || validationErrors) {
-                toast.error('Something went wrong');
-                return;
-              }
-
-              toast.success(`subscribed to push notifications`);
+              toast.success(`Subscribed to push notifications`);
             } else {
-              toast.error('You have blocked notifications');
+              toast.error('You have blocked notifications', {
+                description:
+                  'Please enable notifications in your browser/OS settings app.',
+              });
             }
           }}
         >

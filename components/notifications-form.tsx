@@ -7,10 +7,6 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
-import {
-  deleteSubscription,
-  insertSubscription,
-} from '@/app/(dashboard)/actions';
 import { InstallPWA } from '@/components/install-pwa';
 import { usePushNotificationContext } from '@/components/push-notification-provider';
 import { useSession } from '@/components/session-provider';
@@ -116,26 +112,24 @@ export function NotificationsForm() {
                       await onClickSubscribeToPushNotification();
 
                     if (!subscription) {
-                      toast.error('You have blocked notifications');
+                      toast.error('You have blocked notifications', {
+                        description:
+                          'Please enable notifications in your browser/OS settings app.',
+                      });
                       return;
                     }
 
-                    const { serverError, validationErrors } =
-                      await insertSubscription(subscription?.toJSON() as any);
-
-                    if (serverError || validationErrors) {
-                      toast.error('Something went wrong');
-                      return;
-                    }
-
-                    toast.success(`subscribed to push notifications`);
+                    toast.success(`Subscribed to push notifications`);
                   } else {
-                    toast.error('You have blocked notifications');
+                    setChecked(false);
+                    toast.error('You have blocked notifications', {
+                      description:
+                        'Please enable notifications in your browser/OS settings app.',
+                    });
                   }
                 } else {
                   await onClickUnsubscribeToPushNotification();
-                  await deleteSubscription(userSubscription?.toJSON() as any);
-                  toast.success(`unsubscribe from push notifications`);
+                  toast.success(`Unsubscribed from push notifications`);
                 }
               }}
             />

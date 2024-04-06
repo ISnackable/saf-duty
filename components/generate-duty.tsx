@@ -73,8 +73,8 @@ import {
   generateDutyRoster,
 } from '@/lib/duty-roster';
 import { fetcher } from '@/lib/fetcher';
+import { Profiles } from '@/lib/supabase/queries';
 import { cn } from '@/lib/utils';
-import { type Tables } from '@/types/supabase';
 import { indexOnceWithKey } from '@/utils/helper';
 
 const optionSchema = z.object({
@@ -124,7 +124,7 @@ function DayDisableOutside(props: DayProps) {
   );
 }
 
-function createPersonnel(users: Users[], roster: Record<string, DutyDate>) {
+function createPersonnel(users: Profiles[], roster: Record<string, DutyDate>) {
   return users?.map((user) => {
     const blockouts = user.blockout_dates?.map(
       (blockout) => new Date(blockout)
@@ -204,7 +204,7 @@ function DayWithTime(props: DayContentProps, roster: Record<string, DutyDate>) {
       {roster && roster.hasOwnProperty(date) && (
         <div
           className={cn(
-            'absolute bottom-1 mx-auto w-full whitespace-pre-wrap break-words text-xs text-foreground/90 md:bottom-3 md:text-base',
+            'absolute bottom-1 mx-auto w-full whitespace-pre-wrap break-words text-xs md:bottom-3 md:text-base',
             roster[date]?.isExtra && 'text-red-600'
           )}
         >
@@ -218,8 +218,6 @@ function DayWithTime(props: DayContentProps, roster: Record<string, DutyDate>) {
   );
 }
 
-type Users = Omit<Tables<'profiles'>, 'updated_at'>;
-
 export function GenerateDuty({
   roster,
   users,
@@ -227,7 +225,7 @@ export function GenerateDuty({
   year,
 }: {
   roster: Record<string, DutyDate>;
-  users: Users[];
+  users: Profiles[];
   month: string;
   year: string;
 }) {
@@ -647,7 +645,8 @@ export function GenerateDuty({
                 buttonVariants({ variant: 'ghost' }),
                 'h-full w-full rounded-none p-0 text-lg font-normal aria-selected:bg-[#fa5858] aria-selected:opacity-90'
               ),
-              day_today: 'text-accent-foreground text-sky-300',
+              day_today:
+                'text-accent-foreground text-sky-600 dark:text-sky-300',
             }}
           />
 

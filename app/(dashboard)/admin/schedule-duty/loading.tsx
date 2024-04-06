@@ -95,7 +95,7 @@ export default function Loading() {
               // buttonVariants({ variant: 'ghost' }),
               'rounded-none p-0 font-normal aria-selected:bg-[#fa5858] aria-selected:opacity-90'
             ),
-            day_today: 'text-accent-foreground',
+            day_today: 'text-accent-foreground text-sky-600 dark:text-sky-300',
           }}
         />
 

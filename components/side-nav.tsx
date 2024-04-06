@@ -3,7 +3,6 @@
 import { usePathname } from 'next/navigation';
 import React from 'react';
 
-import { APP_NAME } from '@/app/../site.config';
 import { Icons, type TablerIcon } from '@/components/icons';
 import { ProgressBarLink } from '@/components/progress-bar';
 import { useSession } from '@/components/session-provider';
@@ -16,6 +15,7 @@ import {
 import { Button, buttonVariants } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { name } from '@/lib/config';
 import { cn } from '@/lib/utils';
 import { isDemoUser } from '@/utils/helper';
 
@@ -160,7 +160,7 @@ export function SideNav({ className }: SidebarProps) {
     >
       <div className='flex h-16 w-full items-center justify-start gap-1 border-b px-4 text-lg font-medium'>
         <Icons.logo className='h-12 w-12' />
-        {APP_NAME || 'APP NAME'}
+        {name || 'DEFAULT NAME'}
       </div>
       <ScrollArea className='py-2'>
         {sideNavLinks.map((item, index) => {

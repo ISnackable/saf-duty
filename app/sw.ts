@@ -1,9 +1,9 @@
 import type { SerwistGlobalConfig } from '@serwist/core';
 import { defaultCache } from '@serwist/next/worker';
 import type { PrecacheEntry } from '@serwist/precaching';
-import { installSerwist } from '@serwist/sw';
+import { Serwist } from '@serwist/sw';
 
-import { APP_DEFAULT_TITLE } from '../site.config';
+import { name } from '@/lib/config';
 
 declare global {
   // eslint-disable-next-line unused-imports/no-unused-vars
@@ -23,7 +23,7 @@ self.addEventListener('push', (event) => {
     const unreadCount = data?.unreadCount;
 
     const notificationPromise = self.registration.showNotification(
-      data.title || APP_DEFAULT_TITLE,
+      data.title || name,
       {
         body: data.message || 'You have a new notification!',
         icon: '/icons/android-chrome-192x192.png',
@@ -67,7 +67,9 @@ self.addEventListener('notificationclick', (event) => {
   );
 });
 
-installSerwist({
+const serwist = new Serwist();
+
+serwist.install({
   precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
   clientsClaim: true,

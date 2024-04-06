@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { signOut } from '@/app/(auth)/actions';
 import { InstallPWA } from '@/components/install-pwa';
 import { ProgressBarLink } from '@/components/progress-bar';
+import { usePushNotificationContext } from '@/components/push-notification-provider';
 import { customNotifyEvent } from '@/components/session-provider';
 import { useSession } from '@/components/session-provider';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -25,6 +26,7 @@ export function UserNav() {
   const [open, setOpen] = useState(false);
   const session = useSession();
   const { data: profile } = useProfiles();
+  const { onClickUnsubscribeToPushNotification } = usePushNotificationContext();
 
   return (
     <DropdownMenu>
@@ -87,6 +89,7 @@ export function UserNav() {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={async () => {
+            await onClickUnsubscribeToPushNotification().catch(console.error);
             await signOut();
             // custom event to notify the session provider to update the session
             customNotifyEvent('SIGNED_OUT', null);

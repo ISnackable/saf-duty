@@ -269,6 +269,7 @@ export function DutyRoster({
             'h-full w-full rounded-none p-0 text-lg font-normal aria-selected:bg-[#fa5858] aria-selected:opacity-90'
           ),
           day_today: 'text-accent-foreground text-sky-300',
+          day_today: 'text-accent-foreground text-sky-600 dark:text-sky-300',
         }}
       />
 

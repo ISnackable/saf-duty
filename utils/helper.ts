@@ -1,6 +1,6 @@
 import { format, isMatch } from 'date-fns';
 
-import { demo } from '../site.config';
+import { demo } from '@/lib/config';
 
 export function indexOnce<T extends { id: string }>(data: T[]) {
   return data.reduce(
@@ -65,4 +65,19 @@ export function useMonthYear(searchParams: URLSearchParams) {
     month: format(today, 'LLLL'),
     year: currentYear.toString(),
   };
+}
+
+export function getOrdinalSuffix(i: number) {
+  let j = i % 10,
+    k = i % 100;
+  if (j === 1 && k !== 11) {
+    return i + 'st';
+  }
+  if (j === 2 && k !== 12) {
+    return i + 'nd';
+  }
+  if (j === 3 && k !== 13) {
+    return i + 'rd';
+  }
+  return i + 'th';
 }

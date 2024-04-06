@@ -17,7 +17,6 @@ import {
 import { cn } from '@/lib/utils';
 
 /* eslint-disable react-hooks/exhaustive-deps */
-
 /* eslint-disable unused-imports/no-unused-vars */
 
 export interface Option {
@@ -217,7 +216,7 @@ export const MultipleSelector = React.forwardRef<
         setSelected(newOptions);
         onChange?.(newOptions);
       },
-      [selected]
+      [onChange, selected]
     );
 
     const handleKeyDown = React.useCallback(
@@ -235,7 +234,7 @@ export const MultipleSelector = React.forwardRef<
           }
         }
       },
-      [selected]
+      [handleUnselect, selected]
     );
 
     useEffect(() => {
@@ -276,7 +275,7 @@ export const MultipleSelector = React.forwardRef<
       };
 
       void exec();
-    }, [debouncedSearchTerm, open]);
+    }, [debouncedSearchTerm, groupBy, open, triggerSearchOnFocus]);
 
     const CreatableItem = () => {
       if (!creatable) return undefined;
@@ -408,7 +407,7 @@ export const MultipleSelector = React.forwardRef<
                     <span className='sr-only'>
                       Remove {option.value} option
                     </span>
-                    <Icons.close className='h-4 w-4 hover:stroke-destructive' />
+                    <Icons.close className='h-3 w-3 hover:stroke-destructive' />
                   </button>
                 </Badge>
               );
@@ -467,6 +466,7 @@ export const MultipleSelector = React.forwardRef<
                           return (
                             <CommandItem
                               key={option.value}
+                              keywords={[option.label]}
                               value={option.value}
                               disabled={option.disable}
                               onMouseDown={(e) => {
@@ -516,4 +516,3 @@ export const MultipleSelector = React.forwardRef<
 );
 
 MultipleSelector.displayName = 'MultipleSelector';
-// export default MultipleSelector;

@@ -18,6 +18,9 @@ const millionConfig = {
 /** @type {import('next').NextConfig} */
 const nextConfig = bundleAnalyzer(
   withSerwist({
+    experimental: {
+      optimizePackageImports: ['add-to-calendar-button-react'],
+    },
     images: {
       remotePatterns: [
         {

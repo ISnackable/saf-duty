@@ -9,33 +9,23 @@ import { SessionProvider } from '@/components/session-provider';
 import { SWRProvider } from '@/components/swr-provider';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
+import { host, site } from '@/lib/config';
 import { cn } from '@/lib/utils';
 
-import {
-  APP_DEFAULT_TITLE,
-  APP_DESCRIPTION,
-  APP_NAME,
-  APP_TITLE_TEMPLATE,
-} from '../site.config';
-
-export const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : 'http://localhost:3000';
-
 export const metadata: Metadata = {
-  metadataBase: new URL(defaultUrl),
-  applicationName: APP_NAME,
+  metadataBase: new URL(host),
+  applicationName: site.name,
   title: {
-    default: APP_DEFAULT_TITLE,
-    template: APP_TITLE_TEMPLATE,
+    default: site.name,
+    template: `%s - ${site.name}`,
   },
-  description: APP_DESCRIPTION,
+  description: site.description,
   manifest: '/manifest.json',
   icons: { icon: '/icons/icon512_maskable.png', apple: '/apple-icon.png' },
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'black-translucent',
-    title: APP_DEFAULT_TITLE,
+    statusBarStyle: 'default',
+    title: site.name,
     startupImage: [
       {
         media:
@@ -217,20 +207,12 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    siteName: APP_NAME,
+    siteName: site.name,
     title: {
-      default: APP_DEFAULT_TITLE,
-      template: APP_TITLE_TEMPLATE,
+      default: site.name,
+      template: `%s - ${site.name}`,
     },
-    description: APP_DESCRIPTION,
-  },
-  twitter: {
-    card: 'summary',
-    title: {
-      default: APP_DEFAULT_TITLE,
-      template: APP_TITLE_TEMPLATE,
-    },
-    description: APP_DESCRIPTION,
+    description: site.description,
   },
 };
 
@@ -285,14 +267,14 @@ export default function RootLayout({
             disableTransitionOnChange
             themes={['light', 'dark', 'discord-dark']}
           >
-            <SessionProvider>
-              <PushNotificationProvider>
+            <PushNotificationProvider>
+              <SessionProvider>
                 <ProgressBar className='fixed top-0 z-[100] h-1 bg-primary'>
                   <SWRProvider>{children}</SWRProvider>
                 </ProgressBar>
-                <Toaster closeButton duration={3000} />
-              </PushNotificationProvider>
-            </SessionProvider>
+                <Toaster closeButton duration={3000} position='top-right' />
+              </SessionProvider>
+            </PushNotificationProvider>
           </ThemeProvider>
         </main>
       </body>
