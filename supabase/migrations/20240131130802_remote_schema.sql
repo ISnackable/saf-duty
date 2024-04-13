@@ -371,16 +371,6 @@ CREATE TRIGGER on_after_rosters_created
 AFTER INSERT ON public.rosters REFERENCING NEW TABLE AS new_table FOR EACH STATEMENT
 EXECUTE FUNCTION public.handle_rosters_notification ();
 
-CREATE TRIGGER on_after_notifications_created
-AFTER INSERT ON public.notifications FOR EACH ROW
-EXECUTE FUNCTION supabase_functions.http_request (
-  'https://tscbuvxcsuxlqwcewtgu.supabase.co/functions/v1/push',
-  'POST',
-  '{"Content-type":"application/json","Authorization":"OPPS, well reseted it"}',
-  '{}',
-  '1000'
-);
-
 CREATE TRIGGER on_before_swap_request_created BEFORE INSERT ON public.swap_requests FOR EACH ROW
 EXECUTE FUNCTION public.validate_swap_request ();
 
@@ -528,30 +518,6 @@ SELECT
       OR public.has_group_role (group_id, 'admin'::text)
     )
   );
-
-CREATE POLICY "Authenticated can upload an avatar." ON "storage"."objects" AS permissive FOR INSERT TO PUBLIC
-WITH
-  CHECK (
-    (
-      (bucket_id = 'avatars'::text)
-      AND (auth.role () = 'authenticated'::text)
-    )
-  );
-
-CREATE POLICY "Avatar images are accessible to authenticated." ON "storage"."objects" AS permissive FOR
-SELECT
-  TO PUBLIC USING (
-    (
-      (bucket_id = 'avatars'::text)
-      AND (auth.role () = 'authenticated'::text)
-    )
-  );
-
-CREATE POLICY "Authenticated can update their own avatar." ON "storage"."objects"
-FOR UPDATE
-  USING (auth.uid () = OWNER)
-WITH
-  CHECK (bucket_id = 'avatars');
 
 ALTER TABLE "public"."notifications" ENABLE ROW LEVEL SECURITY;
 

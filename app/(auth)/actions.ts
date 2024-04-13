@@ -95,13 +95,11 @@ export async function signUp(formData: RegisterFormData): Promise<State> {
   };
 }
 
-export async function signOut(
-  options: SignOut = { scope: 'local' }
-): Promise<State> {
+export async function signOut(options: SignOut = { scope: 'local' }) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   await supabase.auth.signOut(options);
-  return redirect('/login');
+  redirect('/login');
 }
 
 export async function resetPassword(formData: ResetFormData): Promise<State> {

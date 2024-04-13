@@ -19,7 +19,7 @@ declare const self: ServiceWorkerGlobalScope;
 
 self.addEventListener('push', (event) => {
   if (event.data) {
-    const data = event?.data.json();
+    const data = event.data.json();
     const unreadCount = data?.unreadCount;
 
     const notificationPromise = self.registration.showNotification(

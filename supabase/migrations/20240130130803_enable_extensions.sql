@@ -9,7 +9,7 @@ GRANT ALL PRIVILEGES ON ALL TABLES in SCHEMA cron TO postgres;
 SELECT
   cron.schedule (
     'daily-roster-reminder', -- name of the cron job
-    '0 9 * * *', -- Saturday at 3:30am (GMT)
+    '0 9 * * *', -- 9:00 AM every day.
     $$
     INSERT INTO public.notifications (user_id, title, message)
     SELECT duty_personnel_id,

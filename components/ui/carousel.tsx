@@ -321,7 +321,7 @@ const CarouselDots = React.forwardRef<HTMLDivElement, CarouselDotsProps>(
               dotsVariants({ size, gap }),
               dotsClassName,
               current === index
-                ? 'w-10 bg-primary-foreground/90'
+                ? 'w-10 bg-foreground/90'
                 : 'bg-muted-foreground/40'
             )}
           />
