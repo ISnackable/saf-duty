@@ -181,6 +181,8 @@ export default function usePushNotifications() {
   };
 
   const onClickUnsubscribeToPushNotification = async () => {
+    if (!userSubscription) return null;
+
     if (!userConsent || Notification.permission !== 'granted') {
       // Attempting to unsubscribe when the user hasn't granted permissions, or the user has denied permissions
       // However, the user can still unsubscribe even if they haven't granted permissions provided they have a subscription

@@ -1,5 +1,7 @@
 import {
   IconAdjustments,
+  IconArrowBadgeLeft,
+  IconArrowBadgeRight,
   IconArrowsExchange,
   IconArrowsSort,
   IconBell,
@@ -11,6 +13,7 @@ import {
   IconCheck,
   IconChessKnight,
   IconChevronDown,
+  IconClock,
   IconCloudLock,
   IconCoin,
   IconDeviceDesktop,
@@ -272,4 +275,7 @@ export const Icons = {
   dots: IconDots,
   chevronDown: IconChevronDown,
   adjustments: IconAdjustments,
+  arrowBadgeLeft: IconArrowBadgeLeft,
+  arrowBadgeRight: IconArrowBadgeRight,
+  clock: IconClock,
 };

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import { Icons } from '@/components/icons';
+import { SwapDuty } from '@/components/swap-duty';
 
 export const metadata: Metadata = {
   title: 'Swap Duties',
@@ -17,8 +18,10 @@ export default async function SwapDutiesPage() {
         </h1>
       </div>
       <p className='text-sm leading-7 sm:text-base [&:not(:first-child)]:mt-6'>
-        ... WORDS ...
+        Here you can see all the swap duties requests you have received and
+        sent.
       </p>
+      <SwapDuty />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 // All the demo data that used as fallbacks when there's nothing in the dataset yet
-import type { Profiles } from '@/lib/supabase/queries';
+import { demo } from '@/lib/config';
+import type { Profiles, SwapRequests } from '@/lib/supabase/queries';
 
 const todayMonth = (new Date().getMonth() + 1)
   .toString()
@@ -23,9 +24,9 @@ export const blockouts: string[] = [
 
 export const demoUsers: Profiles[] = [
   {
-    id: '047d19aa-487c-4dd1-8816-01db79956532',
+    id: demo.id,
     name: 'demo',
-    group_id: '1',
+    group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
     avatar_url:
       'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment_date: '2022-01-02',
@@ -35,13 +36,13 @@ export const demoUsers: Profiles[] = [
     no_of_extras: 0,
     blockout_dates: blockouts,
     max_blockouts: 8,
-    onboarded: false,
+    onboarded: true,
     role: 'user',
   },
   {
     id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
     name: 'Zhi Hao',
-    group_id: '1',
+    group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
     avatar_url:
       'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment_date: '2022-02-27',
@@ -58,7 +59,7 @@ export const demoUsers: Profiles[] = [
   {
     id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
     name: 'Jia Hui',
-    group_id: '1',
+    group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
     avatar_url:
       'https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment_date: '${currentYear}-05-11',
@@ -75,7 +76,7 @@ export const demoUsers: Profiles[] = [
   {
     id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
     name: 'Jia Hao',
-    group_id: '1',
+    group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
     avatar_url:
       'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment_date: '2021-03-02',
@@ -92,7 +93,7 @@ export const demoUsers: Profiles[] = [
   {
     id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
     name: 'Jun Kai',
-    group_id: '1',
+    group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
     avatar_url:
       'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment_date: '2022-04-02',
@@ -119,7 +120,7 @@ export const demoUsers: Profiles[] = [
   {
     id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
     name: 'Wang Li',
-    group_id: '1',
+    group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
     avatar_url:
       'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment_date: '2022-09-30',
@@ -136,7 +137,7 @@ export const demoUsers: Profiles[] = [
   {
     id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
     name: 'Darryl Koh',
-    group_id: '1',
+    group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
     avatar_url:
       'https://images.unsplash.com/photo-1531727991582-cfd25ce79613?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
     enlistment_date: '2022-02-14',
@@ -170,7 +171,7 @@ export const demoUsers: Profiles[] = [
   {
     id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
     name: 'Elliot Tan',
-    group_id: '1',
+    group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
     avatar_url:
       'https://images.unsplash.com/photo-1614587185092-af24ed71c6e4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80',
     enlistment_date: '2022-06-24',
@@ -218,7 +219,7 @@ export const dutyRoster = [
       name: 'Jun Kai',
     },
     reserve_duty_personnel: {
-      id: '047d19aa-487c-4dd1-8816-01db79956532',
+      id: demo.id,
       name: 'demo',
     },
   },
@@ -240,7 +241,7 @@ export const dutyRoster = [
     duty_date: `${currentYear}-${todayMonth}-03`,
     is_extra: false,
     duty_personnel: {
-      id: '047d19aa-487c-4dd1-8816-01db79956532',
+      id: demo.id,
       name: 'demo',
     },
     reserve_duty_personnel: {
@@ -348,7 +349,7 @@ export const dutyRoster = [
       name: 'Darryl Koh',
     },
     reserve_duty_personnel: {
-      id: '047d19aa-487c-4dd1-8816-01db79956532',
+      id: demo.id,
       name: 'demo',
     },
   },
@@ -370,7 +371,7 @@ export const dutyRoster = [
     duty_date: `${currentYear}-${todayMonth}-13`,
     is_extra: false,
     duty_personnel: {
-      id: '047d19aa-487c-4dd1-8816-01db79956532',
+      id: demo.id,
       name: 'demo',
     },
     reserve_duty_personnel: {
@@ -517,7 +518,7 @@ export const dutyRoster = [
       name: 'Wang Li',
     },
     reserve_duty_personnel: {
-      id: '047d19aa-487c-4dd1-8816-01db79956532',
+      id: demo.id,
       name: 'demo',
     },
   },
@@ -539,7 +540,7 @@ export const dutyRoster = [
     duty_date: `${currentYear}-${todayMonth}-26`,
     is_extra: false,
     duty_personnel: {
-      id: '047d19aa-487c-4dd1-8816-01db79956532',
+      id: demo.id,
       name: 'demo',
     },
     reserve_duty_personnel: {
@@ -565,7 +566,7 @@ export const dutyRoster = [
     duty_date: `${currentYear}-${todayMonth}-28`,
     is_extra: false,
     duty_personnel: {
-      id: '047d19aa-487c-4dd1-8816-01db79956532',
+      id: demo.id,
       name: 'demo',
     },
     reserve_duty_personnel: {
@@ -608,92 +609,146 @@ export const dutyRoster = [
       name: 'Elliot Tan',
     },
     reserve_duty_personnel: {
-      id: '047d19aa-487c-4dd1-8816-01db79956532',
+      id: demo.id,
       name: 'demo',
     },
   },
 ];
 
-// export const swapRecord_dates: SanitySwapRequest[] = [
-//   {
-//     _updatedAt: '${currentYear}-04-15',
-//     reason: 'abcdefgwdawdawdawdawdad',
-//     _type: 'swapRequest',
-//     status: 'pending',
-//     calendar: {
-//       id: 'calendar-${currentYear}-03-01',
-//       date: '${currentYear}-03-01',
-//     },
-//     receiver: {
-//       id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
-//       name: 'Zhi Hao',
-//       avatar_url:
-//         'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
-//     },
-//     duty_date: `${currentYear}-${todayMonth}-27`,
-//     _id: '9c23238b-0f67-43f2-a281-7e3167c92680',
-//     requester: {
-//       id: 'user.fdf11aae-d142-450b-87a4-559bc6e27f05',
-//       name: 'demo',
-//       avatar_url:
-//         'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
-//     },
-//     _rev: 't2rWJTAb4uNhnFji5txjM4',
-//     duty_date: `${currentYear}-${todayMonth}-04`,
-//     _createdAt: '${currentYear}-04-14',
-//   },
-//   {
-//     receiver: {
-//       id: 'user.fdf11aae-d142-450b-87a4-559bc6e27f05',
-//       name: 'demo',
-//       avatar_url:
-//         'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
-//     },
-//     _rev: '1gKhFzwtTHqc5n8Z8BZVx6',
-//     _createdAt: '${currentYear}-04-15',
-//     _type: 'swapRequest',
-//     calendar: {
-//       id: 'calendar-${currentYear}-03-01',
-//       date: '${currentYear}-03-01',
-//     },
-//     requester: {
-//       id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
-//       name: 'Zhi Hao',
-//       avatar_url:
-//         'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
-//     },
-//     reason: 'abcdefg',
-//     duty_date: `${currentYear}-${todayMonth}-27`,
-//     _id: 'f7b62509-b55c-4d69-8fbb-7268fa792c30',
-//     _updatedAt: '${currentYear}-04-15',
-//     duty_date: `${currentYear}-${todayMonth}-21`,
-//     status: 'pending',
-//   },
-//   {
-//     _type: 'swapRequest',
-//     receiver: {
-//       id: 'user.fdf11aae-d142-450b-87a4-559bc6e27f05',
-//       name: 'demo',
-//       avatar_url:
-//         'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
-//     },
-//     duty_date: `${currentYear}-${todayMonth}-10`,
-//     _id: 'f86b497e-adea-458d-a028-807e0d9395a1',
-//     calendar: {
-//       id: 'calendar-${currentYear}-03-01',
-//       date: '${currentYear}-03-01',
-//     },
-//     requester: {
-//       id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
-//       name: 'Zhi Hao',
-//       avatar_url:
-//         'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
-//     },
-//     reason: 'a',
-//     duty_date: `${currentYear}-${todayMonth}-20`,
-//     status: 'pending',
-//     _createdAt: '${currentYear}-04-15',
-//     _rev: 'f5T2DmY3fkMt6I6qKjOpiP',
-//     _updatedAt: '${currentYear}-04-15',
-//   },
-// ];
+export const swapRequests: SwapRequests[] = [
+  {
+    id: 1,
+    group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
+    created_at: '${currentYear}-04-14',
+    reason: 'I have a family event to attend to.',
+    status: 'pending',
+    receiver: {
+      id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+      name: 'Zhi Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+    },
+    receiver_roster: {
+      id: 1,
+      duty_date: `${currentYear}-${todayMonth}-27`,
+      is_extra: false,
+      duty_personnel: {
+        id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+        name: 'Zhi Hao',
+      },
+      reserve_duty_personnel: {
+        id: demo.id,
+        name: 'demo',
+      },
+    },
+    requester: {
+      id: demo.id,
+      name: 'demo',
+      avatar_url:
+        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+    },
+    requester_roster: {
+      id: 1,
+      duty_date: `${currentYear}-${todayMonth}-04`,
+      is_extra: false,
+      duty_personnel: {
+        id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+        name: 'Zhi Hao',
+      },
+      reserve_duty_personnel: {
+        id: demo.id,
+        name: 'demo',
+      },
+    },
+  },
+  {
+    id: 2,
+    group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
+    created_at: '${currentYear}-04-14',
+    receiver: {
+      id: demo.id,
+      name: 'demo',
+      avatar_url:
+        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+    },
+    receiver_roster: {
+      id: 1,
+      duty_date: `${currentYear}-${todayMonth}-21`,
+      is_extra: false,
+      duty_personnel: {
+        id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+        name: 'Zhi Hao',
+      },
+      reserve_duty_personnel: {
+        id: demo.id,
+        name: 'demo',
+      },
+    },
+    status: 'pending',
+    requester: {
+      id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+      name: 'Zhi Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+    },
+    reason: 'I need to attend my family gathering',
+    requester_roster: {
+      id: 1,
+      duty_date: `${currentYear}-${todayMonth}-27`,
+      is_extra: false,
+      duty_personnel: {
+        id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+        name: 'Zhi Hao',
+      },
+      reserve_duty_personnel: {
+        id: demo.id,
+        name: 'demo',
+      },
+    },
+  },
+  {
+    id: 3,
+    group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
+    created_at: '${currentYear}-04-14',
+    receiver: {
+      id: demo.id,
+      name: 'demo',
+      avatar_url:
+        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+    },
+    receiver_roster: {
+      id: 1,
+      duty_date: `${currentYear}-${todayMonth}-10`,
+      is_extra: false,
+      duty_personnel: {
+        id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+        name: 'Zhi Hao',
+      },
+      reserve_duty_personnel: {
+        id: demo.id,
+        name: 'demo',
+      },
+    },
+    requester: {
+      id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+      name: 'Zhi Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+    },
+    reason: 'I has a wedding to attend',
+    requester_roster: {
+      id: 1,
+      duty_date: `${currentYear}-${todayMonth}-20`,
+      is_extra: false,
+      duty_personnel: {
+        id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+        name: 'Zhi Hao',
+      },
+      reserve_duty_personnel: {
+        id: demo.id,
+        name: 'demo',
+      },
+    },
+    status: 'pending',
+  },
+];

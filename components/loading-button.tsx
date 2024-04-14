@@ -56,7 +56,7 @@ const LoadingButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {loading && (
           <Icons.spinner
-            className={cn('h-4 w-4 animate-spin', children && 'mr-2')}
+            className={cn('h-4 w-4 animate-spin', children ? 'mr-2' : '')}
           />
         )}
         {children}
