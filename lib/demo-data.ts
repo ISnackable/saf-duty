@@ -36,7 +36,7 @@ export const demoUsers: Profiles[] = [
     no_of_extras: 0,
     blockout_dates: blockouts,
     max_blockouts: 8,
-    onboarded: true,
+    onboarded: false,
     role: 'user',
   },
   {

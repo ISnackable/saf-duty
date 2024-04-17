@@ -69,15 +69,13 @@ You'll first need a Supabase project which can be made [via the Supabase dashboa
    pnpm dev
    ```
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
-
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
+   The server should now be running on [localhost:3000](http://localhost:3000/).
 
 ## Configuration
 
 As much as this project aims to set up as seamlessly as possible, due to some limitation to Supabase, there are some config that has to be done manually.
 
-### Create vault secrets
+### Create vault secrets (Required)
 
 Navigate to [Project Vault settings](https://supabase.com/dashboard/project/_/settings/vault/secrets) in your Supabase Dashboard.
 
@@ -89,14 +87,16 @@ Navigate to [Project Vault settings](https://supabase.com/dashboard/project/_/se
 
 To Enable Push Notification with [Web Push](https://web.dev/articles/push-notifications-web-push-protocol). You will need to deploy the Supabase Edge Function and create the database webhook manually.
 
-#### Deploy the Supabase Edge Function
+#### 1. Deploy the Supabase Edge Function
 
 The database webhook handler to send push notifications is located in `supabase/functions/push/index.ts`. Deploy the function to your linked project and set the `WEB_PUSH_PUBLIC_KEY`, `WEB_PUSH_PRIVATE_KEY` & `WEB_PUSH_EMAIL` secret.
 
 1. `supabase functions deploy push`
 2. `supabase secrets set --env-file .env.local`
 
-#### Create the database webhook
+_Note: The Public and Private keys secrets must be generated using the [alastaircoote/webpush-webcrypto](https://github.com/alastaircoote/webpush-webcrypto/) package._
+
+#### 2. Create the database webhook
 
 Navigate to the [Database Webhooks settings](https://supabase.com/dashboard/project/_/database/hooks) in your Supabase Dashboard.
 
@@ -107,7 +107,7 @@ Navigate to the [Database Webhooks settings](https://supabase.com/dashboard/proj
 1. HTTP Headers: Click "Add new header" > "Add auth header with service key" and leave Content-type: `application/json`.
 1. Click "Create webhook".
 
-#### Sending a push notification
+#### 3. Sending a push notification
 
 When a new row is added in your notifications table, a push notification will be sent to the user who has subscribed to push notification.
 
