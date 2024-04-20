@@ -1,6 +1,7 @@
-INSERT ITNO storage.buckets (id, name)
-VALUES ('avatars', 'avatars');
-
+INSERT INTO storage.buckets (id, name)
+VALUES ('avatars', 'avatars')
+ON CONFLICT (id) DO UPDATE 
+  SET name = excluded.name;
 
 CREATE POLICY "Authenticated can upload an avatar." ON "storage"."objects" AS permissive
 FOR

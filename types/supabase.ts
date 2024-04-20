@@ -14,21 +14,21 @@ export type Database = {
           created_at: string | null;
           group_id: string;
           id: string;
-          role: string;
+          role: Database['public']['Enums']['role'];
           user_id: string;
         };
         Insert: {
           created_at?: string | null;
           group_id: string;
           id?: string;
-          role?: string;
+          role?: Database['public']['Enums']['role'];
           user_id: string;
         };
         Update: {
           created_at?: string | null;
           group_id?: string;
           id?: string;
-          role?: string;
+          role?: Database['public']['Enums']['role'];
           user_id?: string;
         };
         Relationships: [
@@ -44,13 +44,6 @@ export type Database = {
             columns: ['user_id'];
             isOneToOne: true;
             referencedRelation: 'profiles';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'group_users_user_id_fkey';
-            columns: ['user_id'];
-            isOneToOne: true;
-            referencedRelation: 'user_roles';
             referencedColumns: ['id'];
           },
         ];
@@ -75,6 +68,7 @@ export type Database = {
       };
       notifications: {
         Row: {
+          action: 'INSERT' | 'UPDATE' | 'DELETE' | 'TRUNCATE' | 'ERROR' | null;
           created_at: string;
           id: number;
           is_read: boolean;
@@ -83,6 +77,7 @@ export type Database = {
           user_id: string;
         };
         Insert: {
+          action?: 'INSERT' | 'UPDATE' | 'DELETE' | 'TRUNCATE' | 'ERROR' | null;
           created_at?: string;
           id?: number;
           is_read?: boolean;
@@ -91,6 +86,7 @@ export type Database = {
           user_id: string;
         };
         Update: {
+          action?: 'INSERT' | 'UPDATE' | 'DELETE' | 'TRUNCATE' | 'ERROR' | null;
           created_at?: string;
           id?: number;
           is_read?: boolean;
@@ -104,13 +100,6 @@ export type Database = {
             columns: ['user_id'];
             isOneToOne: false;
             referencedRelation: 'profiles';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'notifications_user_id_fkey';
-            columns: ['user_id'];
-            isOneToOne: false;
-            referencedRelation: 'user_roles';
             referencedColumns: ['id'];
           },
         ];
@@ -208,13 +197,6 @@ export type Database = {
             referencedRelation: 'profiles';
             referencedColumns: ['id'];
           },
-          {
-            foreignKeyName: 'push_subscriptions_user_id_fkey';
-            columns: ['user_id'];
-            isOneToOne: true;
-            referencedRelation: 'user_roles';
-            referencedColumns: ['id'];
-          },
         ];
       };
       rosters: {
@@ -257,13 +239,6 @@ export type Database = {
             referencedColumns: ['id'];
           },
           {
-            foreignKeyName: 'rosters_duty_personnel_id_fkey';
-            columns: ['duty_personnel_id'];
-            isOneToOne: false;
-            referencedRelation: 'user_roles';
-            referencedColumns: ['id'];
-          },
-          {
             foreignKeyName: 'rosters_group_id_fkey';
             columns: ['group_id'];
             isOneToOne: false;
@@ -275,13 +250,6 @@ export type Database = {
             columns: ['reserve_duty_personnel_id'];
             isOneToOne: false;
             referencedRelation: 'profiles';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'rosters_reserve_duty_personnel_id_fkey';
-            columns: ['reserve_duty_personnel_id'];
-            isOneToOne: false;
-            referencedRelation: 'user_roles';
             referencedColumns: ['id'];
           },
         ];
@@ -339,13 +307,6 @@ export type Database = {
             referencedColumns: ['id'];
           },
           {
-            foreignKeyName: 'swap_requests_receiver_id_fkey';
-            columns: ['receiver_id'];
-            isOneToOne: false;
-            referencedRelation: 'user_roles';
-            referencedColumns: ['id'];
-          },
-          {
             foreignKeyName: 'swap_requests_receiver_roster_id_fkey';
             columns: ['receiver_roster_id'];
             isOneToOne: false;
@@ -357,13 +318,6 @@ export type Database = {
             columns: ['requester_id'];
             isOneToOne: false;
             referencedRelation: 'profiles';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'swap_requests_requester_id_fkey';
-            columns: ['requester_id'];
-            isOneToOne: false;
-            referencedRelation: 'user_roles';
             referencedColumns: ['id'];
           },
           {
@@ -383,21 +337,22 @@ export type Database = {
           group_name: string | null;
           id: string | null;
           name: string | null;
-          role: string | null;
+          role: Database['public']['Enums']['role'] | null;
+          user_id: string | null;
         };
         Relationships: [
           {
-            foreignKeyName: 'profiles_group_id_fkey';
+            foreignKeyName: 'group_users_group_id_fkey';
             columns: ['group_id'];
             isOneToOne: false;
             referencedRelation: 'groups';
             referencedColumns: ['id'];
           },
           {
-            foreignKeyName: 'profiles_id_fkey';
-            columns: ['id'];
+            foreignKeyName: 'group_users_user_id_fkey';
+            columns: ['user_id'];
             isOneToOne: true;
-            referencedRelation: 'users';
+            referencedRelation: 'profiles';
             referencedColumns: ['id'];
           },
         ];
@@ -415,6 +370,19 @@ export type Database = {
       db_pre_request: {
         Args: Record<PropertyKey, never>;
         Returns: undefined;
+      };
+      delete_avatar: {
+        Args: {
+          avatar_url: string;
+        };
+        Returns: Record<string, unknown>;
+      };
+      delete_storage_object: {
+        Args: {
+          bucket: string;
+          object: string;
+        };
+        Returns: Record<string, unknown>;
       };
       get_req_groups: {
         Args: Record<PropertyKey, never>;
@@ -452,6 +420,7 @@ export type Database = {
       };
     };
     Enums: {
+      action: 'swap_requests';
       role: 'user' | 'manager' | 'admin';
       status: 'pending' | 'accepted' | 'declined';
     };
@@ -571,6 +540,101 @@ export type Database = {
           },
         ];
       };
+      s3_multipart_uploads: {
+        Row: {
+          bucket_id: string;
+          created_at: string;
+          id: string;
+          in_progress_size: number;
+          key: string;
+          owner_id: string | null;
+          upload_signature: string;
+          version: string;
+        };
+        Insert: {
+          bucket_id: string;
+          created_at?: string;
+          id: string;
+          in_progress_size?: number;
+          key: string;
+          owner_id?: string | null;
+          upload_signature: string;
+          version: string;
+        };
+        Update: {
+          bucket_id?: string;
+          created_at?: string;
+          id?: string;
+          in_progress_size?: number;
+          key?: string;
+          owner_id?: string | null;
+          upload_signature?: string;
+          version?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 's3_multipart_uploads_bucket_id_fkey';
+            columns: ['bucket_id'];
+            isOneToOne: false;
+            referencedRelation: 'buckets';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      s3_multipart_uploads_parts: {
+        Row: {
+          bucket_id: string;
+          created_at: string;
+          etag: string;
+          id: string;
+          key: string;
+          owner_id: string | null;
+          part_number: number;
+          size: number;
+          upload_id: string;
+          version: string;
+        };
+        Insert: {
+          bucket_id: string;
+          created_at?: string;
+          etag: string;
+          id?: string;
+          key: string;
+          owner_id?: string | null;
+          part_number: number;
+          size?: number;
+          upload_id: string;
+          version: string;
+        };
+        Update: {
+          bucket_id?: string;
+          created_at?: string;
+          etag?: string;
+          id?: string;
+          key?: string;
+          owner_id?: string | null;
+          part_number?: number;
+          size?: number;
+          upload_id?: string;
+          version?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 's3_multipart_uploads_parts_bucket_id_fkey';
+            columns: ['bucket_id'];
+            isOneToOne: false;
+            referencedRelation: 'buckets';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 's3_multipart_uploads_parts_upload_id_fkey';
+            columns: ['upload_id'];
+            isOneToOne: false;
+            referencedRelation: 's3_multipart_uploads';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -608,6 +672,37 @@ export type Database = {
         Returns: {
           size: number;
           bucket_id: string;
+        }[];
+      };
+      list_multipart_uploads_with_delimiter: {
+        Args: {
+          bucket_id: string;
+          prefix_param: string;
+          delimiter_param: string;
+          max_keys?: number;
+          next_key_token?: string;
+          next_upload_token?: string;
+        };
+        Returns: {
+          key: string;
+          id: string;
+          created_at: string;
+        }[];
+      };
+      list_objects_with_delimiter: {
+        Args: {
+          bucket_id: string;
+          prefix_param: string;
+          delimiter_param: string;
+          max_keys?: number;
+          start_after?: string;
+          next_token?: string;
+        };
+        Returns: {
+          name: string;
+          id: string;
+          metadata: Json;
+          updated_at: string;
         }[];
       };
       search: {

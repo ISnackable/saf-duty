@@ -1,43 +1,3 @@
-CREATE EXTENSION IF NOT EXISTS "pg_net"
-WITH
-  SCHEMA "extensions";
-
-CREATE EXTENSION IF NOT EXISTS "pgsodium"
-WITH
-  SCHEMA "pgsodium";
-
-CREATE EXTENSION IF NOT EXISTS "pg_graphql"
-WITH
-  SCHEMA "graphql";
-
-CREATE EXTENSION IF NOT EXISTS "pg_stat_statements"
-WITH
-  SCHEMA "extensions";
-
-CREATE EXTENSION IF NOT EXISTS "pgcrypto"
-WITH
-  SCHEMA "extensions";
-
-CREATE EXTENSION IF NOT EXISTS "pgjwt"
-WITH
-  SCHEMA "extensions";
-
-CREATE EXTENSION IF NOT EXISTS "supabase_vault"
-WITH
-  SCHEMA "vault";
-
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
-WITH
-  SCHEMA "extensions";
-
-CREATE TYPE "public"."role" AS ENUM('user', 'manager', 'admin');
-
-ALTER TYPE "public"."role" OWNER TO "postgres";
-
-CREATE TYPE "public"."status" AS ENUM('pending', 'accepted', 'declined');
-
-ALTER TYPE "public"."status" OWNER TO "postgres";
-
 CREATE
 OR REPLACE FUNCTION "public"."allow_updating_only" () RETURNS TRIGGER LANGUAGE "plpgsql" AS $$
 DECLARE
@@ -206,9 +166,11 @@ CREATE TABLE IF NOT EXISTS
   "public"."notifications" (
     "id" bigint NOT NULL,
     "created_at" timestamp WITH TIME ZONE DEFAULT now() NOT NULL,
+    "updated_at" timestamp WITH TIME ZONE DEFAULT now(),
     "user_id" UUID NOT NULL,
     "title" text NOT NULL,
     "message" text NOT NULL,
+    "action" public.action NULL,
     "is_read" boolean DEFAULT FALSE NOT NULL
   );
 
@@ -254,7 +216,7 @@ WITH
 SELECT
   gu.id,
   g.name AS group_name,
-  gu.name,
+  u.name,
   gu.role,
   gu.group_id,
   gu.user_id
@@ -294,7 +256,7 @@ CREATE TABLE IF NOT EXISTS
     "duty_personnel_id" UUID,
     "reserve_duty_personnel_id" UUID,
     "duty_date" date NOT NULL,
-    "updated_at" timestamp WITH TIME ZONE,
+    "updated_at" timestamp WITH TIME ZONE DEFAULT now(),
     "id" bigint NOT NULL
   );
 
@@ -312,7 +274,7 @@ CREATE TABLE IF NOT EXISTS
   "public"."swap_requests" (
     "id" bigint NOT NULL,
     "created_at" timestamp WITH TIME ZONE DEFAULT now() NOT NULL,
-    "updated_at" timestamp WITH TIME ZONE,
+    "updated_at" timestamp WITH TIME ZONE DEFAULT now(),
     "receiver_id" UUID NOT NULL,
     "requester_id" UUID NOT NULL,
     "reason" text,
@@ -356,9 +318,15 @@ ADD CONSTRAINT "rosters_pkey" PRIMARY KEY ("id");
 ALTER TABLE ONLY "public"."swap_requests"
 ADD CONSTRAINT "swap_requests_pkey" PRIMARY KEY ("id");
 
-ALTER TABLE "storage"."objects"
-ALTER COLUMN "id"
-SET DEFAULT gen_random_uuid ();
+CREATE INDEX group_users_group_id_idx ON "public"."group_users"(group_id);
+
+CREATE INDEX notifications_user_id_idx ON "public"."notifications"(user_id);
+
+CREATE INDEX profiles_group_id_idx ON "public"."profiles"(group_id);
+
+CREATE INDEX ON "public"."rosters" USING btree (group_id, duty_personnel_id, reserve_duty_personnel_id);
+
+CREATE INDEX ON "public"."swap_requests" USING btree (group_id, requester_id, receiver_id, receiver_roster_id, requester_roster_id);
 
 CREATE TRIGGER on_after_auth_user_created
 AFTER INSERT ON auth.users FOR EACH ROW
@@ -378,11 +346,12 @@ CREATE TRIGGER profile_cls BEFORE INSERT
 OR
 UPDATE ON public.profiles FOR EACH ROW
 EXECUTE FUNCTION public.allow_updating_only (
+  'updated_at',
   'name',
   'avatar_url',
   'ord_date',
   'blockout_dates',
-  'updated_at',
+  'enlistment_date',
   'onboarded'
 );
 
@@ -438,86 +407,116 @@ DROP CONSTRAINT "group_users_user_id_fkey";
 ALTER TABLE ONLY "public"."group_users"
 ADD CONSTRAINT "group_users_user_id_fkey" FOREIGN KEY (user_id) REFERENCES public.profiles (id);
 
-CREATE POLICY "Enable delete for users based on requester_id" ON "public"."swap_requests" FOR DELETE USING ((auth.uid () = requester_id));
+CREATE POLICY "Enable delete for users based on requester_id" ON "public"."swap_requests"
+FOR DELETE
+TO authenticated
+USING ((SELECT auth.uid () = requester_id));
 
-CREATE POLICY "Enable delete for users based on user_id" ON "public"."push_subscriptions" FOR DELETE USING ((auth.uid () = user_id));
+CREATE POLICY "Enable delete for users based on user_id" ON "public"."push_subscriptions"
+FOR DELETE
+TO authenticated
+USING ((SELECT auth.uid () = user_id));
 
-CREATE POLICY "Enable insert for 'admin' role only" ON "public"."rosters" FOR INSERT
+CREATE POLICY "Enable insert for users with 'admin' role" ON "public"."rosters"
+FOR INSERT
+TO authenticated
 WITH
   CHECK ((public.has_group_role (group_id, 'admin'::text)));
 
-CREATE POLICY "Enable insert for users based on requester_id" ON "public"."swap_requests" FOR INSERT
+CREATE POLICY "Enable insert for users based on requester_id" ON "public"."swap_requests"
+FOR INSERT
+TO authenticated
 WITH
-  CHECK ((auth.uid () = requester_id));
+  CHECK ((SELECT auth.uid () = requester_id));
 
-CREATE POLICY "Enable insert for users for self" ON "public"."push_subscriptions" FOR INSERT
+CREATE POLICY "Enable insert for users based on user_id" ON "public"."push_subscriptions"
+FOR INSERT
+TO authenticated
 WITH
-  CHECK ((auth.uid () = user_id));
+  CHECK ((SELECT auth.uid () = user_id));
 
-CREATE POLICY "Enable read access for users based on their group_id" ON "public"."rosters" FOR
-SELECT
+CREATE POLICY "Enable read for users based on group_id" ON "public"."rosters"
+FOR SELECT
+TO authenticated
   USING ((public.is_group_member (group_id)));
 
-CREATE POLICY "Enable read access for users if they are related" ON "public"."swap_requests" FOR
-SELECT
+CREATE POLICY "Enable read for users based on receiver_id or requester_id" ON "public"."swap_requests"
+FOR SELECT
+TO authenticated
   USING (
     (
-      (auth.uid () = receiver_id)
-      OR (auth.uid () = requester_id)
+      (SELECT auth.uid () = receiver_id)
+      OR (SELECT auth.uid () = requester_id)
     )
   );
 
-CREATE POLICY "Enable read for to self user" ON "public"."push_subscriptions" FOR
-SELECT
-  USING ((auth.uid () = user_id));
+CREATE POLICY "Enable read for users based on user_id" ON "public"."push_subscriptions"
+FOR SELECT
+TO authenticated
+  USING ((SELECT auth.uid () = user_id));
 
-CREATE POLICY "Enable update for 'admin' role only" ON "public"."rosters"
+CREATE POLICY "Enable update for users with 'admin' role" ON "public"."rosters"
 FOR UPDATE
+TO authenticated
   USING ((public.has_group_role (group_id, 'admin'::text)))
 WITH
   CHECK ((public.has_group_role (group_id, 'admin'::text)));
 
-CREATE POLICY "Enable update for users based on self" ON "public"."push_subscriptions"
+CREATE POLICY "Enable update for users based on group_id" ON "public"."push_subscriptions"
 FOR UPDATE
-  USING ((auth.uid () = user_id));
+TO authenticated
+  USING ((SELECT auth.uid () = user_id));
 
-CREATE POLICY "Public profiles are viewable by everyone in the same unit." ON "public"."profiles" FOR
-SELECT
+CREATE POLICY "Enable read for users based on group_id" ON "public"."profiles"
+FOR SELECT
+TO authenticated
   USING ((public.is_group_member (group_id)));
 
-CREATE POLICY "Users can insert their own profile." ON "public"."profiles" FOR INSERT
+CREATE POLICY "Enable insert for users based on id or users with 'admin' role" ON "public"."profiles"
+FOR INSERT
+TO authenticated
 WITH
   CHECK (
     (
-      (auth.uid () = id)
+      (SELECT auth.uid () = id)
       OR (public.has_group_role (group_id, 'admin'::text))
     )
   );
 
-CREATE POLICY "Users can update own profile or role is admin." ON "public"."profiles"
+CREATE POLICY "Enable update for users based on id or users with 'admin' role" ON "public"."profiles"
 FOR UPDATE
+TO authenticated
   USING (
     (
-      (auth.uid () = id)
+      (SELECT auth.uid () = id)
       OR (public.has_group_role (group_id, 'admin'::text))
     )
   )
 WITH
   CHECK (
     (
-      (auth.uid () = id)
+      (SELECT auth.uid () = id)
       OR (public.has_group_role (group_id, 'admin'::text))
     )
   );
 
-CREATE POLICY "Enable read access for user based on their group_id or admin" ON "public"."group_users" FOR
-SELECT
+CREATE POLICY "Enable read for user based on their user_id or users with 'admin' role" ON "public"."group_users"
+FOR SELECT
+TO authenticated
   USING (
     (
-      (auth.uid () = user_id)
+      (SELECT auth.uid () = user_id)
       OR public.has_group_role (group_id, 'admin'::text)
     )
   );
+
+CREATE POLICY "Enable all for users based on user_id" ON "public"."notifications"
+FOR ALL
+TO authenticated
+  USING (
+    (SELECT auth.uid () = user_id)
+  );
+
 
 ALTER TABLE "public"."notifications" ENABLE ROW LEVEL SECURITY;
 

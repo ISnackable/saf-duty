@@ -12,7 +12,7 @@ function handleReturnedServerError(e: Error) {
   // In this case, we can use the 'MyCustomError` class to unmask errors
   // and return them with their actual messages to the client.
   if (e instanceof ActionError) {
-    throw e.message;
+    return e.message;
   }
 
   // Every other error that occurs will be masked with the default message.

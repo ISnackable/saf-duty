@@ -13,22 +13,22 @@
 .driver-popover.driverjs-theme .driver-popover-title,
 .driver-popover.driverjs-theme .driver-popover-description,
 .driver-popover.driverjs-theme .driver-popover-progress-text {
-  @apply px-2 text-primary-foreground;
+  @apply px-2 text-card-foreground;
 }
 
 .driver-popover.driverjs-theme button {
   text-align: center;
   text-shadow: none;
   border-radius: 6px;
-  @apply border border-input bg-card text-sm text-primary-foreground shadow-sm sm:text-base;
+  @apply border border-input bg-card text-sm text-card-foreground shadow-sm sm:text-base;
 }
 
 .driver-popover.driverjs-theme button:hover {
-  @apply bg-card text-primary-foreground;
+  @apply bg-card text-card-foreground;
 }
 
 .driver-popover.driverjs-theme button:focus {
-  @apply bg-card text-primary-foreground;
+  @apply bg-card text-card-foreground;
 }
 
 .driver-popover.driverjs-theme .driver-popover-navigation-btns {
@@ -39,11 +39,11 @@
 }
 
 .driver-popover.driverjs-theme .driver-popover-close-btn {
-  @apply bg-card text-primary-foreground sm:text-xl;
+  @apply bg-card text-card-foreground sm:text-xl;
 }
 
 .driver-popover.driverjs-theme .driver-popover-close-btn:hover {
-  @apply bg-card text-primary-foreground;
+  @apply bg-card text-card-foreground;
 }
 
 .driver-popover.driverjs-theme

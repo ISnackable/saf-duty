@@ -1,6 +1,38 @@
-CREATE extension pg_cron
+CREATE EXTENSION IF NOT EXISTS "pg_net"
 WITH
-  SCHEMA extensions;
+  SCHEMA "extensions";
+
+CREATE EXTENSION IF NOT EXISTS "pgsodium"
+WITH
+  SCHEMA "pgsodium";
+
+CREATE EXTENSION IF NOT EXISTS "pg_graphql"
+WITH
+  SCHEMA "graphql";
+
+CREATE EXTENSION IF NOT EXISTS "pg_stat_statements"
+WITH
+  SCHEMA "extensions";
+
+CREATE EXTENSION IF NOT EXISTS "pgcrypto"
+WITH
+  SCHEMA "extensions";
+
+CREATE EXTENSION IF NOT EXISTS "pgjwt"
+WITH
+  SCHEMA "extensions";
+
+CREATE EXTENSION IF NOT EXISTS "supabase_vault"
+WITH
+  SCHEMA "vault";
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
+WITH
+  SCHEMA "extensions";
+
+CREATE EXTENSION IF NOT EXISTS "pg_cron"
+WITH
+  SCHEMA "pg_catalog";
 
 GRANT USAGE ON SCHEMA cron TO postgres;
 
@@ -14,7 +46,7 @@ SELECT
     INSERT INTO public.notifications (user_id, title, message)
     SELECT duty_personnel_id,
       'Duty reminder!',
-      'You have a duty on ' || to_char((duty_date::date), 'Day, Mon DD, YYYY') || 'at 8:00 AM.'
+      'You have a duty on ' || to_char((duty_date::date), 'Day, DD Mon YYYY') || ' at 8:00 AM.'
     FROM public.rosters
     WHERE duty_date = (current_date + '1 day'::interval)
       AND exists (

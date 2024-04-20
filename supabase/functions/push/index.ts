@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
     .eq('user_id', payload.record.user_id)
     .single();
 
-  const { count }: { count?: number } = await supabase
+  const { count }: { count: number | null } = await supabase
     .from('notifications')
     .select('*', { count: 'exact', head: true })
     .eq('user_id', payload.record.user_id)
@@ -75,7 +75,7 @@ Deno.serve(async (req) => {
 
 export async function sendPushNotification(
   subscription: string,
-  payload: { title: string; message: string; unreadCount?: number },
+  payload: { title: string; message: string; unreadCount: number | null },
   userId: string
 ) {
   const applicationServerKeys = await ApplicationServerKeys.fromJSON({

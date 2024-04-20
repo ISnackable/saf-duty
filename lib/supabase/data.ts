@@ -6,11 +6,17 @@ import { type User } from '@supabase/supabase-js';
 import { isWeekend } from 'date-fns';
 
 import { type RosterPatch } from '@/app/(dashboard)/api/rosters/route';
-import { demoUsers, dutyRoster, swapRequests } from '@/lib/demo-data';
+import {
+  demoUsers,
+  dutyRoster,
+  notifications,
+  swapRequests,
+} from '@/lib/demo-data';
 import { type DutyDate } from '@/lib/duty-roster';
 import {
   type TypedSupabaseClient,
   getAllUsersByUnitId,
+  getNotificationsById,
   getRosterByUnitId,
   getSwapRequestByUnitId,
   getUserProfileById,
@@ -104,4 +110,26 @@ export async function getUserSwapRequestData(
   }
 
   return data;
+}
+
+export async function getUserNotificationData(
+  client: TypedSupabaseClient,
+  user: User
+) {
+  if (isDemoUser(user.id)) {
+    return { count: 0, data: notifications };
+  }
+
+  const { data, error } = await getNotificationsById(client);
+
+  const { count } = await client
+    .from('notifications')
+    .select('*', { count: 'estimated', head: true })
+    .is('is_read', false);
+
+  if (!data || error) {
+    throw new Error('Failed to fetch notifications');
+  }
+
+  return { count, data };
 }

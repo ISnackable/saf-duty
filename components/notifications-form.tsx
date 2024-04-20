@@ -52,6 +52,7 @@ export function NotificationsForm() {
     onClickUnsubscribeToPushNotification,
   } = usePushNotificationContext();
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [checked, setChecked] = useState<CheckedState>(false);
   const form = useForm<NotificationsFormValues>({
     resolver: zodResolver(notificationsFormSchema),
@@ -81,7 +82,7 @@ export function NotificationsForm() {
         <div className='items-top flex space-x-2'>
           <InstallPWA open={open} onOpenChange={setOpen}>
             <Checkbox
-              id='terms1'
+              disabled={isLoading}
               checked={checked}
               onCheckedChange={async (checkedState) => {
                 if (os === 'ios' || os === 'android' || os === 'undetermined') {
@@ -98,9 +99,12 @@ export function NotificationsForm() {
                   return;
                 }
 
+                setIsLoading(true);
+
                 if (userConsent === 'default') {
                   await onClickAskUserPermission();
                   toast.warning('Please click again to enable notifications');
+                  setIsLoading(false);
                   return;
                 }
 
@@ -116,6 +120,7 @@ export function NotificationsForm() {
                         description:
                           'Please enable notifications in your browser/OS settings app.',
                       });
+                      setIsLoading(false);
                       return;
                     }
 
@@ -131,6 +136,8 @@ export function NotificationsForm() {
                   await onClickUnsubscribeToPushNotification();
                   toast.success(`Unsubscribed from push notifications`);
                 }
+
+                setIsLoading(false);
               }}
             />
           </InstallPWA>

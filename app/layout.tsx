@@ -1,8 +1,9 @@
 import './globals.css';
 import { GeistMono } from 'geist/font/mono';
 import { GeistSans } from 'geist/font/sans';
-import { type Metadata, type Viewport } from 'next';
+import type { Metadata, Viewport } from 'next';
 
+import { Icons } from '@/components/icons';
 import { ProgressBar } from '@/components/progress-bar';
 import { PushNotificationProvider } from '@/components/push-notification-provider';
 import { SessionProvider } from '@/components/session-provider';
@@ -272,7 +273,23 @@ export default function RootLayout({
                 <ProgressBar className='fixed top-0 z-[100] h-1 bg-primary'>
                   <SWRProvider>{children}</SWRProvider>
                 </ProgressBar>
-                <Toaster closeButton duration={3000} position='top-right' />
+                <Toaster
+                  closeButton
+                  icons={{
+                    success: (
+                      <Icons.circleDashedCheck className='size-5 text-[#089445] dark:text-[#32d46c]' />
+                    ),
+                    info: (
+                      <Icons.infoCircle className='size-5 text-[#3498d9]' />
+                    ),
+                    warning: (
+                      <Icons.alertTriangle className='size-5 text-[#f0c100]' />
+                    ),
+                    error: (
+                      <Icons.exclamationCircle className='size-5 text-[#da1415]' />
+                    ),
+                  }}
+                />
               </SessionProvider>
             </PushNotificationProvider>
           </ThemeProvider>

@@ -4,11 +4,13 @@ import 'server-only';
 
 import type { User } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
+import { limit } from '@/lib/rate-limit';
 import { createClient } from '@/lib/supabase/clients/server';
-import { type TypedSupabaseClient } from '@/lib/supabase/queries';
-import { type State } from '@/types/api-route';
+import type { TypedSupabaseClient } from '@/lib/supabase/queries';
+import type { State } from '@/types/api-route';
+import type { Database } from '@/types/supabase';
 import { isDemoUser } from '@/utils/helper';
 
 declare module '@supabase/supabase-js' {
@@ -19,7 +21,7 @@ declare module '@supabase/supabase-js' {
 }
 export interface Group {
   id: string;
-  role: 'admin' | 'manager' | 'user';
+  role: Database['public']['Enums']['role'];
 }
 
 interface WithAuthHandler {
@@ -42,7 +44,7 @@ interface WithAuthHandler {
 }
 
 interface WithAuthOptions {
-  requiredRole?: Array<'admin' | 'manager' | 'user'>;
+  requiredRole?: Database['public']['Enums']['role'][];
   needNotExceededUsage?: boolean;
   allowDemoUser?: boolean;
 }
@@ -54,11 +56,33 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
   } = options || {};
 
   return async (
-    request: Request,
+    request: NextRequest,
     { params }: { params: Record<string, string> | undefined }
   ) => {
     const { searchParams } = new URL(request.url);
     let headers = {};
+    const { method } = request;
+
+    if (
+      method === 'POST' ||
+      method === 'PUT' ||
+      method === 'DELETE' ||
+      method === 'PATCH'
+    ) {
+      const ip =
+        request.ip ?? request.headers.get('X-Forwarded-For') ?? 'unknown';
+      const isRateLimited = limit(ip);
+
+      if (isRateLimited) {
+        return NextResponse.json(
+          {
+            status: 'error',
+            message: 'Rate limit exceeded. Please try again later.',
+          },
+          { status: 429 }
+        );
+      }
+    }
 
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);

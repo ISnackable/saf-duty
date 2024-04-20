@@ -84,7 +84,7 @@ export function SessionProvider({
 
   const [session, setSession] = useState<Session | null>(initialSession);
   const [isLoading, setIsLoading] = useState<boolean>(!initialSession);
-  const [error, setError] = useState<AuthError>();
+  // const [error, setError] = useState<AuthError>();
 
   useEffect(() => {
     if (!session && initialSession) {
@@ -95,37 +95,39 @@ export function SessionProvider({
   const { userSubscription, onClickSubscribeToPushNotification } =
     usePushNotificationContext();
 
+  // useEffect(() => {
+  //   let mounted = true;
+
+  //   async function getSession() {
+  //     const {
+  //       data: { session },
+  //       error,
+  //     } = await supabaseClient.auth.getSession();
+
+  //     // only update the react state if the component is still mounted
+  //     if (mounted) {
+  //       if (error) {
+  //         setError(error);
+  //         setIsLoading(false);
+  //         return;
+  //       }
+
+  //       setSession(session);
+  //       setIsLoading(false);
+  //     }
+  //   }
+
+  //   getSession();
+
+  //   return () => {
+  //     mounted = false;
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
+
   useEffect(() => {
-    let mounted = true;
+    setIsLoading(false);
 
-    async function getSession() {
-      const {
-        data: { session },
-        error,
-      } = await supabaseClient.auth.getSession();
-
-      // only update the react state if the component is still mounted
-      if (mounted) {
-        if (error) {
-          setError(error);
-          setIsLoading(false);
-          return;
-        }
-
-        setSession(session);
-        setIsLoading(false);
-      }
-    }
-
-    getSession();
-
-    return () => {
-      mounted = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     const subscription = supabaseClient.auth.onAuthStateChange(
       (event, session) => {
         // console.log('SessionProvider: onAuthStateChange', event, session);
@@ -164,14 +166,14 @@ export function SessionProvider({
       };
     }
 
-    if (error) {
-      return {
-        isLoading: false,
-        session: null,
-        error,
-        supabaseClient,
-      };
-    }
+    // if (error) {
+    //   return {
+    //     isLoading: false,
+    //     session: null,
+    //     error,
+    //     supabaseClient,
+    //   };
+    // }
 
     return {
       isLoading: false,
@@ -180,7 +182,8 @@ export function SessionProvider({
       supabaseClient,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, session, error]);
+  }, [isLoading, session]);
+  // }, [isLoading, session, error]);
 
   return (
     <SessionContext.Provider value={value}>{children}</SessionContext.Provider>

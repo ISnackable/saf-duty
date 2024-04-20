@@ -752,3 +752,41 @@ export const swapRequests: SwapRequests[] = [
     status: 'pending',
   },
 ];
+
+export const notifications = [
+  {
+    id: 1,
+    title: 'Swap Request',
+    message: 'You have a new swap request from John Doe',
+    created_at: '2024-04-06 13:54:14.056462+00',
+    is_read: false,
+  },
+  {
+    id: 2,
+    title: 'Swap Request',
+    message: 'You have a new swap request from AWDAW Doe',
+    created_at: '2024-04-06 14:08:28.22377+00',
+    is_read: false,
+  },
+  {
+    id: 3,
+    title: 'Swap Request',
+    message: 'You have a new swap request from AWDAWD Doe',
+    created_at: '2024-04-11 10:04:01.70602+00',
+    is_read: false,
+  },
+  {
+    id: 3,
+    title: 'Swap Request',
+    message: 'You have a new swap request from AWDAWD Doe',
+    created_at: '2024-04-17 14:03:45.422521+00',
+    is_read: false,
+  },
+  {
+    id: 3,
+    title: 'Swap Request',
+    message: 'You have a new swap request from AWDAWD Doe',
+    created_at: '2024-04-17 14:05:48.463113+00',
+    is_read: false,
+  },
+];

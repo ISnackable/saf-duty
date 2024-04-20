@@ -22,6 +22,7 @@ export function NotificationsButton() {
   } = usePushNotificationContext();
   const os = useOs();
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     ((session && isDemoUser(session.user.id)) || userSubscription === null) && (
@@ -30,6 +31,7 @@ export function NotificationsButton() {
           variant='outline'
           size='sm'
           className='rounded-full'
+          disabled={isLoading}
           onClick={async () => {
             if (userSubscription !== null) return;
 
@@ -47,6 +49,7 @@ export function NotificationsButton() {
               return;
             }
 
+            setIsLoading(true);
             if (userConsent === 'default') {
               await onClickAskUserPermission();
 
@@ -59,6 +62,7 @@ export function NotificationsButton() {
                   description:
                     'Please enable notifications in your browser/OS settings app.',
                 });
+                setIsLoading(false);
                 return;
               }
 
@@ -69,6 +73,8 @@ export function NotificationsButton() {
                   'Please enable notifications in your browser/OS settings app.',
               });
             }
+
+            setIsLoading(false);
           }}
         >
           Turn on notifications

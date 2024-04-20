@@ -13,7 +13,7 @@ CREATE TABLE
     "id" UUID NOT NULL DEFAULT gen_random_uuid (),
     "group_id" UUID NOT NULL,
     "user_id" UUID NOT NULL,
-    "role" text NOT NULL DEFAULT ''::text,
+    "role" public.role NOT NULL DEFAULT 'user'::public.role,
     "created_at" timestamp WITH TIME ZONE DEFAULT now()
   );
 

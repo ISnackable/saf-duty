@@ -49,5 +49,5 @@ export const POST = withAuth(
       );
     }
   },
-  { allowDemoUser: true }
+  { allowDemoUser: false }
 );

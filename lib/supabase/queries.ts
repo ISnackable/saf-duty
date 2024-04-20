@@ -100,3 +100,10 @@ export function getSwapRequestByUnitId(client: TypedSupabaseClient) {
     )
     .returns<SwapRequests[]>();
 }
+
+export function getNotificationsById(client: TypedSupabaseClient) {
+  return client
+    .from('notifications')
+    .select('id, created_at, title, message, is_read, action')
+    .order('updated_at', { ascending: true });
+}
