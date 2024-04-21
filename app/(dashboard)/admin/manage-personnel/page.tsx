@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 
+import { DutyPersonnelsTable } from '@/components/duty-personnels-table';
 import { Icons } from '@/components/icons';
+
+import { columns } from './columns';
 
 export const metadata: Metadata = {
   title: 'Manage Personnel',
@@ -11,7 +14,7 @@ export default async function AdminManagePersonnelPage() {
   return (
     <div className='space-y-4 p-8 pt-4'>
       <div className='flex w-full items-center space-y-2'>
-        <Icons.users className='mr-3 inline-block h-8 w-8 items-center align-middle' />
+        <Icons.user className='mr-3 inline-block h-8 w-8 items-center align-middle' />
         <h1 className='grow scroll-m-20 border-b pb-2 text-2xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl'>
           Manage Personnel
         </h1>
@@ -20,6 +23,8 @@ export default async function AdminManagePersonnelPage() {
         View the overview of the users, you can edit the user role and extra
         information such as weekday points, weekend points, extras, etc.
       </p>
+
+      <DutyPersonnelsTable columns={columns} />
     </div>
   );
 }

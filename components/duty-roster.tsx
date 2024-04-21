@@ -6,6 +6,7 @@ import {
   addDays,
   format,
   formatISO,
+  isSameMonth,
   parse,
   startOfMonth,
   subDays,
@@ -122,6 +123,8 @@ function DayWithTime(
     </div>
   );
 }
+
+const TODAY = new Date();
 
 export function DutyRoster() {
   const pathname = usePathname();
@@ -340,7 +343,8 @@ export function DutyRoster() {
                                 (roster) =>
                                   roster?.personnel?.id === session?.user?.id &&
                                   new Date(roster?.date).getTime() >
-                                    new Date().getTime()
+                                    TODAY.getTime() &&
+                                  isSameMonth(monthDate, new Date(roster?.date))
                               )
                               .map((roster) => (
                                 <SelectItem key={roster.id} value={roster.date}>

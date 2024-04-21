@@ -1,0 +1,45 @@
+import type { MergeDeep } from 'type-fest';
+
+export type Database = MergeDeep<
+  _Database,
+  {
+    public: {
+      Tables: {
+        profiles: {
+          Row: {
+            user_settings: {
+              notify_on_duty_reminder: boolean;
+              notify_on_swap_requests: boolean;
+              notify_on_rosters_published: boolean;
+            } | null;
+          };
+          Insert: {
+            user_settings?: {
+              notify_on_duty_reminder: boolean;
+              notify_on_swap_requests: boolean;
+              notify_on_rosters_published: boolean;
+            } | null;
+          };
+          Update: {
+            user_settings?: {
+              notify_on_duty_reminder: boolean;
+              notify_on_swap_requests: boolean;
+              notify_on_rosters_published: boolean;
+            } | null;
+          };
+        };
+        notifications: {
+          Row: {
+            action: Database['public']['Enums']['action'] | null;
+          };
+          Insert: {
+            action?: Database['public']['Enums']['action'] | null;
+          };
+          Update: {
+            action?: Database['public']['Enums']['action'] | null;
+          };
+        };
+      };
+    };
+  }
+>;

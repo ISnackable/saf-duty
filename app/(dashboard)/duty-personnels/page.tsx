@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 
+import { DutyPersonnelsTable } from '@/components/duty-personnels-table';
 import { Icons } from '@/components/icons';
+
+import { columns } from './columns';
 
 export const metadata: Metadata = {
   title: 'Duty Personnels',
@@ -16,9 +19,8 @@ export default async function DutyPersonnelsPage() {
           Duty Personnels
         </h1>
       </div>
-      <p className='text-sm leading-7 sm:text-base [&:not(:first-child)]:mt-6'>
-        ... WORDS ...
-      </p>
+
+      <DutyPersonnelsTable columns={columns} />
     </div>
   );
 }

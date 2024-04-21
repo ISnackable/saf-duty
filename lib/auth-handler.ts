@@ -10,7 +10,7 @@ import { limit } from '@/lib/rate-limit';
 import { createClient } from '@/lib/supabase/clients/server';
 import type { TypedSupabaseClient } from '@/lib/supabase/queries';
 import type { State } from '@/types/api-route';
-import type { Database } from '@/types/supabase';
+import type { Enums } from '@/types/supabase';
 import { isDemoUser } from '@/utils/helper';
 
 declare module '@supabase/supabase-js' {
@@ -21,7 +21,7 @@ declare module '@supabase/supabase-js' {
 }
 export interface Group {
   id: string;
-  role: Database['public']['Enums']['role'];
+  role: Enums<'role'>;
 }
 
 interface WithAuthHandler {
@@ -44,7 +44,7 @@ interface WithAuthHandler {
 }
 
 interface WithAuthOptions {
-  requiredRole?: Database['public']['Enums']['role'][];
+  requiredRole?: Enums<'role'>[];
   needNotExceededUsage?: boolean;
   allowDemoUser?: boolean;
 }

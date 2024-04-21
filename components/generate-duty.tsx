@@ -279,18 +279,18 @@ export function GenerateDuty({
     ) {
       setDutyRoster(roster);
 
-      const uniquePersonnels = Array.from(
-        new Set(
-          Object.values(roster)
-            .map((date) => date.personnel?.id)
-            .filter(Boolean)
-        )
-      );
-      const personnels = OPTIONS.filter((option) =>
-        uniquePersonnels.includes(option.value)
-      );
+      // const uniquePersonnels = Array.from(
+      //   new Set(
+      //     Object.values(roster)
+      //       .map((date) => date.personnel?.id)
+      //       .filter(Boolean)
+      //   )
+      // );
+      // const personnels = OPTIONS.filter((option) =>
+      //   uniquePersonnels.includes(option.value)
+      // );
 
-      form.setValue('personnels', personnels);
+      // form.setValue('personnels', personnels);
     } else {
       setDutyRoster({});
     }

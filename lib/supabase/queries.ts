@@ -8,6 +8,7 @@ import type { Tables } from '@/types/supabase';
 export type TypedSupabaseClient = SupabaseClient<Database>;
 export type Profiles = Omit<Tables<'profiles'>, 'updated_at'> & {
   role: 'admin' | 'user' | 'manager' | null;
+  total_duty_done: [{ count: number }];
 };
 export interface SwapRequests
   extends Omit<
@@ -49,11 +50,14 @@ export function getRosterByUnitId(
 }
 
 export function getAllUsersByUnitId(client: TypedSupabaseClient) {
+  const TODAY = format(new Date(), 'yyyy-MM-dd');
+
   return client
     .from('profiles')
     .select(
-      'id, name, avatar_url, group_id, blockout_dates, max_blockouts, weekday_points, weekend_points, enlistment_date, ord_date, no_of_extras, onboarded, ...group_users(role)'
+      'id, created_at, name, avatar_url, group_id, blockout_dates, max_blockouts, weekday_points, weekend_points, enlistment_date, ord_date, no_of_extras, onboarded, ...group_users(role), total_duty_done:rosters!rosters_duty_personnel_id_fkey(count)'
     )
+    .lt('rosters.duty_date', TODAY)
     .returns<Profiles[]>();
 }
 
@@ -62,13 +66,16 @@ export function getUserProfileById(
   client: TypedSupabaseClient,
   sessionId: string
 ) {
+  const TODAY = format(new Date(), 'yyyy-MM-dd');
+
   return client
     .from('profiles')
     .select(
-      'id, name, avatar_url, group_id, blockout_dates, max_blockouts, weekday_points, weekend_points, enlistment_date, ord_date, no_of_extras, onboarded, ...group_users(role)'
+      'id, created_at, name, avatar_url, group_id, blockout_dates, max_blockouts, weekday_points, weekend_points, enlistment_date, ord_date, no_of_extras, onboarded, ...group_users(role), total_duty_done:rosters!rosters_duty_personnel_id_fkey(count)'
     )
     .eq('id', sessionId)
     .eq('group_users.user_id', sessionId)
+    .lt('rosters.duty_date', TODAY)
     .single<Profiles>();
 }
 

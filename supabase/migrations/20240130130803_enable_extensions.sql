@@ -6,10 +6,6 @@ CREATE EXTENSION IF NOT EXISTS "pgsodium"
 WITH
   SCHEMA "pgsodium";
 
-CREATE EXTENSION IF NOT EXISTS "pg_graphql"
-WITH
-  SCHEMA "graphql";
-
 CREATE EXTENSION IF NOT EXISTS "pg_stat_statements"
 WITH
   SCHEMA "extensions";
@@ -27,6 +23,10 @@ WITH
   SCHEMA "vault";
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
+WITH
+  SCHEMA "extensions";
+
+CREATE EXTENSION IF NOT EXISTS "pg_jsonschema"
 WITH
   SCHEMA "extensions";
 
@@ -53,6 +53,11 @@ SELECT
         SELECT 1
         FROM public.push_subscriptions
         WHERE push_subscriptions.user_id = rosters.duty_personnel_id
-      );
-$$
+      )
+      AND (
+        SELECT user_settings->>'notify_on_duty_reminder'
+        FROM public.profiles
+        WHERE profiles.user_id = rosters.duty_personnel_id
+      ) = 'true';
+    $$
   );

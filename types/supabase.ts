@@ -1,3 +1,49 @@
+import type { MergeDeep } from 'type-fest';
+
+export type Database = MergeDeep<
+  _Database,
+  {
+    public: {
+      Tables: {
+        profiles: {
+          Row: {
+            user_settings: {
+              notify_on_duty_reminder: boolean;
+              notify_on_swap_requests: boolean;
+              notify_on_rosters_published: boolean;
+            } | null;
+          };
+          Insert: {
+            user_settings?: {
+              notify_on_duty_reminder: boolean;
+              notify_on_swap_requests: boolean;
+              notify_on_rosters_published: boolean;
+            } | null;
+          };
+          Update: {
+            user_settings?: {
+              notify_on_duty_reminder: boolean;
+              notify_on_swap_requests: boolean;
+              notify_on_rosters_published: boolean;
+            } | null;
+          };
+        };
+        notifications: {
+          Row: {
+            action: Database['public']['Enums']['action'] | null;
+          };
+          Insert: {
+            action?: Database['public']['Enums']['action'] | null;
+          };
+          Update: {
+            action?: Database['public']['Enums']['action'] | null;
+          };
+        };
+      };
+    };
+  }
+>;
+
 export type Json =
   | string
   | number
@@ -6,7 +52,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-export type Database = {
+type _Database = {
   public: {
     Tables: {
       group_users: {
@@ -74,6 +120,7 @@ export type Database = {
           is_read: boolean;
           message: string;
           title: string;
+          updated_at: string | null;
           user_id: string;
         };
         Insert: {
@@ -83,6 +130,7 @@ export type Database = {
           is_read?: boolean;
           message: string;
           title: string;
+          updated_at?: string | null;
           user_id: string;
         };
         Update: {
@@ -92,6 +140,7 @@ export type Database = {
           is_read?: boolean;
           message?: string;
           title?: string;
+          updated_at?: string | null;
           user_id?: string;
         };
         Relationships: [
@@ -108,6 +157,7 @@ export type Database = {
         Row: {
           avatar_url: string | null;
           blockout_dates: string[] | null;
+          created_at: string;
           enlistment_date: string | null;
           group_id: string;
           id: string;
@@ -117,12 +167,14 @@ export type Database = {
           onboarded: boolean;
           ord_date: string | null;
           updated_at: string | null;
+          user_settings: Json | null;
           weekday_points: number;
           weekend_points: number;
         };
         Insert: {
           avatar_url?: string | null;
           blockout_dates?: string[] | null;
+          created_at?: string;
           enlistment_date?: string | null;
           group_id: string;
           id: string;
@@ -132,12 +184,14 @@ export type Database = {
           onboarded?: boolean;
           ord_date?: string | null;
           updated_at?: string | null;
+          user_settings?: Json | null;
           weekday_points?: number;
           weekend_points?: number;
         };
         Update: {
           avatar_url?: string | null;
           blockout_dates?: string[] | null;
+          created_at?: string;
           enlistment_date?: string | null;
           group_id?: string;
           id?: string;
@@ -147,6 +201,7 @@ export type Database = {
           onboarded?: boolean;
           ord_date?: string | null;
           updated_at?: string | null;
+          user_settings?: Json | null;
           weekday_points?: number;
           weekend_points?: number;
         };
@@ -335,10 +390,9 @@ export type Database = {
         Row: {
           group_id: string | null;
           group_name: string | null;
-          id: string | null;
-          name: string | null;
           role: Database['public']['Enums']['role'] | null;
           user_id: string | null;
+          user_name: string | null;
         };
         Relationships: [
           {
@@ -417,6 +471,17 @@ export type Database = {
           group_id: string;
         };
         Returns: boolean;
+      };
+      update_rosters_swap_requests: {
+        Args: {
+          receiver_roster_id: number;
+          requester_roster_id: number;
+          receiver_id: string;
+          requester_id: string;
+          reserve_receiver_id: string;
+          reserve_requester_id: string;
+        };
+        Returns: undefined;
       };
     };
     Enums: {

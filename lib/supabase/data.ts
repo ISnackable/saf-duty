@@ -117,7 +117,7 @@ export async function getUserNotificationData(
   user: User
 ) {
   if (isDemoUser(user.id)) {
-    return { count: 0, data: notifications };
+    return { count: notifications.length, data: notifications };
   }
 
   const { data, error } = await getNotificationsById(client);

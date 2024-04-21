@@ -1,6 +1,7 @@
 // All the demo data that used as fallbacks when there's nothing in the dataset yet
 import { demo } from '@/lib/config';
 import type { Profiles, SwapRequests } from '@/lib/supabase/queries';
+import type { Tables } from '@/types/supabase';
 
 const todayMonth = (new Date().getMonth() + 1)
   .toString()
@@ -24,6 +25,7 @@ export const blockouts: string[] = [
 
 export const demoUsers: Profiles[] = [
   {
+    created_at: '${currentYear}-01-01',
     id: demo.id,
     name: 'demo',
     group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
@@ -31,6 +33,7 @@ export const demoUsers: Profiles[] = [
       'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment_date: '2022-01-02',
     ord_date: '2024-01-01',
+    total_duty_done: [{ count: 12 }],
     weekday_points: 0,
     weekend_points: 2,
     no_of_extras: 0,
@@ -38,8 +41,14 @@ export const demoUsers: Profiles[] = [
     max_blockouts: 8,
     onboarded: false,
     role: 'user',
+    user_settings: {
+      notify_on_duty_reminder: false,
+      notify_on_swap_requests: true,
+      notify_on_rosters_published: true,
+    },
   },
   {
+    created_at: '${currentYear}-01-01',
     id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
     name: 'Zhi Hao',
     group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
@@ -47,7 +56,7 @@ export const demoUsers: Profiles[] = [
       'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment_date: '2022-02-27',
     ord_date: '2024-02-28',
-    // totalDutyDone: 12,
+    total_duty_done: [{ count: 12 }],
     weekday_points: 0,
     weekend_points: 1,
     no_of_extras: 0,
@@ -55,8 +64,14 @@ export const demoUsers: Profiles[] = [
     max_blockouts: 8,
     onboarded: false,
     role: 'user',
+    user_settings: {
+      notify_on_duty_reminder: false,
+      notify_on_swap_requests: true,
+      notify_on_rosters_published: true,
+    },
   },
   {
+    created_at: '${currentYear}-01-01',
     id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
     name: 'Jia Hui',
     group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
@@ -64,7 +79,7 @@ export const demoUsers: Profiles[] = [
       'https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment_date: '${currentYear}-05-11',
     ord_date: '2025-05-10',
-    // totalDutyDone: 10,
+    total_duty_done: [{ count: 10 }],
     weekday_points: 1,
     weekend_points: 1,
     no_of_extras: 2,
@@ -72,8 +87,14 @@ export const demoUsers: Profiles[] = [
     max_blockouts: 8,
     onboarded: false,
     role: 'user',
+    user_settings: {
+      notify_on_duty_reminder: false,
+      notify_on_swap_requests: true,
+      notify_on_rosters_published: true,
+    },
   },
   {
+    created_at: '${currentYear}-01-01',
     id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
     name: 'Jia Hao',
     group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
@@ -81,7 +102,7 @@ export const demoUsers: Profiles[] = [
       'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment_date: '2021-03-02',
     ord_date: '${currentYear}-03-01',
-    // totalDutyDone: 9,
+    total_duty_done: [{ count: 9 }],
     weekday_points: 1,
     weekend_points: 1,
     no_of_extras: 0,
@@ -89,8 +110,14 @@ export const demoUsers: Profiles[] = [
     max_blockouts: 8,
     onboarded: false,
     role: 'user',
+    user_settings: {
+      notify_on_duty_reminder: false,
+      notify_on_swap_requests: true,
+      notify_on_rosters_published: true,
+    },
   },
   {
+    created_at: '${currentYear}-01-01',
     id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
     name: 'Jun Kai',
     group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
@@ -98,7 +125,7 @@ export const demoUsers: Profiles[] = [
       'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment_date: '2022-04-02',
     ord_date: '2024-04-01',
-    // totalDutyDone: 6,
+    total_duty_done: [{ count: 6 }],
     weekday_points: 1,
     weekend_points: 0,
     no_of_extras: 0,
@@ -116,8 +143,14 @@ export const demoUsers: Profiles[] = [
     max_blockouts: 8,
     onboarded: false,
     role: 'user',
+    user_settings: {
+      notify_on_duty_reminder: false,
+      notify_on_swap_requests: true,
+      notify_on_rosters_published: true,
+    },
   },
   {
+    created_at: '${currentYear}-01-01',
     id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
     name: 'Wang Li',
     group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
@@ -125,7 +158,7 @@ export const demoUsers: Profiles[] = [
       'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     enlistment_date: '2022-09-30',
     ord_date: '2024-09-29',
-    // totalDutyDone: 0,
+    total_duty_done: [{ count: 0 }],
     weekday_points: -1,
     weekend_points: 2,
     no_of_extras: 0,
@@ -133,8 +166,14 @@ export const demoUsers: Profiles[] = [
     max_blockouts: 8,
     onboarded: false,
     role: 'user',
+    user_settings: {
+      notify_on_duty_reminder: false,
+      notify_on_swap_requests: true,
+      notify_on_rosters_published: true,
+    },
   },
   {
+    created_at: '${currentYear}-01-01',
     id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
     name: 'Darryl Koh',
     group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
@@ -142,7 +181,7 @@ export const demoUsers: Profiles[] = [
       'https://images.unsplash.com/photo-1531727991582-cfd25ce79613?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
     enlistment_date: '2022-02-14',
     ord_date: '2024-02-13',
-    // totalDutyDone: 0,
+    total_duty_done: [{ count: 0 }],
     weekday_points: 1,
     weekend_points: 2,
     no_of_extras: 0,
@@ -167,8 +206,14 @@ export const demoUsers: Profiles[] = [
     max_blockouts: 8,
     onboarded: false,
     role: 'user',
+    user_settings: {
+      notify_on_duty_reminder: false,
+      notify_on_swap_requests: true,
+      notify_on_rosters_published: true,
+    },
   },
   {
+    created_at: '${currentYear}-01-01',
     id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
     name: 'Elliot Tan',
     group_id: '59d5daa0-6620-4383-b3e3-358b76bf8ebd',
@@ -176,7 +221,7 @@ export const demoUsers: Profiles[] = [
       'https://images.unsplash.com/photo-1614587185092-af24ed71c6e4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80',
     enlistment_date: '2022-06-24',
     ord_date: '2024-06-23',
-    // totalDutyDone: 0,
+    total_duty_done: [{ count: 0 }],
     weekday_points: 0,
     weekend_points: 0,
     no_of_extras: 0,
@@ -199,6 +244,11 @@ export const demoUsers: Profiles[] = [
     max_blockouts: 8,
     onboarded: false,
     role: 'user',
+    user_settings: {
+      notify_on_duty_reminder: false,
+      notify_on_swap_requests: true,
+      notify_on_rosters_published: true,
+    },
   },
 ];
 
@@ -753,40 +803,41 @@ export const swapRequests: SwapRequests[] = [
   },
 ];
 
-export const notifications = [
+export const notifications: Omit<Tables<'notifications'>, 'user_id'>[] = [
   {
     id: 1,
+    action: 'swap_requests',
     title: 'Swap Request',
     message: 'You have a new swap request from John Doe',
     created_at: '2024-04-06 13:54:14.056462+00',
+    updated_at: '2024-04-06 13:54:14.056462+00',
     is_read: false,
   },
   {
     id: 2,
-    title: 'Swap Request',
-    message: 'You have a new swap request from AWDAW Doe',
+    action: null,
+    title: 'Duty reminder!',
+    message: 'You have a duty on Wednesday, 24 Apr 2024 at 8:00 AM.',
     created_at: '2024-04-06 14:08:28.22377+00',
+    updated_at: '2024-04-06 14:08:28.22377+00',
     is_read: false,
   },
   {
     id: 3,
-    title: 'Swap Request',
-    message: 'You have a new swap request from AWDAWD Doe',
+    action: null,
+    title: 'Duty reminder!',
+    message: 'You have a duty on Friday, 10 May 2024 at 8:00 AM.',
     created_at: '2024-04-11 10:04:01.70602+00',
+    updated_at: '2024-04-11 10:04:01.70602+00',
     is_read: false,
   },
   {
-    id: 3,
-    title: 'Swap Request',
-    message: 'You have a new swap request from AWDAWD Doe',
-    created_at: '2024-04-17 14:03:45.422521+00',
-    is_read: false,
-  },
-  {
-    id: 3,
-    title: 'Swap Request',
-    message: 'You have a new swap request from AWDAWD Doe',
-    created_at: '2024-04-17 14:05:48.463113+00',
+    id: 4,
+    action: null,
+    title: 'Duty reminder!',
+    message: 'You have a duty on Sunday, 12 May 2024 at 8:00 AM.',
+    created_at: '2024-04-11 10:04:01.70602+00',
+    updated_at: '2024-04-11 10:04:01.70602+00',
     is_read: false,
   },
 ];

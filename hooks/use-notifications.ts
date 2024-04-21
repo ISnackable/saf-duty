@@ -7,7 +7,7 @@ import type { Tables } from '@/types/supabase';
 
 export interface Notifications {
   notifications: Omit<Tables<'notifications'>, 'user_id'>[];
-  unreadCount: number;
+  unreadCount: number | null;
 }
 
 export function useNotifications() {

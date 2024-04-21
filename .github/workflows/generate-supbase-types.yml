@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-node@v2.1.5
         with:
           node-version: 16
-      - run: npx supabase gen types typescript > types/supabase.ts
+      - run: npx types:generate
       - name: check for file changes
         id: git_status
         run: |

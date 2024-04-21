@@ -4,8 +4,8 @@ import { DutyRoster } from '@/components/duty-roster';
 import { Icons } from '@/components/icons';
 
 export const metadata: Metadata = {
-  title: 'Manage User',
-  description: 'Admin page to schedule duty roster.',
+  title: 'Duty Roster',
+  description: 'View the duty roster and request for swap duty.',
 };
 
 export default async function DutyRosterPage() {

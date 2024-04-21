@@ -176,7 +176,6 @@ export function NotificationsPopover() {
                               </TooltipContent>
                             </Tooltip>
                           </CardContent>
-                          {/* @ts-expect-error supabase wrong typing */}
                           {action === 'swap_requests' ? (
                             <CardFooter className='-mt-12 flex-row justify-end gap-2 pb-4'>
                               <Button

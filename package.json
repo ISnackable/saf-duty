@@ -11,7 +11,7 @@
     "format": "prettier --check .",
     "format:fix": "prettier --write --list-different .",
     "type-check": "tsc --noEmit",
-    "type:generate": "supabase gen types typescript --linked > types/supabase.ts",
+    "type:generate": "supabase gen types typescript --linked > types/supabase.ts && sed -i 's/export type Database/type _Database/g' types/supabase.ts && cat types/merge-supabase.txt types/supabase.ts > temp.txt; mv temp.txt types/supabase.ts",
     "ui:diff": "shadcn-ui diff | grep -oP '(?<=ui/)(\\w+)(?=\\.tsx)' | xargs -L 1 npx shadcn-ui diff"
   },
   "dependencies": {
@@ -90,6 +90,7 @@
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "shadcn-ui": "^0.8.0",
-    "supabase": "^1.162.4"
+    "supabase": "^1.162.4",
+    "type-fest": "^4.15.0"
   }
 }
