@@ -66,6 +66,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { usePublicHolidays } from '@/hooks/use-public-holidays';
 import {
   type DefaultPersonnel,
   type DutyDate,
@@ -75,6 +76,7 @@ import {
 import { fetcher } from '@/lib/fetcher';
 import { Profiles } from '@/lib/supabase/queries';
 import { cn } from '@/lib/utils';
+import type { NagerDatePublicHoliday } from '@/types/nager.date';
 import { indexOnceWithKey } from '@/utils/helper';
 
 const optionSchema = z.object({
@@ -189,11 +191,23 @@ function updateRoster(
   });
 }
 
-function DayWithTime(props: DayContentProps, roster: Record<string, DutyDate>) {
+function DayWithTime(
+  props: DayContentProps,
+  roster: Record<string, DutyDate>,
+  publicHoliday?: NagerDatePublicHoliday[]
+) {
   const date = formatISO(props.date, { representation: 'date' });
+  const isPublicHoliday = publicHoliday?.some(
+    (holiday) => holiday.date === date
+  );
 
   return (
     <div className='relative h-full w-full'>
+      {isPublicHoliday && (
+        <span className='absolute left-1 top-1.5 text-xs text-red-600 sm:left-2'>
+          PH
+        </span>
+      )}
       <time
         dateTime={date}
         className='sm:top:3 absolute right-2 top-1 text-sm sm:right-4 sm:text-lg'
@@ -240,6 +254,7 @@ export function GenerateDuty({
   const [dutyPersonnel, setDutyPersonnel] = useState<Personnel[]>(
     createPersonnel(users, roster)
   );
+  const { data: publicHoliday } = usePublicHolidays();
 
   // Only map users that are in the current roster
   const OPTIONS: Option[] = useMemo(
@@ -609,7 +624,8 @@ export function GenerateDuty({
             disableNavigation
             components={{
               Day: DayDisableOutside,
-              DayContent: (props) => DayWithTime(props, dutyRoster),
+              DayContent: (props) =>
+                DayWithTime(props, dutyRoster, publicHoliday),
             }}
             onDayClick={(day) => {
               if (day) {

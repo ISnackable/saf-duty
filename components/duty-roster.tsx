@@ -21,7 +21,9 @@ import * as z from 'zod';
 
 import { BentoGrid, BentoGridItem } from '@/components/bento-grid';
 import { Icons } from '@/components/icons';
+import { Indicator } from '@/components/indicator';
 import { LoadingButton } from '@/components/loading-button';
+import { useSession } from '@/components/session-provider';
 import { buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
@@ -49,13 +51,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { usePublicHolidays } from '@/hooks/use-public-holidays';
 import { useRosters } from '@/hooks/use-rosters';
 import { type DutyDate } from '@/lib/duty-roster';
 import { cn } from '@/lib/utils';
+import type { NagerDatePublicHoliday } from '@/types/nager.date';
 import { useMonthYear } from '@/utils/helper';
-
-import { Indicator } from './indicator';
-import { useSession } from './session-provider';
 
 const PersonnelSchema = z.object({
   id: z.string().uuid(),
@@ -87,12 +88,21 @@ const CredenzaFormSchema = z.object({
 function DayWithTime(
   props: DayContentProps,
   session: Session | null,
-  roster?: Record<string, DutyDate>
+  roster?: Record<string, DutyDate>,
+  publicHoliday?: NagerDatePublicHoliday[]
 ) {
   const date = formatISO(props.date, { representation: 'date' });
+  const isPublicHoliday = publicHoliday?.some(
+    (holiday) => holiday.date === date
+  );
 
   return (
     <div className='relative h-full w-full'>
+      {isPublicHoliday && (
+        <span className='absolute left-1 top-1.5 text-xs text-red-600 sm:left-2'>
+          PH
+        </span>
+      )}
       <time
         dateTime={date}
         className='sm:top:3 absolute right-2 top-1 text-sm sm:right-4 sm:text-lg'
@@ -139,6 +149,7 @@ export function DutyRoster() {
   const [monthDate, setMonthDate] = useState(
     startOfMonth(parse(`${month} ${year}`, 'MMMM yyyy', new Date()))
   );
+  const { data: publicHoliday } = usePublicHolidays();
 
   const [dutyRoster, setDutyRoster] = useState<Record<string, DutyDate>>({});
 
@@ -206,7 +217,8 @@ export function DutyRoster() {
         showOutsideDays={false}
         key={`${month}-${year}`}
         components={{
-          DayContent: (props) => DayWithTime(props, session, dutyRoster),
+          DayContent: (props) =>
+            DayWithTime(props, session, dutyRoster, publicHoliday),
         }}
         onDayClick={(day) => {
           if (session && day) {
