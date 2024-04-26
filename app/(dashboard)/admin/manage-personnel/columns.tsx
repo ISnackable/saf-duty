@@ -143,6 +143,7 @@ export const columns: ColumnDef<Profiles>[] = [
       <div className='flex items-center align-middle'>
         <Avatar className='mr-2 size-8'>
           <AvatarImage
+            loading='lazy'
             src={row.original.avatar_url as string}
             alt={row.original.name}
           />

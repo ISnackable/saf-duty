@@ -35,7 +35,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import {
   Credenza,
   CredenzaBody,
-  CredenzaClose,
   CredenzaContent,
   CredenzaDescription,
   CredenzaFooter,
@@ -757,7 +756,7 @@ export function GenerateDuty({
             className='space-y-6'
           >
             <CredenzaHeader>
-              <CredenzaTitle>Manaully Choose Personnels</CredenzaTitle>
+              <CredenzaTitle>Manually Choose Personnels</CredenzaTitle>
               <CredenzaDescription>
                 You should make sure that the stand in is not the same person as
                 the duty personnel. It is also recommended that the duty
@@ -857,9 +856,6 @@ export function GenerateDuty({
             </CredenzaBody>
 
             <CredenzaFooter>
-              <CredenzaClose asChild>
-                <Button variant='outline'>Close</Button>
-              </CredenzaClose>
               <Button type='submit'>Save</Button>
             </CredenzaFooter>
           </form>

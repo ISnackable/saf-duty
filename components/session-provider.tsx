@@ -92,8 +92,11 @@ export function SessionProvider({
     }
   }, [session, initialSession]);
 
-  const { userSubscription, onClickSubscribeToPushNotification } =
-    usePushNotificationContext();
+  const {
+    userSubscription,
+    pushNotificationSupported,
+    onClickSubscribeToPushNotification,
+  } = usePushNotificationContext();
 
   // useEffect(() => {
   //   let mounted = true;
@@ -138,6 +141,7 @@ export function SessionProvider({
         } else if (session) {
           // Try to subscribe to push notifications if the user has already given consent and user is logging in
           if (
+            pushNotificationSupported &&
             (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') &&
             Notification.permission === 'granted' &&
             !userSubscription

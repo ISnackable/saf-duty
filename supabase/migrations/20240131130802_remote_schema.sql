@@ -1,4 +1,74 @@
 CREATE
+OR REPLACE FUNCTION "public"."change_user_password"(current_plain_password varchar, new_plain_password varchar) RETURNS JSON LANGUAGE "plpgsql" SECURITY DEFINER
+SET
+  "search_path" = "extensions", "public", "auth" AS $$
+DECLARE
+_uid uuid; -- for checking by 'is not found'
+user_id uuid; -- to store the user id from the request
+BEGIN
+  -- First of all check the new password rules
+  -- not empty
+  IF (new_plain_password = '') IS NOT FALSE THEN
+    RAISE EXCEPTION 'New password is empty';
+  -- minimum 6 chars
+  ELSIF char_length(new_plain_password) < 6 THEN
+    RAISE EXCEPTION 'It must be at least 6 characters in length';
+  END IF;
+
+  -- Get user by his current auth.uid and current password
+  user_id := auth.uid();
+  SELECT id INTO _uid
+  FROM auth.users
+  WHERE id = user_id
+  AND encrypted_password =
+  crypt(current_plain_password::text, auth.users.encrypted_password);
+
+  -- Check the currect password
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Your password is incorrect or this account does not exist';
+  END IF;
+
+  -- Then update to the new password
+  UPDATE auth.users SET
+  encrypted_password =
+  crypt(new_plain_password, gen_salt('bf'))
+  WHERE id = user_id;
+
+  RETURN '{"data":true}';
+END;
+$$;
+
+CREATE
+OR REPLACE FUNCTION "public"."change_user_email"(current_plain_password varchar, new_email varchar) RETURNS JSON LANGUAGE "plpgsql" SECURITY DEFINER
+SET
+  "search_path" = "extensions", "public", "auth" AS $$
+DECLARE
+_uid uuid; -- for checking by 'is not found'
+user_id uuid; -- to store the user id from the request
+BEGIN
+  -- Get user by his current auth.uid and current password
+  user_id := auth.uid();
+  SELECT id INTO _uid
+  FROM auth.users
+  WHERE id = user_id
+  AND encrypted_password =
+  crypt(current_plain_password::text, auth.users.encrypted_password);
+
+  -- Check the currect password
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Your password is incorrect or this account does not exist';
+  END IF;
+
+  -- Then update to the new password
+  UPDATE auth.users SET
+  email = new_email
+  WHERE id = user_id;
+
+  RETURN '{"data":true}';
+END;
+$$;
+
+CREATE
 OR REPLACE FUNCTION "public"."allow_updating_only" () RETURNS TRIGGER LANGUAGE "plpgsql" AS $$
 DECLARE
   whitelist TEXT[] := TG_ARGV::TEXT[];
@@ -77,10 +147,11 @@ declare
   new_group_id uuid := (SELECT id from public.groups WHERE groups.name=new_unit);
 begin
 INSERT INTO
-  public.profiles (id, name, group_id)
+  public.profiles (id, email, name, group_id)
 VALUES
   (
     new.id,
+    new.raw_user_meta_data ->> 'email',
     new.raw_user_meta_data ->> 'name',
     new_group_id
   );
@@ -98,6 +169,19 @@ VALUES
 return new;
 end;
 $$;
+
+CREATE
+OR REPLACE FUNCTION "public"."handle_update_user" () RETURNS TRIGGER LANGUAGE "plpgsql" SECURITY DEFINER
+SET
+  "search_path" TO 'public' AS $$
+begin
+  UPDATE public.profiles
+  SET email = new.email
+  WHERE id = new.id;
+  return new;
+end;
+$$;
+
 
 CREATE
 OR REPLACE FUNCTION "public"."update_rosters_swap_requests" (
@@ -230,6 +314,7 @@ CREATE TABLE IF NOT EXISTS
     "id" UUID NOT NULL,
     "created_at" timestamp WITH TIME ZONE DEFAULT now() NOT NULL,
     "updated_at" timestamp WITH TIME ZONE DEFAULT now(),
+    "email" text unique,
     "name" text NOT NULL,
     "avatar_url" text DEFAULT concat(
       'https://api.dicebear.com/7.x/adventurer/svg?seed=',
@@ -394,6 +479,10 @@ CREATE TRIGGER on_after_auth_user_created
 AFTER INSERT ON auth.users FOR EACH ROW
 EXECUTE FUNCTION public.handle_new_user ();
 
+CREATE TRIGGER on_after_auth_user_updated
+AFTER UPDATE of email on auth.users FOR EACH ROW
+EXECUTE FUNCTION public.handle_update_user ();
+
 CREATE TRIGGER on_before_auth_user_created BEFORE INSERT ON auth.users FOR EACH ROW
 EXECUTE FUNCTION public.handle_check_user ();
 
@@ -411,15 +500,15 @@ EXECUTE FUNCTION public.allow_updating_only (
   'updated_at',
   'name',
   'avatar_url',
+  'enlistment_date',
   'ord_date',
   'blockout_dates',
-  'enlistment_date',
-  'onboarded'
+  'onboarded',
+  'user_settings'
 );
 
 CREATE TRIGGER on_change_update_user_metadata
 AFTER INSERT
-OR DELETE
 OR
 UPDATE ON public.group_users FOR EACH ROW
 EXECUTE FUNCTION public.update_user_roles ();
@@ -464,10 +553,7 @@ ALTER TABLE ONLY "public"."swap_requests"
 ADD CONSTRAINT "swap_requests_group_id_fkey" FOREIGN KEY (group_id) REFERENCES public.groups (id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY "public"."group_users"
-DROP CONSTRAINT "group_users_user_id_fkey";
-
-ALTER TABLE ONLY "public"."group_users"
-ADD CONSTRAINT "group_users_user_id_fkey" FOREIGN KEY (user_id) REFERENCES public.profiles (id);
+ADD CONSTRAINT "group_users_user_id_fkey1" FOREIGN KEY (user_id) REFERENCES public.profiles (id) ON DELETE CASCADE;
 
 CREATE POLICY "Enable delete for users based on requester_id" ON "public"."swap_requests"
 FOR DELETE

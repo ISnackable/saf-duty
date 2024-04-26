@@ -14,6 +14,7 @@ import {
   LoginFormSchema,
   RegisterFormSchema,
   ResetFormSchema,
+  UpdateFormSchema,
 } from '@/lib/validation';
 import { type State } from '@/types/api-route';
 
@@ -138,7 +139,7 @@ export async function resetPassword(formData: ResetFormData): Promise<State> {
 // Only authenticated users can change their password (see middleware.ts)
 export const changePassword = authAction(
   ChangeFormSchema,
-  async (formData, { userId }) => {
+  async (formData, { user }) => {
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
     const { password } = formData;
@@ -151,6 +152,43 @@ export const changePassword = authAction(
       throw new ActionError(error.message || 'Could not change password');
     }
 
-    return { userId };
+    return { user };
+  }
+);
+
+export const updateAccount = authAction(
+  UpdateFormSchema,
+  async (formData, { user }) => {
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
+    const { email, oldPassword, newPassword } = formData;
+
+    if (oldPassword && email !== user.email) {
+      const { error } = await supabase.rpc('change_user_email', {
+        current_plain_password: oldPassword,
+        new_email: email,
+      });
+
+      if (error) {
+        throw new ActionError(error.message || 'Could not update account');
+      }
+    }
+
+    if (oldPassword && newPassword) {
+      const { error } = await supabase.rpc('change_user_password', {
+        current_plain_password: oldPassword,
+        new_plain_password: newPassword,
+      });
+
+      if (error) {
+        throw new ActionError(error.message || 'Could not update account');
+      }
+    }
+
+    const {
+      data: { session },
+    } = await supabase.auth.refreshSession();
+
+    return { session };
   }
 );

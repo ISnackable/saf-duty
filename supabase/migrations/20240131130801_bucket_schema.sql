@@ -1,6 +1,6 @@
 INSERT INTO storage.buckets (id, name)
 VALUES ('avatars', 'avatars')
-ON CONFLICT (id) DO UPDATE 
+ON CONFLICT (id) DO UPDATE
   SET name = excluded.name;
 
 CREATE POLICY "Authenticated can upload an avatar." ON "storage"."objects" AS permissive
@@ -20,7 +20,9 @@ FOR
 UPDATE USING (auth.uid () = OWNER) WITH CHECK (bucket_id = 'avatars');
 
 -- USE SUPABASE VAULT?
-CREATE OR REPLACE FUNCTION delete_storage_object(bucket text, OBJECT text, OUT status int, OUT content text) RETURNS record LANGUAGE 'plpgsql' SECURITY DEFINER AS $$
+CREATE OR REPLACE FUNCTION delete_storage_object(bucket text, OBJECT text, OUT status int, OUT content text) RETURNS record LANGUAGE 'plpgsql' SECURITY DEFINER
+SET
+  "search_path" TO 'public' AS $$
 declare
   project_url text;
   service_role_key text; --  full access needed
@@ -41,7 +43,9 @@ end;
 $$;
 
 
-CREATE OR REPLACE FUNCTION delete_avatar(avatar_url text, OUT status int, OUT content text) RETURNS record LANGUAGE 'plpgsql' SECURITY DEFINER AS $$
+CREATE OR REPLACE FUNCTION delete_avatar(avatar_url text, OUT status int, OUT content text) RETURNS record LANGUAGE 'plpgsql' SECURITY DEFINER
+SET
+  "search_path" TO 'public' AS $$
 begin
   select
       into status, content
@@ -52,7 +56,9 @@ $$;
 
 -- Create or replace the function 'delete_old_avatar'
 
-CREATE OR REPLACE FUNCTION delete_old_avatar() RETURNS TRIGGER LANGUAGE 'plpgsql' SECURITY DEFINER AS $$
+CREATE OR REPLACE FUNCTION delete_old_avatar() RETURNS TRIGGER LANGUAGE 'plpgsql' SECURITY DEFINER
+SET
+  "search_path" TO 'public' AS $$
 DECLARE
     -- Declare variables
     status INT;
@@ -90,7 +96,9 @@ END;
 $$;
 
 
-CREATE OR REPLACE FUNCTION delete_old_profile() RETURNS TRIGGER LANGUAGE 'plpgsql' SECURITY DEFINER AS $$
+CREATE OR REPLACE FUNCTION delete_old_profile() RETURNS TRIGGER LANGUAGE 'plpgsql' SECURITY DEFINER
+SET
+  "search_path" TO 'public' AS $$
 begin
   delete from public.profiles where id = old.id;
   return old;

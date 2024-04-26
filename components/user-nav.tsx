@@ -7,7 +7,6 @@ import { InstallPWA } from '@/components/install-pwa';
 import { ProgressBarLink } from '@/components/progress-bar';
 import { usePushNotificationContext } from '@/components/push-notification-provider';
 import { customNotifyEvent } from '@/components/session-provider';
-import { useSession } from '@/components/session-provider';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,7 +23,6 @@ import { useProfiles } from '@/hooks/use-profiles';
 
 export function UserNav() {
   const [open, setOpen] = useState(false);
-  const session = useSession();
   const { data: profile } = useProfiles();
   const { onClickUnsubscribeToPushNotification } = usePushNotificationContext();
 
@@ -49,10 +47,10 @@ export function UserNav() {
         <DropdownMenuLabel className='font-normal'>
           <div className='flex flex-col space-y-1'>
             <p className='text-sm font-medium leading-none'>
-              {profile?.name || session?.user.user_metadata.name || 'Anonymous'}
+              {profile?.name || 'Anonymous'}
             </p>
             <p className='text-xs leading-none text-muted-foreground'>
-              {session?.user.email || 'No email'}
+              {profile?.email || 'No email'}
             </p>
           </div>
         </DropdownMenuLabel>

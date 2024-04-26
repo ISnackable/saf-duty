@@ -45,7 +45,13 @@ INSERT INTO
                 'unit',
                 'demo',
                 'name',
-                'user' || ROW_NUMBER() OVER ()
+                'user' || ROW_NUMBER() OVER (),
+                'email',
+                'user' || ROW_NUMBER() OVER () || '@example.com',
+                'email_verified',
+                false,
+                'phone_verified',
+                false
             ),
             current_timestamp,
             current_timestamp,
@@ -54,7 +60,7 @@ INSERT INTO
             '',
             ''
         FROM
-            generate_series(1, 10)
+            generate_series(1, 12)
     );
 
 -- test user email identities

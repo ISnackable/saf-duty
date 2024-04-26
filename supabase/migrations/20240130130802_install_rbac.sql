@@ -38,7 +38,7 @@ ADD CONSTRAINT "group_users_group_id_fkey" FOREIGN KEY (group_id) REFERENCES "gr
 ALTER TABLE "group_users" VALIDATE CONSTRAINT "group_users_group_id_fkey";
 
 ALTER TABLE "group_users"
-ADD CONSTRAINT "group_users_user_id_fkey" FOREIGN KEY (user_id) REFERENCES auth.users (id) NOT VALID;
+ADD CONSTRAINT "group_users_user_id_fkey" FOREIGN KEY (user_id) REFERENCES auth.users (id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE "group_users" VALIDATE CONSTRAINT "group_users_user_id_fkey";
 

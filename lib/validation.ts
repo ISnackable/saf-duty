@@ -96,6 +96,18 @@ export const ChangeFormSchema = z.object({
     ),
 });
 
+export const UpdateFormSchema = z.object({
+  email: z
+    .string()
+    .email({
+      message: 'Email must be a valid email',
+    })
+    .trim()
+    .toLowerCase(),
+  oldPassword: ChangeFormSchema.shape.password,
+  newPassword: ChangeFormSchema.shape.password.optional().or(z.literal('')),
+});
+
 // Schema should match the JSON structure of a PushSubscription
 export const PushSubscriptionSchema = z.object({
   endpoint: z.string(),

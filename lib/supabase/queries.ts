@@ -55,7 +55,24 @@ export function getAllUsersByUnitId(client: TypedSupabaseClient) {
   return client
     .from('profiles')
     .select(
-      'id, created_at, name, avatar_url, group_id, blockout_dates, max_blockouts, weekday_points, weekend_points, enlistment_date, ord_date, no_of_extras, onboarded, ...group_users(role), total_duty_done:rosters!rosters_duty_personnel_id_fkey(count)'
+      `
+      id,
+      created_at,
+      name,
+      email,
+      avatar_url,
+      group_id,
+      blockout_dates,
+      max_blockouts,
+      weekday_points,
+      weekend_points,
+      enlistment_date,
+      ord_date,
+      no_of_extras,
+      onboarded,
+      ...group_users!group_users_user_id_fkey1(role),
+      total_duty_done:rosters!rosters_duty_personnel_id_fkey(count)
+      `
     )
     .lt('rosters.duty_date', TODAY)
     .returns<Profiles[]>();
@@ -71,7 +88,24 @@ export function getUserProfileById(
   return client
     .from('profiles')
     .select(
-      'id, created_at, name, avatar_url, group_id, blockout_dates, max_blockouts, weekday_points, weekend_points, enlistment_date, ord_date, no_of_extras, onboarded, ...group_users(role), total_duty_done:rosters!rosters_duty_personnel_id_fkey(count)'
+      `
+      id,
+      created_at,
+      name,
+      email,
+      avatar_url,
+      group_id,
+      blockout_dates,
+      max_blockouts,
+      weekday_points,
+      weekend_points,
+      enlistment_date,
+      ord_date,
+      no_of_extras,
+      onboarded,
+      ...group_users!group_users_user_id_fkey1(role),
+      total_duty_done:rosters!rosters_duty_personnel_id_fkey(count)
+      `
     )
     .eq('id', sessionId)
     .eq('group_users.user_id', sessionId)
@@ -112,5 +146,5 @@ export function getNotificationsById(client: TypedSupabaseClient) {
   return client
     .from('notifications')
     .select('id, created_at, title, message, is_read, action')
-    .order('updated_at', { ascending: true });
+    .order('created_at', { ascending: true });
 }

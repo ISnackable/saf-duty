@@ -32,16 +32,25 @@ import {
 } from '@/components/ui/tooltip';
 import { useNotifications } from '@/hooks/use-notifications';
 import { cn } from '@/lib/utils';
+import { isDemoUser } from '@/utils/helper';
 
 export function NotificationsPopover() {
   const [scrollParent, setScrollParent] = React.useState<HTMLDivElement | null>(
     null
   );
+  const [loading, setLoading] = React.useState(false);
   const user = useUser();
   const { data: notifications, unreadCount, mutate } = useNotifications();
 
   async function handleDelete(id: number) {
-    const res = await fetch(`/api/profiles/${user?.id}/notifications`, {
+    setLoading(true);
+
+    if (!user || isDemoUser(user.id)) {
+      setLoading(false);
+      return;
+    }
+
+    const res = await fetch(`/api/profiles/${user.id}/notifications`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -58,10 +67,18 @@ export function NotificationsPopover() {
         }
       }
     }
+
+    setLoading(false);
   }
 
   async function handleMarkAsRead(id: number) {
-    const res = await fetch(`/api/profiles/${user?.id}/notifications`, {
+    setLoading(true);
+
+    if (!user || isDemoUser(user.id)) {
+      setLoading(false);
+      return;
+    }
+    const res = await fetch(`/api/profiles/${user.id}/notifications`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -78,6 +95,8 @@ export function NotificationsPopover() {
         }
       }
     }
+
+    setLoading(false);
   }
 
   return (
@@ -141,7 +160,8 @@ export function NotificationsPopover() {
                             <div
                               className={cn(
                                 'grid grow items-start',
-                                !is_read && 'grid-cols-[25px_1fr]'
+                                !is_read && 'grid-cols-[25px_1fr]',
+                                loading && 'pointer-events-none'
                               )}
                               onClick={() => handleMarkAsRead(id)}
                             >
@@ -166,6 +186,7 @@ export function NotificationsPopover() {
                                   variant='ghost'
                                   size='icon'
                                   className='size-5'
+                                  disabled={loading}
                                   onClick={() => handleDelete(id)}
                                 >
                                   <Icons.close />

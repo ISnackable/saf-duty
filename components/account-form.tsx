@@ -1,14 +1,16 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
 import { signOut } from '@/app/(auth)/actions';
+import { updateAccount } from '@/app/(auth)/actions';
 import { PasswordInput } from '@/components/password-input';
 import { usePushNotificationContext } from '@/components/push-notification-provider';
-import { customNotifyEvent, useSession } from '@/components/session-provider';
+import { customNotifyEvent } from '@/components/session-provider';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,70 +33,53 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { requirements } from '@/lib/validation';
+import { useProfiles } from '@/hooks/use-profiles';
+import { UpdateFormSchema } from '@/lib/validation';
 
-const accountFormSchema = z
-  .object({
-    email: z
-      .string({
-        required_error: 'Please select an email to display.',
-      })
-      .email(),
-    old_password: z
-      .string()
-      .min(6, {
-        message: 'Password must be at least 6 characters',
-      })
-      .max(32, { message: 'Password must be less than 32 characters' }),
-    new_password: z
-      .string()
-      .min(6, {
-        message: 'Password must be at least 6 characters',
-      })
-      .max(32, { message: 'Password must be less than 32 characters' })
-      .refine(
-        (value) => {
-          return requirements.every((requirement) =>
-            requirement.re.test(value)
-          );
-        },
-        {
-          message:
-            'Password must include a number, a lowercase letter, an uppercase letter, and a special character',
-        }
-      ),
-  })
-  .refine((data) => data.new_password !== data.old_password, {
+const accountFormSchema = UpdateFormSchema.refine(
+  (data) => data.newPassword !== data.oldPassword,
+  {
     message: "New password can't be the same as your old password.",
-    path: ['new_password'], // path of error
-  });
+    path: ['newPassword'], // path of error
+  }
+);
 
 type AccountFormValues = z.infer<typeof accountFormSchema>;
 
 export function AccountForm() {
-  const session = useSession();
+  const { data: profile, mutate } = useProfiles();
   const { onClickUnsubscribeToPushNotification } = usePushNotificationContext();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
     values: {
-      email: session?.user.email || '',
-      old_password: '',
-      new_password: '',
+      email: profile?.email || '',
+      oldPassword: '',
+      newPassword: '',
     },
     resetOptions: {
       keepDirtyValues: true, // keep dirty fields unchanged, but update defaultValues
     },
   });
 
-  function onSubmit(data: AccountFormValues) {
-    toast.message('You submitted the following values:', {
-      description: (
-        <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-          <code className='text-white'>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+  async function onSubmit(data: AccountFormValues) {
+    if (!profile) return;
+    setIsLoading(true);
+
+    const { serverError, data: serverData } = await updateAccount(data);
+
+    if (serverData) {
+      toast.success('Account updated successfully');
+      customNotifyEvent('USER_UPDATED', serverData.session);
+      mutate({ ...profile, email: data.email });
+    }
+
+    if (serverError) {
+      toast.error(serverError);
+    }
+
+    setIsLoading(false);
   }
 
   return (
@@ -106,7 +91,12 @@ export function AccountForm() {
             name='email'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel
+                  className="after:text-red-500 after:content-['_*']"
+                  aria-required
+                >
+                  Email
+                </FormLabel>
                 <FormControl>
                   <Input placeholder='Your email address' {...field} />
                 </FormControl>
@@ -119,20 +109,28 @@ export function AccountForm() {
           />
           <FormField
             control={form.control}
-            name='old_password'
+            name='oldPassword'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Old password</FormLabel>
+                <FormLabel
+                  className="after:text-red-500 after:content-['_*']"
+                  aria-required
+                >
+                  Old password
+                </FormLabel>
                 <FormControl>
                   <PasswordInput placeholder='Old password' {...field} />
                 </FormControl>
+                <FormDescription>
+                  Required to make changes to your account.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
-            name='new_password'
+            name='newPassword'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>New password</FormLabel>
@@ -150,7 +148,9 @@ export function AccountForm() {
           />
 
           <div className='flex justify-between'>
-            <Button type='submit'>Update account</Button>
+            <Button type='submit' disabled={isLoading}>
+              Update account
+            </Button>
             <AlertDialogTrigger asChild>
               <Button type='button' variant='destructive'>
                 Sign out of all devices

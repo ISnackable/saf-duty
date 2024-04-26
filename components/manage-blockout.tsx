@@ -133,7 +133,7 @@ export function ManageBlockout() {
       toast.warning('You have reached the maximum blockouts for this month.', {
         duration: 5000,
         description:
-          'Remove some "less important" blockouts or if you need more blockouts, please contact the person-in-charge.',
+          'If you need more blockouts, please contact the person-in-charge.',
       });
     }
   }, [maximumBlockouts, currentMonthSelected.length]);

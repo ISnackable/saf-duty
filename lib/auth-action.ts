@@ -38,13 +38,13 @@ export const authAction = createSafeActionClient({
       throw new ActionError('Session not found!');
     }
 
-    if (isDemoUser(user?.id)) {
+    if (isDemoUser(user.id)) {
       throw new ActionError(
         'Unauthorized, demo user cannot perform this action!'
       );
     }
 
-    return { userId: user.id };
+    return { user };
   },
   handleReturnedServerError,
   handleServerErrorLog,

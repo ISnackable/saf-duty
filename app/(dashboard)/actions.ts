@@ -9,13 +9,13 @@ import { PushSubscriptionSchema } from '@/lib/validation';
 
 export const insertSubscription = authAction(
   PushSubscriptionSchema,
-  async (subscription, { userId }) => {
+  async (subscription, { user }) => {
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
 
     const { error } = await supabase.from('push_subscriptions').upsert(
       {
-        user_id: userId,
+        user_id: user.id,
         push_subscription_details: subscription,
       },
       {
@@ -31,14 +31,14 @@ export const insertSubscription = authAction(
 
 export const deleteSubscription = authAction(
   PushSubscriptionSchema,
-  async (_subscription, { userId }) => {
+  async (_subscription, { user }) => {
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
 
     const { error } = await supabase
       .from('push_subscriptions')
       .delete()
-      .eq('user_id', userId);
+      .eq('user_id', user.id);
 
     if (error) {
       throw new ActionError(
@@ -50,14 +50,14 @@ export const deleteSubscription = authAction(
 
 export const updateOnboarded = authAction(
   z.boolean(),
-  async (data, { userId }) => {
+  async (data, { user }) => {
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
 
     const { error } = await supabase
       .from('profiles')
       .update({ onboarded: data })
-      .eq('id', userId);
+      .eq('id', user.id);
 
     if (error) {
       throw new ActionError(

@@ -7,14 +7,17 @@ import { useEffect, useState, useTransition } from 'react';
 
 import { updateOnboarded } from '@/app/(dashboard)/actions';
 import '@/app/driverjs.css';
+import { useUser } from '@/components/session-provider';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { name } from '@/lib/config';
+import { isDemoUser } from '@/utils/helper';
 
 export function DriverTour() {
   const router = useRouter();
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const isXLDesktop = useMediaQuery('(max-width: 1280px)');
   const [isPending, startTransition] = useTransition();
+  const user = useUser();
 
   const [adjacent, setAdjacent] = useState<'next' | 'previous'>('next');
 
@@ -92,7 +95,7 @@ export function DriverTour() {
           description: 'That is all you roughly need to know to get started!',
         },
         onDeselected: () => {
-          updateOnboarded(true);
+          if (user && !isDemoUser(user.id)) updateOnboarded(true);
         },
       },
     ],

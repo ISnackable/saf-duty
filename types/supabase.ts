@@ -89,6 +89,13 @@ type _Database = {
             foreignKeyName: 'group_users_user_id_fkey';
             columns: ['user_id'];
             isOneToOne: true;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'group_users_user_id_fkey1';
+            columns: ['user_id'];
+            isOneToOne: true;
             referencedRelation: 'profiles';
             referencedColumns: ['id'];
           },
@@ -158,6 +165,7 @@ type _Database = {
           avatar_url: string | null;
           blockout_dates: string[] | null;
           created_at: string;
+          email: string | null;
           enlistment_date: string | null;
           group_id: string;
           id: string;
@@ -175,6 +183,7 @@ type _Database = {
           avatar_url?: string | null;
           blockout_dates?: string[] | null;
           created_at?: string;
+          email?: string | null;
           enlistment_date?: string | null;
           group_id: string;
           id: string;
@@ -192,6 +201,7 @@ type _Database = {
           avatar_url?: string | null;
           blockout_dates?: string[] | null;
           created_at?: string;
+          email?: string | null;
           enlistment_date?: string | null;
           group_id?: string;
           id?: string;
@@ -406,6 +416,13 @@ type _Database = {
             foreignKeyName: 'group_users_user_id_fkey';
             columns: ['user_id'];
             isOneToOne: true;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'group_users_user_id_fkey1';
+            columns: ['user_id'];
+            isOneToOne: true;
             referencedRelation: 'profiles';
             referencedColumns: ['id'];
           },
@@ -420,6 +437,20 @@ type _Database = {
           group_role: string;
         };
         Returns: string;
+      };
+      change_user_email: {
+        Args: {
+          current_plain_password: string;
+          new_email: string;
+        };
+        Returns: Json;
+      };
+      change_user_password: {
+        Args: {
+          current_plain_password: string;
+          new_plain_password: string;
+        };
+        Returns: Json;
       };
       db_pre_request: {
         Args: Record<PropertyKey, never>;
