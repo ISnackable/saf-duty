@@ -67,6 +67,12 @@ export function AccountForm() {
     if (!profile) return;
     setIsLoading(true);
 
+    if (data.email === profile.email && !data.newPassword) {
+      toast.info('No changes detected');
+      setIsLoading(false);
+      return;
+    }
+
     const { serverError, data: serverData } = await updateAccount(data);
 
     if (serverData) {

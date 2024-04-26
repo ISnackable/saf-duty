@@ -166,7 +166,6 @@ type _Database = {
           blockout_dates: string[] | null;
           created_at: string;
           email: string | null;
-          enlistment_date: string | null;
           group_id: string;
           id: string;
           max_blockouts: number;
@@ -184,7 +183,6 @@ type _Database = {
           blockout_dates?: string[] | null;
           created_at?: string;
           email?: string | null;
-          enlistment_date?: string | null;
           group_id: string;
           id: string;
           max_blockouts?: number;
@@ -202,7 +200,6 @@ type _Database = {
           blockout_dates?: string[] | null;
           created_at?: string;
           email?: string | null;
-          enlistment_date?: string | null;
           group_id?: string;
           id?: string;
           max_blockouts?: number;

@@ -163,6 +163,11 @@ export const updateAccount = authAction(
     const supabase = createClient(cookieStore);
     const { email, oldPassword, newPassword } = formData;
 
+    // early return if the email is the same and no new password
+    if (email === user.email && !newPassword) {
+      throw new ActionError('No changes detected');
+    }
+
     if (oldPassword && email !== user.email) {
       const { error } = await supabase.rpc('change_user_email', {
         current_plain_password: oldPassword,

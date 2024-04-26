@@ -53,7 +53,7 @@ const profileFormSchema = z.object({
     }),
   ord: z
     .date({
-      required_error: 'A date of birth is required.',
+      message: 'ORD date is required',
     })
     .optional(),
 });
@@ -66,11 +66,6 @@ export function ProfileForm() {
   const refImageInput = useRef<ElementRef<'input'> | null>(null);
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    // defaultValues: {
-    //   avatar: undefined,
-    //   name: profile?.name || '',
-    //   ord: profile?.ord_date ? new Date(profile.ord_date) : undefined,
-    // },
     values: {
       avatar: undefined,
       name: profile?.name || '',
@@ -206,7 +201,6 @@ export function ProfileForm() {
                     mode='single'
                     selected={field.value}
                     onSelect={field.onChange}
-                    disabled={(date) => date < new Date()}
                     initialFocus
                   />
 

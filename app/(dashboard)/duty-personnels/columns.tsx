@@ -57,7 +57,7 @@ export const columns: ColumnDef<Profiles>[] = [
     },
     cell: ({ row }) => {
       const value = row.original.total_duty_done[0].count;
-      return <div className='font-medium'>{value}</div>;
+      return <div className='px-4 font-medium'>{value}</div>;
     },
   },
   {
@@ -75,7 +75,7 @@ export const columns: ColumnDef<Profiles>[] = [
     },
     cell: ({ row }) => {
       const value = row.original.weekday_points;
-      return <div className='font-medium'>{value}</div>;
+      return <div className='px-4 font-medium'>{value}</div>;
     },
   },
   {
@@ -93,7 +93,7 @@ export const columns: ColumnDef<Profiles>[] = [
     },
     cell: ({ row }) => {
       const value = row.original.weekend_points;
-      return <div className='font-medium'>{value}</div>;
+      return <div className='px-4 font-medium'>{value}</div>;
     },
   },
   {
@@ -111,7 +111,7 @@ export const columns: ColumnDef<Profiles>[] = [
     },
     cell: ({ row }) => {
       const value = row.original.no_of_extras;
-      return <div className='font-medium'>{value}</div>;
+      return <div className='px-4 font-medium'>{value}</div>;
     },
   },
   {
@@ -130,7 +130,7 @@ export const columns: ColumnDef<Profiles>[] = [
     },
     cell: ({ row }) => {
       const value = row.original.ord_date;
-      if (!value) return 'N/A';
+      if (!value) return <div className='px-4 font-medium'>N/A</div>;
 
       const totalDuration = new Date(value).getTime() - TODAY.getTime();
       if (totalDuration < 0) return 'OWADIO';

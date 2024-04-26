@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 import { Icons } from '@/components/icons';
-import { Gauge } from '@/components/ui/gauge';
+import { ORD } from '@/components/ord';
 
 export const metadata: Metadata = {
   title: 'ORD',
@@ -23,7 +23,7 @@ export default async function CollectionsORDPage() {
         Singapore Army, Navy, Police or Civil Defence Force.
       </p>
 
-      <Gauge value={87} size='large' showValue />
+      <ORD />
     </div>
   );
 }

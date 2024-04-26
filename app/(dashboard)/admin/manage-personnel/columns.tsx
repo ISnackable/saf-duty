@@ -125,6 +125,7 @@ export const columns: ColumnDef<Profiles>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
+    size: 20,
   },
   {
     accessorKey: 'name',
@@ -155,6 +156,10 @@ export const columns: ColumnDef<Profiles>[] = [
       </div>
     ),
     enableHiding: false,
+  },
+  {
+    accessorKey: 'email',
+    header: 'Email',
   },
   {
     accessorKey: 'role',
@@ -236,5 +241,6 @@ export const columns: ColumnDef<Profiles>[] = [
       );
     },
     enableHiding: false,
+    size: 20,
   },
 ];

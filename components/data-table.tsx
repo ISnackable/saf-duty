@@ -63,7 +63,12 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const user = useUser();
   const [data, setData] = React.useState(() => [...(defaultData ?? [])]);
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([
+    {
+      id: 'name',
+      desc: false,
+    },
+  ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -173,7 +178,9 @@ export function DataTable<TData, TValue>({
                   return (
                     <TableHead
                       key={header.id}
-                      style={{ width: `${header.getSize()}px` }}
+                      style={{
+                        width: `${header.column.columnDef.size || header.getSize()}px`,
+                      }}
                     >
                       {header.isPlaceholder
                         ? null
@@ -224,7 +231,12 @@ export function DataTable<TData, TValue>({
             {table.getFilteredSelectedRowModel().rows.length} of{' '}
             {table.getFilteredRowModel().rows.length} row(s) selected.
           </div>
-        ) : null}
+        ) : (
+          <div className='flex-1 text-sm text-muted-foreground'>
+            Page {table.getState().pagination.pageIndex + 1} of{' '}
+            {table.getPageCount()}
+          </div>
+        )}
 
         <Button
           variant='outline'
