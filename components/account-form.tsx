@@ -34,9 +34,9 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useProfiles } from '@/hooks/use-profiles';
-import { UpdateFormSchema } from '@/lib/validation';
+import { updateFormSchema } from '@/lib/validation';
 
-const accountFormSchema = UpdateFormSchema.refine(
+const accountFormSchema = updateFormSchema.refine(
   (data) => data.newPassword !== data.oldPassword,
   {
     message: "New password can't be the same as your old password.",
@@ -56,10 +56,10 @@ export function AccountForm() {
     values: {
       email: profile?.email || '',
       oldPassword: '',
-      newPassword: '',
+      newPassword: undefined,
     },
     resetOptions: {
-      keepDirtyValues: true, // keep dirty fields unchanged, but update defaultValues
+      keepDirtyValues: true,
     },
   });
 

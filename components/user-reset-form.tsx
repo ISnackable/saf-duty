@@ -13,11 +13,11 @@ import { buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { ResetFormSchema } from '@/lib/validation';
+import { resetFormSchema } from '@/lib/validation';
 
 type UserResetFormProps = React.HTMLAttributes<HTMLDivElement>;
 
-export type ResetFormData = z.infer<typeof ResetFormSchema>;
+export type ResetFormData = z.infer<typeof resetFormSchema>;
 
 export function UserResetForm({ className, ...props }: UserResetFormProps) {
   const {
@@ -25,7 +25,7 @@ export function UserResetForm({ className, ...props }: UserResetFormProps) {
     handleSubmit,
     formState: { errors },
   } = useForm<ResetFormData>({
-    resolver: zodResolver(ResetFormSchema),
+    resolver: zodResolver(resetFormSchema),
   });
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 

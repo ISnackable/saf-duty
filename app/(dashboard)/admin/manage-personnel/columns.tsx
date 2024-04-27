@@ -147,6 +147,7 @@ export const columns: ColumnDef<Profiles>[] = [
             loading='lazy'
             src={row.original.avatar_url as string}
             alt={row.original.name}
+            className='object-cover'
           />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>

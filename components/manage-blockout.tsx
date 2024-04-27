@@ -84,7 +84,7 @@ export function ManageBlockout() {
     const resPromise = fetcher(`/api/profiles/${profile?.id}/blockout-dates`, {
       method: 'POST',
       body: JSON.stringify({
-        blockoutDates: selectedDays.map((date) =>
+        blockout_dates: selectedDays.map((date) =>
           formatISO(date, { representation: 'date' })
         ),
       }),

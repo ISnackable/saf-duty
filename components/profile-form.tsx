@@ -3,12 +3,16 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formatISO } from 'date-fns';
 import { ElementRef, useRef } from 'react';
+import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
+import { uploadAvatar } from '@/app/(dashboard)/actions';
+import { DatePicker } from '@/components/date-picker';
 import { Icons } from '@/components/icons';
-import { Button } from '@/components/ui/button';
+import { LoadingButton } from '@/components/loading-button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   Form,
@@ -21,8 +25,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useProfiles } from '@/hooks/use-profiles';
-
-import { DatePicker } from './date-picker';
+import { fetcher } from '@/lib/fetcher';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = [
@@ -51,7 +54,7 @@ const profileFormSchema = z.object({
     .max(30, {
       message: 'Name must not be longer than 30 characters.',
     }),
-  ord: z
+  ord_date: z
     .date({
       message: 'ORD date is required',
     })
@@ -62,6 +65,7 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export function ProfileForm() {
   const { data: profile, mutate } = useProfiles();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const refImageInput = useRef<ElementRef<'input'> | null>(null);
   const form = useForm<ProfileFormValues>({
@@ -69,10 +73,10 @@ export function ProfileForm() {
     values: {
       avatar: undefined,
       name: profile?.name || '',
-      ord: profile?.ord_date ? new Date(profile.ord_date) : undefined,
+      ord_date: profile?.ord_date ? new Date(profile.ord_date) : undefined,
     },
     resetOptions: {
-      keepDirtyValues: true, // keep dirty fields unchanged, but update defaultValues
+      keepDirtyValues: true,
     },
     mode: 'onChange',
   });
@@ -81,26 +85,49 @@ export function ProfileForm() {
     ? URL.createObjectURL(form.getValues('avatar') as File)
     : profile?.avatar_url;
 
-  function onSubmit(data: ProfileFormValues) {
-    if (profile && data) {
-      const ord_date = data.ord
-        ? formatISO(data.ord, { representation: 'date' })
+  async function onSubmit(data: ProfileFormValues) {
+    setIsLoading(true);
+
+    if (data) {
+      const ord_date = data.ord_date
+        ? formatISO(data.ord_date, { representation: 'date' })
         : null;
 
-      mutate({
-        ...profile,
-        name: data.name,
-        ord_date,
+      const resPromise = fetcher(`/api/profiles/${profile?.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          name: data.name,
+          ord_date,
+        }),
       });
-    }
+      const promiseChain = [resPromise];
 
-    toast.message('You submitted the following values:', {
-      description: (
-        <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-          <code className='text-white'>HAWE</code>
-        </pre>
-      ),
-    });
+      if (data.avatar) {
+        const formData = new FormData();
+        formData.append('file', data.avatar);
+        const actionPromise = uploadAvatar(formData);
+
+        promiseChain.push(actionPromise as Promise<any>);
+      }
+
+      toast.promise(
+        Promise.all(promiseChain)
+          .then(() => mutate())
+          .finally(() => {
+            form.reset();
+            setIsLoading(false);
+          }),
+        {
+          loading: 'Loading...',
+          success: 'Profile updated.',
+          error: 'An error occurred.',
+          description(data) {
+            if (data instanceof Error) return data.message;
+            return `You can now close this page.`;
+          },
+        }
+      );
+    }
   }
 
   return (
@@ -144,12 +171,14 @@ export function ProfileForm() {
                           </FormControl>
 
                           {imagePreview ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img
-                              src={imagePreview}
-                              alt='preview'
-                              className='h-32 w-32 rounded-full object-cover'
-                            />
+                            <Avatar className='h-32 w-32'>
+                              <AvatarImage
+                                src={imagePreview}
+                                alt='preview'
+                                className='object-cover'
+                              />
+                              <AvatarFallback>{profile?.name}</AvatarFallback>
+                            </Avatar>
                           ) : (
                             <div className='h-32 w-32 rounded-full bg-red-400'>
                               <div className='bg-[rgba(22, 28, 36, 0.64)] absolute flex h-32 w-32 flex-col items-center justify-center rounded-full text-white opacity-0 duration-300 hover:opacity-70'>
@@ -192,7 +221,7 @@ export function ProfileForm() {
             />
             <FormField
               control={form.control}
-              name='ord'
+              name='ord_date'
               render={({ field }) => (
                 <FormItem className='flex flex-col'>
                   <FormLabel>ORD</FormLabel>
@@ -213,7 +242,9 @@ export function ProfileForm() {
               )}
             />
 
-            <Button type='submit'>Update profile</Button>
+            <LoadingButton type='submit' loading={isLoading}>
+              Update profile
+            </LoadingButton>
           </div>
         </div>
       </form>

@@ -5,7 +5,6 @@ import 'server-only';
 import { type User } from '@supabase/supabase-js';
 import { isWeekend } from 'date-fns';
 
-import { type RosterPatch } from '@/app/(dashboard)/api/rosters/route';
 import {
   demoUsers,
   dutyRoster,
@@ -14,6 +13,7 @@ import {
 } from '@/lib/demo-data';
 import { type DutyDate } from '@/lib/duty-roster';
 import {
+  type RosterPatch,
   type TypedSupabaseClient,
   getAllUsersByUnitId,
   getNotificationsById,

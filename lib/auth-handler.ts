@@ -63,6 +63,7 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
     let headers = {};
     const { method } = request;
 
+    // Rate limit only for POST, PUT, DELETE, PATCH
     if (
       method === 'POST' ||
       method === 'PUT' ||

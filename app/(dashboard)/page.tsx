@@ -30,7 +30,7 @@ export default async function Index() {
       <div data-tour='home-page'>
         <div className='flex w-full items-center space-y-2'>
           <Avatar className='mr-3 inline-block h-10 w-10 items-center align-middle'>
-            <AvatarImage src={data.avatar_url ?? ''} />
+            <AvatarImage src={data.avatar_url ?? ''} className='object-cover' />
             <AvatarFallback>{data.name}</AvatarFallback>
           </Avatar>
           <h1 className='grow scroll-m-20 border-b pb-2 text-2xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl'>

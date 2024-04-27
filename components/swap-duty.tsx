@@ -80,7 +80,7 @@ export function SwapDuty() {
                     <div className='flex flex-row'>
                       <Avatar className='size-10'>
                         <AvatarImage
-                          className='rounded-xl'
+                          className='rounded-xl object-cover'
                           src={request.requester.avatar_url || ''}
                         />
                         <AvatarFallback>CN</AvatarFallback>
@@ -115,7 +115,7 @@ export function SwapDuty() {
                     <div className='flex flex-row'>
                       <Avatar className='size-10'>
                         <AvatarImage
-                          className='rounded-xl'
+                          className='rounded-xl object-cover'
                           src={request.receiver.avatar_url || ''}
                         />
                         <AvatarFallback>CN</AvatarFallback>
@@ -166,7 +166,7 @@ export function SwapDuty() {
                     <div className='flex flex-row'>
                       <Avatar className='size-10'>
                         <AvatarImage
-                          className='rounded-xl'
+                          className='rounded-xl object-cover'
                           src={request.requester.avatar_url || ''}
                         />
                         <AvatarFallback>CN</AvatarFallback>
@@ -201,7 +201,7 @@ export function SwapDuty() {
                     <div className='flex flex-row'>
                       <Avatar className='size-10'>
                         <AvatarImage
-                          className='rounded-xl'
+                          className='rounded-xl object-cover'
                           src={request.receiver.avatar_url || ''}
                         />
                         <AvatarFallback>CN</AvatarFallback>

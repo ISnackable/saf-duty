@@ -7,10 +7,10 @@ import { getRosterData } from '@/lib/supabase/data';
 import { type Tables } from '@/types/supabase';
 import { useMonthYear } from '@/utils/helper';
 
-const DutyDateSchema = z.array(
+const dutyDateSchema = z.array(
   z.object({
     id: z.number().optional(),
-    duty_date: z.coerce.date(),
+    duty_date: z.string().pipe(z.coerce.date()),
     is_extra: z.boolean(),
     duty_personnel_id: z.string(),
     reserve_duty_personnel_id: z.string(),
@@ -19,7 +19,7 @@ const DutyDateSchema = z.array(
   })
 );
 
-const PersonnelSchema = z.array(
+const personnelSchema = z.array(
   z.object({
     id: z.string(),
     name: z.string(),
@@ -30,12 +30,6 @@ const PersonnelSchema = z.array(
     updated_at: z.string().datetime().optional(),
   })
 );
-
-export interface RosterPatch
-  extends Pick<Tables<'rosters'>, 'id' | 'duty_date' | 'is_extra'> {
-  duty_personnel: { id: string; name: string } | null;
-  reserve_duty_personnel: { id: string; name: string } | null;
-}
 
 export const GET = withAuth(
   async ({ request, user, client }) => {
@@ -92,8 +86,8 @@ export const POST = withAuth(
       })
     );
 
-    const { success: rosterSuccess } = DutyDateSchema.safeParse(roster);
-    const { success: profilesSuccess } = PersonnelSchema.safeParse(personnels);
+    const { success: rosterSuccess } = dutyDateSchema.safeParse(roster);
+    const { success: profilesSuccess } = personnelSchema.safeParse(personnels);
 
     if (!rosterSuccess || !profilesSuccess) {
       return NextResponse.json(

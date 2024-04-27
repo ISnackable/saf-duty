@@ -34,6 +34,7 @@ export function UserNav() {
             <AvatarImage
               src={profile?.avatar_url || ''}
               alt={`${profile?.name} avtar image`}
+              className='object-cover'
             />
             <AvatarFallback>O</AvatarFallback>
           </Avatar>

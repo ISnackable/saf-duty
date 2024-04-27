@@ -26,11 +26,11 @@ import {
 } from '@/components/ui/popover';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
-import { ChangeFormSchema, getStrength, requirements } from '@/lib/validation';
+import { changeFormSchema, getStrength, requirements } from '@/lib/validation';
 
 type UserChangeFormProps = React.HTMLAttributes<HTMLDivElement>;
 
-export type ChangeFormData = z.infer<typeof ChangeFormSchema>;
+export type ChangeFormData = z.infer<typeof changeFormSchema>;
 
 function PasswordRequirement({
   meets,
@@ -52,7 +52,7 @@ function PasswordRequirement({
 
 export function UserChangeForm({ className, ...props }: UserChangeFormProps) {
   const form = useForm<ChangeFormData>({
-    resolver: zodResolver(ChangeFormSchema),
+    resolver: zodResolver(changeFormSchema),
     defaultValues: {
       password: '',
     },

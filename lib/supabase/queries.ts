@@ -1,9 +1,14 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { addDays, endOfMonth, format, startOfMonth, subDays } from 'date-fns';
 
-import { type RosterPatch } from '@/app/(dashboard)/api/rosters/route';
 import type { Database } from '@/types/supabase';
 import type { Tables } from '@/types/supabase';
+
+export interface RosterPatch
+  extends Pick<Tables<'rosters'>, 'id' | 'duty_date' | 'is_extra'> {
+  duty_personnel: { id: string; name: string } | null;
+  reserve_duty_personnel: { id: string; name: string } | null;
+}
 
 export type TypedSupabaseClient = SupabaseClient<Database>;
 export type Profiles = Omit<Tables<'profiles'>, 'updated_at'> & {

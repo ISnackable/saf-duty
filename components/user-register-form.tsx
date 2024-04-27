@@ -9,6 +9,7 @@ import * as z from 'zod';
 
 import { signUp } from '@/app/(auth)/actions';
 import { Icons } from '@/components/icons';
+import { PasswordInput } from '@/components/password-input';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -28,16 +29,14 @@ import { Popover, PopoverContent } from '@/components/ui/popover';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import {
-  RegisterFormSchema,
   getStrength,
+  registerFormSchema,
   requirements,
 } from '@/lib/validation';
 
-import { PasswordInput } from './password-input';
-
 type UserRegisterFormProps = React.HTMLAttributes<HTMLDivElement>;
 
-export type RegisterFormData = z.infer<typeof RegisterFormSchema>;
+export type RegisterFormData = z.infer<typeof registerFormSchema>;
 
 export function PasswordRequirement({
   meets,
@@ -65,7 +64,7 @@ export function UserRegisterForm({
   const [popoverOpened, setPopoverOpened] = React.useState(false);
 
   const form = useForm<RegisterFormData>({
-    resolver: zodResolver(RegisterFormSchema),
+    resolver: zodResolver(registerFormSchema),
     defaultValues: {
       name: '',
       email: '',

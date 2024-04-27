@@ -1,26 +1,30 @@
-INSERT INTO storage.buckets (id, name)
-VALUES ('avatars', 'avatars')
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES ('avatars', 'avatars', true, 5 * 1024 * 1024, ARRAY[
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+]);
 ON CONFLICT (id) DO UPDATE
   SET name = excluded.name;
 
+CREATE POLICY "Avatar images are accessible to public." ON "storage"."objects" AS permissive
+FOR SELECT
+TO PUBLIC
+USING ((bucket_id = 'avatars'::text));
+
 CREATE POLICY "Authenticated can upload an avatar." ON "storage"."objects" AS permissive
-FOR
-INSERT TO PUBLIC WITH CHECK (((bucket_id = 'avatars'::text)
-                              AND (auth.role () = 'authenticated'::text)));
-
-
-CREATE POLICY "Avatar images are accessible to authenticated." ON "storage"."objects" AS permissive
-FOR
-SELECT TO PUBLIC USING (((bucket_id = 'avatars'::text)
-                         AND (auth.role () = 'authenticated'::text)));
-
+FOR INSERT
+TO authenticated
+WITH CHECK ((bucket_id = 'avatars'::text));
 
 CREATE POLICY "Authenticated can update their own avatar." ON "storage"."objects"
-FOR
-UPDATE USING (auth.uid () = OWNER) WITH CHECK (bucket_id = 'avatars');
+FOR UPDATE
+TO authenticated
+USING (auth.uid () = OWNER) WITH CHECK (bucket_id = 'avatars');
 
 -- USE SUPABASE VAULT?
-CREATE OR REPLACE FUNCTION delete_storage_object(bucket text, OBJECT text, OUT status int, OUT content text) RETURNS record LANGUAGE 'plpgsql' SECURITY DEFINER
+CREATE OR REPLACE FUNCTION delete_storage_object(bucket text, OBJECT text) RETURNS void LANGUAGE 'plpgsql' SECURITY DEFINER
 SET
   "search_path" TO 'public' AS $$
 declare
@@ -30,27 +34,18 @@ begin
   select decrypted_secret into project_url from vault.decrypted_secrets where name = 'project_url';
   select decrypted_secret into service_role_key from vault.decrypted_secrets where name = 'service_role_key';
 
-  select
-      into status, content
-           result.status::int, result.content::text
-      FROM extensions.http((
-    'DELETE',
-    project_url||'/storage/v1/object/'||bucket||'/'||object,
-    ARRAY[extensions.http_header('authorization','Bearer '||service_role_key)],
-    NULL,
-    NULL)::extensions.http_request) as result;
-end;
-$$;
+  if project_url is null then
+    raise exception 'project_url not found in vault.decrypted_secrets';
+  end if;
 
+  if service_role_key is null then
+    raise exception 'service_role_key not found in vault.decrypted_secrets';
+  end if;
 
-CREATE OR REPLACE FUNCTION delete_avatar(avatar_url text, OUT status int, OUT content text) RETURNS record LANGUAGE 'plpgsql' SECURITY DEFINER
-SET
-  "search_path" TO 'public' AS $$
-begin
-  select
-      into status, content
-           result.status, result.content
-      from public.delete_storage_object('avatars', avatar_url) as result;
+  perform net.http_delete(
+    url:=project_url||'/storage/v1/object/'||bucket||'/'||object,
+    headers:=jsonb_build_object('Authorization', 'Bearer ' || service_role_key)
+    );
 end;
 $$;
 
@@ -71,17 +66,10 @@ BEGIN
        AND (tg_op = 'DELETE' OR (old.avatar_url <> new.avatar_url)) THEN
 
         -- Extract the avatar name from the old avatar URL
-        avatar_name := old.avatar_url;
+        avatar_name := substring(old.avatar_url from 'avatars\/(.*)\.*$');
 
         -- Call the public.delete_avatar function and store the result
-        SELECT INTO status, content
-               result.status, result.content
-        FROM public.delete_avatar(avatar_name) AS result;
-
-        -- Raise a warning if the status is not 200 (OK)
-        IF status <> 200 THEN
-            RAISE WARNING 'Could not delete avatar: % %', status, content;
-        END IF;
+        perform public.delete_storage_object('avatars', avatar_name);
     END IF;
 
     -- Return the old record for DELETE operations
@@ -91,9 +79,12 @@ BEGIN
 
     -- Return the new record for other operations
     RETURN new;
-
 END;
 $$;
+
+create trigger before_profile_changes
+before update or delete on public.profiles
+for each row execute function public.delete_old_avatar();
 
 
 CREATE OR REPLACE FUNCTION delete_old_profile() RETURNS TRIGGER LANGUAGE 'plpgsql' SECURITY DEFINER

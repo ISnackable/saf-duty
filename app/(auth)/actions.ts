@@ -10,11 +10,11 @@ import { ResetFormData } from '@/components/user-reset-form';
 import { ActionError, authAction } from '@/lib/auth-action';
 import { createClient } from '@/lib/supabase/clients/server';
 import {
-  ChangeFormSchema,
-  LoginFormSchema,
-  RegisterFormSchema,
-  ResetFormSchema,
-  UpdateFormSchema,
+  changeFormSchema,
+  loginFormSchema,
+  registerFormSchema,
+  resetFormSchema,
+  updateFormSchema,
 } from '@/lib/validation';
 import { type State } from '@/types/api-route';
 
@@ -23,7 +23,7 @@ export async function signIn(formData: LoginFormData): Promise<State> {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const validatedFields = LoginFormSchema.safeParse(formData);
+  const validatedFields = loginFormSchema.safeParse(formData);
 
   // Return early if the form data is invalid
   if (!validatedFields.success) {
@@ -61,7 +61,7 @@ export async function signUp(formData: RegisterFormData): Promise<State> {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const validatedFields = RegisterFormSchema.safeParse(formData);
+  const validatedFields = registerFormSchema.safeParse(formData);
 
   // Return early if the form data is invalid
   if (!validatedFields.success) {
@@ -109,7 +109,7 @@ export async function resetPassword(formData: ResetFormData): Promise<State> {
   const supabase = createClient(cookieStore);
   const { email } = formData;
 
-  const validatedFields = ResetFormSchema.safeParse(formData);
+  const validatedFields = resetFormSchema.safeParse(formData);
 
   // Return early if the form data is invalid
   if (!validatedFields.success) {
@@ -138,7 +138,7 @@ export async function resetPassword(formData: ResetFormData): Promise<State> {
 
 // Only authenticated users can change their password (see middleware.ts)
 export const changePassword = authAction(
-  ChangeFormSchema,
+  changeFormSchema,
   async (formData, { user }) => {
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
@@ -157,7 +157,7 @@ export const changePassword = authAction(
 );
 
 export const updateAccount = authAction(
-  UpdateFormSchema,
+  updateFormSchema,
   async (formData, { user }) => {
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);

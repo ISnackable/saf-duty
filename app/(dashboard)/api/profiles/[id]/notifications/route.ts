@@ -4,8 +4,18 @@ import { withAuth } from '@/lib/auth-handler';
 import { getUserNotificationData } from '@/lib/supabase/data';
 
 export const GET = withAuth(
-  async ({ client, user }) => {
+  async ({ params, client, user }) => {
     try {
+      if (params.id !== user.id) {
+        return NextResponse.json(
+          {
+            status: 'error',
+            message: 'Unauthorized',
+          },
+          { status: 401 }
+        );
+      }
+
       const { count, data } = await getUserNotificationData(client, user);
 
       return NextResponse.json(
@@ -29,8 +39,18 @@ export const GET = withAuth(
   { allowDemoUser: true }
 );
 
-export const DELETE = withAuth(async ({ request, client }) => {
+export const DELETE = withAuth(async ({ request, params, client, user }) => {
   try {
+    if (params.id !== user.id) {
+      return NextResponse.json(
+        {
+          status: 'error',
+          message: 'Unauthorized',
+        },
+        { status: 401 }
+      );
+    }
+
     const { id } = await request.json();
 
     const { error } = await client.from('notifications').delete().eq('id', id);
@@ -63,8 +83,18 @@ export const DELETE = withAuth(async ({ request, client }) => {
   }
 });
 
-export const PATCH = withAuth(async ({ request, client }) => {
+export const PATCH = withAuth(async ({ request, params, client, user }) => {
   try {
+    if (params.id !== user.id) {
+      return NextResponse.json(
+        {
+          status: 'error',
+          message: 'Unauthorized',
+        },
+        { status: 401 }
+      );
+    }
+
     const { id, read } = await request.json();
 
     const { error } = await client

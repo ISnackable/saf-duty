@@ -16,11 +16,11 @@ import { buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { LoginFormSchema } from '@/lib/validation';
+import { loginFormSchema } from '@/lib/validation';
 
 type UserLoginFormProps = React.HTMLAttributes<HTMLDivElement>;
 
-export type LoginFormData = z.infer<typeof LoginFormSchema>;
+export type LoginFormData = z.infer<typeof loginFormSchema>;
 
 export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
   const {
@@ -28,7 +28,7 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormData>({
-    resolver: zodResolver(LoginFormSchema),
+    resolver: zodResolver(loginFormSchema),
   });
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const router = useRouter();

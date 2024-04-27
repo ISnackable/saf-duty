@@ -494,6 +494,7 @@ export const MultipleSelector = React.forwardRef<
                                   <AvatarImage
                                     src={option.image}
                                     alt={option.label}
+                                    className='object-cover'
                                   />
                                   <AvatarFallback>CN</AvatarFallback>
                                 </Avatar>

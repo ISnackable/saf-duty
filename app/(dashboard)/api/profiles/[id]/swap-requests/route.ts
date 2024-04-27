@@ -4,8 +4,18 @@ import { withAuth } from '@/lib/auth-handler';
 import { getUserSwapRequestData } from '@/lib/supabase/data';
 
 export const GET = withAuth(
-  async ({ client, user }) => {
+  async ({ params, client, user }) => {
     try {
+      if (params.id !== user.id) {
+        return NextResponse.json(
+          {
+            status: 'error',
+            message: 'Unauthorized',
+          },
+          { status: 401 }
+        );
+      }
+
       const data = await getUserSwapRequestData(client, user);
 
       return NextResponse.json(

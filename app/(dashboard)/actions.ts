@@ -5,10 +5,10 @@ import { z } from 'zod';
 
 import { ActionError, authAction } from '@/lib/auth-action';
 import { createClient } from '@/lib/supabase/clients/server';
-import { PushSubscriptionSchema } from '@/lib/validation';
+import { pushSubscriptionSchema } from '@/lib/validation';
 
 export const insertSubscription = authAction(
-  PushSubscriptionSchema,
+  pushSubscriptionSchema,
   async (subscription, { user }) => {
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
@@ -30,7 +30,7 @@ export const insertSubscription = authAction(
 );
 
 export const deleteSubscription = authAction(
-  PushSubscriptionSchema,
+  pushSubscriptionSchema,
   async (_subscription, { user }) => {
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
@@ -64,5 +64,42 @@ export const updateOnboarded = authAction(
         error.message || 'Failed to update user onboarded status'
       );
     }
+  }
+);
+
+export const uploadAvatar = authAction(
+  z.instanceof(FormData),
+  async (formData, { user }) => {
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
+
+    const avatar = z.instanceof(Blob).parse(formData.get('file')) as File;
+
+    if (!avatar) {
+      throw new ActionError('Avatar file not found in form data');
+    }
+
+    const fileExt = avatar?.name.split('.').pop();
+    const fileName = `${Math.random()}.${fileExt}`;
+    const filePath = `${fileName}`;
+
+    const { error } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, avatar);
+
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from('avatars').getPublicUrl(filePath);
+
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({ avatar_url: publicUrl })
+      .eq('id', user.id);
+
+    if (error || updateError) {
+      throw new ActionError('Failed to update avatar');
+    }
+
+    return { publicUrl };
   }
 );

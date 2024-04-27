@@ -99,7 +99,7 @@ export function EditProfileDialog({
                   <Avatar className='size-16'>
                     <AvatarImage
                       src={form.watch('avatar_url') ?? ''}
-                      className='rounded-3xl'
+                      className='rounded-3xl object-cover'
                     />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
