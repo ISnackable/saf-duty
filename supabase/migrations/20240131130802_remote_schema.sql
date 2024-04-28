@@ -646,7 +646,7 @@ WITH
     )
   );
 
-CREATE POLICY "Enable read for user based on their user_id or users with 'admin' role" ON "public"."group_users"
+CREATE POLICY "Enable read for users based on their user_id or users with 'admin' role" ON "public"."group_users"
 FOR SELECT
 TO authenticated
   USING (
@@ -655,6 +655,13 @@ TO authenticated
       OR public.has_group_role (group_id, 'admin'::text)
     )
   );
+
+CREATE POLICY "Enable update for users based on user_id or users with 'admin' role" ON "public"."group_users"
+FOR UPDATE
+TO authenticated
+  USING ((public.has_group_role (group_id, 'admin'::text)))
+WITH
+  CHECK ((public.has_group_role (group_id, 'admin'::text)));
 
 CREATE POLICY "Enable all for users based on user_id" ON "public"."notifications"
 FOR ALL

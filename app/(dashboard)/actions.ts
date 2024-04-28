@@ -73,7 +73,11 @@ export const uploadAvatar = authAction(
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
 
-    const avatar = z.instanceof(Blob).parse(formData.get('file')) as File;
+    const avatar = z
+      .custom<File>((v) => v instanceof File || v instanceof Blob, {
+        message: 'Image is required',
+      })
+      .parse(formData.get('file'));
 
     if (!avatar) {
       throw new ActionError('Avatar file not found in form data');

@@ -7,9 +7,9 @@ import { isDemoUser } from '@/utils/helper';
 // Public paths that do not require authentication, /change-password SHOULD be accessible only to authenticated users.
 const PUBLIC_PATHS = ['/register', '/login', '/reset-password'];
 
-function redirectToHome(request: NextRequest) {
+function redirectToPath(request: NextRequest, path = '/') {
   const url = request.nextUrl.clone();
-  url.pathname = '/';
+  url.pathname = path;
   url.search = '';
   return NextResponse.redirect(url);
 }
@@ -40,7 +40,13 @@ export async function middleware(request: NextRequest) {
 
   // Authenticated user should not be able to access /login, /register and /reset-password routes
   if (PUBLIC_PATHS.includes(request.nextUrl.pathname)) {
-    return redirectToHome(request);
+    const redirectSearchParams = request.nextUrl.searchParams.get('redirect');
+
+    if (redirectSearchParams) {
+      return redirectToPath(request, redirectSearchParams);
+    }
+
+    return redirectToPath(request);
   }
 
   // Authenticated user should not be able to access /change-password route unless they have requested a password reset
@@ -51,7 +57,7 @@ export async function middleware(request: NextRequest) {
       (session.user.recovery_sent_at &&
         isPast(addMinutes(session.user.recovery_sent_at, 5)))
     ) {
-      return redirectToHome(request);
+      return redirectToPath(request);
     }
   }
   // Authenticated user should not be able to access /admin routes if not an "admin" role (unless it's a demo user)
@@ -67,7 +73,7 @@ export async function middleware(request: NextRequest) {
       user?.app_metadata?.groups?.role !== 'admin' &&
       !isDemoUser(user?.id!)
     ) {
-      return redirectToHome(request);
+      return redirectToPath(request);
     }
   }
 

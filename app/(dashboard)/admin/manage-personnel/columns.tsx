@@ -1,7 +1,16 @@
 'use client';
 
+import {
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+} from '@chakra-ui/number-input';
 import type { ColumnDef, RowData } from '@tanstack/react-table';
 import * as React from 'react';
+import { toast } from 'sonner';
+import { useDebouncedCallback } from 'use-debounce';
 
 import { Icons } from '@/components/icons';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -26,7 +35,6 @@ import {
 } from '@/components/ui/select';
 import type { Profiles } from '@/lib/supabase/queries';
 
-import { DeleteTasksDialog } from './delete-tasks-dialog';
 import { EditProfileDialog } from './manage-personnel-edit-dialog';
 
 type Option = {
@@ -59,46 +67,128 @@ const TabelCell: ColumnDef<Profiles>['cell'] = ({
   const columnMeta = column.columnDef.meta;
   const tableMeta = table.options.meta;
   const [value, setValue] = React.useState(initialValue);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     setValue(initialValue);
   }, [initialValue]);
 
-  const onBlur = () => {
+  const updateBlockouts = useDebouncedCallback(async (value: number) => {
+    setIsLoading(true);
+
+    const response = await fetch(
+      `/api/profiles/${row.original.id}/max-blockouts`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ max_blockouts: value }),
+      }
+    );
+
+    const { message } = await response.json();
+
+    if (!response.ok) {
+      toast.error(message);
+      setValue(initialValue);
+      setIsLoading(false);
+      return;
+    }
+
     tableMeta?.updateData(row.index, column.id, value);
+    toast.success(`Successfully updated maximum blockouts to ${value}`);
+    setIsLoading(false);
+  }, 600);
+
+  const onChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    tableMeta?.updateData(row.index, column.id, value);
+    setValue(e.target.value);
   };
 
-  const onSelectChange = (value: string) => {
+  const onSelectChange = async (value: string) => {
+    setIsLoading(true);
+
+    const response = await fetch(`/api/profiles/${row.original.id}/role`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ role: value }),
+    });
+
+    const { message } = await response.json();
+
+    if (!response.ok) {
+      toast.error(message);
+      setValue(initialValue);
+      setIsLoading(false);
+      return;
+    }
+
     setValue(value);
     tableMeta?.updateData(row.index, column.id, value);
+    toast.success(`Successfully updated role to ${value}`);
+    setIsLoading(false);
   };
 
-  return columnMeta?.type === 'select' ? (
-    <Select
-      onValueChange={onSelectChange}
-      value={value}
-      defaultValue={initialValue}
-    >
-      <SelectTrigger className='w-[180px] border-none'>
-        <SelectValue placeholder={column.columnDef.meta?.title || 'Title'} />
-      </SelectTrigger>
-      <SelectContent>
-        {columnMeta?.options?.map((option: Option) => (
-          <SelectItem key={option.value} value={option.value}>
-            {option.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  ) : (
-    <Input
-      title={column.columnDef.meta?.title || 'Title'}
-      type={column.columnDef.meta?.type || 'text'}
-      value={value}
-      onChange={(e) => setValue(e.target.value as any)}
-      onBlur={onBlur}
-    />
-  );
+  switch (columnMeta?.type) {
+    case 'select':
+      return (
+        <Select
+          disabled={isLoading}
+          onValueChange={onSelectChange}
+          value={value}
+          defaultValue={initialValue}
+        >
+          <SelectTrigger className='w-[180px] border-none'>
+            <SelectValue
+              placeholder={column.columnDef.meta?.title || 'Title'}
+            />
+          </SelectTrigger>
+          <SelectContent>
+            {columnMeta?.options?.map((option: Option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      );
+
+    case 'number':
+      return (
+        <NumberInput
+          isDisabled={isLoading}
+          title={column.columnDef.meta?.title || 'Title'}
+          min={0}
+          max={100}
+          value={value}
+          onChange={(valueAsString, valueAsNumber) => {
+            setValue(valueAsString);
+
+            updateBlockouts(valueAsNumber);
+          }}
+        >
+          <NumberInputField className='flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50' />
+          <NumberInputStepper className='w-6 divide-y border-l border-input'>
+            <NumberIncrementStepper className='rounded-tr-md border-input text-[0.75rem]' />
+            <NumberDecrementStepper className='rounded-br-md border-input text-[0.75rem]' />
+          </NumberInputStepper>
+        </NumberInput>
+      );
+
+    default:
+      return (
+        <Input
+          disabled={isLoading}
+          title={column.columnDef.meta?.title || 'Title'}
+          type={column.columnDef.meta?.type || 'text'}
+          value={value}
+          onChange={onChange}
+        />
+      );
+  }
 };
 
 export const columns: ColumnDef<Profiles>[] = [

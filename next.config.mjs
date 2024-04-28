@@ -29,7 +29,7 @@ const nextConfig = bundleAnalyzer(
         },
         {
           hostname: '*.supabase.co',
-          pathname: '/storage/v1/**',
+          pathname: '/storage/**',
         },
       ],
     },

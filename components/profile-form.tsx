@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import Compressor from 'compressorjs';
 import { formatISO } from 'date-fns';
 import { ElementRef, useRef } from 'react';
 import * as React from 'react';
@@ -37,7 +38,7 @@ const ACCEPTED_IMAGE_TYPES = [
 
 const profileFormSchema = z.object({
   avatar: z
-    .custom<File>((v) => v instanceof File, {
+    .custom<File>((v) => v instanceof File || v instanceof Blob, {
       message: 'Image is required',
     })
     .refine(
@@ -89,6 +90,7 @@ export function ProfileForm() {
     setIsLoading(true);
 
     if (data) {
+      const avatar = data.avatar;
       const ord_date = data.ord_date
         ? formatISO(data.ord_date, { representation: 'date' })
         : null;
@@ -102,9 +104,9 @@ export function ProfileForm() {
       });
       const promiseChain = [resPromise];
 
-      if (data.avatar) {
+      if (avatar) {
         const formData = new FormData();
-        formData.append('file', data.avatar);
+        formData.append('file', avatar, avatar.name);
         const actionPromise = uploadAvatar(formData);
 
         promiseChain.push(actionPromise as Promise<any>);
@@ -159,7 +161,20 @@ export function ProfileForm() {
                                   event.target.files && event.target.files[0];
 
                                 if (!file) return;
-                                onChange(file);
+
+                                new Compressor(file, {
+                                  checkOrientation: false,
+                                  width: 512,
+                                  height: 512,
+                                  resize: 'cover',
+                                  quality: 0.8,
+                                  success: (result) => {
+                                    onChange(result);
+                                  },
+                                  error: (error) => {
+                                    console.error(error.message);
+                                  },
+                                });
                               }}
                               name={name}
                               ref={(e) => {

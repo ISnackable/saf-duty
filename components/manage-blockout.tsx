@@ -227,7 +227,11 @@ export function ManageBlockout() {
       />
 
       <div className='mt-5 flex items-center justify-end'>
-        <LoadingButton loading={loading} onClick={updateBlockoutDates}>
+        <LoadingButton
+          loading={loading}
+          onClick={updateBlockoutDates}
+          data-tour='manage-blockouts-save-btn-page'
+        >
           Save
         </LoadingButton>
       </div>

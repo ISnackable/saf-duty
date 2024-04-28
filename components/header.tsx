@@ -49,7 +49,10 @@ export function Header() {
           'fixed right-0 top-0 z-50 flex h-16 w-full items-center border-b bg-popover px-3 xl:w-[calc(100%-240px)]'
         )}
       >
-        <div className='mr-0 flex h-14 w-full items-center align-middle sm:mr-2'>
+        <div
+          className='mr-0 flex h-14 w-full items-center align-middle sm:mr-2'
+          data-tour='header'
+        >
           <div className='flex flex-grow basis-0 justify-start'>
             <Button
               data-tour='side-nav-button'
@@ -68,10 +71,7 @@ export function Header() {
             <ThemeSwitcher />
           </div>
 
-          <div
-            className='flex flex-grow basis-0 justify-end space-x-2 align-middle'
-            data-tour='header'
-          >
+          <div className='flex flex-grow basis-0 justify-end space-x-2 align-middle'>
             <NotificationsPopover />
             <UserNav />
           </div>

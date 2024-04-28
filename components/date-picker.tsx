@@ -117,9 +117,9 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
-            variant={'outline'}
+            variant='outline'
             className={cn(
-              'justify-start overflow-hidden whitespace-nowrap text-left align-middle font-normal',
+              'flex h-9 w-full justify-start overflow-hidden text-ellipsis whitespace-nowrap text-left align-middle font-normal',
               (!date || (Array.isArray(date) && date.length <= 0)) &&
                 'text-muted-foreground',
               className
@@ -182,9 +182,9 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
         <Button
-          variant={'outline'}
+          variant='outline'
           className={cn(
-            'justify-start overflow-hidden whitespace-nowrap text-left align-middle font-normal',
+            'flex h-9 w-full justify-start overflow-hidden text-ellipsis whitespace-nowrap text-left align-middle font-normal',
             (!date || (Array.isArray(date) && date.length <= 0)) &&
               'text-muted-foreground',
             className

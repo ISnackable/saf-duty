@@ -122,7 +122,7 @@ export default async function CollectionsPayDayPage() {
         </CardContent>
         <CardFooter className='flex justify-between'>
           <p className='text-sm text-muted-foreground'>
-            {100 - progress}% to next pay day
+            {100 - progress}% left to next pay day
           </p>
           <Badge variant='secondary'>{daysLeft} days left</Badge>
         </CardFooter>

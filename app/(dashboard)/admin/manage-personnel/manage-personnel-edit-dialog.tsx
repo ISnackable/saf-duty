@@ -1,12 +1,22 @@
 'use client';
 
+import {
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+} from '@chakra-ui/number-input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type Row } from '@tanstack/react-table';
+import { formatISO } from 'date-fns';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { DatePicker } from '@/components/date-picker';
+import { LoadingButton } from '@/components/loading-button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,6 +37,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { fetcher } from '@/lib/fetcher';
 import type { Profiles } from '@/lib/supabase/queries';
 
 const formSchema = z.object({
@@ -35,12 +46,13 @@ const formSchema = z.object({
     .min(2, { message: 'Name must be between 2 and 50 characters' })
     .max(50, { message: 'Name must be between 2 and 50 characters' }),
   avatar_url: z.string().url({ message: 'Please enter a valid URL' }),
-  weekend_points: z.number().int().min(-100).max(100),
-  weekday_points: z.number().int().min(-100).max(100),
-  no_of_extras: z.number().int().min(0).max(100),
+  weekend_points: z.coerce.number().int().min(-100).max(100),
+  weekday_points: z.coerce.number().int().min(-100).max(100),
+  no_of_extras: z.coerce.number().int().min(0).max(100),
   blockout_dates: z.array(z.date()),
 });
-// import { deleteTasks } from "../_lib/mutations"
+
+type FormValues = z.infer<typeof formSchema>;
 
 interface EditProfileDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
@@ -54,7 +66,7 @@ export function EditProfileDialog({
   ...props
 }: EditProfileDialogProps) {
   const [isEditPending, starEditTransition] = React.useTransition();
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: profile.original.name,
@@ -63,15 +75,34 @@ export function EditProfileDialog({
       weekday_points: profile.original.weekday_points,
       no_of_extras: profile.original.no_of_extras ?? 0,
       blockout_dates:
-        profile.original.blockout_dates?.map((d) => new Date(d)) ?? [],
+        profile.original.blockout_dates?.map((date) => new Date(date)) ?? [],
     },
+    mode: 'onSubmit',
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  function onSubmit(values: FormValues) {
+    starEditTransition(() => {
+      const resPromise = fetcher(`/api/profiles/${profile.original.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          ...values,
+          blockout_dates: values.blockout_dates.map((date) =>
+            formatISO(date, { representation: 'date' })
+          ),
+        }),
+      });
+
+      toast.promise(resPromise, {
+        loading: 'Loading...',
+        success: 'Profile updated.',
+        error: 'An error occurred.',
+        description(data) {
+          if (data instanceof Error) return data.message;
+          return `You can now close this page.`;
+        },
+      });
+    });
   }
 
   return (
@@ -133,19 +164,21 @@ export function EditProfileDialog({
                 control={form.control}
                 name='weekend_points'
                 render={({ field }) => (
-                  <FormItem className='grow'>
+                  <FormItem className='basis-1/3'>
                     <FormLabel>Weekend Points</FormLabel>
                     <FormControl>
-                      <Input
-                        type='number'
-                        pattern='[0-9]*'
+                      <NumberInput
+                        title='Weekend Points Input'
                         min={-100}
                         max={100}
                         {...field}
-                        onChange={(value) =>
-                          field.onChange(value.target.valueAsNumber)
-                        }
-                      />
+                      >
+                        <NumberInputField className='flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50' />
+                        <NumberInputStepper className='w-6 divide-y border-l border-input'>
+                          <NumberIncrementStepper className='rounded-tr-md border-input text-[0.75rem]' />
+                          <NumberDecrementStepper className='rounded-br-md border-input text-[0.75rem]' />
+                        </NumberInputStepper>
+                      </NumberInput>
                     </FormControl>
                   </FormItem>
                 )}
@@ -154,19 +187,21 @@ export function EditProfileDialog({
                 control={form.control}
                 name='weekday_points'
                 render={({ field }) => (
-                  <FormItem className='grow'>
+                  <FormItem className='basis-1/3'>
                     <FormLabel>Weekday Points</FormLabel>
                     <FormControl>
-                      <Input
-                        type='number'
-                        pattern='[0-9]*'
+                      <NumberInput
+                        title='Weekday Points Input'
                         min={-100}
                         max={100}
                         {...field}
-                        onChange={(value) =>
-                          field.onChange(value.target.valueAsNumber)
-                        }
-                      />
+                      >
+                        <NumberInputField className='flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50' />
+                        <NumberInputStepper className='w-6 divide-y border-l border-input'>
+                          <NumberIncrementStepper className='rounded-tr-md border-input text-[0.75rem]' />
+                          <NumberDecrementStepper className='rounded-br-md border-input text-[0.75rem]' />
+                        </NumberInputStepper>
+                      </NumberInput>
                     </FormControl>
                   </FormItem>
                 )}
@@ -175,19 +210,21 @@ export function EditProfileDialog({
                 control={form.control}
                 name='no_of_extras'
                 render={({ field }) => (
-                  <FormItem className='grow'>
+                  <FormItem className='basis-1/3'>
                     <FormLabel>No. of Extra</FormLabel>
                     <FormControl>
-                      <Input
-                        type='number'
-                        pattern='[0-9]*'
+                      <NumberInput
+                        title='No. of Extra Input'
                         min={0}
                         max={100}
                         {...field}
-                        onChange={(value) =>
-                          field.onChange(value.target.valueAsNumber)
-                        }
-                      />
+                      >
+                        <NumberInputField className='flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50' />
+                        <NumberInputStepper className='w-6 divide-y border-l border-input'>
+                          <NumberIncrementStepper className='rounded-tr-md border-input text-[0.75rem]' />
+                          <NumberDecrementStepper className='rounded-br-md border-input text-[0.75rem]' />
+                        </NumberInputStepper>
+                      </NumberInput>
                     </FormControl>
                   </FormItem>
                 )}
@@ -198,11 +235,11 @@ export function EditProfileDialog({
               control={form.control}
               name='blockout_dates'
               render={({ field }) => (
-                <FormItem className='flex flex-col'>
+                <FormItem>
                   <FormLabel>Blockout Dates</FormLabel>
 
                   <DatePicker
-                    className='max-w-[340px] sm:max-w-[460px]'
+                    className='max-w-[21.2rem] sm:max-w-[28.9rem]'
                     mode='multiple'
                     selected={field.value}
                     onSelect={field.onChange}
@@ -212,7 +249,9 @@ export function EditProfileDialog({
             />
 
             <DialogFooter className='mt-4'>
-              <Button type='submit'>Save changes</Button>
+              <LoadingButton type='submit' loading={isEditPending}>
+                Save changes
+              </LoadingButton>
             </DialogFooter>
           </form>
         </Form>

@@ -39,8 +39,6 @@ export function DriverTour() {
           title: 'Overview of the Dashboard 📊',
           description:
             "This is the dashboard, it's where you can see an overview of your duties. Such as upcoming duties, duties completed, and also who are on duty.",
-          side: 'left',
-          align: 'start',
         },
       },
       {
@@ -63,6 +61,8 @@ export function DriverTour() {
           description:
             'Logout, switch themes, and view your profile here. You can also install the app on your device for notification.',
           onNextClick: () => navigateAndMove('/duty-roster', 'next'),
+          side: 'top',
+          align: 'end',
         },
       },
       // This tour might not work as loading.tsx is replaced
@@ -72,8 +72,6 @@ export function DriverTour() {
           title: 'Duty Roster 📅',
           description:
             'You can view the duty roster here. Click on the date to request to swap duty.',
-          side: 'top',
-          align: 'start',
           onPrevClick: () => navigateAndMove('/', 'previous'),
           onNextClick: () => navigateAndMove('/manage-blockouts', 'next'),
         },
@@ -84,8 +82,14 @@ export function DriverTour() {
           title: 'Manage Blockouts 🚫',
           description:
             'Here you manage your blockouts. Blockouts are days where you are not available for duty. You can add, edit, and delete blockouts here.',
-          side: 'right',
-          align: 'start',
+        },
+      },
+      {
+        element: '[data-tour="manage-blockouts-save-btn-page"]',
+        popover: {
+          title: "Don't forget to save 📝",
+          description:
+            'After you have edited your blockouts, remember to click save. Otherwise, they will not be updated.',
           onPrevClick: () => navigateAndMove('/duty-roster', 'previous'),
         },
       },
