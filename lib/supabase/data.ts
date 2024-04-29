@@ -10,6 +10,7 @@ import {
   dutyRoster,
   notifications,
   swapRequests,
+  upcomingDuties,
 } from '@/lib/demo-data';
 import { type DutyDate } from '@/lib/duty-roster';
 import {
@@ -20,6 +21,7 @@ import {
   getRosterByUnitId,
   getSwapRequestByUnitId,
   getUserProfileById,
+  getUserUpcomingDuties,
 } from '@/lib/supabase/queries';
 import { isDemoUser } from '@/utils/helper';
 import { indexOnceWithKey } from '@/utils/helper';
@@ -89,6 +91,23 @@ export async function getUserProfileData(
 
     if (!data || error) {
       throw new Error('Failed to fetch profile');
+    }
+
+    return data;
+  }
+}
+
+export async function getUserUpcomingDutiesData(
+  client: TypedSupabaseClient,
+  user: User
+) {
+  if (isDemoUser(user.id)) {
+    return upcomingDuties;
+  } else {
+    const { data, error } = await getUserUpcomingDuties(client, user.id);
+
+    if (!data || error) {
+      throw new Error('Failed to fetch upcoming duties');
     }
 
     return data;

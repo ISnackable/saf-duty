@@ -1,6 +1,10 @@
 // All the demo data that used as fallbacks when there's nothing in the dataset yet
 import { demo } from '@/lib/config';
-import type { Profiles, SwapRequests } from '@/lib/supabase/queries';
+import type {
+  Profiles,
+  RosterPatch,
+  SwapRequests,
+} from '@/lib/supabase/queries';
 import type { Tables } from '@/types/supabase';
 
 const todayMonth = (new Date().getMonth() + 1)
@@ -252,11 +256,59 @@ export const demoUsers: Profiles[] = [
   },
 ];
 
-export const upcomingDuties: string[] = [
-  `${currentYear}-${todayMonth}-03`,
-  `${currentYear}-${todayMonth}-13`,
-  `${currentYear}-${todayMonth}-26`,
-  `${currentYear}-${todayMonth}-28`,
+export const upcomingDuties: RosterPatch[] = [
+  {
+    id: 1,
+    duty_date: `${currentYear}-${todayMonth}-03`,
+    is_extra: false,
+    duty_personnel: {
+      id: demo.id,
+      name: 'demo',
+    },
+    reserve_duty_personnel: {
+      id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
+      name: 'Jia Hao',
+    },
+  },
+  {
+    id: 2,
+    duty_date: `${currentYear}-${todayMonth}-13`,
+    is_extra: false,
+    duty_personnel: {
+      id: demo.id,
+      name: 'demo',
+    },
+    reserve_duty_personnel: {
+      id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
+      name: 'Wang Li',
+    },
+  },
+  {
+    id: 3,
+    duty_date: `${currentYear}-${todayMonth}-26`,
+    is_extra: false,
+    duty_personnel: {
+      id: demo.id,
+      name: 'demo',
+    },
+    reserve_duty_personnel: {
+      id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
+      name: 'Jia Hui',
+    },
+  },
+  {
+    id: 4,
+    duty_date: `${currentYear}-${todayMonth}-28`,
+    is_extra: false,
+    duty_personnel: {
+      id: demo.id,
+      name: 'demo',
+    },
+    reserve_duty_personnel: {
+      id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
+      name: 'Zhi Hao',
+    },
+  },
 ];
 
 export const dutyRoster = [

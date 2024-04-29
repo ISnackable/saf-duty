@@ -57,7 +57,7 @@ SELECT
       AND (
         SELECT user_settings->>'notify_on_duty_reminder'
         FROM public.profiles
-        WHERE profiles.user_id = rosters.duty_personnel_id
+        WHERE profiles.id = rosters.duty_personnel_id
       ) = 'true';
     $$
   );

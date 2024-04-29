@@ -1,5 +1,12 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { addDays, endOfMonth, format, startOfMonth, subDays } from 'date-fns';
+import {
+  addDays,
+  addMonths,
+  endOfMonth,
+  format,
+  startOfMonth,
+  subDays,
+} from 'date-fns';
 
 import type { Database } from '@/types/supabase';
 import type { Tables } from '@/types/supabase';
@@ -74,6 +81,7 @@ export function getAllUsersByUnitId(client: TypedSupabaseClient) {
       ord_date,
       no_of_extras,
       onboarded,
+      user_settings,
       ...group_users!group_users_user_id_fkey1(role),
       total_duty_done:rosters!rosters_duty_personnel_id_fkey(count)
       `
@@ -82,10 +90,9 @@ export function getAllUsersByUnitId(client: TypedSupabaseClient) {
     .returns<Profiles[]>();
 }
 
-// TODO: Instead of relying on the sessionId, we should be making use of RLS to ensure that the user can only access their own data.
 export function getUserProfileById(
   client: TypedSupabaseClient,
-  sessionId: string
+  userId: string
 ) {
   const TODAY = format(new Date(), 'yyyy-MM-dd');
 
@@ -106,14 +113,41 @@ export function getUserProfileById(
       ord_date,
       no_of_extras,
       onboarded,
+      user_settings,
       ...group_users!group_users_user_id_fkey1(role),
       total_duty_done:rosters!rosters_duty_personnel_id_fkey(count)
       `
     )
-    .eq('id', sessionId)
-    .eq('group_users.user_id', sessionId)
+    .eq('id', userId)
+    .eq('group_users.user_id', userId)
     .lt('rosters.duty_date', TODAY)
     .single<Profiles>();
+}
+
+export function getUserUpcomingDuties(
+  client: TypedSupabaseClient,
+  userId: string
+) {
+  const TODAY = new Date();
+  const firstDate = format(startOfMonth(TODAY), 'yyyy-MM-dd');
+  const lastDate = format(endOfMonth(addMonths(firstDate, 1)), 'yyyy-MM-dd');
+
+  return client
+    .from('rosters')
+    .select(
+      `
+      id,
+      duty_date,
+      is_extra,
+      duty_personnel:duty_personnel_id(id, name),
+      reserve_duty_personnel:reserve_duty_personnel_id(id, name)
+    `
+    )
+    .eq('duty_personnel_id', userId)
+    .gte('duty_date', firstDate)
+    .lte('duty_date', lastDate)
+    .order('duty_date', { ascending: true })
+    .returns<RosterPatch[]>();
 }
 
 export function getSwapRequestByUnitId(client: TypedSupabaseClient) {

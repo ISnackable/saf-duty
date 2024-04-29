@@ -16,7 +16,7 @@ export default function Loading() {
   return (
     <div className='space-y-4 p-8 pt-4'>
       <div className='flex w-full items-center space-y-2'>
-        <Icons.edit className='mr-3 inline-block h-8 w-8 items-center align-middle' />
+        <Icons.chessKnight className='mr-3 inline-block h-8 w-8 items-center align-middle' />
         <h1 className='grow scroll-m-20 border-b pb-2 text-2xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl'>
           Schedule Duty
         </h1>

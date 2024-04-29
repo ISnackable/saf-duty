@@ -1,16 +1,16 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { type CheckedState } from '@radix-ui/react-checkbox';
-import { useEffect, useState } from 'react';
+import type { CheckedState } from '@radix-ui/react-checkbox';
+import { useEffect, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
+import { LoadingButton } from '@/components//loading-button';
 import { InstallPWA } from '@/components/install-pwa';
 import { usePushNotificationContext } from '@/components/push-notification-provider';
-import { useSession } from '@/components/session-provider';
-import { Button } from '@/components/ui/button';
+import { useUser } from '@/components/session-provider';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   Form,
@@ -22,25 +22,21 @@ import {
 } from '@/components/ui/form';
 import { Switch } from '@/components/ui/switch';
 import { useOs } from '@/hooks/use-os';
+import { useProfiles } from '@/hooks/use-profiles';
+import { fetcher } from '@/lib/fetcher';
 import { isDemoUser } from '@/utils/helper';
 
 const notificationsFormSchema = z.object({
-  duty_roster_published: z.boolean().default(true),
-  swap_request_updates: z.boolean().default(true),
-  duty_reminder: z.boolean().default(true),
+  notify_on_rosters_published: z.boolean().default(true),
+  notify_on_swap_requests: z.boolean().default(true),
+  notify_on_duty_reminder: z.boolean().default(true),
 });
 
 type NotificationsFormValues = z.infer<typeof notificationsFormSchema>;
 
-// This can come from your database or API.
-const defaultValues: Partial<NotificationsFormValues> = {
-  duty_roster_published: true,
-  swap_request_updates: true,
-  duty_reminder: true,
-};
-
 export function NotificationsForm() {
-  const session = useSession();
+  const user = useUser();
+  const { data: profile, mutate } = useProfiles();
 
   const {
     userSubscription,
@@ -51,12 +47,23 @@ export function NotificationsForm() {
     onClickSubscribeToPushNotification,
     onClickUnsubscribeToPushNotification,
   } = usePushNotificationContext();
+  const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [checked, setChecked] = useState<CheckedState>(false);
   const form = useForm<NotificationsFormValues>({
     resolver: zodResolver(notificationsFormSchema),
-    defaultValues,
+    values: {
+      notify_on_duty_reminder:
+        profile?.user_settings?.notify_on_duty_reminder ?? true,
+      notify_on_rosters_published:
+        profile?.user_settings?.notify_on_rosters_published ?? true,
+      notify_on_swap_requests:
+        profile?.user_settings?.notify_on_swap_requests ?? true,
+    },
+    resetOptions: {
+      keepDirtyValues: true,
+    },
   });
   const os = useOs();
 
@@ -67,12 +74,31 @@ export function NotificationsForm() {
   }, [pushNotificationSupported, userSubscription]);
 
   function onSubmit(data: NotificationsFormValues) {
-    toast.message('You submitted the following values:', {
-      description: (
-        <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-          <code className='text-white'>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
+    if (!user) return;
+
+    startTransition(() => {
+      const resPromise = fetcher(`/api/profiles/${user.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          user_settings: data,
+        }),
+      }).then(() => {
+        if (profile)
+          mutate({
+            ...profile,
+            user_settings: data,
+          });
+      });
+
+      toast.promise(resPromise, {
+        loading: 'Loading...',
+        success: 'Notification settings updated.',
+        error: 'An error occurred.',
+        description(data) {
+          if (data instanceof Error) return data.message;
+          return `You can now close this page.`;
+        },
+      });
     });
   }
 
@@ -92,9 +118,9 @@ export function NotificationsForm() {
                   }
                 }
 
-                if (!session) return;
+                if (!user) return;
 
-                if (isDemoUser(session.user.id)) {
+                if (isDemoUser(user.id)) {
                   toast.warning('Demo users cannot enable notifications');
                   return;
                 }
@@ -144,7 +170,7 @@ export function NotificationsForm() {
 
           <div className='grid gap-1.5 leading-none'>
             <label
-              htmlFor='terms1'
+              htmlFor='notifications-checkbox'
               className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
             >
               Enable push notifications for this device
@@ -161,7 +187,7 @@ export function NotificationsForm() {
           <div className='space-y-4'>
             <FormField
               control={form.control}
-              name='duty_roster_published'
+              name='notify_on_rosters_published'
               render={({ field }) => (
                 <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
                   <div className='space-y-0.5'>
@@ -185,7 +211,7 @@ export function NotificationsForm() {
             />
             <FormField
               control={form.control}
-              name='swap_request_updates'
+              name='notify_on_swap_requests'
               render={({ field }) => (
                 <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
                   <div className='space-y-0.5'>
@@ -209,7 +235,7 @@ export function NotificationsForm() {
             />
             <FormField
               control={form.control}
-              name='duty_reminder'
+              name='notify_on_duty_reminder'
               render={({ field }) => (
                 <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
                   <div className='space-y-0.5'>
@@ -234,7 +260,9 @@ export function NotificationsForm() {
           </div>
         </div>
 
-        <Button type='submit'>Update notifications</Button>
+        <LoadingButton type='submit' loading={isPending}>
+          Update notifications
+        </LoadingButton>
       </form>
     </Form>
   );

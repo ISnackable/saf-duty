@@ -234,9 +234,14 @@ SET
         SELECT
           DISTINCT n.duty_personnel_id,
           'New duty roster published!',
-          'You have been assigned a new duty for ' || to_char(MIN(n.duty_date::date), 'Month YYYY')
+          'You have been assigned a new duty for the month of ' || to_char(MIN(n.duty_date::date), 'Month YYYY')
         FROM new_table n
-        WHERE n.duty_personnel_id IN (SELECT user_id FROM public.push_subscriptions)
+        WHERE (n.duty_personnel_id IN (SELECT user_id FROM public.push_subscriptions)
+        AND (
+          SELECT user_settings->>'notify_on_rosters_published'
+          FROM public.profiles
+          WHERE profiles.id = n.duty_personnel_id
+        ) = 'true')
         GROUP BY n.duty_personnel_id;
 
   RETURN NULL;
