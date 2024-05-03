@@ -33,11 +33,6 @@ const nextConfig = bundleAnalyzer(
         },
       ],
     },
-    logging: {
-      fetches: {
-        fullUrl: false,
-      },
-    },
   })
 );
 

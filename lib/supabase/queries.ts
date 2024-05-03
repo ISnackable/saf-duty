@@ -13,8 +13,8 @@ import type { Tables } from '@/types/supabase';
 
 export interface RosterPatch
   extends Pick<Tables<'rosters'>, 'id' | 'duty_date' | 'is_extra'> {
-  duty_personnel: { id: string; name: string } | null;
-  reserve_duty_personnel: { id: string; name: string } | null;
+  duty_personnel: Pick<Profiles, 'id' | 'name' | 'avatar_url'> | null;
+  reserve_duty_personnel: Pick<Profiles, 'id' | 'name' | 'avatar_url'> | null;
 }
 
 export type TypedSupabaseClient = SupabaseClient<Database>;
@@ -52,8 +52,8 @@ export function getRosterByUnitId(
       id,
       duty_date,
       is_extra,
-      duty_personnel:duty_personnel_id(id, name),
-      reserve_duty_personnel:reserve_duty_personnel_id(id, name)
+      duty_personnel:duty_personnel_id(id, name, avatar_url),
+      reserve_duty_personnel:reserve_duty_personnel_id(id, name, avatar_url)
     `
     )
     .lte('duty_date', format(addDays(endOfMonth(monthDate), 8), 'yyyy-MM-dd'))
@@ -139,8 +139,8 @@ export function getUserUpcomingDuties(
       id,
       duty_date,
       is_extra,
-      duty_personnel:duty_personnel_id(id, name),
-      reserve_duty_personnel:reserve_duty_personnel_id(id, name)
+      duty_personnel:duty_personnel_id(id, name, avatar_url),
+      reserve_duty_personnel:reserve_duty_personnel_id(id, name, avatar_url)
     `
     )
     .eq('duty_personnel_id', userId)
@@ -164,15 +164,15 @@ export function getSwapRequestByUnitId(client: TypedSupabaseClient) {
         id,
         duty_date,
         is_extra,
-        duty_personnel:duty_personnel_id(id, name),
-        reserve_duty_personnel:reserve_duty_personnel_id(id, name)
+        duty_personnel:duty_personnel_id(id, name, avatar_url),
+        reserve_duty_personnel:reserve_duty_personnel_id(id, name, avatar_url)
       ),
       requester_roster:requester_roster_id(
         id,
         duty_date,
         is_extra,
-        duty_personnel:duty_personnel_id(id, name),
-        reserve_duty_personnel:reserve_duty_personnel_id(id, name)
+        duty_personnel:duty_personnel_id(id, name, avatar_url),
+        reserve_duty_personnel:reserve_duty_personnel_id(id, name, avatar_url)
       )
     `
     )

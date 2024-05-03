@@ -129,3 +129,4 @@ Distributed under the **MIT** License. See `LICENSE` for more information.
 
 - [supabase | Postgres Database & Authentication](https://supabase.com/)
 - [shadcn/ui | React Component Library](https://ui.shadcn.com/)
+- [unDraw](https://undraw.co/license)

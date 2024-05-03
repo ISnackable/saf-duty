@@ -260,7 +260,11 @@ export function NotificationsForm() {
           </div>
         </div>
 
-        <LoadingButton type='submit' loading={isPending}>
+        <LoadingButton
+          type='submit'
+          loading={isPending}
+          disabled={!(pushNotificationSupported && userSubscription)}
+        >
           Update notifications
         </LoadingButton>
       </form>

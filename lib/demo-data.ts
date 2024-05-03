@@ -264,10 +264,14 @@ export const upcomingDuties: RosterPatch[] = [
     duty_personnel: {
       id: demo.id,
       name: 'demo',
+      avatar_url:
+        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
       name: 'Jia Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -277,10 +281,14 @@ export const upcomingDuties: RosterPatch[] = [
     duty_personnel: {
       id: demo.id,
       name: 'demo',
+      avatar_url:
+        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
       name: 'Wang Li',
+      avatar_url:
+        'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -290,10 +298,14 @@ export const upcomingDuties: RosterPatch[] = [
     duty_personnel: {
       id: demo.id,
       name: 'demo',
+      avatar_url:
+        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
       name: 'Jia Hui',
+      avatar_url:
+        'https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -303,15 +315,19 @@ export const upcomingDuties: RosterPatch[] = [
     duty_personnel: {
       id: demo.id,
       name: 'demo',
+      avatar_url:
+        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
       name: 'Zhi Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
 ];
 
-export const dutyRoster = [
+export const dutyRoster: RosterPatch[] = [
   {
     id: 1,
     duty_date: `${currentYear}-${todayMonth}-01`,
@@ -319,10 +335,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
       name: 'Jun Kai',
+      avatar_url:
+        'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: demo.id,
       name: 'demo',
+      avatar_url:
+        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -332,10 +352,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
       name: 'Zhi Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
       name: 'Darryl Koh',
+      avatar_url:
+        'https://images.unsplash.com/photo-1531727991582-cfd25ce79613?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
     },
   },
   {
@@ -345,10 +369,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: demo.id,
       name: 'demo',
+      avatar_url:
+        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
       name: 'Jia Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -358,10 +386,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
       name: 'Elliot Tan',
+      avatar_url:
+        'https://images.unsplash.com/photo-1614587185092-af24ed71c6e4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80',
     },
     reserve_duty_personnel: {
       id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
       name: 'Wang Li',
+      avatar_url:
+        'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -371,10 +403,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
       name: 'Jun Kai',
+      avatar_url:
+        'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
       name: 'Jia Hui',
+      avatar_url:
+        'https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -384,10 +420,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
       name: 'Darryl Koh',
+      avatar_url:
+        'https://images.unsplash.com/photo-1531727991582-cfd25ce79613?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
     },
     reserve_duty_personnel: {
       id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
       name: 'Zhi Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -397,10 +437,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
       name: 'Wang Li',
+      avatar_url:
+        'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
       name: 'Jun Kai',
+      avatar_url:
+        'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -410,10 +454,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
       name: 'Jia Hui',
+      avatar_url:
+        'https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
       name: 'Elliot Tan',
+      avatar_url:
+        'https://images.unsplash.com/photo-1614587185092-af24ed71c6e4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80',
     },
   },
   {
@@ -423,10 +471,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
       name: 'Zhi Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
       name: 'Jia Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -436,10 +488,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
       name: 'Elliot Tan',
+      avatar_url:
+        'https://images.unsplash.com/photo-1614587185092-af24ed71c6e4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80',
     },
     reserve_duty_personnel: {
       id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
       name: 'Jun Kai',
+      avatar_url:
+        'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -449,10 +505,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
       name: 'Darryl Koh',
+      avatar_url:
+        'https://images.unsplash.com/photo-1531727991582-cfd25ce79613?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
     },
     reserve_duty_personnel: {
       id: demo.id,
       name: 'demo',
+      avatar_url:
+        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -462,10 +522,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
       name: 'Wang Li',
+      avatar_url:
+        'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
       name: 'Zhi Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -475,10 +539,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: demo.id,
       name: 'demo',
+      avatar_url:
+        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
       name: 'Elliot Tan',
+      avatar_url:
+        'https://images.unsplash.com/photo-1614587185092-af24ed71c6e4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80',
     },
   },
   {
@@ -488,10 +556,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
       name: 'Jun Kai',
+      avatar_url:
+        'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
       name: 'Wang Li',
+      avatar_url:
+        'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -501,10 +573,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
       name: 'Darryl Koh',
+      avatar_url:
+        'https://images.unsplash.com/photo-1531727991582-cfd25ce79613?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
     },
     reserve_duty_personnel: {
       id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
       name: 'Jia Hui',
+      avatar_url:
+        'https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -514,10 +590,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
       name: 'Elliot Tan',
+      avatar_url:
+        'https://images.unsplash.com/photo-1614587185092-af24ed71c6e4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80',
     },
     reserve_duty_personnel: {
       id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
       name: 'Wang Li',
+      avatar_url:
+        'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -527,10 +607,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
       name: 'Jia Hui',
+      avatar_url:
+        'https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
       name: 'Darryl Koh',
+      avatar_url:
+        'https://images.unsplash.com/photo-1531727991582-cfd25ce79613?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
     },
   },
   {
@@ -540,10 +624,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
       name: 'Zhi Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
       name: 'Elliot Tan',
+      avatar_url:
+        'https://images.unsplash.com/photo-1614587185092-af24ed71c6e4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80',
     },
   },
   {
@@ -553,10 +641,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
       name: 'Jia Hui',
+      avatar_url:
+        'https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
       name: 'Jun Kai',
+      avatar_url:
+        'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -566,10 +658,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
       name: 'Wang Li',
+      avatar_url:
+        'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
       name: 'Jia Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -579,10 +675,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
       name: 'Zhi Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
       name: 'Darryl Koh',
+      avatar_url:
+        'https://images.unsplash.com/photo-1531727991582-cfd25ce79613?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
     },
   },
   {
@@ -592,10 +692,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
       name: 'Jia Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
       name: 'Jia Hui',
+      avatar_url:
+        'https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -605,10 +709,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
       name: 'Darryl Koh',
+      avatar_url:
+        'https://images.unsplash.com/photo-1531727991582-cfd25ce79613?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
     },
     reserve_duty_personnel: {
       id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
       name: 'Zhi Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -618,10 +726,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
       name: 'Wang Li',
+      avatar_url:
+        'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: demo.id,
       name: 'demo',
+      avatar_url:
+        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -631,10 +743,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
       name: 'Jia Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: 'cfb4aae7-1468-4ee9-97a1-88640ca888be',
       name: 'Darryl Koh',
+      avatar_url:
+        'https://images.unsplash.com/photo-1531727991582-cfd25ce79613?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
     },
   },
   {
@@ -644,10 +760,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: demo.id,
       name: 'demo',
+      avatar_url:
+        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
       name: 'Jia Hui',
+      avatar_url:
+        'https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -657,10 +777,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
       name: 'Jia Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
       name: 'Zhi Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -670,10 +794,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: demo.id,
       name: 'demo',
+      avatar_url:
+        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: '3551e1e8-bfae-4f91-bd03-9deb17e982ef',
       name: 'Wang Li',
+      avatar_url:
+        'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -683,10 +811,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: 'c293d2f5-8725-4b71-bfb8-a039b26eb565',
       name: 'Jun Kai',
+      avatar_url:
+        'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
       name: 'Elliot Tan',
+      avatar_url:
+        'https://images.unsplash.com/photo-1614587185092-af24ed71c6e4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80',
     },
   },
   {
@@ -696,10 +828,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: '9f198785-bdf6-4e2d-b942-f5ee62c83402',
       name: 'Jia Hui',
+      avatar_url:
+        'https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
     reserve_duty_personnel: {
       id: 'b01dac97-6539-48ee-85f2-605b3bb43e03',
       name: 'Jia Hao',
+      avatar_url:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
   {
@@ -709,10 +845,14 @@ export const dutyRoster = [
     duty_personnel: {
       id: '0ef7a0ca-6334-4807-8fb0-dbe8c97a0bb6',
       name: 'Elliot Tan',
+      avatar_url:
+        'https://images.unsplash.com/photo-1614587185092-af24ed71c6e4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80',
     },
     reserve_duty_personnel: {
       id: demo.id,
       name: 'demo',
+      avatar_url:
+        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
   },
 ];
@@ -737,10 +877,14 @@ export const swapRequests: SwapRequests[] = [
       duty_personnel: {
         id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
         name: 'Zhi Hao',
+        avatar_url:
+          'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
       },
       reserve_duty_personnel: {
         id: demo.id,
         name: 'demo',
+        avatar_url:
+          'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
       },
     },
     requester: {
@@ -756,10 +900,14 @@ export const swapRequests: SwapRequests[] = [
       duty_personnel: {
         id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
         name: 'Zhi Hao',
+        avatar_url:
+          'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
       },
       reserve_duty_personnel: {
         id: demo.id,
         name: 'demo',
+        avatar_url:
+          'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
       },
     },
   },
@@ -780,10 +928,14 @@ export const swapRequests: SwapRequests[] = [
       duty_personnel: {
         id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
         name: 'Zhi Hao',
+        avatar_url:
+          'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
       },
       reserve_duty_personnel: {
         id: demo.id,
         name: 'demo',
+        avatar_url:
+          'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
       },
     },
     status: 'pending',
@@ -801,10 +953,14 @@ export const swapRequests: SwapRequests[] = [
       duty_personnel: {
         id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
         name: 'Zhi Hao',
+        avatar_url:
+          'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
       },
       reserve_duty_personnel: {
         id: demo.id,
         name: 'demo',
+        avatar_url:
+          'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
       },
     },
   },
@@ -825,10 +981,14 @@ export const swapRequests: SwapRequests[] = [
       duty_personnel: {
         id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
         name: 'Zhi Hao',
+        avatar_url:
+          'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
       },
       reserve_duty_personnel: {
         id: demo.id,
         name: 'demo',
+        avatar_url:
+          'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
       },
     },
     requester: {
@@ -845,10 +1005,14 @@ export const swapRequests: SwapRequests[] = [
       duty_personnel: {
         id: '5eda9fca-bfc1-11ed-afa1-0242ac120002',
         name: 'Zhi Hao',
+        avatar_url:
+          'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
       },
       reserve_duty_personnel: {
         id: demo.id,
         name: 'demo',
+        avatar_url:
+          'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
       },
     },
     status: 'pending',

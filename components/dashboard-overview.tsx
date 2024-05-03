@@ -2,7 +2,7 @@
 
 import { IconBrandAndroid, IconBrandAppleFilled } from '@tabler/icons-react';
 import type { AddToCalendarActionType } from 'add-to-calendar-button-react';
-import { format, isAfter } from 'date-fns';
+import { format, isFuture, isPast } from 'date-fns';
 import Image from 'next/image';
 import Link from 'next/link';
 import * as React from 'react';
@@ -31,8 +31,7 @@ import { host } from '@/lib/config';
 import svgImage from '@/public/undraw_happy_music_g6wc.svg';
 import { getOrdinalSuffix } from '@/utils/helper';
 
-const TODAY = new Date();
-
+// million-ignore
 export function DashboardOverview() {
   const os = useOs();
   const user = useUser();
@@ -83,7 +82,7 @@ export function DashboardOverview() {
     }
 
     const index = upcomingDuties.findIndex((roster) => {
-      return isAfter(roster.duty_date, TODAY);
+      return isFuture(roster.duty_date);
     });
     setIndexOfUpcomingDate(index);
 
@@ -138,6 +137,7 @@ export function DashboardOverview() {
               <Carousel
                 setApi={setApi}
                 opts={{
+                  loop: true,
                   align: 'start',
                   slidesToScroll: 'auto',
                 }}
@@ -164,9 +164,15 @@ export function DashboardOverview() {
                                 {format(new Date(roster.duty_date), 'iii')} 8:00
                                 AM
                               </div>
+                              <div className='text-xs font-semibold text-muted-foreground text-red-600'>
+                                {roster.is_extra && '🌚 [Extra]'}
+                              </div>
                             </div>
                             <Badge variant='secondary' className='w-fit	'>
-                              Your {getOrdinalSuffix(index + 1)} duty
+                              Your {getOrdinalSuffix(index + 1)} duty{' '}
+                              {isPast(new Date(roster.duty_date))
+                                ? ' ✅'
+                                : undefined}
                             </Badge>
                           </CardContent>
                         </Card>

@@ -31,15 +31,11 @@ export const registerFormSchema = z.object({
     .min(2, {
       message: 'Name must be at least 2 characters',
     })
-    .trim()
-    .refine(
-      (value) => {
-        return !/\d/.test(value);
-      },
-      {
-        message: 'Name must not include numbers',
-      }
-    ),
+    .regex(
+      /^[a-zA-Z\s]*$/,
+      'Name must not include numbers or special characters'
+    )
+    .trim(),
   email: z
     .string()
     .email({

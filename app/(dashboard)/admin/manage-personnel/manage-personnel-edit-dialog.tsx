@@ -43,8 +43,14 @@ import type { Profiles } from '@/lib/supabase/queries';
 const formSchema = z.object({
   name: z
     .string()
-    .min(2, { message: 'Name must be between 2 and 50 characters' })
-    .max(50, { message: 'Name must be between 2 and 50 characters' }),
+    .min(2, {
+      message: 'Name must be at least 2 characters',
+    })
+    .regex(
+      /^[a-zA-Z\s]*$/,
+      'Name must not include numbers or special characters'
+    )
+    .trim(),
   avatar_url: z.string().url({ message: 'Please enter a valid URL' }),
   weekend_points: z.coerce.number().int().min(-100).max(100),
   weekday_points: z.coerce.number().int().min(-100).max(100),

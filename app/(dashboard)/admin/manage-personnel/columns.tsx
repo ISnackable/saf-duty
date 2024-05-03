@@ -99,7 +99,7 @@ const TabelCell: ColumnDef<Profiles>['cell'] = ({
     tableMeta?.updateData(row.index, column.id, value);
     toast.success(`Successfully updated maximum blockouts to ${value}`);
     setIsLoading(false);
-  }, 600);
+  }, 800);
 
   const onChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     tableMeta?.updateData(row.index, column.id, value);
@@ -162,7 +162,7 @@ const TabelCell: ColumnDef<Profiles>['cell'] = ({
           isDisabled={isLoading}
           title={column.columnDef.meta?.title || 'Title'}
           min={0}
-          max={100}
+          max={31}
           value={value}
           onChange={(valueAsString, valueAsNumber) => {
             setValue(valueAsString);

@@ -82,6 +82,7 @@ export function DriverTour() {
           title: 'Manage Blockouts 🚫',
           description:
             'Here you manage your blockouts. Blockouts are days where you are not available for duty. You can add, edit, and delete blockouts here.',
+          onPrevClick: () => navigateAndMove('/duty-roster', 'previous'),
         },
       },
       {
@@ -90,13 +91,13 @@ export function DriverTour() {
           title: "Don't forget to save 📝",
           description:
             'After you have edited your blockouts, remember to click save. Otherwise, they will not be updated.',
-          onPrevClick: () => navigateAndMove('/duty-roster', 'previous'),
         },
       },
       {
         popover: {
-          title: 'Yeah 😎',
-          description: 'That is all you roughly need to know to get started!',
+          title: "That's all 😎",
+          description:
+            'Pretty much all you roughly need to know to get started!',
         },
         onDeselected: () => {
           if (user && !isDemoUser(user.id)) updateOnboarded(true);

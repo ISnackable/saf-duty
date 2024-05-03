@@ -6,7 +6,16 @@ import { withAuth } from '@/lib/auth-handler';
 import { getUserProfileData } from '@/lib/supabase/data';
 
 const updateProfilesSchema = z.object({
-  name: z.string().optional(),
+  name: z
+    .string()
+    .min(2, {
+      message: 'Name must be at least 2 characters',
+    })
+    .regex(
+      /^[a-zA-Z\s]*$/,
+      'Name must not include numbers or special characters'
+    )
+    .trim(),
   weekend_points: z.number().int().min(-100).max(100).optional(),
   weekday_points: z.number().int().min(-100).max(100).optional(),
   no_of_extras: z.number().int().min(0).max(100).optional(),

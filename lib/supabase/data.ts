@@ -32,7 +32,7 @@ export async function getRosterData(
   month: string,
   year: string
 ) {
-  let data: RosterPatch[] = dutyRoster;
+  let data = dutyRoster;
 
   if (!isDemoUser(user.id)) {
     const { data: roster, error } = await getRosterByUnitId(

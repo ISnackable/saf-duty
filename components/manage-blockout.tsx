@@ -50,7 +50,7 @@ function countSelectedDates(dates: Date[], currentMonthSelected: Date[]) {
 }
 
 export function ManageBlockout() {
-  const { data: profile, mutate } = useProfiles();
+  const { data: profile, isLoading, mutate } = useProfiles();
 
   const [month, setMonth] = useState<Date>(DEFAULT_MONTH);
   const [selectedDays, setSelectedDays] = useState<Date[]>([]);
@@ -113,7 +113,7 @@ export function ManageBlockout() {
   };
 
   useEffect(() => {
-    if (profile?.blockout_dates) {
+    if (!isLoading) {
       setSelectedDays(
         profile?.blockout_dates
           ? profile.blockout_dates
@@ -126,7 +126,8 @@ export function ManageBlockout() {
           : []
       );
     }
-  }, [profile?.blockout_dates]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
 
   useEffect(() => {
     if (currentMonthSelected.length >= maximumBlockouts) {

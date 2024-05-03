@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { withAuth } from '@/lib/auth-handler';
 
 const updateMaxBlockoutsSchema = z.object({
-  max_blockouts: z.number().int().min(0).max(100),
+  max_blockouts: z.number().int().min(0).max(31),
 });
 
 export const PATCH = withAuth(
