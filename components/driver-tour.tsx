@@ -124,6 +124,7 @@ export function DriverTour() {
 
   useEffect(() => {
     // Start the tour
+    window.scrollTo(0, 0);
     router.replace('/');
     driverObj.drive();
 

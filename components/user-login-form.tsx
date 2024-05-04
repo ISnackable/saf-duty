@@ -15,6 +15,7 @@ import { customNotifyEvent } from '@/components/session-provider';
 import { buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { demo } from '@/lib/config';
 import { cn } from '@/lib/utils';
 import { loginFormSchema } from '@/lib/validation';
 
@@ -62,6 +63,17 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
       <form onSubmit={handleSubmit(handleLoginForm)}>
         <div className='grid gap-2'>
           <div className='grid gap-1'>
+            <button
+              disabled={isLoading}
+              aria-disabled={isLoading}
+              tabIndex={isLoading ? -1 : undefined}
+              onClick={() => handleLoginForm(demo)}
+              className='text-pretty p-2 pt-0 text-xs text-muted-foreground underline-offset-2 hover:underline'
+            >
+              Interested but lazy to create an account? Click here to login as
+              demo user to see the app in action
+            </button>
+
             <Label htmlFor='email'>Email</Label>
             <Input
               id='email'

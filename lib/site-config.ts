@@ -7,10 +7,8 @@ export interface SiteConfig {
   demo: {
     id: string;
     email: string;
+    password: string;
   };
-
-  enableVercelAnalytics?: boolean;
-  enableVercelSpeedInsights?: boolean;
 }
 
 export const siteConfig = (config: SiteConfig): SiteConfig => {

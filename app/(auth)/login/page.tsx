@@ -8,6 +8,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { UserLoginForm } from '@/components/user-login-form';
+import { name } from '@/lib/config';
 import { cn } from '@/lib/utils';
 import svgImage from '@/public/undraw_fingerprint_re_uf3f.svg';
 
@@ -71,11 +72,8 @@ export default function LoginPage() {
           </div>
 
           <h1 className='text-2xl font-semibold tracking-tight'>
-            Welcome back
+            Welcome back to {name}!
           </h1>
-          <p className='text-sm text-muted-foreground'>
-            Enter your email to sign in to your account
-          </p>
         </div>
 
         <Suspense fallback={<UserLoginFormFallback />}>

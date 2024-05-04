@@ -12,10 +12,12 @@ export const description: string = getSiteConfig(
   'Default description'
 );
 
-export const demo: { id: string; email: string } = getSiteConfig('demo', {
-  id: '',
-  email: '',
-});
+export const demo: { id: string; email: string; password: string } =
+  getSiteConfig('demo', {
+    id: '',
+    email: '',
+    password: '',
+  });
 
 // ----------------------------------------------------------------------------
 
@@ -42,12 +44,3 @@ export const site = {
   domain,
   description,
 };
-
-export const enableVercelAnalytics: boolean = getSiteConfig(
-  'enableVercelAnalytics',
-  false
-);
-export const enableVercelSpeedInsights: boolean = getSiteConfig(
-  'enableVercelSpeedInsights',
-  false
-);

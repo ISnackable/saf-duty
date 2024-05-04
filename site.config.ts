@@ -10,9 +10,6 @@ export default siteConfig({
   demo: {
     id: 'a8692dad-d019-4122-9f31-a1a350452461',
     email: 'demo@example.com',
+    password: 'Password@1234',
   },
-
-  // analytics (optional)
-  enableVercelAnalytics: true,
-  enableVercelSpeedInsights: true,
 });

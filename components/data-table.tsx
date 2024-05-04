@@ -226,7 +226,6 @@ export function DataTable<TData, TValue>({
       </div>
       <div className='flex items-center justify-end space-x-2'>
         {/* Only show if the id 'select' column exists */}
-        {table.getColumn('select') ? (
         {table.getAllColumns()?.[0]?.id === 'select' ? (
           <div className='flex-1 text-sm text-muted-foreground'>
             {table.getFilteredSelectedRowModel().rows.length} of{' '}
