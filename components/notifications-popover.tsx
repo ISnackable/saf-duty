@@ -42,6 +42,12 @@ export function NotificationsPopover() {
   const user = useUser();
   const { data: notifications, unreadCount, mutate } = useNotifications();
 
+  React.useEffect(() => {
+    if (navigator.setAppBadge) {
+      navigator.setAppBadge(unreadCount ?? 0);
+    }
+  }, [unreadCount]);
+
   async function handleDelete(id: number) {
     setLoading(true);
 
@@ -61,10 +67,6 @@ export function NotificationsPopover() {
     if (res.ok) {
       if (notifications && mutate) {
         await mutate();
-
-        if (navigator.setAppBadge) {
-          navigator.setAppBadge(unreadCount ?? 0);
-        }
       }
     }
 
@@ -89,10 +91,6 @@ export function NotificationsPopover() {
     if (res.ok) {
       if (notifications && mutate) {
         await mutate();
-
-        if (navigator.setAppBadge) {
-          navigator.setAppBadge(unreadCount ?? 0);
-        }
       }
     }
 

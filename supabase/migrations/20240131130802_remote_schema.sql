@@ -234,21 +234,6 @@ SET
 $$;
 
 CREATE
-OR REPLACE FUNCTION "public"."get_current_prev_next_roster" (roster_id BIGINT, duty_month DATE)
-RETURNS SETOF public.rosters
-LANGUAGE sql
-AS $$
-  SELECT created_at, group_id, is_extra, duty_personnel_id, reserve_duty_personnel_id, duty_date, updated_at, id
-  FROM (
-    SELECT *,
-      lag(id) over (order by duty_date asc) as prev,
-      lead(id) over (order by duty_date asc) as next
-    FROM rosters r
-    ) x
-  WHERE roster_id IN (id, prev, next) AND EXTRACT(MONTH FROM duty_month) = EXTRACT(MONTH FROM duty_date);
-$$;
-
-CREATE
 OR REPLACE FUNCTION "public"."handle_rosters_notification" () RETURNS TRIGGER LANGUAGE "plpgsql" SECURITY DEFINER
 SET
   "search_path" TO 'public' AS $$
@@ -290,11 +275,12 @@ SET
         WHERE id = NEW.receiver_id
       ) = 'true' THEN
         -- Insert a new notification for the requester
-        INSERT INTO public.notifications (user_id, title, message)
+        INSERT INTO public.notifications (user_id, title, message, action)
         VALUES (
           NEW.receiver_id,
           'New swap request!',
-          'You have a swap request from ' || (SELECT name FROM public.profiles WHERE id = NEW.requester_id) || '.'
+          'You have a swap request from ' || (SELECT name FROM public.profiles WHERE id = NEW.requester_id) || '.',
+          'swap_request'::public.action
         );
       END IF;
 
@@ -547,6 +533,21 @@ CREATE INDEX IF NOT EXISTS profiles_group_id_idx ON "public"."profiles"(group_id
 CREATE INDEX IF NOT EXISTS rosters_multi_idx ON "public"."rosters" USING btree (group_id, duty_personnel_id, reserve_duty_personnel_id);
 
 CREATE INDEX IF NOT EXISTS swap_requests_multi_idx ON "public"."swap_requests" USING btree (group_id, requester_id, receiver_id, receiver_roster_id, requester_roster_id);
+
+CREATE
+OR REPLACE FUNCTION "public"."get_current_prev_next_roster" (roster_id BIGINT, duty_month DATE)
+RETURNS SETOF public.rosters
+LANGUAGE sql
+AS $$
+  SELECT created_at, group_id, is_extra, duty_personnel_id, reserve_duty_personnel_id, duty_date, updated_at, id
+  FROM (
+    SELECT *,
+      lag(id) over (order by duty_date asc) as prev,
+      lead(id) over (order by duty_date asc) as next
+    FROM rosters r
+    ) x
+  WHERE roster_id IN (id, prev, next) AND EXTRACT(MONTH FROM duty_month) = EXTRACT(MONTH FROM duty_date);
+$$;
 
 CREATE TRIGGER on_after_auth_user_created
 AFTER INSERT ON auth.users FOR EACH ROW

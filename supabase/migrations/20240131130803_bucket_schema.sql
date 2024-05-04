@@ -3,10 +3,8 @@ VALUES ('avatars', 'avatars', true, 5 * 1024 * 1024, ARRAY[
   'image/jpeg',
   'image/jpg',
   'image/png',
-  'image/webp',
-]);
-ON CONFLICT (id) DO UPDATE
-  SET name = excluded.name;
+  'image/webp'
+]) ON CONFLICT (id) DO UPDATE SET name = excluded.name;
 
 CREATE POLICY "Avatar images are accessible to public." ON "storage"."objects" AS permissive
 FOR SELECT
