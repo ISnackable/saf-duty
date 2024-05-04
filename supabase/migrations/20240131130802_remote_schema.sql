@@ -185,12 +185,14 @@ $$;
 
 CREATE
 OR REPLACE FUNCTION "public"."update_rosters_swap_requests" (
-  receiver_roster_id BIGINT,
-  requester_roster_id BIGINT,
+  _receiver_roster_id BIGINT,
+  _requester_roster_id BIGINT,
   receiver_id UUID,
   requester_id UUID,
   reserve_receiver_id UUID,
-  reserve_requester_id UUID
+  reserve_requester_id UUID,
+  receiver_extra BOOLEAN,
+  requester_extra BOOLEAN
 ) RETURNS VOID LANGUAGE "plpgsql" SECURITY DEFINER
 SET
   "search_path" TO 'public' AS $$
@@ -211,17 +213,39 @@ SET
       UPDATE public.rosters
         SET duty_personnel_id = requester_id,
             reserve_duty_personnel_id = reserve_requester_id,
+            is_extra = requester_extra,
             updated_at = now()
-        WHERE id = receiver_roster_id;
+        WHERE id = _receiver_roster_id;
 
     -- Update the requester's roster with the receiver's duty personnel
       UPDATE public.rosters
         SET duty_personnel_id = receiver_id,
             reserve_duty_personnel_id = reserve_receiver_id,
+            is_extra = receiver_extra,
             updated_at = now()
-        WHERE id = requester_roster_id;
+        WHERE id = _requester_roster_id;
+
+    -- Update the swap request status to 'approved'
+      DELETE FROM public.swap_requests
+        WHERE receiver_roster_id = _receiver_roster_id
+        AND requester_roster_id = _requester_roster_id;
 
     END;
+$$;
+
+CREATE
+OR REPLACE FUNCTION "public"."get_current_prev_next_roster" (roster_id BIGINT, duty_month DATE)
+RETURNS SETOF public.rosters
+LANGUAGE sql
+AS $$
+  SELECT created_at, group_id, is_extra, duty_personnel_id, reserve_duty_personnel_id, duty_date, updated_at, id
+  FROM (
+    SELECT *,
+      lag(id) over (order by duty_date asc) as prev,
+      lead(id) over (order by duty_date asc) as next
+    FROM rosters r
+    ) x
+  WHERE roster_id IN (id, prev, next) AND EXTRACT(MONTH FROM duty_month) = EXTRACT(MONTH FROM duty_date);
 $$;
 
 CREATE
@@ -244,7 +268,37 @@ SET
         ) = 'true')
         GROUP BY n.duty_personnel_id;
 
-  RETURN NULL;
+      RETURN NULL;
+    END;
+$$;
+
+CREATE
+OR REPLACE FUNCTION "public"."handle_swap_requests_notification" () RETURNS TRIGGER LANGUAGE "plpgsql" SECURITY DEFINER
+SET
+  "search_path" TO 'public' AS $$
+    BEGIN
+      -- Check whether the receiver has a push subscription
+      IF (SELECT user_id FROM public.push_subscriptions WHERE user_id = NEW.receiver_id) IS NULL THEN
+        -- The receiver does not have a push subscription, early return
+        RETURN NULL;
+      END IF;
+
+      -- Check whether the receiver has enabled notifications for swap requests
+      IF (
+        SELECT user_settings->>'notify_on_swap_requests'
+        FROM public.profiles
+        WHERE id = NEW.receiver_id
+      ) = 'true' THEN
+        -- Insert a new notification for the requester
+        INSERT INTO public.notifications (user_id, title, message)
+        VALUES (
+          NEW.receiver_id,
+          'New swap request!',
+          'You have a swap request from ' || (SELECT name FROM public.profiles WHERE id = NEW.requester_id) || '.'
+        );
+      END IF;
+
+      RETURN NULL;
     END;
 $$;
 
@@ -257,30 +311,39 @@ OR REPLACE FUNCTION "public"."validate_swap_request" () RETURNS TRIGGER LANGUAGE
 DECLARE
   requester_month INTEGER;
   requester_year INTEGER;
+  requester_extra BOOLEAN;
+  requester_weekend BOOLEAN;
   receiver_month INTEGER;
   receiver_year INTEGER;
+  receiver_extra BOOLEAN;
+  receiver_weekend BOOLEAN;
 BEGIN
   -- Extract month and year from requester's roster entry
-  SELECT EXTRACT(MONTH FROM duty_date), EXTRACT(YEAR FROM duty_date)
-  INTO requester_month, requester_year
+  SELECT EXTRACT(MONTH FROM duty_date), EXTRACT(YEAR FROM duty_date), is_extra, EXTRACT(ISODOW FROM duty_date) IN (6, 7)
+  INTO requester_month, requester_year, requester_extra, requester_weekend
   FROM rosters
   WHERE id = NEW.requester_roster_id;
 
   -- Extract month and year from receiver's roster entry
-  SELECT EXTRACT(MONTH FROM duty_date), EXTRACT(YEAR FROM duty_date)
-  INTO receiver_month, receiver_year
+  SELECT EXTRACT(MONTH FROM duty_date), EXTRACT(YEAR FROM duty_date), is_extra, EXTRACT(ISODOW FROM duty_date) IN (6, 7)
+  INTO receiver_month, receiver_year, receiver_extra, receiver_weekend
   FROM rosters
   WHERE id = NEW.receiver_roster_id;
 
   -- Check if the swap is within the same month
-  IF requester_month = receiver_month AND requester_year = receiver_year THEN
-    RETURN NEW;
-  ELSE
-    -- The swap is not within the same month, raise an exception or handle accordingly
+  IF requester_month <> receiver_month OR requester_year <> receiver_year THEN
+     -- The swap is not within the same month, raise an exception or handle accordingly
     RAISE EXCEPTION 'Swap requests must be in the same month.';
-    -- If you want to prevent the swap, you can also use:
-    -- RETURN NULL;
+
+  -- Check if the requester_roster or receiver_roster are extra duties, both of them must be on the weekend
+  ELSIF requester_extra OR receiver_extra THEN
+    IF not requester_weekend OR not receiver_weekend THEN
+      -- The requester_roster or receiver_roster are not extra duties, raise an exception or handle accordingly
+      RAISE EXCEPTION 'Extras duty can only be swapped with duties on the weekend.';
+    END IF;
   END IF;
+
+  RETURN NEW;
 END;
 $$;
 
@@ -469,6 +532,12 @@ ADD CONSTRAINT "rosters_pkey" PRIMARY KEY ("id");
 ALTER TABLE ONLY "public"."swap_requests"
 ADD CONSTRAINT "swap_requests_pkey" PRIMARY KEY ("id");
 
+ALTER TABLE ONLY "public"."swap_requests"
+ADD CONSTRAINT "swap_requests_group_id_requester_id_requester_roster_id_key" UNIQUE (group_id, requester_id, requester_roster_id);
+
+ALTER TABLE ONLY "public"."swap_requests"
+ADD CONSTRAINT "swap_requests_group_id_requester_id_receiver_roster_id_key" UNIQUE (group_id, requester_id, receiver_roster_id);
+
 CREATE INDEX IF NOT EXISTS group_users_group_id_idx ON "public"."group_users"(group_id);
 
 CREATE INDEX IF NOT EXISTS notifications_user_id_idx ON "public"."notifications"(user_id);
@@ -496,6 +565,9 @@ EXECUTE FUNCTION public.handle_rosters_notification ();
 
 CREATE TRIGGER on_before_swap_request_created BEFORE INSERT ON public.swap_requests FOR EACH ROW
 EXECUTE FUNCTION public.validate_swap_request ();
+
+CREATE TRIGGER on_after_swap_request_created AFTER INSERT ON public.swap_requests FOR EACH ROW
+EXECUTE FUNCTION public.handle_swap_requests_notification ();
 
 CREATE TRIGGER profile_cls BEFORE INSERT
 OR
@@ -561,7 +633,12 @@ ADD CONSTRAINT "group_users_user_id_fkey1" FOREIGN KEY (user_id) REFERENCES publ
 CREATE POLICY "Enable delete for users based on requester_id" ON "public"."swap_requests"
 FOR DELETE
 TO authenticated
-USING ((SELECT auth.uid () = requester_id));
+  USING (
+    (
+      (SELECT auth.uid () = receiver_id)
+      OR (SELECT auth.uid () = requester_id)
+    )
+  );
 
 CREATE POLICY "Enable delete for users based on user_id" ON "public"."push_subscriptions"
 FOR DELETE

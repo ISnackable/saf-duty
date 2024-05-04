@@ -3,6 +3,7 @@
 import { format } from 'date-fns';
 import Link from 'next/link';
 import * as React from 'react';
+import { toast } from 'sonner';
 
 import { Icons } from '@/components/icons';
 import { LoadingButton } from '@/components/loading-button';
@@ -23,7 +24,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { useSwapRequests } from '@/hooks/use-swap-requests';
-import { SwapRequests } from '@/lib/supabase/queries';
+import type { SwapRequests } from '@/lib/supabase/queries';
 
 // function to get all the swap requests that the user has received, and all the swap requests that the user has sent from the swapRecords
 function sortSwapRequests(swapRequests?: SwapRequests[], userId?: string) {
@@ -53,6 +54,52 @@ export function SwapDuty() {
   const [tabValue, setTabValue] = React.useState('receive');
   const [currentSwapRequest, setCurrentSwapRequest] =
     React.useState<SwapRequests | null>(null);
+
+  async function handleSwapRequest(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) {
+    const action = e.currentTarget.innerText.toLowerCase();
+    if (!currentSwapRequest || !action || !user) return;
+
+    setLoading(true);
+    const toastId = toast.loading('Loading...');
+
+    try {
+      const res = await fetch(`/api/profiles/${user.id}/swap-requests`, {
+        method: action === 'approve' ? 'PATCH' : 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          swapRequestId: currentSwapRequest.id,
+          receiver: currentSwapRequest.receiver,
+          requester: currentSwapRequest.requester,
+          receiverRoster: currentSwapRequest.receiver_roster,
+          requesterRoster: currentSwapRequest.requester_roster,
+        }),
+      });
+      const data = await res.json();
+
+      if (data?.status === 'error') {
+        toast.error(
+          data?.message || 'Cannot update swap request, something went wrong',
+          {
+            id: toastId,
+          }
+        );
+      } else {
+        toast.success(data?.message || 'Swap request updated successfully', {
+          id: toastId,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    mutate();
+    setOpen(false);
+    setLoading(false);
+  }
 
   return (
     <Credenza open={open} onOpenChange={setOpen}>
@@ -346,14 +393,14 @@ export function SwapDuty() {
               <LoadingButton
                 className='w-full md:w-24'
                 variant='destructive'
-                type='submit'
+                onClick={handleSwapRequest}
                 loading={loading}
               >
                 Deny
               </LoadingButton>
               <LoadingButton
                 className='w-full bg-emerald-600 text-white hover:bg-emerald-600/90 md:w-24'
-                type='submit'
+                onClick={handleSwapRequest}
                 loading={loading}
               >
                 Approve
@@ -363,7 +410,7 @@ export function SwapDuty() {
             <LoadingButton
               className='w-full md:w-36'
               variant='secondary'
-              type='submit'
+              onClick={handleSwapRequest}
               loading={loading}
             >
               Cancel Request

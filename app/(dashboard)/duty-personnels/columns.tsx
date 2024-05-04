@@ -133,11 +133,13 @@ export const columns: ColumnDef<Profiles>[] = [
       const value = row.original.ord_date;
       if (!value) return <div className='px-4 font-medium'>N/A</div>;
 
-      const totalDuration = new Date(value).getTime() - TODAY.getTime();
+      let totalDuration = new Date(value).getTime() - TODAY.getTime();
       if (totalDuration < 0) return 'OWADIO';
+      else if (totalDuration >= 730 * (1000 * 3600 * 24))
+        totalDuration = 730 * (1000 * 3600 * 24);
 
-      const totalDays = Math.ceil(totalDuration / (1000 * 3600 * 24));
-      const progress = Math.ceil(100 - (totalDays / 730) * 100);
+      const totalDays = Math.floor(totalDuration / (1000 * 3600 * 24));
+      const progress = Math.floor(100 - (totalDays / 730) * 100);
 
       return <Progress value={progress} />;
     },

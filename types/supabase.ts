@@ -464,7 +464,23 @@ type _Database = {
           bucket: string;
           object: string;
         };
-        Returns: Record<string, unknown>;
+        Returns: undefined;
+      };
+      get_current_prev_next_roster: {
+        Args: {
+          roster_id: number;
+          duty_month: string;
+        };
+        Returns: {
+          created_at: string;
+          duty_date: string;
+          duty_personnel_id: string | null;
+          group_id: string;
+          id: number;
+          is_extra: boolean;
+          reserve_duty_personnel_id: string | null;
+          updated_at: string | null;
+        }[];
       };
       get_req_groups: {
         Args: Record<PropertyKey, never>;
@@ -502,12 +518,14 @@ type _Database = {
       };
       update_rosters_swap_requests: {
         Args: {
-          receiver_roster_id: number;
-          requester_roster_id: number;
+          _receiver_roster_id: number;
+          _requester_roster_id: number;
           receiver_id: string;
           requester_id: string;
           reserve_receiver_id: string;
           reserve_requester_id: string;
+          receiver_extra: boolean;
+          requester_extra: boolean;
         };
         Returns: undefined;
       };

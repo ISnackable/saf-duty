@@ -81,7 +81,7 @@ module.exports = {
           to: { opacity: '1' },
         },
         'gauge-fill': {
-          from: { 'stroke-dashoffset': '332', opacity: '0' },
+          from: { 'stroke-dashoffset': '200', opacity: '0' },
           to: { opacity: '1' },
         },
       },

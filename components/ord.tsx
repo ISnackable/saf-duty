@@ -13,11 +13,14 @@ export function ORD() {
   const { data: profiles } = useProfiles();
 
   if (profiles && profiles?.ord_date) {
-    const totalDuration =
-      new Date(profiles.ord_date).getTime() - TODAY.getTime();
+    let totalDuration = new Date(profiles.ord_date).getTime() - TODAY.getTime();
 
-    const totalDays = Math.ceil(totalDuration / (1000 * 3600 * 24));
-    const progress = Math.ceil(100 - (totalDays / 730) * 100);
+    if (totalDuration < 0) totalDuration = 0;
+    else if (totalDuration > 730 * (1000 * 3600 * 24))
+      totalDuration = 730 * (1000 * 3600 * 24);
+
+    const totalDays = Math.floor(totalDuration / (1000 * 3600 * 24));
+    const progress = Math.floor(100 - (totalDays / 730) * 100);
 
     return (
       <div className='mx-auto min-h-[350px] max-w-xl items-center justify-center p-10'>
@@ -27,7 +30,7 @@ export function ORD() {
           </p>
 
           <div className='relative flex flex-col items-center justify-center'>
-            <Gauge value={progress} size='large' showValue={false} />
+            <Gauge value={progress} showValue={false} className='size-36' />
             <div className='absolute flex animate-gauge-fadeIn opacity-0'>
               <p className='text-3xl text-gray-100'>{totalDays}</p>
             </div>
