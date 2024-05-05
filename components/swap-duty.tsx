@@ -3,6 +3,8 @@
 import { format } from 'date-fns';
 import Link from 'next/link';
 import * as React from 'react';
+import { ArcherContainer, ArcherElement } from 'react-archer';
+import { DayContent, type DayContentProps } from 'react-day-picker';
 import { toast } from 'sonner';
 
 import { Icons } from '@/components/icons';
@@ -10,12 +12,12 @@ import { LoadingButton } from '@/components/loading-button';
 import { useUser } from '@/components/session-provider';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Credenza,
   CredenzaBody,
   CredenzaContent,
-  CredenzaDescription,
   CredenzaFooter,
   CredenzaHeader,
   CredenzaTitle,
@@ -25,6 +27,43 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { useSwapRequests } from '@/hooks/use-swap-requests';
 import type { SwapRequests } from '@/lib/supabase/queries';
+
+function DateTime(props: DayContentProps) {
+  const dateTime = format(props.date, 'yyyy-MM-dd');
+  const isRequests =
+    props.activeModifiers?.receiverRoster ||
+    props.activeModifiers?.requesterRoster;
+
+  return (
+    <time dateTime={dateTime}>
+      {isRequests ? (
+        <ArcherElement
+          id={
+            props.activeModifiers.receiverRoster
+              ? 'requesterRoster'
+              : 'receiverRoster'
+          }
+          relations={[
+            {
+              targetId: props.activeModifiers.receiverRoster
+                ? 'receiverRoster'
+                : '',
+              targetAnchor: 'top',
+              sourceAnchor: 'bottom',
+              style: { strokeWidth: 1 },
+            },
+          ]}
+        >
+          <div>
+            <DayContent {...props} />
+          </div>
+        </ArcherElement>
+      ) : (
+        <DayContent {...props} />
+      )}
+    </time>
+  );
+}
 
 // function to get all the swap requests that the user has received, and all the swap requests that the user has sent from the swapRecords
 function sortSwapRequests(swapRequests?: SwapRequests[], userId?: string) {
@@ -294,19 +333,53 @@ export function SwapDuty() {
       <CredenzaContent className='min-w-[300px] md:min-w-[750px]'>
         <CredenzaHeader>
           <CredenzaTitle>Swap Details</CredenzaTitle>
-          <CredenzaDescription>
-            Swap details are shown below
-          </CredenzaDescription>
         </CredenzaHeader>
 
         <CredenzaBody className='space-y-3'>
           {currentSwapRequest && (
             <>
-              <div className='grid grid-cols-2 gap-4'>
+              <ArcherContainer
+                strokeColor='red'
+                lineStyle='curve'
+                endMarker={false}
+              >
+                <Calendar
+                  month={
+                    new Date(currentSwapRequest.requester_roster.duty_date)
+                  }
+                  disableNavigation
+                  mode='default'
+                  className='rounded-md border'
+                  classNames={{
+                    day_today: '',
+                    day: 'h-8 w-8 p-0 font-normal aria-selected:opacity-100 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
+                    day_selected:
+                      'bg-primary text-primary-foreground focus:bg-primary focus:text-primary-foreground',
+                  }}
+                  components={{
+                    DayContent: (props) => DateTime(props),
+                  }}
+                  modifiers={{
+                    requesterRoster: [
+                      new Date(currentSwapRequest.requester_roster.duty_date),
+                    ],
+                    receiverRoster: [
+                      new Date(currentSwapRequest.receiver_roster.duty_date),
+                    ],
+                  }}
+                  modifiersStyles={{
+                    requesterRoster: { border: '2px solid currentColor' },
+                    receiverRoster: { border: '2px solid currentColor' },
+                  }}
+                />
+              </ArcherContainer>
+
+              <div className='relative grid grid-cols-2 gap-4'>
                 <Card>
                   <CardHeader className='items-center justify-center text-center'>
                     <Avatar className='size-16'>
                       <AvatarImage
+                        className='object-cover'
                         src={currentSwapRequest.requester.avatar_url || ''}
                       />
                       <AvatarFallback>CN</AvatarFallback>
@@ -338,7 +411,7 @@ export function SwapDuty() {
                 <Button
                   variant='outline'
                   size='icon'
-                  className='absolute bottom-[52%] left-[calc(50%-25px)] size-12 cursor-default rounded-full hover:bg-background'
+                  className='absolute bottom-[40%] left-[calc(50%-25px)] size-12 cursor-default rounded-full hover:bg-background'
                 >
                   <Icons.arrowExchange className='size-8' />
                 </Button>
@@ -347,6 +420,7 @@ export function SwapDuty() {
                   <CardHeader className='items-center justify-center text-center'>
                     <Avatar className='size-16'>
                       <AvatarImage
+                        className='object-cover'
                         src={currentSwapRequest.receiver.avatar_url || ''}
                       />
                       <AvatarFallback>CN</AvatarFallback>

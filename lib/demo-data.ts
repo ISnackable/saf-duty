@@ -1,5 +1,5 @@
 // All the demo data that used as fallbacks when there's nothing in the dataset yet
-import { demo } from '@/lib/config';
+import { demo, isDev } from '@/lib/config';
 import type {
   Profiles,
   RosterPatch,
@@ -43,7 +43,7 @@ export const demoUsers: Profiles[] = [
     no_of_extras: 0,
     blockout_dates: blockouts,
     max_blockouts: 8,
-    onboarded: false,
+    onboarded: isDev,
     role: 'user',
     user_settings: {
       notify_on_duty_reminder: false,
