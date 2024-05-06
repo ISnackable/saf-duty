@@ -37,12 +37,12 @@ function urlBase64ToUint8Array(base64String: string) {
  * checks if Push notification and service workers are supported by your browser
  */
 function isPushNotificationSupported() {
-  if (typeof window !== 'undefined') return false;
+  if (typeof window === 'undefined') return false;
 
   return (
+    'serviceWorker' in navigator &&
     'PushManager' in window &&
-    'Notification' in window &&
-    'serviceWorker' in navigator
+    'Notification' in window
   );
 }
 
