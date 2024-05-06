@@ -1,6 +1,6 @@
 'use client';
 
-import { PropsWithChildren, createContext, useContext } from 'react';
+import { type PropsWithChildren, createContext, useContext } from 'react';
 
 import usePushNotifications from '@/hooks/use-push-notification';
 

@@ -2,16 +2,24 @@ import './globals.css';
 import { GeistMono } from 'geist/font/mono';
 import { GeistSans } from 'geist/font/sans';
 import type { Metadata, Viewport } from 'next';
+import dynamic from 'next/dynamic';
 
 import { Icons } from '@/components/icons';
 import { ProgressBar } from '@/components/progress-bar';
-import { PushNotificationProvider } from '@/components/push-notification-provider';
 import { SessionProvider } from '@/components/session-provider';
 import { SWRProvider } from '@/components/swr-provider';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
 import { host, site } from '@/lib/config';
 import { cn } from '@/lib/utils';
+
+const PushNotificationProvider = dynamic(
+  () =>
+    import('@/components/push-notification-provider').then(
+      (mod) => mod.PushNotificationProvider
+    ),
+  { ssr: false }
+);
 
 export const metadata: Metadata = {
   metadataBase: new URL(host),
