@@ -31,10 +31,12 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useNotifications } from '@/hooks/use-notifications';
+import usePushNotifications from '@/hooks/use-push-notification';
 import { cn } from '@/lib/utils';
 import { isDemoUser } from '@/utils/helper';
 
 export function NotificationsPopover() {
+  const { pushNotificationSupported } = usePushNotifications();
   const [scrollParent, setScrollParent] = React.useState<HTMLDivElement | null>(
     null
   );
@@ -43,10 +45,10 @@ export function NotificationsPopover() {
   const { data: notifications, unreadCount, mutate } = useNotifications();
 
   React.useEffect(() => {
-    if (navigator.setAppBadge) {
+    if (pushNotificationSupported && navigator?.setAppBadge) {
       navigator.setAppBadge(unreadCount ?? 0);
     }
-  }, [unreadCount]);
+  }, [pushNotificationSupported, unreadCount]);
 
   async function handleDelete(id: number) {
     setLoading(true);

@@ -311,7 +311,7 @@ export const columns: ColumnDef<Profiles>[] = [
             <DropdownMenuContent align='end' className='w-[160px]'>
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(profile.id)}
+                onClick={() => navigator?.clipboard?.writeText(profile.id)}
               >
                 Copy user ID
               </DropdownMenuItem>

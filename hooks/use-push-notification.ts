@@ -37,10 +37,12 @@ function urlBase64ToUint8Array(base64String: string) {
  * checks if Push notification and service workers are supported by your browser
  */
 function isPushNotificationSupported() {
+  if (typeof window !== 'undefined') return false;
+
   return (
-    'serviceWorker' in navigator &&
     'PushManager' in window &&
-    'Notification' in window
+    'Notification' in window &&
+    'serviceWorker' in navigator
   );
 }
 
@@ -107,7 +109,7 @@ async function getUserSubscription() {
   }
 
   //* Note: Host must be HTTPS then serviceWorker.ready will be available. Otherwise, it will hang forever
-  const serviceWorker = await navigator.serviceWorker.ready;
+  const serviceWorker = await navigator?.serviceWorker?.ready;
   if (!serviceWorker.pushManager) {
     throw new Error('Push manager unavailable.');
   }
