@@ -15,7 +15,7 @@ import {
 } from '@tanstack/react-table';
 import * as React from 'react';
 
-import { DeleteTasksDialog } from '@/app/(dashboard)/admin/manage-personnel/delete-tasks-dialog';
+import { DeleteTasksDialog } from '@/app/(dashboard)/admin/manage-personnel/manage-personnel-delete-dialog';
 import { Icons } from '@/components/icons';
 import { useUser } from '@/components/session-provider';
 import { Button } from '@/components/ui/button';

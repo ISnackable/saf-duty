@@ -35,6 +35,7 @@ import {
 } from '@/components/ui/select';
 import type { Profiles } from '@/lib/supabase/queries';
 
+import { DeleteTasksDialog } from './manage-personnel-delete-dialog';
 import { EditProfileDialog } from './manage-personnel-edit-dialog';
 
 type Option = {
