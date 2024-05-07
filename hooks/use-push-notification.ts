@@ -194,8 +194,10 @@ export default function usePushNotifications() {
     }
 
     try {
-      await removeNotificationSubscription();
-      await deleteSubscription(userSubscription?.toJSON() as any);
+      await Promise.allSettled([
+        removeNotificationSubscription(),
+        deleteSubscription(userSubscription?.toJSON() as any),
+      ]);
 
       setUserSubscription(null);
     } catch (error) {

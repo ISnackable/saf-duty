@@ -24,7 +24,8 @@ import { useProfiles } from '@/hooks/use-profiles';
 export function UserNav() {
   const [open, setOpen] = useState(false);
   const { data: profile } = useProfiles();
-  const { onClickUnsubscribeToPushNotification } = usePushNotificationContext();
+  const { onClickUnsubscribeToPushNotification, pushNotificationSupported } =
+    usePushNotificationContext();
 
   return (
     <DropdownMenu>
@@ -92,6 +93,9 @@ export function UserNav() {
             await signOut();
             // custom event to notify the session provider to update the session
             customNotifyEvent('SIGNED_OUT', null);
+            if (pushNotificationSupported && navigator?.setAppBadge) {
+              navigator.setAppBadge(0);
+            }
           }}
           className='text-destructive'
         >

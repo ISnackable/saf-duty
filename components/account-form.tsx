@@ -48,7 +48,8 @@ type AccountFormValues = z.infer<typeof accountFormSchema>;
 
 export function AccountForm() {
   const { data: profile, mutate } = useProfiles();
-  const { onClickUnsubscribeToPushNotification } = usePushNotificationContext();
+  const { onClickUnsubscribeToPushNotification, pushNotificationSupported } =
+    usePushNotificationContext();
   const [isLoading, setIsLoading] = React.useState(false);
 
   const form = useForm<AccountFormValues>({
@@ -181,6 +182,9 @@ export function AccountForm() {
               await onClickUnsubscribeToPushNotification().catch(console.error);
               await signOut({ scope: 'global' });
               customNotifyEvent('SIGNED_OUT', null);
+              if (pushNotificationSupported && navigator?.setAppBadge) {
+                navigator.setAppBadge(0);
+              }
             }}
           >
             Continue

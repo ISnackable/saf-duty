@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 
 import { signOut } from '@/app/(auth)/actions';
 import { Button } from '@/components/ui/button';
+import usePushNotifications from '@/hooks/use-push-notification';
 
 export default function Error({
   error,
@@ -12,6 +13,8 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const { pushNotificationSupported } = usePushNotifications();
+
   useEffect(() => {
     // Log the error to an error reporting service
     console.error(error);
@@ -41,7 +44,15 @@ export default function Error({
             >
               Try again
             </Button>
-            <Button variant='destructive' onClick={async () => await signOut()}>
+            <Button
+              variant='destructive'
+              onClick={async () => {
+                await signOut();
+                if (pushNotificationSupported && navigator?.setAppBadge) {
+                  navigator.setAppBadge(0);
+                }
+              }}
+            >
               Log out
             </Button>
           </div>

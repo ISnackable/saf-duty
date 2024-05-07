@@ -26,6 +26,7 @@ export type LoginFormData = z.infer<typeof loginFormSchema>;
 export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
   const {
     register,
+    setValue,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormData>({
@@ -64,10 +65,15 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
         <div className='grid gap-2'>
           <div className='grid gap-1'>
             <button
+              type='button'
               disabled={isLoading}
               aria-disabled={isLoading}
-              tabIndex={isLoading ? -1 : undefined}
-              onClick={() => handleLoginForm(demo)}
+              tabIndex={-1}
+              onClick={() => {
+                setValue('email', demo.email);
+                setValue('password', demo.password);
+                handleSubmit(handleLoginForm)();
+              }}
               className='text-pretty p-2 pt-0 text-xs text-muted-foreground underline-offset-2 hover:underline'
             >
               Interested but lazy to create an account? Click here to login as
