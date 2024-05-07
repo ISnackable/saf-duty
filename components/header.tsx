@@ -44,7 +44,7 @@ export function Header() {
   return (
     <header>
       <div ref={navRef}></div>
-      <aside
+      <div
         className={cn(
           'fixed right-0 top-0 z-50 flex h-16 w-full items-center border-b bg-popover px-3 xl:w-[calc(100%-240px)]'
         )}
@@ -76,7 +76,7 @@ export function Header() {
             <UserNav />
           </div>
         </div>
-      </aside>
+      </div>
 
       <MobileSidebar open={open} onOpenChange={setOpen} />
     </header>

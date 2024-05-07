@@ -28,7 +28,7 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <footer
+    <div
       data-tour='bottom-nav'
       style={{
         paddingBottom:
@@ -76,6 +76,6 @@ export function BottomNav() {
           </ProgressBarLink>
         ))}
       </div>
-    </footer>
+    </div>
   );
 }

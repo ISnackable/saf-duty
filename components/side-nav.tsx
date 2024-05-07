@@ -154,7 +154,7 @@ export function SideNav({ className }: SidebarProps) {
   const session = useSession();
 
   return (
-    <div
+    <aside
       data-tour='side-nav'
       className={cn('flex h-full flex-col bg-popover sm:w-[240px]', className)}
     >
@@ -187,7 +187,7 @@ export function SideNav({ className }: SidebarProps) {
           );
         })}
       </ScrollArea>
-    </div>
+    </aside>
   );
 }
 

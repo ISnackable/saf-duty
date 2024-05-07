@@ -151,7 +151,7 @@ INSERT INTO
 VALUES
   (
     new.id,
-    new.raw_user_meta_data ->> 'email',
+    new.email,
     new.raw_user_meta_data ->> 'name',
     new_group_id
   );
