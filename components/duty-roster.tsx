@@ -6,6 +6,7 @@ import {
   addDays,
   format,
   formatISO,
+  isPast,
   isSameMonth,
   parse,
   startOfMonth,
@@ -241,63 +242,62 @@ export function DutyRoster() {
             DayWithTime(props, session, dutyRoster, publicHoliday),
         }}
         onDayClick={(day) => {
-          if (session && day) {
-            const date = formatISO(day, { representation: 'date' });
-            const roster = dutyRoster[date];
-            const prevDate = formatISO(subDays(day, 1), {
-              representation: 'date',
-            });
-            const nextDate = formatISO(addDays(day, 1), {
-              representation: 'date',
-            });
+          if (!session) return;
 
-            if (
-              !roster ||
-              !roster?.personnel ||
-              !roster?.reservePersonnel ||
-              !roster?.id
+          credenzaForm.reset();
+
+          const date = formatISO(day, { representation: 'date' });
+          const roster = dutyRoster[date];
+          const prevDate = formatISO(subDays(day, 1), {
+            representation: 'date',
+          });
+          const nextDate = formatISO(addDays(day, 1), {
+            representation: 'date',
+          });
+
+          if (
+            !roster ||
+            !roster?.personnel ||
+            !roster?.reservePersonnel ||
+            !roster?.id
+          )
+            return;
+
+          // Check if date is in the past, or if the personnel is the current user
+          if (isPast(day)) {
+            toast.warning("You can't swap duty in the past!");
+            return;
+          } else if (roster?.personnel?.id === session.user.id) {
+            toast.warning("You can't swap duty with yourself!");
+            return;
+          } else if (
+            dutyRoster[prevDate]?.personnel?.id === session.user.id ||
+            dutyRoster[nextDate]?.personnel?.id === session.user.id
+          ) {
+            toast.warning(
+              'You are the personnel on duty for the day before or after'
+            );
+          } else if (
+            !Object.values(dutyRoster).some(
+              (v) => v?.personnel?.id === session.user.id
             )
-              return;
-
-            // Check if date is in the past, or if the personnel is the current user
-            if (day.getTime() < new Date().getTime()) {
-              toast.warning("You can't swap duty in the past!");
-              return;
-            } else if (roster?.personnel?.id === session.user.id) {
-              toast.warning("You can't swap duty with yourself!");
-              return;
-            } else if (
-              dutyRoster[prevDate]?.personnel?.id === session.user.id ||
-              dutyRoster[nextDate]?.personnel?.id === session.user.id
-            ) {
-              toast.warning(
-                'You are the personnel on duty for the day before or after'
-              );
-            } else if (
-              !Object.values(dutyRoster).some(
-                (v) => v?.personnel?.id === session.user.id
-              )
-            ) {
-              toast.warning("You don't have any duty to swap this month!");
-              return;
-            }
-
-            // Reset the form
-            credenzaForm.reset();
-
-            credenzaForm.setValue('receiverRoster', {
-              ...roster,
-              id: roster.id,
-              personnel: roster.personnel,
-              reservePersonnel: roster.reservePersonnel,
-            });
-            credenzaForm.setValue('receiver', roster.personnel);
-            credenzaForm.setValue('requester', {
-              id: session.user.id,
-              name: session.user.user_metadata.name,
-            });
-            setOpen(true);
+          ) {
+            toast.warning("You don't have any duty to swap this month!");
+            return;
           }
+
+          credenzaForm.setValue('receiverRoster', {
+            ...roster,
+            id: roster.id,
+            personnel: roster.personnel,
+            reservePersonnel: roster.reservePersonnel,
+          });
+          credenzaForm.setValue('receiver', roster.personnel);
+          credenzaForm.setValue('requester', {
+            id: session.user.id,
+            name: session.user.user_metadata.name,
+          });
+          setOpen(true);
         }}
         mode='single'
         month={monthDate}

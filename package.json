@@ -61,7 +61,7 @@
     "next-themes": "^0.3.0",
     "postcss": "8.4.38",
     "react": "18.3.1",
-    "react-archer": "^4.3.0",
+    "react-archer": "^4.4.0",
     "react-day-picker": "^8.10.1",
     "react-dom": "18.3.1",
     "react-hook-form": "^7.51.4",
@@ -75,13 +75,13 @@
     "typescript": "5.4.5",
     "use-debounce": "^10.0.0",
     "vaul": "^0.9.1",
-    "zod": "^3.23.6"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^14.2.3",
     "@serwist/core": "9.0.2",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-    "@types/node": "20.12.10",
+    "@types/node": "20.12.11",
     "@types/react": "18.3.1",
     "@types/react-dom": "18.3.0",
     "encoding": "^0.1.13",
