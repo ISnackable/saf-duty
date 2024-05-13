@@ -264,7 +264,10 @@ export function DashboardOverview() {
                       className='flex basis-[21%] flex-col items-center justify-center border-none p-4 sm:basis-[11%]'
                     >
                       <Avatar>
-                        <AvatarImage src={profile.avatar_url || ''} />
+                        <AvatarImage
+                          className='rounded-xl object-cover'
+                          src={profile.avatar_url || ''}
+                        />
                         <AvatarFallback>CN</AvatarFallback>
                       </Avatar>
                       <p className='py-2 text-center text-sm font-medium leading-none'>

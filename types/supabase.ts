@@ -453,12 +453,6 @@ type _Database = {
         Args: Record<PropertyKey, never>;
         Returns: undefined;
       };
-      delete_avatar: {
-        Args: {
-          avatar_url: string;
-        };
-        Returns: Record<string, unknown>;
-      };
       delete_storage_object: {
         Args: {
           bucket: string;
