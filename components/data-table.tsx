@@ -35,6 +35,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Profiles } from '@/lib/supabase/queries';
+import { cn } from '@/lib/utils';
 
 export interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -181,6 +182,11 @@ export function DataTable<TData, TValue>({
                       style={{
                         width: `${header.column.columnDef.size || header.getSize()}px`,
                       }}
+                      className={cn(
+                        'whitespace-nowrap',
+                        header.column.id === 'name' &&
+                          'sticky left-0 z-10 bg-background group-hover:bg-[#fafafb] dark:group-hover:bg-[#171b1f]'
+                      )}
                     >
                       {header.isPlaceholder
                         ? null
@@ -202,7 +208,15 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} width={cell.column.columnDef.size}>
+                    <TableCell
+                      key={cell.id}
+                      width={cell.column.columnDef.size}
+                      className={cn(
+                        'whitespace-nowrap',
+                        cell.column.id === 'name' &&
+                          'sticky left-0 z-10 bg-background group-hover:bg-[#fafafb] dark:group-hover:bg-[#171b1f]'
+                      )}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
