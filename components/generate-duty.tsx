@@ -222,9 +222,10 @@ function DayWithTime(
           )}
         >
           <span>
-            {roster[date]?.personnel?.name} {roster[date]?.isExtra ? 'EX ' : ''}
+            {roster[date]?.personnel?.name ?? ''}{' '}
+            {roster[date]?.isExtra ? 'EX ' : ''}
           </span>
-          <span>{`(${roster[date]?.reservePersonnel?.name})`}</span>
+          <span>{`(${roster[date]?.reservePersonnel?.name ?? ''})`}</span>
         </div>
       )}
     </div>

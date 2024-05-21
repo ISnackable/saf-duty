@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 import { BottomNav } from '@/components/bottom-nav';
 import { DriverTour } from '@/components/driver-tour';
@@ -19,9 +20,7 @@ export default async function DashboardLayout({
     data: { session },
   } = await supabase.auth.getSession();
 
-  if (!session) {
-    throw new Error('No session');
-  }
+  if (!session) redirect('/login');
 
   const data = await getUserProfileData(supabase, session.user);
 

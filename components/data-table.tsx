@@ -214,7 +214,7 @@ export function DataTable<TData, TValue>({
                       className={cn(
                         'whitespace-nowrap',
                         cell.column.id === 'name' &&
-                          'sticky left-0 z-10 bg-background group-hover:bg-[#fafafb] dark:group-hover:bg-[#171b1f]'
+                          'sticky left-0 z-10 bg-background group-hover:bg-[#fafafb] group-data-[state=selected]:bg-[#fafafb] dark:group-hover:bg-[#171b1f] dark:group-data-[state=selected]:bg-[#171b1f]'
                       )}
                     >
                       {flexRender(
