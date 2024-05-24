@@ -65,13 +65,13 @@ export const POST = withAuth(
     const { dutyDates, dutyPersonnels } = await request.json();
 
     const roster: Tables<'rosters'>[] = dutyDates?.map((item: DutyDate) => ({
-      ...(item.id && { id: item.id }),
       duty_date: item.date,
       is_extra: item.isExtra,
       duty_personnel_id: item.personnel?.id,
       reserve_duty_personnel_id: item.reservePersonnel?.id,
       group_id: group.id,
       updated_at: new Date().toISOString(),
+      ...(item.id && { id: item.id }),
     }));
 
     const personnels: Tables<'profiles'>[] = dutyPersonnels?.map(
@@ -125,10 +125,13 @@ export const POST = withAuth(
       );
     }
 
-    return NextResponse.json({
-      status: 'success',
-      message: 'Successfully added roster',
-    });
+    return NextResponse.json(
+      {
+        status: 'success',
+        message: 'Successfully added roster',
+      },
+      { status: 201 }
+    );
   },
   { requiredRole: ['admin'] }
 );

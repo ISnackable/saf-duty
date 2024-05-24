@@ -433,6 +433,7 @@ export function GenerateDuty({
       ...prevDutyRoster,
       [date]: {
         ...prevDutyRoster[date],
+        date: date,
         isExtra: values.isExtra,
         personnel: {
           id: mainPersonnel,
