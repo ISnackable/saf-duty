@@ -123,7 +123,7 @@ When a new row is added in your notifications table, a push notification will be
 
 ## License
 
-Distributed under the **MIT** License. See `LICENSE` for more information.
+Distributed under the **GNU General Public License v3.0** License. See `LICENSE` for more information.
 
 ## Acknowledgements
 
