@@ -7,7 +7,7 @@
   <h3 align="center">SAF Duty Roster</h3>
 
   <p align="center">
-    A Duty Roster planner for the SAF. It's tailored for unit uses, however the code is customizable. MIT License.
+    A Duty Roster planner for the SAF. It's tailored for unit uses, however the code is customizable. GPL-3.0 License.
     <br />
     <a href="https://afpn-cdo.vercel.app/"><strong>View Demo »</strong></a>
     <br />

@@ -35,6 +35,56 @@ INSERT INTO
             uuid_generate_v4(),
             'authenticated',
             'authenticated',
+            'demo' || '@example.com',
+            crypt ('Password@1234', gen_salt ('bf')),
+            current_timestamp,
+            null,
+            current_timestamp,
+            '{"provider":"email","providers":["email"]}',
+            jsonb_build_object(
+                'unit',
+                'demo',
+                'name',
+                'demo',
+                'email',
+                'demo' || '@example.com',
+                'email_verified',
+                false,
+                'phone_verified',
+                false
+            ),
+            current_timestamp,
+            current_timestamp,
+            '',
+            '',
+            '',
+            ''
+    );
+INSERT INTO
+    auth.users (
+        instance_id,
+        id,
+        aud,
+        role,
+        email,
+        encrypted_password,
+        email_confirmed_at,
+        recovery_sent_at,
+        last_sign_in_at,
+        raw_app_meta_data,
+        raw_user_meta_data,
+        created_at,
+        updated_at,
+        confirmation_token,
+        email_change,
+        email_change_token_new,
+        recovery_token
+    ) (
+        select
+            '00000000-0000-0000-0000-000000000000',
+            uuid_generate_v4(),
+            'authenticated',
+            'authenticated',
             'user' || (ROW_NUMBER() OVER ()) || '@example.com',
             crypt ('Password@1234', gen_salt ('bf')),
             current_timestamp,
@@ -87,3 +137,9 @@ INSERT INTO
         from
             auth.users
     );
+
+insert into vault.secrets
+(secret, name, description)
+values
+  ('http://127.0.0.1:54321', 'project_url', ''),
+  ('some_value', 'service_role_key', '');

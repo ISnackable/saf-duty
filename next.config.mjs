@@ -21,7 +21,11 @@ const nextConfig = bundleAnalyzer(
   withSerwist({
     experimental: {
       optimizePackageImports: ['add-to-calendar-button-react'],
+      serverActions: {
+        allowedOrigins: ['localhost:3000'],
+      },
     },
+
     images: {
       remotePatterns: [
         {
