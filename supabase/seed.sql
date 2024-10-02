@@ -137,9 +137,3 @@ INSERT INTO
         from
             auth.users
     );
-
-insert into vault.secrets
-(secret, name, description)
-values
-  ('http://127.0.0.1:54321', 'project_url', ''),
-  ('some_value', 'service_role_key', '');

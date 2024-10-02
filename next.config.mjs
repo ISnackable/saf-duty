@@ -3,6 +3,7 @@ import withSerwistInit from '@serwist/next';
 import million from 'million/compiler';
 
 const withSerwist = withSerwistInit({
+  disable: process.env.NODE_ENV === 'development',
   swSrc: 'app/sw.ts',
   swDest: 'public/sw.js',
 });

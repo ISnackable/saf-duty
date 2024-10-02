@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/docker-in-docker
 {
-  "name": "Docker in Docker",
+  "name": "saf-duty",
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
   "image": "mcr.microsoft.com/devcontainers/base:bullseye",
 
@@ -20,15 +20,32 @@
   },
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // "forwardPorts": [],
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // Its possible the supabase service locations have moved/changed since this was written
+  "forwardPorts": [3000, 54321, 54322, 54323, 54324, 54325, 54326],
+  "portsAttributes": {
+    "3000": { "label": "App" },
+    "54323": { "label": "Supabase - Studio" },
+    "54321": { "label": "Supabase - API" },
+    "54322": { "label": "Supabase - Postgres DB" },
+    "54324": { "label": "Inbucket - App" }
+  },
 
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "npx supabase start",
 
   // Configure tool-specific properties.
   "customizations": {
+    "containerEnv": {
+      "NODE_ENV": "development"
+    },
     "vscode": {
-      "extensions": ["denoland.vscode-deno", "esbenp.prettier-vscode"],
+      "extensions": [
+        "denoland.vscode-deno",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss"
+      ],
       "settings": {
         "editor.formatOnSave": true,
         "deno.enablePaths": ["./supabase/functions"],
@@ -36,7 +53,4 @@
       }
     }
   }
-
-  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-  // "remoteUser": "root"
 }

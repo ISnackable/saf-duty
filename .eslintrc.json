@@ -11,10 +11,10 @@
     "unused-imports/no-unused-vars": [
       "warn",
       {
-        "vars": "all",
+        "args": "all",
         "varsIgnorePattern": "^_",
-        "args": "after-used",
-        "argsIgnorePattern": "^_"
+        "argsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
       }
     ]
   },

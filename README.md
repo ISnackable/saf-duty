@@ -61,15 +61,20 @@ You'll first need a Supabase project which can be made [via the Supabase dashboa
    NEXT_PUBLIC_SUPABASE_ANON_KEY=[INSERT SUPABASE PROJECT API ANON KEY]
    ```
 
-   Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` can be found in [your Supabase project's API settings](https://app.supabase.com/project/_/settings/api)
+   Both `SUPABASE_API_URL` and `SUPABASE_ANON_KEY` can be found in [your Supabase project's API settings](https://app.supabase.com/project/_/settings/api) or by running `npx supabase status`.
 
-3. You can now run the Next.js local development server:
+3. Configure the vault secrets using the database studio SQL editor. Replace the keys with the appropriate values. Take note, `SUPABASE_ROLE_KEY` is different from `SUPABASE_ANON_KEY`. Do not mix them up.
+    ```sql
+    insert into vault.secrets (secret, name, description) values ('[INSERT SUPABASE PROJECT URL]', 'project_url'), ('[INSERT SUPABASE ROLE KEY]', 'service_role_key');
+    ```
+
+4. You can now run the Next.js local development server:
 
    ```bash
    pnpm dev
    ```
 
-   The server should now be running on [localhost:3000](http://localhost:3000/).
+   The app should now be running on [localhost:3000](http://localhost:3000/).
 
 ## Configuration
 
@@ -77,7 +82,7 @@ As much as this project aims to set up as seamlessly as possible, due to some li
 
 ### Create vault secrets (Required)
 
-Navigate to [Project Vault settings](https://supabase.com/dashboard/project/_/settings/vault/secrets) in your Supabase Dashboard.
+Navigate to [Project Vault settings](https://supabase.com/dashboard/project/_/settings/vault/secrets) in your Supabase Dashboard or.
 
 1. Create a new secret with the name `project_url`.
 1. The secret value should be your project's url, you can find the it through the [Project API settings](https://supabase.com/dashboard/project/_/settings/api).
@@ -120,6 +125,25 @@ When a new row is added in your notifications table, a push notification will be
    -- Or unschedule it if you want to disable it.
    select cron.unschedule('daily-roster-reminder');
   ```
+
+## Contributing
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. Any contributions you make are greatly appreciated.
+
+I recommend you to use [GitHub Codespaces](https://github.com/features/codespaces) for ease of development. Below lists the steps on how you can get started.
+
+1. Fork the Project
+
+2. Create a GitHub Codespace instance<br/>
+    <img src="https://docs.github.com/assets/cb-49943/images/help/codespaces/who-will-pay.png" alt="How to create a GitHub Codespaces" width="250"/>
+
+3. Start the local database (If it hasn't already been started already)
+    ```sh
+    npx supabase start
+    ```
+    The database should now be running and the supabase studio is at [localhost:54323](http://localhost:54323/).
+
+4. Follow this [section](#clone-and-run-locally) starting from part 2 onwards.
 
 ## License
 

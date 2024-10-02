@@ -59,7 +59,7 @@ export const POST = withAuth(async ({ request, params, client, user }) => {
       },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       {
         status: 'error',

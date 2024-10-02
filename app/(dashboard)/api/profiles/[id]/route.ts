@@ -69,7 +69,7 @@ export const GET = withAuth(
         },
         { status: 200 }
       );
-    } catch (error) {
+    } catch (_error) {
       return NextResponse.json(
         {
           status: 'error',
@@ -132,7 +132,7 @@ export const PATCH = withAuth(async ({ request, params, client, user }) => {
       },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       {
         status: 'error',
