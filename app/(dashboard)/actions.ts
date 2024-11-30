@@ -1,17 +1,15 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { z } from 'zod';
 
-import { ActionError, authAction } from '@/lib/auth-action';
+import { ActionError, authActionClient } from '@/lib/auth-action';
 import { createClient } from '@/lib/supabase/clients/server';
 import { pushSubscriptionSchema } from '@/lib/validation';
 
-export const insertSubscription = authAction(
-  pushSubscriptionSchema,
-  async (subscription, { user }) => {
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
+export const insertSubscription = authActionClient
+  .schema(pushSubscriptionSchema)
+  .action(async ({ parsedInput: subscription, ctx: { user } }) => {
+    const supabase = await createClient();
 
     const { error } = await supabase.from('push_subscriptions').upsert(
       {
@@ -26,14 +24,12 @@ export const insertSubscription = authAction(
     if (error) {
       throw new ActionError(error.message || 'Failed to add push subscription');
     }
-  }
-);
+  });
 
-export const deleteSubscription = authAction(
-  pushSubscriptionSchema,
-  async (_subscription, { user }) => {
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
+export const deleteSubscription = authActionClient
+  .schema(pushSubscriptionSchema)
+  .action(async ({ parsedInput: _subscription, ctx: { user } }) => {
+    const supabase = await createClient();
 
     const { error } = await supabase
       .from('push_subscriptions')
@@ -45,14 +41,12 @@ export const deleteSubscription = authAction(
         error.message || 'Failed to delete push subscription'
       );
     }
-  }
-);
+  });
 
-export const updateOnboarded = authAction(
-  z.boolean(),
-  async (data, { user }) => {
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
+export const updateOnboarded = authActionClient
+  .schema(z.boolean())
+  .action(async ({ parsedInput: data, ctx: { user } }) => {
+    const supabase = await createClient();
 
     const { error } = await supabase
       .from('profiles')
@@ -64,14 +58,12 @@ export const updateOnboarded = authAction(
         error.message || 'Failed to update user onboarded status'
       );
     }
-  }
-);
+  });
 
-export const uploadAvatar = authAction(
-  z.instanceof(FormData),
-  async (formData, { user }) => {
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
+export const uploadAvatar = authActionClient
+  .schema(z.instanceof(FormData))
+  .action(async ({ parsedInput: formData, ctx: { user } }) => {
+    const supabase = await createClient();
 
     const avatar = z
       .custom<File>((v) => v instanceof File || v instanceof Blob, {
@@ -105,5 +97,4 @@ export const uploadAvatar = authAction(
     }
 
     return { publicUrl };
-  }
-);
+  });

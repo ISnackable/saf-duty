@@ -328,7 +328,6 @@ export function GenerateDuty({
     if (formatISO(monthDate, { representation: 'date' }) in roster) {
       toast.warning('A duty roster already exists.', {
         duration: Infinity,
-        important: true,
         onDismiss: () => {
           toast.dismiss();
           setLoading(false);

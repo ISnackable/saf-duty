@@ -3,6 +3,7 @@
 import { TrashIcon } from '@radix-ui/react-icons';
 import { type Row } from '@tanstack/react-table';
 import * as React from 'react';
+import { toast } from 'sonner';
 
 import {
   AlertDialog,
@@ -65,6 +66,8 @@ export function DeleteTasksDialog({
                 //     rows: tasks,
                 //     onSucess: onSuccess,
                 //   })
+                toast.info('Not yet implemented');
+
                 onSuccess?.();
               });
             }}

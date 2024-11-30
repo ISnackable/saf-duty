@@ -353,7 +353,7 @@ export function DutyRoster() {
                     <BentoGridItem
                       title='Duty Personnel'
                       description={credenzaForm.getValues('receiver').name}
-                      header={<Icons.user className='h-12 w-12 ' />}
+                      header={<Icons.user className='h-12 w-12' />}
                     />
                   </BentoGrid>
 

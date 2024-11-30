@@ -1,13 +1,13 @@
 'use server';
 
 import { type SignOut } from '@supabase/supabase-js';
-import { cookies, headers } from 'next/headers';
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { type LoginFormData } from '@/components/user-login-form';
 import { type RegisterFormData } from '@/components/user-register-form';
 import { ResetFormData } from '@/components/user-reset-form';
-import { ActionError, authAction } from '@/lib/auth-action';
+import { ActionError, authActionClient } from '@/lib/auth-action';
 import { createClient } from '@/lib/supabase/clients/server';
 import {
   changeFormSchema,
@@ -20,8 +20,7 @@ import { type State } from '@/types/api-route';
 
 export async function signIn(formData: LoginFormData): Promise<State> {
   const { email, password } = formData;
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await createClient();
 
   const validatedFields = loginFormSchema.safeParse(formData);
 
@@ -56,10 +55,9 @@ export async function signIn(formData: LoginFormData): Promise<State> {
 }
 
 export async function signUp(formData: RegisterFormData): Promise<State> {
-  const origin = headers().get('origin');
+  const origin = (await headers()).get('origin');
   const { email, password, name, unit } = formData;
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await createClient();
 
   const validatedFields = registerFormSchema.safeParse(formData);
 
@@ -97,16 +95,14 @@ export async function signUp(formData: RegisterFormData): Promise<State> {
 }
 
 export async function signOut(options: SignOut = { scope: 'local' }) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await createClient();
   await supabase.auth.signOut(options);
   redirect('/login');
 }
 
 export async function resetPassword(formData: ResetFormData): Promise<State> {
-  const origin = headers().get('origin');
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const origin = (await headers()).get('origin');
+  const supabase = await createClient();
   const { email } = formData;
 
   const validatedFields = resetFormSchema.safeParse(formData);
@@ -137,12 +133,10 @@ export async function resetPassword(formData: ResetFormData): Promise<State> {
 }
 
 // Only authenticated users can change their password (see middleware.ts)
-export const changePassword = authAction(
-  changeFormSchema,
-  async (formData, { user }) => {
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
-    const { password } = formData;
+export const changePassword = authActionClient
+  .schema(changeFormSchema)
+  .action(async ({ parsedInput: { password }, ctx: { user } }) => {
+    const supabase = await createClient();
 
     const { error } = await supabase.auth.updateUser({
       password,
@@ -153,47 +147,48 @@ export const changePassword = authAction(
     }
 
     return { user };
-  }
-);
+  });
 
-export const updateAccount = authAction(
-  updateFormSchema,
-  async (formData, { user }) => {
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
-    const { email, oldPassword, newPassword } = formData;
+export const updateAccount = authActionClient
+  .schema(updateFormSchema)
+  .action(
+    async ({
+      parsedInput: { email, oldPassword, newPassword },
+      ctx: { user },
+    }) => {
+      const supabase = await createClient();
 
-    // early return if the email is the same and no new password
-    if (email === user.email && !newPassword) {
-      throw new ActionError('No changes detected');
-    }
-
-    if (oldPassword && email !== user.email) {
-      const { error } = await supabase.rpc('change_user_email', {
-        current_plain_password: oldPassword,
-        new_email: email,
-      });
-
-      if (error) {
-        throw new ActionError(error.message || 'Could not update account');
+      // early return if the email is the same and no new password
+      if (email === user.email && !newPassword) {
+        throw new ActionError('No changes detected');
       }
-    }
 
-    if (oldPassword && newPassword) {
-      const { error } = await supabase.rpc('change_user_password', {
-        current_plain_password: oldPassword,
-        new_plain_password: newPassword,
-      });
+      if (oldPassword && email !== user.email) {
+        const { error } = await supabase.rpc('change_user_email', {
+          current_plain_password: oldPassword,
+          new_email: email,
+        });
 
-      if (error) {
-        throw new ActionError(error.message || 'Could not update account');
+        if (error) {
+          throw new ActionError(error.message || 'Could not update account');
+        }
       }
+
+      if (oldPassword && newPassword) {
+        const { error } = await supabase.rpc('change_user_password', {
+          current_plain_password: oldPassword,
+          new_plain_password: newPassword,
+        });
+
+        if (error) {
+          throw new ActionError(error.message || 'Could not update account');
+        }
+      }
+
+      const {
+        data: { session },
+      } = await supabase.auth.refreshSession();
+
+      return { session };
     }
-
-    const {
-      data: { session },
-    } = await supabase.auth.refreshSession();
-
-    return { session };
-  }
-);
+  );

@@ -3,7 +3,6 @@
 import 'server-only';
 
 import type { User } from '@supabase/supabase-js';
-import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { limit } from '@/lib/rate-limit';
@@ -57,11 +56,12 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
 
   return async (
     request: NextRequest,
-    { params }: { params: Record<string, string> | undefined }
+    segmentData: { params: Promise<Record<string, string> | undefined> }
   ) => {
     const { searchParams } = new URL(request.url);
     let headers = {};
     const { method } = request;
+    const params = await segmentData.params;
 
     // Rate limit only for POST, PUT, DELETE, PATCH
     if (
@@ -71,7 +71,9 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
       method === 'PATCH'
     ) {
       const ip =
-        request.ip ?? request.headers.get('X-Forwarded-For') ?? 'unknown';
+        request.headers.get('x-real-ip') ??
+        request.headers.get('X-Forwarded-For') ??
+        'unknown';
       const isRateLimited = limit(ip);
 
       if (isRateLimited) {
@@ -85,8 +87,7 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
       }
     }
 
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
+    const supabase = await createClient();
     const {
       data: { user },
     } = await supabase.auth.getUser();

@@ -268,7 +268,7 @@ export default function RootLayout({
             defaultTheme='system'
             enableSystem={true}
             disableTransitionOnChange
-            themes={['light', 'dark', 'discord-dark']}
+            themes={['light', 'dark', 'darkcord-dark']}
           >
             <PushNotificationProvider>
               <SessionProvider>

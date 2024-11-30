@@ -19,7 +19,7 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const appearanceFormSchema = z.object({
-  theme: z.enum(['system', 'light', 'dark', 'discord-dark'], {
+  theme: z.enum(['system', 'light', 'dark', 'darkcord-dark'], {
     required_error: 'Please select a theme.',
   }),
   // font: z.enum(["inter", "manrope", "system"], {
@@ -173,7 +173,7 @@ export function AppearanceForm() {
                   <FormLabel className='[&:has([data-state=checked])>div]:border-primary'>
                     <FormControl>
                       <RadioGroupItem
-                        value='discord-dark'
+                        value='darkcord-dark'
                         className='sr-only'
                       />
                     </FormControl>
@@ -194,7 +194,7 @@ export function AppearanceForm() {
                       </div>
                     </div>
                     <span className='block w-full p-2 text-center font-normal'>
-                      Discord
+                      Darkcord
                     </span>
                   </FormLabel>
                 </FormItem>

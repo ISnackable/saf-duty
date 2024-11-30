@@ -31,7 +31,6 @@ import { host } from '@/lib/config';
 import svgImage from '@/public/undraw_happy_music_g6wc.svg';
 import { getOrdinalSuffix } from '@/utils/helper';
 
-// million-ignore
 export function DashboardOverview() {
   const os = useOs();
   const user = useUser();
@@ -159,16 +158,18 @@ export function DashboardOverview() {
                               <div className='text-4xl font-bold'>
                                 {format(new Date(roster.duty_date), 'd MMM')}
                               </div>
-                              <div className='flex items-center align-middle text-sm font-semibold text-muted-foreground '>
+                              <div className='flex items-center align-middle text-sm font-semibold text-muted-foreground'>
                                 <Icons.clock className='mr-1 size-4' />
-                                {format(new Date(roster.duty_date), 'iii')} 8:00
-                                AM
+                                {format(
+                                  new Date(roster.duty_date),
+                                  'iii'
+                                )} 8:00 AM
                               </div>
                               <div className='text-xs font-semibold text-muted-foreground text-red-600'>
                                 {roster.is_extra && '🌚 [Extra]'}
                               </div>
                             </div>
-                            <Badge variant='secondary' className='w-fit	'>
+                            <Badge variant='secondary' className='w-fit'>
                               Your {getOrdinalSuffix(index + 1)} duty{' '}
                               {isPast(new Date(roster.duty_date))
                                 ? ' ✅'
@@ -218,7 +219,7 @@ export function DashboardOverview() {
 
         <div>
           <div className='mb-2 flex scroll-m-20 justify-between'>
-            <h4 className='text-xl font-semibold tracking-tight '>
+            <h4 className='text-xl font-semibold tracking-tight'>
               Duties completed
             </h4>
 

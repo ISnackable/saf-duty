@@ -19,7 +19,7 @@ export function SettingsNav({ className, items, ...props }: SettingsNavProps) {
   return (
     <nav
       className={cn(
-        'flex flex-wrap space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1 ',
+        'flex flex-wrap space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1',
         className
       )}
       {...props}

@@ -18,7 +18,7 @@ export function ThemeSwitcher() {
       document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
         meta.setAttribute('content', '#151719');
       });
-    } else if (resolvedTheme === 'discord-dark') {
+    } else if (resolvedTheme === 'darkcord-dark') {
       document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
         meta.setAttribute('content', '#1e2124');
       });

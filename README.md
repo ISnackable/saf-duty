@@ -64,9 +64,10 @@ You'll first need a Supabase project which can be made [via the Supabase dashboa
    Both `SUPABASE_API_URL` and `SUPABASE_ANON_KEY` can be found in [your Supabase project's API settings](https://app.supabase.com/project/_/settings/api) or by running `npx supabase status`.
 
 3. Configure the vault secrets using the database studio SQL editor. Replace the keys with the appropriate values. Take note, `SUPABASE_ROLE_KEY` is different from `SUPABASE_ANON_KEY`. Do not mix them up.
-    ```sql
-    insert into vault.secrets (secret, name, description) values ('[INSERT SUPABASE PROJECT URL]', 'project_url'), ('[INSERT SUPABASE ROLE KEY]', 'service_role_key');
-    ```
+
+   ```sql
+   insert into vault.secrets (secret, name, description) values ('[INSERT SUPABASE PROJECT URL]', 'project_url'), ('[INSERT SUPABASE ROLE KEY]', 'service_role_key');
+   ```
 
 4. You can now run the Next.js local development server:
 
@@ -135,13 +136,15 @@ I recommend you to use [GitHub Codespaces](https://github.com/features/codespace
 1. Fork the Project
 
 2. Create a GitHub Codespace instance<br/>
-    <img src="https://docs.github.com/assets/cb-49943/images/help/codespaces/who-will-pay.png" alt="How to create a GitHub Codespaces" width="250"/>
+   <img src="https://docs.github.com/assets/cb-49943/images/help/codespaces/who-will-pay.png" alt="How to create a GitHub Codespaces" width="250"/>
 
 3. Start the local database (If it hasn't already been started already)
-    ```sh
-    npx supabase start
-    ```
-    The database should now be running and the supabase studio is at [localhost:54323](http://localhost:54323/).
+
+   ```sh
+   npx supabase start
+   ```
+
+   The database should now be running and the supabase studio is at [localhost:54323](http://localhost:54323/).
 
 4. Follow this [section](#clone-and-run-locally) starting from part 2 onwards.
 

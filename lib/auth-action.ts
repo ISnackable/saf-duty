@@ -1,51 +1,42 @@
 import 'server-only';
 
-import { DEFAULT_SERVER_ERROR, createSafeActionClient } from 'next-safe-action';
-import { cookies } from 'next/headers';
+import { createSafeActionClient } from 'next-safe-action';
 
 import { createClient } from '@/lib/supabase/clients/server';
 import { isDemoUser } from '@/utils/helper';
 
 export class ActionError extends Error {}
 
-function handleReturnedServerError(e: Error) {
-  // In this case, we can use the 'MyCustomError` class to unmask errors
-  // and return them with their actual messages to the client.
-  if (e instanceof ActionError) {
-    return e.message;
+export const actionClient = createSafeActionClient({
+  // Can also be an async function.
+  handleServerError(e, utils) {
+    // You can access these properties inside the `utils` object.
+    // const { clientInput, bindArgsClientInputs, metadata, ctx } = utils;
+
+    // Log to console.
+    console.error('Action error:', e.message);
+
+    // Return generic message
+    return 'Oh no, something went wrong!';
+  },
+});
+
+export const authActionClient = actionClient.use(async ({ next, ctx }) => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new ActionError('Session not found!');
   }
 
-  // Every other error that occurs will be masked with the default message.
-  return DEFAULT_SERVER_ERROR;
-}
+  if (isDemoUser(user.id)) {
+    throw new ActionError(
+      'Unauthorized, demo user cannot perform this action!'
+    );
+  }
 
-function handleServerErrorLog(e: Error) {
-  console.error('Action error:', e.message);
-}
-
-// This client ensures that the user is authenticated before running action server code.
-export const authAction = createSafeActionClient({
-  // Can also be a non async function.
-  async middleware() {
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      throw new ActionError('Session not found!');
-    }
-
-    if (isDemoUser(user.id)) {
-      throw new ActionError(
-        'Unauthorized, demo user cannot perform this action!'
-      );
-    }
-
-    return { user };
-  },
-  handleReturnedServerError,
-  handleServerErrorLog,
+  return next({ ctx: { user } });
 });

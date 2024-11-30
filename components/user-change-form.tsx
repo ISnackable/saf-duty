@@ -74,12 +74,12 @@ export function UserChangeForm({ className, ...props }: UserChangeFormProps) {
 
   async function handleChangeForm(data: ChangeFormData) {
     setIsLoading(true);
-    const { serverError } = await changePassword(data);
+    const result = await changePassword(data);
     customNotifyEvent('USER_UPDATED', null);
 
-    if (serverError) {
+    if (result?.serverError) {
       toast.error('Could not change password.', {
-        description: serverError || 'Please try again.',
+        description: result.serverError || 'Please try again.',
       });
       setIsLoading(false);
     } else {

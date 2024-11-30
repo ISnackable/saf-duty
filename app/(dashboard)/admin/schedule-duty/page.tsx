@@ -1,5 +1,4 @@
 import { type Metadata } from 'next';
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { GenerateDuty } from '@/components/generate-duty';
@@ -15,18 +14,16 @@ export const metadata: Metadata = {
   description: 'Admin page to schedule duty roster.',
 };
 
-export default async function AdminScheduleDutyPage({
-  searchParams,
-}: {
-  searchParams?: {
+export default async function AdminScheduleDutyPage(props: {
+  searchParams?: Promise<{
     month?: string;
     year?: string;
-  };
+  }>;
 }) {
+  const searchParams = await props.searchParams;
   const { month, year } = getMonthYearParams(searchParams);
 
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await createClient();
 
   const {
     data: { session },

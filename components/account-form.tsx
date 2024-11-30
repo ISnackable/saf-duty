@@ -74,16 +74,16 @@ export function AccountForm() {
       return;
     }
 
-    const { serverError, data: serverData } = await updateAccount(data);
+    const result = await updateAccount(data);
 
-    if (serverData) {
+    if (result?.data) {
       toast.success('Account updated successfully');
-      customNotifyEvent('USER_UPDATED', serverData.session);
+      customNotifyEvent('USER_UPDATED', result.data.session);
       mutate({ ...profile, email: data.email });
     }
 
-    if (serverError) {
-      toast.error(serverError);
+    if (result?.serverError) {
+      toast.error(result.serverError);
     }
 
     setIsLoading(false);

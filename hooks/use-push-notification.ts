@@ -164,11 +164,9 @@ export default function usePushNotifications() {
 
     try {
       const subscription = await createNotificationSubscription();
-      const { serverError, validationErrors } = await insertSubscription(
-        subscription?.toJSON() as any
-      );
+      const result = await insertSubscription(subscription?.toJSON() as any);
 
-      if (serverError || validationErrors) {
+      if (result?.serverError || result?.validationErrors) {
         console.error('Failed to save the subscription to the server');
         throw new Error('Failed to save the subscription to the server');
       }
