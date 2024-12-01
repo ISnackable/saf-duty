@@ -57,7 +57,7 @@ export function AccountForm() {
     values: {
       email: profile?.email || '',
       oldPassword: '',
-      newPassword: undefined,
+      newPassword: '',
     },
     resetOptions: {
       keepDirtyValues: true,

@@ -19,7 +19,7 @@ import {
   DayProps,
   useDayRender,
 } from 'react-day-picker';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useDebouncedCallback } from 'use-debounce';
 import * as z from 'zod';
@@ -282,7 +282,11 @@ export function GenerateDuty({
     resolver: zodResolver(CredenzaFormSchema),
   });
 
-  const monthDate = form.watch('monthDate');
+  const personnelsWatch = useWatch({
+    name: 'personnels',
+    control: form.control,
+  });
+  const monthDate = useWatch({ name: 'monthDate', control: form.control });
 
   useEffect(() => {
     // Check whether the roster contains the same dates as the duty roster
@@ -682,7 +686,7 @@ export function GenerateDuty({
         </form>
       </Form>
 
-      {form.watch('personnels').length > 0 &&
+      {personnelsWatch.length > 0 &&
         Object.keys(dutyRoster).length !== 0 &&
         formatISO(monthDate, { representation: 'date' }) in dutyRoster && (
           <div className='relative grid w-full'>
@@ -698,8 +702,7 @@ export function GenerateDuty({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {form
-                    .watch('personnels')
+                  {personnelsWatch
                     .toSorted((a, b) =>
                       a.value < b.value ? -1 : a.value > b.value ? 1 : 0
                     )

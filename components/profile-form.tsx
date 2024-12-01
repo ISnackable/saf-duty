@@ -5,7 +5,7 @@ import Compressor from 'compressorjs';
 import { formatISO } from 'date-fns';
 import { ElementRef, useRef } from 'react';
 import * as React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
@@ -87,7 +87,11 @@ export function ProfileForm() {
     mode: 'onChange',
   });
 
-  const imagePreview = form.watch('avatar')
+  const avatarWatch = useWatch({
+    name: 'avatar',
+    control: form.control,
+  });
+  const imagePreview = avatarWatch
     ? URL.createObjectURL(form.getValues('avatar') as File)
     : profile?.avatar_url;
 

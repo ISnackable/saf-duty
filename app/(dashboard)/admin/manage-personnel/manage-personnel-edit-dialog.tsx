@@ -11,7 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { type Row } from '@tanstack/react-table';
 import { formatISO } from 'date-fns';
 import * as React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -86,7 +86,11 @@ export function EditProfileDialog({
     mode: 'onSubmit',
   });
 
-  // 2. Define a submit handler.
+  const avatarWatch = useWatch({
+    name: 'avatar_url',
+    control: form.control,
+  });
+
   function onSubmit(values: FormValues) {
     starEditTransition(() => {
       const resPromise = fetcher(`/api/profiles/${profile.original.id}`, {
@@ -135,7 +139,7 @@ export function EditProfileDialog({
                 <div className='flex items-center gap-4 align-middle'>
                   <Avatar className='size-16'>
                     <AvatarImage
-                      src={form.watch('avatar_url') ?? ''}
+                      src={avatarWatch ?? ''}
                       className='rounded-3xl object-cover'
                     />
                     <AvatarFallback>CN</AvatarFallback>

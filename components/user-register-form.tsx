@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PopoverAnchor } from '@radix-ui/react-popover';
 import * as React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
@@ -73,7 +73,8 @@ export function UserRegisterForm({
     },
   });
 
-  const passwordValue = form.watch('password');
+  const passwordValue = useWatch({ name: 'password', control: form.control });
+  const unitWatch = useWatch({ name: 'unit', control: form.control });
 
   const strength = getStrength(passwordValue);
   const checks = requirements.map((requirement, index) => (
@@ -207,7 +208,7 @@ export function UserRegisterForm({
                         maxLength={4}
                         {...field}
                         spellCheck='false'
-                        value={form.watch('unit')}
+                        value={unitWatch}
                         onChange={(val: string) => form.setValue('unit', val)}
                         disabled={isLoading}
                       >

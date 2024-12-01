@@ -311,7 +311,7 @@ export function Gauge({
       width={size}
       height={size}
       style={{ userSelect: 'none' }}
-      strokeWidth={2} // TODO: not needed?
+      strokeWidth={2}
       fill='none'
       className={cn(
         '',

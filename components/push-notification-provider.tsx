@@ -24,7 +24,6 @@ export const PushNotificationContext = createContext<PushNotificationState>({
   onClickUnsubscribeToPushNotification: () => Promise.resolve(null),
 });
 
-// TODO: Unsubscribe from push notifications when the user logs out
 export const PushNotificationProvider = (props: PropsWithChildren) => {
   const {
     userSubscription,

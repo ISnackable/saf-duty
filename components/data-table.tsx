@@ -62,6 +62,7 @@ export function DataTable<TData, TValue>({
   columns,
   data: defaultData,
 }: DataTableProps<TData, TValue>) {
+  'use no memo'; // FIXME weird bug? https://github.com/react-hook-form/react-hook-form/issues/11910
   const user = useUser();
   const [data, setData] = React.useState(() => [...(defaultData ?? [])]);
   const [sorting, setSorting] = React.useState<SortingState>([

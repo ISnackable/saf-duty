@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
@@ -61,7 +61,10 @@ export function UserChangeForm({ className, ...props }: UserChangeFormProps) {
   const [popoverOpened, setPopoverOpened] = React.useState(false);
   const router = useRouter();
 
-  const passwordValue = form.watch('password');
+  const passwordValue = useWatch({
+    name: 'password',
+    control: form.control,
+  });
 
   const strength = getStrength(passwordValue);
   const checks = requirements.map((requirement, index) => (
