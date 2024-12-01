@@ -19,6 +19,8 @@ import {
   useState,
 } from 'react';
 
+import { useSidebar } from '@/components/ui/sidebar';
+
 const ProgressBarContext = createContext<ReturnType<typeof useProgress> | null>(
   null
 );
@@ -67,6 +69,7 @@ export function ProgressBarLink({
 }: ComponentProps<typeof Link>) {
   let progress = useProgressBar();
   let router = useRouter();
+  const { setOpenMobile } = useSidebar();
 
   return (
     <Link
@@ -78,6 +81,7 @@ export function ProgressBarLink({
         startTransition(() => {
           router.push(href.toString());
           progress.done();
+          setOpenMobile(false);
         });
       }}
       {...rest}

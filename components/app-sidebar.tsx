@@ -22,17 +22,12 @@ import { useProfiles } from '@/hooks/use-profiles';
 import { isDemoUser } from '@/utils/helper';
 
 const data = {
-  user: {
-    name: 'shadcn',
-    email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
-  },
   admin: [
     {
       title: 'Admin Panel',
       url: '#',
       icon: Icons.fingerprint,
-      isActive: true,
+      isActive: false,
       items: [
         {
           title: 'Manage Personnel',
@@ -125,8 +120,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   ];
 
   return (
-    <Sidebar collapsible='offcanvas' {...props}>
-      <SidebarHeader>
+    <Sidebar collapsible='offcanvas' className='h-full' {...props}>
+      <SidebarHeader className='h-16 border-b'>
         <TeamSwitcher teams={teams} />
       </SidebarHeader>
       <SidebarContent>
@@ -141,7 +136,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <NavOthers label='Others' others={data.others} />
         </ScrollArea>
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className='border-t'>
         <NavUser>
           <SidebarMenuButton
             size='lg'

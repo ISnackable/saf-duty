@@ -4,10 +4,9 @@ import { motion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
 
+import { Icons } from '@/components/icons';
 import { ProgressBarLink } from '@/components/progress-bar';
 import { cn } from '@/lib/utils';
-
-import { Icons } from './icons';
 
 const routes = [
   { link: '/', label: 'Home', icon: Icons.homeFilled },

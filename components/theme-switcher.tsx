@@ -6,6 +6,7 @@ import * as React from 'react';
 import { Icons } from '@/components/icons';
 
 export function ThemeSwitcher() {
+  'use no memo';
   const { theme, resolvedTheme, setTheme } = useTheme();
 
   const isChecked = (value: string) => theme === value;

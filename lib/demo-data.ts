@@ -945,7 +945,7 @@ export const swapRequests: SwapRequests[] = [
       avatar_url:
         'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
-    reason: 'I need to attend my family gathering',
+    reason: 'I need to attend my family gathering.',
     requester_roster: {
       id: 1,
       duty_date: `${currentYear}-${todayMonth}-27`,
@@ -997,7 +997,7 @@ export const swapRequests: SwapRequests[] = [
       avatar_url:
         'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     },
-    reason: 'I has a wedding to attend',
+    reason: 'I have a wedding to attend.',
     requester_roster: {
       id: 1,
       duty_date: `${currentYear}-${todayMonth}-20`,

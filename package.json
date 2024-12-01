@@ -67,7 +67,7 @@
     "react-day-picker": "^8.10.1",
     "react-dom": "19.0.0-rc.1",
     "react-hook-form": "^7.53.2",
-    "react-virtuoso": "^4.12.2",
+    "react-virtuoso": "^4.12.3",
     "server-only": "^0.0.1",
     "sonner": "^1.7.0",
     "swr": "^2.2.5",
