@@ -9,7 +9,7 @@ export class ActionError extends Error {}
 
 export const actionClient = createSafeActionClient({
   // Can also be an async function.
-  handleServerError(e, utils) {
+  handleServerError(e, _utils) {
     // You can access these properties inside the `utils` object.
     // const { clientInput, bindArgsClientInputs, metadata, ctx } = utils;
 
@@ -21,7 +21,7 @@ export const actionClient = createSafeActionClient({
   },
 });
 
-export const authActionClient = actionClient.use(async ({ next, ctx }) => {
+export const authActionClient = actionClient.use(async ({ next }) => {
   const supabase = await createClient();
 
   const {

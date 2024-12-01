@@ -134,6 +134,7 @@ export function DashboardOverview() {
           {upcomingDuties && upcomingDuties?.length > 0 ? (
             <>
               <Carousel
+                className='relative grid w-full'
                 setApi={setApi}
                 opts={{
                   loop: true,
@@ -251,7 +252,7 @@ export function DashboardOverview() {
             Also on duty
           </h4>
           <Carousel
-            className='!m-0'
+            className='relative !m-0 grid w-full'
             opts={{
               align: 'start',
               dragFree: true,

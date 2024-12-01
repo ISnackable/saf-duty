@@ -1,9 +1,10 @@
 import { redirect } from 'next/navigation';
 
+import { AppSidebar } from '@/components/app-sidebar';
 import { BottomNav } from '@/components/bottom-nav';
 import { DriverTour } from '@/components/driver-tour';
 import { Header } from '@/components/header';
-import { SideNav } from '@/components/side-nav';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { createClient } from '@/lib/supabase/clients/server';
 import { getUserProfileData } from '@/lib/supabase/data';
 
@@ -24,21 +25,22 @@ export default async function DashboardLayout({
 
   return (
     <>
-      <nav className='flex'>
-        <Header />
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <Header />
 
-        <SideNav className='fixed hidden border-r xl:flex' />
-      </nav>
+          <section className='mb-12 mt-16 pb-8 md:container sm:mb-0 md:mx-auto xl:pl-[256px]'>
+            {children}
+          </section>
 
-      <section className='mb-12 mt-16 pb-8 md:container sm:mb-0 md:mx-auto xl:pl-[256px]'>
-        {children}
-      </section>
+          <footer>
+            <BottomNav />
+          </footer>
+        </SidebarInset>
 
-      <footer>
-        <BottomNav />
-      </footer>
-
-      {data?.onboarded ? null : <DriverTour />}
+        {data?.onboarded ? null : <DriverTour />}
+      </SidebarProvider>
     </>
   );
 }
