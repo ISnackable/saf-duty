@@ -1,6 +1,7 @@
 'use client';
 
 import { CaretSortIcon, PlusIcon } from '@radix-ui/react-icons';
+import type { Icon } from '@tabler/icons-react';
 import * as React from 'react';
 
 import {
@@ -24,8 +25,8 @@ export function TeamSwitcher({
 }: {
   teams: {
     name: string;
-    logo: React.ElementType;
-    plan: string;
+    logo: Icon;
+    role: string;
   }[];
 }) {
   const { isMobile } = useSidebar();
@@ -40,14 +41,14 @@ export function TeamSwitcher({
               size='lg'
               className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
             >
-              <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground'>
-                <activeTeam.logo className='size-4' />
+              <div className='bg-primary-700 flex aspect-square size-8 items-center justify-center rounded-lg bg-opacity-60 text-sidebar-primary-foreground'>
+                <activeTeam.logo className='size-8 text-accent-foreground' />
               </div>
               <div className='grid flex-1 text-left text-sm leading-tight'>
                 <span className='truncate font-semibold'>
                   {activeTeam.name}
                 </span>
-                <span className='truncate text-xs'>{activeTeam.plan}</span>
+                <span className='truncate text-xs'>{activeTeam.role}</span>
               </div>
               <CaretSortIcon className='ml-auto' />
             </SidebarMenuButton>

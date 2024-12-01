@@ -685,69 +685,71 @@ export function GenerateDuty({
       {form.watch('personnels').length > 0 &&
         Object.keys(dutyRoster).length !== 0 &&
         formatISO(monthDate, { representation: 'date' }) in dutyRoster && (
-          <ScrollArea>
-            <Table className='min-w-[700px] border'>
-              <TableHeader className='bg-secondary'>
-                <TableRow>
-                  <TableHead>Personnel</TableHead>
-                  <TableHead>Weekday Points</TableHead>
-                  <TableHead>Weekend Points</TableHead>
-                  <TableHead>Extras</TableHead>
-                  <TableHead>No. of duties</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {form
-                  .watch('personnels')
-                  .toSorted((a, b) =>
-                    a.value < b.value ? -1 : a.value > b.value ? 1 : 0
-                  )
-                  .map((option) => {
-                    const personnel = dutyPersonnel?.find(
-                      (personnel) => personnel.id === option.value
-                    );
-                    const user = users?.find(
-                      (user) => user?.id === personnel?.id
-                    );
-                    if (!personnel || !user) return null;
+          <div className='relative grid w-full'>
+            <ScrollArea>
+              <Table className='min-w-[700px] border'>
+                <TableHeader className='bg-secondary'>
+                  <TableRow>
+                    <TableHead>Personnel</TableHead>
+                    <TableHead>Weekday Points</TableHead>
+                    <TableHead>Weekend Points</TableHead>
+                    <TableHead>Extras</TableHead>
+                    <TableHead>No. of duties</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {form
+                    .watch('personnels')
+                    .toSorted((a, b) =>
+                      a.value < b.value ? -1 : a.value > b.value ? 1 : 0
+                    )
+                    .map((option) => {
+                      const personnel = dutyPersonnel?.find(
+                        (personnel) => personnel.id === option.value
+                      );
+                      const user = users?.find(
+                        (user) => user?.id === personnel?.id
+                      );
+                      if (!personnel || !user) return null;
 
-                    return (
-                      <TableRow key={personnel.id}>
-                        <TableCell>{personnel.name}</TableCell>
-                        <TableCell>{`${user.weekday_points} ${
-                          personnel ? ' ⟶ ' + personnel.weekdayPoints : ''
-                        }`}</TableCell>
-                        <TableCell>{`${user.weekend_points} ${
-                          personnel ? ' ⟶ ' + personnel.weekendPoints : ''
-                        }`}</TableCell>
-                        <TableCell>
-                          {`${user?.no_of_extras} ${
-                            personnel ? ' ⟶ ' + personnel.extra : ''
-                          }`}
-                        </TableCell>
-                        <TableCell>
-                          {`${
-                            personnel ? personnel.totalWeekdayAssigned : 0
-                          } weekday, ${
-                            personnel
-                              ? personnel.totalWeekendAssigned +
-                                personnel.totalExtraAssigned
-                              : 0
-                          } weekend --- Total: (${
-                            personnel
-                              ? personnel.totalWeekdayAssigned +
-                                personnel.totalWeekendAssigned +
-                                personnel.totalExtraAssigned
-                              : 0
-                          })`}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-            <ScrollBar orientation='horizontal' />
-          </ScrollArea>
+                      return (
+                        <TableRow key={personnel.id}>
+                          <TableCell>{personnel.name}</TableCell>
+                          <TableCell>{`${user.weekday_points} ${
+                            personnel ? ' ⟶ ' + personnel.weekdayPoints : ''
+                          }`}</TableCell>
+                          <TableCell>{`${user.weekend_points} ${
+                            personnel ? ' ⟶ ' + personnel.weekendPoints : ''
+                          }`}</TableCell>
+                          <TableCell>
+                            {`${user?.no_of_extras} ${
+                              personnel ? ' ⟶ ' + personnel.extra : ''
+                            }`}
+                          </TableCell>
+                          <TableCell>
+                            {`${
+                              personnel ? personnel.totalWeekdayAssigned : 0
+                            } weekday, ${
+                              personnel
+                                ? personnel.totalWeekendAssigned +
+                                  personnel.totalExtraAssigned
+                                : 0
+                            } weekend --- Total: (${
+                              personnel
+                                ? personnel.totalWeekdayAssigned +
+                                  personnel.totalWeekendAssigned +
+                                  personnel.totalExtraAssigned
+                                : 0
+                            })`}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                </TableBody>
+              </Table>
+              <ScrollBar orientation='horizontal' />
+            </ScrollArea>
+          </div>
         )}
 
       <CredenzaContent className='min-w-[300px] md:min-w-[750px]'>

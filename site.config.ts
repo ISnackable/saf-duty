@@ -1,5 +1,6 @@
 import { siteConfig } from '@/lib/site-config';
 
+// TODO: use environment variables
 export default siteConfig({
   // basic site info (required)
   name: 'AFPN CDO',

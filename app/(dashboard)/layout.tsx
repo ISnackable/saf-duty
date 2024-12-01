@@ -30,7 +30,7 @@ export default async function DashboardLayout({
         <SidebarInset>
           <Header />
 
-          <section className='mb-12 mt-16 pb-8 md:container sm:mb-0 md:mx-auto xl:pl-[256px]'>
+          <section className='mb-12 pb-8 md:container sm:mb-0 md:mx-auto xl:pl-[256px]'>
             {children}
           </section>
 

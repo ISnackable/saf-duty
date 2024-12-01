@@ -1,14 +1,17 @@
 'use client';
 
 import { Icons } from '@/components/icons';
+import { NavUser } from '@/components/nav-user';
 import { NotificationsPopover } from '@/components/notifications-popover';
 import { ThemeSwitcher } from '@/components/theme-switcher';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useSidebar } from '@/components/ui/sidebar';
-import { UserNav } from '@/components/user-nav';
+import { useProfiles } from '@/hooks/use-profiles';
 
 export function Header() {
   const { toggleSidebar } = useSidebar();
+  const { data: profile } = useProfiles();
 
   return (
     <header
@@ -21,7 +24,6 @@ export function Header() {
           role='button'
           aria-label='Menu'
           variant='ghost'
-          className='xl:hidden'
           size='icon'
           onClick={toggleSidebar}
         >
@@ -35,7 +37,18 @@ export function Header() {
 
       <div className='flex grow basis-0 justify-end space-x-2 align-middle'>
         <NotificationsPopover />
-        <UserNav />
+        <NavUser>
+          <Button variant='ghost' className='relative h-9 w-9 rounded-full'>
+            <Avatar className='relative h-9 w-9 rounded-full'>
+              <AvatarImage
+                src={profile?.avatar_url || ''}
+                alt={`${profile?.name} avtar image`}
+                className='object-cover'
+              />
+              <AvatarFallback>O</AvatarFallback>
+            </Avatar>
+          </Button>
+        </NavUser>
       </div>
     </header>
   );

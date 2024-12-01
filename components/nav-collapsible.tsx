@@ -1,8 +1,10 @@
 'use client';
 
 import { ChevronRightIcon } from '@radix-ui/react-icons';
-import { type LucideIcon } from 'lucide-react';
+import type { Icon } from '@tabler/icons-react';
+import { usePathname } from 'next/navigation';
 
+import { ProgressBarLink } from '@/components/progress-bar';
 import {
   Collapsible,
   CollapsibleContent,
@@ -18,24 +20,32 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
+import { cn } from '@/lib/utils';
 
-export function NavMain({
+export function NavCollapsible({
+  label,
   items,
 }: {
+  label: string;
   items: {
     title: string;
     url: string;
-    icon?: LucideIcon;
+    icon?: Icon;
     isActive?: boolean;
     items?: {
       title: string;
+      icon?: Icon;
       url: string;
     }[];
   }[];
 }) {
+  const pathName = usePathname();
+
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
+      <SidebarGroupLabel className='underline decoration-wavy underline-offset-4'>
+        {label}
+      </SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible
@@ -52,14 +62,23 @@ export function NavMain({
                   <ChevronRightIcon className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
                 </SidebarMenuButton>
               </CollapsibleTrigger>
-              <CollapsibleContent>
+              <CollapsibleContent className='CollapsibleContent'>
                 <SidebarMenuSub>
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
+                      <SidebarMenuSubButton
+                        asChild
+                        className={cn('stroke-current', {
+                          'stroke-primary text-primary hover:stroke-primary hover:text-primary':
+                            subItem.url === pathName,
+                        })}
+                      >
+                        <ProgressBarLink href={subItem.url} prefetch={false}>
+                          {subItem.icon && (
+                            <subItem.icon className='h-4 w-4 stroke-inherit' />
+                          )}
                           <span>{subItem.title}</span>
-                        </a>
+                        </ProgressBarLink>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}
