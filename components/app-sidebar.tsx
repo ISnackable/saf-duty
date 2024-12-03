@@ -144,7 +144,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           >
             <Avatar className='h-8 w-8 rounded-lg'>
               <AvatarImage
-                src={profile?.avatar_url || ''}
+                src={profile?.avatar_url || undefined}
                 alt={`${profile?.name} avtar image`}
               />
               <AvatarFallback className='rounded-lg'>CN</AvatarFallback>

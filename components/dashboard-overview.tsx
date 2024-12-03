@@ -268,7 +268,7 @@ export function DashboardOverview() {
                       <Avatar>
                         <AvatarImage
                           className='rounded-xl object-cover'
-                          src={profile.avatar_url || ''}
+                          src={profile.avatar_url || undefined}
                         />
                         <AvatarFallback>CN</AvatarFallback>
                       </Avatar>

@@ -262,7 +262,7 @@ export function GenerateDuty({
       users.map((user) => ({
         label: user.name || '',
         value: user.id,
-        image: user.avatar_url || '',
+        image: user.avatar_url || undefined,
       })),
     [users]
   );

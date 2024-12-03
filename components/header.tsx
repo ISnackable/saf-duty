@@ -41,7 +41,7 @@ export function Header() {
           <Button variant='ghost' className='relative h-9 w-9 rounded-full'>
             <Avatar className='relative h-9 w-9 rounded-full'>
               <AvatarImage
-                src={profile?.avatar_url || ''}
+                src={profile?.avatar_url || undefined}
                 alt={`${profile?.name} avtar image`}
                 className='object-cover'
               />

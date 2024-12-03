@@ -1,4 +1,6 @@
 // All the demo data that used as fallbacks when there's nothing in the dataset yet
+import { addMonths, format } from 'date-fns';
+
 import { demo, isDev } from '@/lib/config';
 import type {
   Profiles,
@@ -7,12 +9,11 @@ import type {
 } from '@/lib/supabase/queries';
 import type { Tables } from '@/types/supabase';
 
-const todayMonth = (new Date().getMonth() + 1)
-  .toString()
-  .padStart(2, '0') as `${number}${number}`;
-const nextMonth = (new Date().getMonth() + 2)
-  .toString()
-  .padStart(2, '0') as `${number}${number}`;
+const todayMonth = format(new Date(), 'MM') as `${number}${number}`;
+const nextMonth = format(
+  addMonths(new Date(), 1),
+  'MM'
+) as `${number}${number}`;
 const currentYear = new Date().getFullYear();
 
 export const blockouts: string[] = [

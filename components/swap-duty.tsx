@@ -167,7 +167,7 @@ export function SwapDuty() {
                       <Avatar className='size-10'>
                         <AvatarImage
                           className='rounded-xl object-cover'
-                          src={request.requester.avatar_url || ''}
+                          src={request.requester.avatar_url || undefined}
                         />
                         <AvatarFallback>CN</AvatarFallback>
                       </Avatar>
@@ -202,7 +202,7 @@ export function SwapDuty() {
                       <Avatar className='size-10'>
                         <AvatarImage
                           className='rounded-xl object-cover'
-                          src={request.receiver.avatar_url || ''}
+                          src={request.receiver.avatar_url || undefined}
                         />
                         <AvatarFallback>CN</AvatarFallback>
                       </Avatar>
@@ -253,7 +253,7 @@ export function SwapDuty() {
                       <Avatar className='size-10'>
                         <AvatarImage
                           className='rounded-xl object-cover'
-                          src={request.requester.avatar_url || ''}
+                          src={request.requester.avatar_url || undefined}
                         />
                         <AvatarFallback>CN</AvatarFallback>
                       </Avatar>
@@ -288,7 +288,7 @@ export function SwapDuty() {
                       <Avatar className='size-10'>
                         <AvatarImage
                           className='rounded-xl object-cover'
-                          src={request.receiver.avatar_url || ''}
+                          src={request.receiver.avatar_url || undefined}
                         />
                         <AvatarFallback>CN</AvatarFallback>
                       </Avatar>
@@ -380,7 +380,9 @@ export function SwapDuty() {
                     <Avatar className='size-16'>
                       <AvatarImage
                         className='object-cover'
-                        src={currentSwapRequest.requester.avatar_url || ''}
+                        src={
+                          currentSwapRequest.requester.avatar_url || undefined
+                        }
                       />
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
@@ -421,7 +423,9 @@ export function SwapDuty() {
                     <Avatar className='size-16'>
                       <AvatarImage
                         className='object-cover'
-                        src={currentSwapRequest.receiver.avatar_url || ''}
+                        src={
+                          currentSwapRequest.receiver.avatar_url || undefined
+                        }
                       />
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
