@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import { signOut } from '@/app/(auth)/actions';
+import { Icons } from '@/components/icons';
 import { InstallPWA } from '@/components/install-pwa';
 import { ProgressBarLink } from '@/components/progress-bar';
 import { usePushNotificationContext } from '@/components/push-notification-provider';
@@ -86,8 +87,8 @@ export function NavUser({ children }: { children: React.ReactNode }) {
           }}
           className='text-destructive'
         >
+          <Icons.logOut />
           Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

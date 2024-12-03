@@ -123,6 +123,15 @@
     --border: 334 0% 18.46%;
     --input: 214.29 5.04% 27.25%;
     --ring: 217.5 9.09% 17.25%;
+
+    --sidebar-background: 217.5 9.09% 17.25%;
+    --sidebar-foreground: 334 34% 98%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 

@@ -63,12 +63,12 @@ export function BottomNav() {
             )}
 
             <div
-              className={cn('flex flex-col items-center justify-start', {
+              className={cn('flex flex-col items-center justify-center', {
                 'text-primary': pathname === item.link,
               })}
             >
               <item.icon className='mb-1 h-6 w-6 group-hover:text-blue-600 dark:group-hover:text-blue-500' />
-              <div className='text-xs group-hover:text-blue-600 dark:group-hover:text-blue-500'>
+              <div className='text-center text-xs group-hover:text-blue-600 dark:group-hover:text-blue-500'>
                 {item.label}
               </div>
             </div>

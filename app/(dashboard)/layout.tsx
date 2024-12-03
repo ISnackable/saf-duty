@@ -27,7 +27,7 @@ export default async function DashboardLayout({
     <>
       <SidebarProvider>
         <AppSidebar />
-        <SidebarInset>
+        <SidebarInset className='max-w-full'>
           <Header />
 
           <section className='mb-12 pb-8 md:container sm:mb-0 md:mx-auto'>

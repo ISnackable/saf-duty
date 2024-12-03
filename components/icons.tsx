@@ -30,6 +30,7 @@ import {
   IconHome2,
   IconInfoCircle,
   IconLoader2,
+  IconLogout,
   IconMenu2,
   IconMessageCircleQuestion,
   IconMoon,
@@ -288,4 +289,5 @@ export const Icons = {
   infoCircle: IconInfoCircle,
   alertTriangle: IconAlertTriangle,
   exclamationCircle: IconExclamationCircle,
+  logOut: IconLogout,
 };
