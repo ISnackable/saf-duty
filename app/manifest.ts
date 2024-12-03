@@ -19,26 +19,28 @@ export default function manifest(): MetadataRoute.Manifest {
         type: 'image/x-icon',
       },
       {
-        src: '/icons/android-chrome-48x48.png',
-        sizes: '48x48',
-        type: 'image/png',
-        purpose: 'maskable',
-      },
-      {
-        src: '/icons/icon512_maskable.png',
-        sizes: '512x512',
-        type: 'image/png',
-        purpose: 'maskable',
-      },
-      {
-        src: '/icons/android-chrome-192x192.png',
+        src: '/icons/manifest-icon-192.maskable.png',
         sizes: '192x192',
         type: 'image/png',
+        purpose: 'any',
       },
       {
-        src: '/icons/android-chrome-512x512.png',
+        src: '/icons/manifest-icon-192.maskable.png',
+        sizes: '192x192',
+        type: 'image/png',
+        purpose: 'maskable',
+      },
+      {
+        src: '/icons/manifest-icon-512.maskable.png',
         sizes: '512x512',
         type: 'image/png',
+        purpose: 'any',
+      },
+      {
+        src: '/icons/manifest-icon-512.maskable.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable',
       },
     ],
     screenshots: [
@@ -61,8 +63,8 @@ export default function manifest(): MetadataRoute.Manifest {
         url: '/',
         icons: [
           {
-            src: '/icons/android-chrome-96x96.png',
-            sizes: '96x96',
+            src: '/icons/manifest-icon-192.maskable.png',
+            sizes: '192x192',
             purpose: 'maskable',
           },
         ],
@@ -74,8 +76,8 @@ export default function manifest(): MetadataRoute.Manifest {
         url: '/manage-blockouts',
         icons: [
           {
-            src: '/icons/android-chrome-96x96.png',
-            sizes: '96x96',
+            src: '/icons/manifest-icon-192.maskable.png',
+            sizes: '192x192',
             purpose: 'maskable',
           },
         ],

@@ -48,8 +48,8 @@ self.addEventListener('push', (event) => {
       data.title || name,
       {
         body: data.message || 'You have a new notification!',
-        icon: '/icons/android-chrome-192x192.png',
-        badge: '/icons/android-chrome-192x192.png',
+        icon: '/icons/manifest-icon-192.maskable.png',
+        badge: '/icons/manifest-icon-192.maskable.png',
       }
     );
     const promiseChain = [notificationPromise];
