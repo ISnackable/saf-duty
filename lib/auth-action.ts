@@ -17,7 +17,7 @@ export const actionClient = createSafeActionClient({
     console.error('Action error:', e.message);
 
     // Return generic message
-    return 'Oh no, something went wrong!';
+    return e.message || 'Oh no, something went wrong!';
   },
 });
 

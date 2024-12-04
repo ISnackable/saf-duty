@@ -98,36 +98,6 @@ export function SessionProvider({
     onClickSubscribeToPushNotification,
   } = usePushNotificationContext();
 
-  // useEffect(() => {
-  //   let mounted = true;
-
-  //   async function getSession() {
-  //     const {
-  //       data: { session },
-  //       error,
-  //     } = await supabaseClient.auth.getSession();
-
-  //     // only update the react state if the component is still mounted
-  //     if (mounted) {
-  //       if (error) {
-  //         setError(error);
-  //         setIsLoading(false);
-  //         return;
-  //       }
-
-  //       setSession(session);
-  //       setIsLoading(false);
-  //     }
-  //   }
-
-  //   getSession();
-
-  //   return () => {
-  //     mounted = false;
-  //   };
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
   useEffect(() => {
     setIsLoading(false);
 

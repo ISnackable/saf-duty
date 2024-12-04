@@ -10,7 +10,7 @@
     "lint": "next lint",
     "format": "prettier --check .",
     "format:fix": "prettier --write --list-different .",
-    "type-check": "tsc --noEmit",
+    "type:check": "tsc --noEmit",
     "type:generate": "supabase gen types typescript --linked > types/supabase.ts && sed -i 's/export type Database/type _Database/g' types/supabase.ts && cat types/merge-supabase.txt types/supabase.ts > temp.txt; mv temp.txt types/supabase.ts",
     "scan": "next dev & npx react-scan@latest localhost:3000",
     "assets:generate": "pnpx pwa-asset-generator ./public/icons/icon_transparent.png ./public/assets --background 'linear-gradient(to bottom, rgb(48, 48, 48), rgb(44, 44, 44), rgb(40, 40, 40), rgb(36, 36, 36), rgb(31, 31, 31), rgb(26, 26, 26), rgb(20, 20, 20))'' --splash-only"
