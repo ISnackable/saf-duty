@@ -69,6 +69,34 @@ END;
 $$;
 
 CREATE
+OR REPLACE FUNCTION "public"."delete_user_profile"(current_plain_password varchar) RETURNS JSON LANGUAGE "plpgsql" SECURITY DEFINER
+SET
+  "search_path" = "extensions", "public", "auth" AS $$
+DECLARE
+_uid uuid; -- for checking by 'is not found'
+user_id uuid; -- to store the user id from the request
+BEGIN
+  -- Get user by his current auth.uid and current password
+  user_id := auth.uid();
+  SELECT id INTO _uid
+  FROM auth.users
+  WHERE id = user_id
+  AND encrypted_password =
+  crypt(current_plain_password::text, auth.users.encrypted_password);
+
+  -- Check the currect password
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Your password is incorrect or this account does not exist';
+  END IF;
+
+  -- Then delete user profile
+  DELETE FROM auth.users WHERE id = auth.uid();
+
+  RETURN '{"data":true}';
+END;
+$$;
+
+CREATE
 OR REPLACE FUNCTION "public"."allow_updating_only" () RETURNS TRIGGER LANGUAGE "plpgsql" AS $$
 DECLARE
   whitelist TEXT[] := TG_ARGV::TEXT[];

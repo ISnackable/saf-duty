@@ -1,3 +1,4 @@
+import { createClient } from '@supabase/supabase-js';
 import { formatISO } from 'date-fns';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -142,3 +143,64 @@ export const PATCH = withAuth(async ({ request, params, client, user }) => {
     );
   }
 });
+
+export const DELETE = withAuth(
+  async ({ params, user }) => {
+    try {
+      // Check if user is trying to delete their own profile (only admins can delete other profiles)
+      if (params.id === user.id) {
+        return NextResponse.json(
+          {
+            status: 'error',
+            message: 'You cannot delete your own profile',
+          },
+          { status: 400 }
+        );
+      }
+
+      // WARN: Should never be exposed in the client-side code
+      const supabaseAdminClient = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        {
+          auth: {
+            autoRefreshToken: false,
+            persistSession: false,
+          },
+        }
+      );
+
+      const { data, error } = await supabaseAdminClient.auth.admin.deleteUser(
+        user.id,
+        false
+      );
+
+      if (error) {
+        return NextResponse.json(
+          {
+            status: 'error',
+            message: 'Failed to delete profile',
+          },
+          { status: 500 }
+        );
+      }
+
+      return NextResponse.json(
+        {
+          status: 'success',
+          message: `Successfully deleted ${data.user.email}`,
+        },
+        { status: 200 }
+      );
+    } catch (_error) {
+      return NextResponse.json(
+        {
+          status: 'error',
+          message: 'Failed to delete profile',
+        },
+        { status: 500 }
+      );
+    }
+  },
+  { requiredRole: ['admin'] }
+);

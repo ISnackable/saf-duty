@@ -35,8 +35,7 @@ import {
 } from '@/components/ui/select';
 import type { Profiles } from '@/lib/supabase/queries';
 
-import { DeleteTasksDialog } from './manage-personnel-delete-dialog';
-import { EditProfileDialog } from './manage-personnel-edit-dialog';
+import { DataTableRowAction } from './manage-personnel-table';
 
 type Option = {
   label: string;
@@ -56,6 +55,12 @@ declare module '@tanstack/react-table' {
     type?: React.HTMLInputTypeAttribute;
     options?: Option[];
   }
+}
+
+interface GetColumnsProps {
+  setRowAction: React.Dispatch<
+    React.SetStateAction<DataTableRowAction<Profiles> | null>
+  >;
 }
 
 const TabelCell: ColumnDef<Profiles>['cell'] = ({
@@ -192,147 +197,127 @@ const TabelCell: ColumnDef<Profiles>['cell'] = ({
   }
 };
 
-export const columns: ColumnDef<Profiles>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label='Select all'
-        className='translate-y-[2px]'
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label='Select row'
-        className='translate-y-[2px]'
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-    size: 20,
-  },
-  {
-    accessorKey: 'name',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant='ghost'
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Name
-          <Icons.arrowsSort className='ml-2 h-4 w-4' />
-        </Button>
-      );
+export function getColumns({
+  setRowAction,
+}: GetColumnsProps): ColumnDef<Profiles>[] {
+  return [
+    {
+      id: 'select',
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label='Select row'
+          className='translate-y-[2px]'
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+      size: 20,
     },
-    cell: ({ row }) => (
-      <div className='flex items-center align-middle'>
-        <Avatar className='mr-2 size-8'>
-          <AvatarImage
-            loading='lazy'
-            src={row.original.avatar_url as string}
-            alt={row.original.name}
-            className='object-cover'
-          />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-        <span className='text-sm font-medium leading-none'>
-          {row.original.name}
-        </span>
-      </div>
-    ),
-    enableHiding: false,
-  },
-  {
-    accessorKey: 'email',
-    header: 'Email',
-  },
-  {
-    accessorKey: 'role',
-    header: 'Role',
-    cell: TabelCell,
-    meta: {
-      title: 'User',
-      type: 'select',
-      options: [
-        { label: 'Admin', value: 'admin' },
-        { label: 'Manager', value: 'manager' },
-        { label: 'User', value: 'user' },
-      ],
+    {
+      accessorKey: 'name',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant='ghost'
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Name
+            <Icons.arrowsSort className='ml-2 h-4 w-4' />
+          </Button>
+        );
+      },
+      cell: ({ row }) => (
+        <div className='flex items-center align-middle'>
+          <Avatar className='mr-2 size-8'>
+            <AvatarImage
+              loading='lazy'
+              src={row.original.avatar_url as string}
+              alt={row.original.name}
+              className='object-cover'
+            />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+          <span className='text-sm font-medium leading-none'>
+            {row.original.name}
+          </span>
+        </div>
+      ),
+      enableHiding: false,
     },
-  },
-  {
-    accessorKey: 'max_blockouts',
-    header: 'Maximum No. of Blockouts',
-    cell: TabelCell,
-    meta: {
-      title: 'Maximum No. of Blockouts',
-      type: 'number',
+    {
+      accessorKey: 'email',
+      header: 'Email',
     },
-  },
-  {
-    id: 'actions',
-    cell: function Cell({ row }) {
-      const profile = row.original;
-      const [showDeleteTaskDialog, setShowDeleteTaskDialog] =
-        React.useState(false);
-      const [showEditTaskDialog, setShowEditTaskDialog] = React.useState(false);
+    {
+      accessorKey: 'role',
+      header: 'Role',
+      cell: TabelCell,
+      meta: {
+        title: 'User',
+        type: 'select',
+        options: [
+          { label: 'Admin', value: 'admin' },
+          { label: 'Manager', value: 'manager' },
+          { label: 'User', value: 'user' },
+        ],
+      },
+    },
+    {
+      accessorKey: 'max_blockouts',
+      header: 'Maximum No. of Blockouts',
+      cell: TabelCell,
+      meta: {
+        title: 'Maximum No. of Blockouts',
+        type: 'number',
+      },
+    },
+    {
+      id: 'actions',
+      cell: function Cell({ row }) {
+        const profile = row.original;
 
-      return (
-        <>
-          <EditProfileDialog
-            profile={row}
-            open={showEditTaskDialog}
-            onOpenChange={setShowEditTaskDialog}
-            showTrigger={false}
-          />
-          <DeleteTasksDialog
-            open={showDeleteTaskDialog}
-            onOpenChange={setShowDeleteTaskDialog}
-            tasks={[row]}
-            showTrigger={false}
-          />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant='ghost'
-                className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
-              >
-                <Icons.dots className='h-4 w-4' />
-                <span className='sr-only'>Open menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align='end' className='w-[160px]'>
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator?.clipboard?.writeText(profile.id)}
-              >
-                Copy user ID
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setShowEditTaskDialog(true)}>
-                Edit
-              </DropdownMenuItem>
+        return (
+          <>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant='ghost'
+                  className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
+                >
+                  <Icons.dots className='h-4 w-4' />
+                  <span className='sr-only'>Open menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='end' className='w-[160px]'>
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuItem
+                  onClick={() => navigator?.clipboard?.writeText(profile.id)}
+                >
+                  Copy user ID
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={() => setRowAction({ row, type: 'edit' })}
+                >
+                  Edit
+                </DropdownMenuItem>
 
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className='text-destructive'
-                onSelect={() => setShowDeleteTaskDialog(true)}
-              >
-                Delete
-                <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </>
-      );
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className='text-destructive'
+                  onSelect={() => setRowAction({ row, type: 'delete' })}
+                >
+                  Delete
+                  <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </>
+        );
+      },
+      enableHiding: false,
+      size: 20,
     },
-    enableHiding: false,
-    size: 20,
-  },
-];
+  ];
+}

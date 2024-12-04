@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import * as z from 'zod';
 
 import { signOut } from '@/app/(auth)/actions';
-import { updateAccount } from '@/app/(auth)/actions';
+import { deleteAccount, updateAccount } from '@/app/(auth)/actions';
 import { PasswordInput } from '@/components/password-input';
 import { usePushNotificationContext } from '@/components/push-notification-provider';
 import { customNotifyEvent } from '@/components/session-provider';
@@ -22,7 +22,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -48,8 +48,7 @@ type AccountFormValues = z.infer<typeof accountFormSchema>;
 
 export function AccountForm() {
   const { data: profile, mutate } = useProfiles();
-  const { onClickUnsubscribeToPushNotification, pushNotificationSupported } =
-    usePushNotificationContext();
+  const { pushNotificationSupported } = usePushNotificationContext();
   const [isLoading, setIsLoading] = React.useState(false);
 
   const form = useForm<AccountFormValues>({
@@ -160,7 +159,7 @@ export function AccountForm() {
             </Button>
             <AlertDialogTrigger asChild>
               <Button type='button' variant='destructive'>
-                Sign out of all devices
+                Delete account
               </Button>
             </AlertDialogTrigger>
           </div>
@@ -169,17 +168,37 @@ export function AccountForm() {
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Sign out everywhere?</AlertDialogTitle>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure? This will sign you out of all your sessions and all
-            devices. You will need to sign in again.
+            This action cannot be undone. This will permanently delete your
+            account and remove your data from our servers.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
+            className={buttonVariants({ variant: 'destructive' })}
             onClick={async () => {
-              await onClickUnsubscribeToPushNotification().catch(console.error);
+              if (!profile) return;
+              const validated = await form.trigger('oldPassword');
+              if (!validated) {
+                return toast.warning(
+                  'Please enter your old password to delete your account'
+                );
+              }
+
+              const result = await deleteAccount({
+                password: form.getValues('oldPassword'),
+              });
+
+              if (result?.serverError || result?.validationErrors) {
+                return toast.error(
+                  result.serverError ||
+                    'Something went wrong, could not delete account'
+                );
+              }
+
+              toast.success('Account deleted successfully');
               await signOut({ scope: 'global' });
               customNotifyEvent('SIGNED_OUT', null);
               if (pushNotificationSupported && navigator?.setAppBadge) {
@@ -187,7 +206,7 @@ export function AccountForm() {
               }
             }}
           >
-            Continue
+            Delete
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -3,7 +3,6 @@
 import {
   ColumnDef,
   ColumnFiltersState,
-  type Row,
   SortingState,
   VisibilityState,
   flexRender,
@@ -15,9 +14,7 @@ import {
 } from '@tanstack/react-table';
 import * as React from 'react';
 
-import { DeleteTasksDialog } from '@/app/(dashboard)/admin/manage-personnel/manage-personnel-delete-dialog';
 import { Icons } from '@/components/icons';
-import { useUser } from '@/components/session-provider';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -34,12 +31,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Profiles } from '@/lib/supabase/queries';
 import { cn } from '@/lib/utils';
 
 export interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data?: TData[];
+  ToolbarBar?: React.ComponentType<{
+    table: ReturnType<typeof useReactTable<TData>>;
+  }>;
 }
 
 function useSkipper() {
@@ -61,10 +60,11 @@ function useSkipper() {
 export function DataTable<TData, TValue>({
   columns,
   data: defaultData,
+  ToolbarBar,
 }: DataTableProps<TData, TValue>) {
   'use no memo'; // FIXME weird bug? https://github.com/react-hook-form/react-hook-form/issues/11910
-  const user = useUser();
   const [data, setData] = React.useState(() => [...(defaultData ?? [])]);
+
   const [sorting, setSorting] = React.useState<SortingState>([
     {
       id: 'name',
@@ -122,8 +122,6 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  const filteredSelectedRowModel = table.getFilteredSelectedRowModel();
-
   return (
     <div className='space-y-4'>
       <div className='flex items-center justify-between space-x-2 pt-4'>
@@ -136,13 +134,7 @@ export function DataTable<TData, TValue>({
           className='max-w-sm'
         />
         <div className='flex items-center space-x-2'>
-          {user?.app_metadata?.groups?.role === 'admin' &&
-          filteredSelectedRowModel.rows.length > 0 ? (
-            <DeleteTasksDialog
-              tasks={filteredSelectedRowModel.rows as Row<Profiles>[]}
-              onSuccess={() => table.toggleAllPageRowsSelected(false)}
-            />
-          ) : null}
+          {ToolbarBar && <ToolbarBar table={table} />}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant='outline' className='ml-auto'>
@@ -215,7 +207,7 @@ export function DataTable<TData, TValue>({
                       className={cn(
                         'whitespace-nowrap',
                         cell.column.id === 'name' &&
-                          'sticky left-0 z-10 bg-background group-hover:bg-[#fafafb] group-data-[state=selected]:bg-[#fafafb] dark:group-hover:bg-[#171b1f] dark:group-data-[state=selected]:bg-[#171b1f]'
+                          'sticky left-0 z-10 bg-background group-hover:bg-[#fafafb] group-data-[state=selected]:bg-[#fafafb] dark:group-hover:bg-[#171b1f] dark:group-data-[state=selected]:bg-[#1d242a]'
                       )}
                     >
                       {flexRender(

@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
 
-import { DutyPersonnelsTable } from '@/components/duty-personnels-table';
 import { Icons } from '@/components/icons';
 
-import { columns } from './columns';
+import { ManagePersonnelTable } from './manage-personnel-table';
 
 export const metadata: Metadata = {
   title: 'Manage Personnel',
@@ -24,7 +23,7 @@ export default async function AdminManagePersonnelPage() {
         information such as weekday points, weekend points, extras, etc.
       </p>
 
-      <DutyPersonnelsTable columns={columns} />
+      <ManagePersonnelTable />
     </div>
   );
 }

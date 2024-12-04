@@ -51,7 +51,10 @@ const formSchema = z.object({
       'Name must not include numbers or special characters'
     )
     .trim(),
-  avatar_url: z.string().url({ message: 'Please enter a valid URL' }),
+  avatar_url: z
+    .string()
+    .url({ message: 'Please enter a valid URL' })
+    .optional(),
   weekend_points: z.coerce.number().int().min(-100).max(100),
   weekday_points: z.coerce.number().int().min(-100).max(100),
   no_of_extras: z.coerce.number().int().min(0).max(100),
@@ -62,7 +65,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 interface EditProfileDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
-  profile: Row<Profiles>;
+  profile: Row<Profiles>['original'] | null;
   showTrigger?: boolean;
 }
 
@@ -74,16 +77,20 @@ export function EditProfileDialog({
   const [isEditPending, starEditTransition] = React.useTransition();
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: profile.original.name,
-      avatar_url: profile.original.avatar_url ?? '',
-      weekend_points: profile.original.weekend_points,
-      weekday_points: profile.original.weekday_points,
-      no_of_extras: profile.original.no_of_extras ?? 0,
-      blockout_dates:
-        profile.original.blockout_dates?.map((date) => new Date(date)) ?? [],
+    values: {
+      name: profile?.name || '',
+      avatar_url: profile?.avatar_url ?? undefined,
+      weekend_points: profile?.weekend_points ?? 0,
+      weekday_points: profile?.weekday_points ?? 0,
+      no_of_extras: profile?.no_of_extras ?? 0,
+      blockout_dates: profile?.blockout_dates
+        ? profile?.blockout_dates?.map((date) => new Date(date))
+        : [],
     },
     mode: 'onSubmit',
+    resetOptions: {
+      keepDirtyValues: false,
+    },
   });
 
   const avatarWatch = useWatch({
@@ -93,7 +100,7 @@ export function EditProfileDialog({
 
   function onSubmit(values: FormValues) {
     starEditTransition(() => {
-      const resPromise = fetcher(`/api/profiles/${profile.original.id}`, {
+      const resPromise = fetcher(`/api/profiles/${profile?.id}`, {
         method: 'PATCH',
         body: JSON.stringify({
           ...values,
@@ -139,7 +146,7 @@ export function EditProfileDialog({
                 <div className='flex items-center gap-4 align-middle'>
                   <Avatar className='size-16'>
                     <AvatarImage
-                      src={avatarWatch ?? ''}
+                      src={avatarWatch}
                       className='rounded-3xl object-cover'
                     />
                     <AvatarFallback>CN</AvatarFallback>

@@ -192,3 +192,26 @@ export const updateAccount = authActionClient
       return { session };
     }
   );
+
+export const deleteAccount = authActionClient
+  .schema(changeFormSchema)
+  .action(async ({ parsedInput: { password }, ctx: { user } }) => {
+    const supabase = await createClient();
+
+    if (!password) throw new ActionError('Password is required');
+
+    const { error } = await supabase.rpc('delete_user_profile', {
+      current_plain_password: password,
+    });
+
+    if (error) {
+      throw new ActionError(
+        'Could not delete account, ensure your old password is correct'
+      );
+    }
+
+    return {
+      status: 'success',
+      message: `${user.email} has been deleted`,
+    };
+  });

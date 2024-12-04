@@ -28,17 +28,6 @@ export type Database = MergeDeep<
             } | null;
           };
         };
-        notifications: {
-          Row: {
-            action: Database['public']['Enums']['action'] | null;
-          };
-          Insert: {
-            action?: Database['public']['Enums']['action'] | null;
-          };
-          Update: {
-            action?: Database['public']['Enums']['action'] | null;
-          };
-        };
       };
     };
   }
@@ -86,13 +75,6 @@ type _Database = {
             referencedColumns: ['id'];
           },
           {
-            foreignKeyName: 'group_users_user_id_fkey';
-            columns: ['user_id'];
-            isOneToOne: true;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
-          },
-          {
             foreignKeyName: 'group_users_user_id_fkey1';
             columns: ['user_id'];
             isOneToOne: true;
@@ -121,7 +103,7 @@ type _Database = {
       };
       notifications: {
         Row: {
-          action: 'INSERT' | 'UPDATE' | 'DELETE' | 'TRUNCATE' | 'ERROR' | null;
+          action: Database['public']['Enums']['action'] | null;
           created_at: string;
           id: number;
           is_read: boolean;
@@ -131,7 +113,7 @@ type _Database = {
           user_id: string;
         };
         Insert: {
-          action?: 'INSERT' | 'UPDATE' | 'DELETE' | 'TRUNCATE' | 'ERROR' | null;
+          action?: Database['public']['Enums']['action'] | null;
           created_at?: string;
           id?: number;
           is_read?: boolean;
@@ -141,7 +123,7 @@ type _Database = {
           user_id: string;
         };
         Update: {
-          action?: 'INSERT' | 'UPDATE' | 'DELETE' | 'TRUNCATE' | 'ERROR' | null;
+          action?: Database['public']['Enums']['action'] | null;
           created_at?: string;
           id?: number;
           is_read?: boolean;
@@ -218,13 +200,6 @@ type _Database = {
             columns: ['group_id'];
             isOneToOne: false;
             referencedRelation: 'groups';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'profiles_id_fkey';
-            columns: ['id'];
-            isOneToOne: true;
-            referencedRelation: 'users';
             referencedColumns: ['id'];
           },
         ];
@@ -410,13 +385,6 @@ type _Database = {
             referencedColumns: ['id'];
           },
           {
-            foreignKeyName: 'group_users_user_id_fkey';
-            columns: ['user_id'];
-            isOneToOne: true;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
-          },
-          {
             foreignKeyName: 'group_users_user_id_fkey1';
             columns: ['user_id'];
             isOneToOne: true;
@@ -459,6 +427,12 @@ type _Database = {
           object: string;
         };
         Returns: undefined;
+      };
+      delete_user_profile: {
+        Args: {
+          current_plain_password: string;
+        };
+        Returns: Json;
       };
       get_current_prev_next_roster: {
         Args: {
@@ -607,6 +581,7 @@ type _Database = {
           owner_id: string | null;
           path_tokens: string[] | null;
           updated_at: string | null;
+          user_metadata: Json | null;
           version: string | null;
         };
         Insert: {
@@ -620,6 +595,7 @@ type _Database = {
           owner_id?: string | null;
           path_tokens?: string[] | null;
           updated_at?: string | null;
+          user_metadata?: Json | null;
           version?: string | null;
         };
         Update: {
@@ -633,6 +609,7 @@ type _Database = {
           owner_id?: string | null;
           path_tokens?: string[] | null;
           updated_at?: string | null;
+          user_metadata?: Json | null;
           version?: string | null;
         };
         Relationships: [
@@ -654,6 +631,7 @@ type _Database = {
           key: string;
           owner_id: string | null;
           upload_signature: string;
+          user_metadata: Json | null;
           version: string;
         };
         Insert: {
@@ -664,6 +642,7 @@ type _Database = {
           key: string;
           owner_id?: string | null;
           upload_signature: string;
+          user_metadata?: Json | null;
           version: string;
         };
         Update: {
@@ -674,6 +653,7 @@ type _Database = {
           key?: string;
           owner_id?: string | null;
           upload_signature?: string;
+          user_metadata?: Json | null;
           version?: string;
         };
         Relationships: [
@@ -810,6 +790,10 @@ type _Database = {
           updated_at: string;
         }[];
       };
+      operation: {
+        Args: Record<PropertyKey, never>;
+        Returns: string;
+      };
       search: {
         Args: {
           prefix: string;
@@ -920,4 +904,19 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions['schema']]['Enums'][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema['Enums']
     ? PublicSchema['Enums'][PublicEnumNameOrOptions]
+    : never;
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema['CompositeTypes']
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database;
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema['CompositeTypes']
+    ? PublicSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
     : never;
