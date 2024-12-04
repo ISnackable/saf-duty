@@ -171,8 +171,7 @@ export const DELETE = withAuth(
       );
 
       const { data, error } = await supabaseAdminClient.auth.admin.deleteUser(
-        user.id,
-        false
+        params.id
       );
 
       if (error) {

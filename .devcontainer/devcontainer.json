@@ -32,7 +32,7 @@
   },
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "npx supabase start",
+  "postCreateCommand": "npx --yes supabase start && pnpm install --silent",
 
   // Configure tool-specific properties.
   "customizations": {
