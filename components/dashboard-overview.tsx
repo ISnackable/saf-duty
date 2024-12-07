@@ -161,10 +161,8 @@ export function DashboardOverview() {
                               </div>
                               <div className='flex items-center align-middle text-sm font-semibold text-muted-foreground'>
                                 <Icons.clock className='mr-1 size-4' />
-                                {format(
-                                  new Date(roster.duty_date),
-                                  'iii'
-                                )} 8:00 AM
+                                {format(new Date(roster.duty_date), 'iii')} 8:00
+                                AM
                               </div>
                               <div className='text-xs font-semibold text-muted-foreground text-red-600'>
                                 {roster.is_extra && '🌚 [Extra]'}

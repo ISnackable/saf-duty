@@ -11,7 +11,7 @@ import {
   subDays,
 } from 'date-fns';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import {
   DayContent,
   DayContentProps,
@@ -103,7 +103,11 @@ const CredenzaFormSchema = z.object({
 
 function DayDisableOutside(props: DayProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const dayRender = useDayRender(props.date, props.displayMonth, buttonRef);
+  const dayRender = useDayRender(
+    props.date,
+    props.displayMonth,
+    buttonRef as RefObject<HTMLButtonElement>
+  );
 
   if (dayRender.isHidden) {
     return <></>;

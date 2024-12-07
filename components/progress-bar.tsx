@@ -5,7 +5,7 @@ import {
   motion,
   useMotionTemplate,
   useSpring,
-} from 'framer-motion';
+} from 'motion/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
