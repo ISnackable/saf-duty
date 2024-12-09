@@ -28,11 +28,21 @@ export type Database = MergeDeep<
             } | null;
           };
         };
+        notifications: {
+          Row: {
+            action: Database['public']['Enums']['action'] | null;
+          };
+          Insert: {
+            action?: Database['public']['Enums']['action'] | null;
+          };
+          Update: {
+            action?: Database['public']['Enums']['action'] | null;
+          };
+        };
       };
     };
   }
 >;
-
 export type Json =
   | string
   | number
@@ -44,26 +54,67 @@ export type Json =
 type _Database = {
   public: {
     Tables: {
+      group_invites: {
+        Row: {
+          accepted_at: string | null;
+          created_at: string;
+          group_id: string;
+          id: string;
+          invited_by: string;
+          role: Database['public']['Enums']['role'];
+          user_id: string | null;
+        };
+        Insert: {
+          accepted_at?: string | null;
+          created_at?: string;
+          group_id: string;
+          id?: string;
+          invited_by: string;
+          role?: Database['public']['Enums']['role'];
+          user_id?: string | null;
+        };
+        Update: {
+          accepted_at?: string | null;
+          created_at?: string;
+          group_id?: string;
+          id?: string;
+          invited_by?: string;
+          role?: Database['public']['Enums']['role'];
+          user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'group_invites_group_id_fkey';
+            columns: ['group_id'];
+            isOneToOne: false;
+            referencedRelation: 'groups';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       group_users: {
         Row: {
-          created_at: string | null;
+          created_at: string;
           group_id: string;
           id: string;
           role: Database['public']['Enums']['role'];
+          updated_at: string;
           user_id: string;
         };
         Insert: {
-          created_at?: string | null;
+          created_at?: string;
           group_id: string;
           id?: string;
           role?: Database['public']['Enums']['role'];
+          updated_at?: string;
           user_id: string;
         };
         Update: {
-          created_at?: string | null;
+          created_at?: string;
           group_id?: string;
           id?: string;
           role?: Database['public']['Enums']['role'];
+          updated_at?: string;
           user_id?: string;
         };
         Relationships: [
@@ -77,7 +128,7 @@ type _Database = {
           {
             foreignKeyName: 'group_users_user_id_fkey1';
             columns: ['user_id'];
-            isOneToOne: true;
+            isOneToOne: false;
             referencedRelation: 'profiles';
             referencedColumns: ['id'];
           },
@@ -88,22 +139,25 @@ type _Database = {
           created_at: string;
           id: string;
           name: string;
+          updated_at: string;
         };
         Insert: {
           created_at?: string;
           id?: string;
           name?: string;
+          updated_at?: string;
         };
         Update: {
           created_at?: string;
           id?: string;
           name?: string;
+          updated_at?: string;
         };
         Relationships: [];
       };
       notifications: {
         Row: {
-          action: Database['public']['Enums']['action'] | null;
+          action: 'INSERT' | 'UPDATE' | 'DELETE' | 'TRUNCATE' | 'ERROR' | null;
           created_at: string;
           id: number;
           is_read: boolean;
@@ -113,7 +167,7 @@ type _Database = {
           user_id: string;
         };
         Insert: {
-          action?: Database['public']['Enums']['action'] | null;
+          action?: 'INSERT' | 'UPDATE' | 'DELETE' | 'TRUNCATE' | 'ERROR' | null;
           created_at?: string;
           id?: number;
           is_read?: boolean;
@@ -123,7 +177,7 @@ type _Database = {
           user_id: string;
         };
         Update: {
-          action?: Database['public']['Enums']['action'] | null;
+          action?: 'INSERT' | 'UPDATE' | 'DELETE' | 'TRUNCATE' | 'ERROR' | null;
           created_at?: string;
           id?: number;
           is_read?: boolean;
@@ -387,7 +441,7 @@ type _Database = {
           {
             foreignKeyName: 'group_users_user_id_fkey1';
             columns: ['user_id'];
-            isOneToOne: true;
+            isOneToOne: false;
             referencedRelation: 'profiles';
             referencedColumns: ['id'];
           },
@@ -395,14 +449,6 @@ type _Database = {
       };
     };
     Functions: {
-      add_group_user_by_email: {
-        Args: {
-          user_email: string;
-          gid: string;
-          group_role: string;
-        };
-        Returns: string;
-      };
       change_user_email: {
         Args: {
           current_plain_password: string;
@@ -450,38 +496,12 @@ type _Database = {
           updated_at: string | null;
         }[];
       };
-      get_req_groups: {
+      get_user_claims: {
         Args: Record<PropertyKey, never>;
         Returns: Json;
       };
-      has_group_role: {
-        Args: {
-          group_id: string;
-          group_role: string;
-        };
-        Returns: boolean;
-      };
-      is_group_member: {
-        Args: {
-          group_id: string;
-        };
-        Returns: boolean;
-      };
-      jwt_has_group_role: {
-        Args: {
-          group_id: string;
-          group_role: string;
-        };
-        Returns: boolean;
-      };
       jwt_is_expired: {
         Args: Record<PropertyKey, never>;
-        Returns: boolean;
-      };
-      jwt_is_group_member: {
-        Args: {
-          group_id: string;
-        };
         Returns: boolean;
       };
       update_rosters_swap_requests: {
@@ -496,6 +516,19 @@ type _Database = {
           requester_extra: boolean;
         };
         Returns: undefined;
+      };
+      user_has_group_role: {
+        Args: {
+          group_id: string;
+          group_role: string;
+        };
+        Returns: boolean;
+      };
+      user_is_group_member: {
+        Args: {
+          group_id: string;
+        };
+        Returns: boolean;
       };
     };
     Enums: {

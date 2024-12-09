@@ -85,10 +85,14 @@ export const GET = withAuth(
 
 export const PATCH = withAuth(async ({ request, params, client, user }) => {
   try {
-    const userRole = user.app_metadata?.groups?.role;
+    const userGroups = user.app_metadata?.groups;
+    const currentGroupId = Object.keys(userGroups)?.[0]; //TODO: handle multiple groups
 
     // Only allow users with the role of 'admin' to update other users' profiles
-    if (params.id !== user.id && userRole !== 'admin') {
+    if (
+      params.id !== user.id &&
+      userGroups?.[currentGroupId]?.role !== 'admin'
+    ) {
       return NextResponse.json(
         {
           status: 'error',

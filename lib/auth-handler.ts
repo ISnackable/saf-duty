@@ -19,8 +19,10 @@ declare module '@supabase/supabase-js' {
   }
 }
 export interface Group {
-  id: string;
-  role: Enums<'role'>;
+  [id: string]: {
+    name: string;
+    role: Enums<'role'>;
+  };
 }
 
 interface WithAuthHandler {
@@ -28,14 +30,12 @@ interface WithAuthHandler {
     request,
     params,
     searchParams,
-    headers,
     user,
     group,
   }: {
     request: Request;
     params: Record<string, string>;
     searchParams: URLSearchParams;
-    headers?: Record<string, string>;
     client: TypedSupabaseClient;
     user: User;
     group: Group;
@@ -59,7 +59,6 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
     segmentData: { params: Promise<Record<string, string> | undefined> }
   ) => {
     const { searchParams } = new URL(request.url);
-    let headers = {};
     const { method } = request;
     const params = await segmentData.params;
 
@@ -108,12 +107,13 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
           request,
           params: params || {},
           searchParams,
-          headers,
           client: supabase,
           user,
           group: {
-            id: 'demo',
-            role: 'user',
+            '1': {
+              name: 'demo',
+              role: 'user',
+            },
           },
         });
       }
@@ -127,8 +127,11 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
       );
     }
 
+    const userGroups = user?.app_metadata?.groups;
+    const currentGroupId = Object.keys(userGroups)?.[0]; //TODO: handle multiple groups
+
     if (
-      !requiredRole.some((role) => user.app_metadata?.groups?.role === role)
+      !requiredRole.some((role) => userGroups?.[currentGroupId]?.role === role)
     ) {
       return NextResponse.json(
         {
@@ -143,7 +146,6 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
       request,
       params: params || {},
       searchParams,
-      headers,
       client: supabase,
       user,
       group: user.app_metadata?.groups,

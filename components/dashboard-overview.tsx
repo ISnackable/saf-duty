@@ -23,7 +23,7 @@ import {
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
-import useAllProfiles from '@/hooks/use-all-profiles';
+import { useAllProfiles } from '@/hooks/use-all-profiles';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useOs } from '@/hooks/use-os';
 import { useUpcomingDuties } from '@/hooks/use-upcoming-duties';

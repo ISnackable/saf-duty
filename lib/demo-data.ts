@@ -38,7 +38,7 @@ export const demoUsers: Profiles[] = [
     avatar_url:
       'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     ord_date: '2024-01-01',
-    total_duty_done: [{ count: 12 }],
+    total_duty_done: 12,
     weekday_points: 0,
     weekend_points: 2,
     no_of_extras: 0,
@@ -61,7 +61,7 @@ export const demoUsers: Profiles[] = [
     avatar_url:
       'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     ord_date: '2024-02-28',
-    total_duty_done: [{ count: 12 }],
+    total_duty_done: 12,
     weekday_points: 0,
     weekend_points: 1,
     no_of_extras: 0,
@@ -84,7 +84,7 @@ export const demoUsers: Profiles[] = [
     avatar_url:
       'https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     ord_date: '2025-05-10',
-    total_duty_done: [{ count: 10 }],
+    total_duty_done: 10,
     weekday_points: 1,
     weekend_points: 1,
     no_of_extras: 2,
@@ -107,7 +107,7 @@ export const demoUsers: Profiles[] = [
     avatar_url:
       'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     ord_date: '${currentYear}-03-01',
-    total_duty_done: [{ count: 9 }],
+    total_duty_done: 9,
     weekday_points: 1,
     weekend_points: 1,
     no_of_extras: 0,
@@ -130,7 +130,7 @@ export const demoUsers: Profiles[] = [
     avatar_url:
       'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     ord_date: '2024-04-01',
-    total_duty_done: [{ count: 6 }],
+    total_duty_done: 6,
     weekday_points: 1,
     weekend_points: 0,
     no_of_extras: 0,
@@ -163,7 +163,7 @@ export const demoUsers: Profiles[] = [
     avatar_url:
       'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
     ord_date: '2024-09-29',
-    total_duty_done: [{ count: 0 }],
+    total_duty_done: 0,
     weekday_points: -1,
     weekend_points: 2,
     no_of_extras: 0,
@@ -186,7 +186,7 @@ export const demoUsers: Profiles[] = [
     avatar_url:
       'https://images.unsplash.com/photo-1531727991582-cfd25ce79613?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
     ord_date: '2024-02-13',
-    total_duty_done: [{ count: 0 }],
+    total_duty_done: 0,
     weekday_points: 1,
     weekend_points: 2,
     no_of_extras: 0,
@@ -226,7 +226,7 @@ export const demoUsers: Profiles[] = [
     avatar_url:
       'https://images.unsplash.com/photo-1614587185092-af24ed71c6e4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80',
     ord_date: '2024-06-23',
-    total_duty_done: [{ count: 0 }],
+    total_duty_done: 0,
     weekday_points: 0,
     weekend_points: 0,
     no_of_extras: 0,

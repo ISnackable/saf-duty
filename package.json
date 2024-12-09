@@ -11,8 +11,8 @@
     "format": "prettier --check .",
     "format:fix": "prettier --write --list-different .",
     "type:check": "tsc --noEmit",
-    "type:generate": "supabase gen types typescript --linked > types/supabase.ts && sed -i 's/export type Database/type _Database/g' types/supabase.ts && cat types/merge-supabase.txt types/supabase.ts > temp.txt; mv temp.txt types/supabase.ts",
-    "scan": "next dev & npx react-scan@latest localhost:3000",
+    "type:generate": "pnpx supabase gen types typescript --local > types/supabase.ts && sed -i 's/export type Database/type _Database/g' types/supabase.ts && cat types/merge-supabase.txt types/supabase.ts > temp.txt; mv temp.txt types/supabase.ts",
+    "scan": "next dev & pnpx react-scan@latest localhost:3000",
     "assets:generate": "pnpx pwa-asset-generator ./public/icons/icon_transparent.png ./public/assets --background 'linear-gradient(to bottom, rgb(48, 48, 48), rgb(44, 44, 44), rgb(40, 40, 40), rgb(36, 36, 36), rgb(31, 31, 31), rgb(26, 26, 26), rgb(20, 20, 20))'' --splash-only"
   },
   "dependencies": {
@@ -70,7 +70,7 @@
     "react-hook-form": "^7.54.0",
     "react-virtuoso": "^4.12.3",
     "server-only": "^0.0.1",
-    "sonner": "^1.7.0",
+    "sonner": "^1.7.1",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.5.5",
     "tailwindcss": "3.4.16",

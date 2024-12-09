@@ -64,12 +64,14 @@ export const POST = withAuth(
   async ({ request, group, client }) => {
     const { dutyDates, dutyPersonnels } = await request.json();
 
+    const currentGroupId = Object.keys(group)?.[0]; //TODO: handle multiple groups
+
     const roster: Tables<'rosters'>[] = dutyDates?.map((item: DutyDate) => ({
       duty_date: item.date,
       is_extra: item.isExtra,
       duty_personnel_id: item.personnel?.id,
       reserve_duty_personnel_id: item.reservePersonnel?.id,
-      group_id: group.id,
+      group_id: currentGroupId,
       updated_at: new Date().toISOString(),
       ...(item.id && { id: item.id }),
     }));
@@ -81,13 +83,15 @@ export const POST = withAuth(
         weekday_points: item.weekdayPoints,
         weekend_points: item.weekendPoints,
         no_of_extras: item.extra,
-        group_id: group.id, // Since profiles are unit specific, we can use the unit_id from the user
+        group_id: currentGroupId, // Since profiles are unit specific, we can use the unit_id from the user
         updated_at: new Date().toISOString(),
       })
     );
 
-    const { success: rosterSuccess } = dutyDateSchema.safeParse(roster);
-    const { success: profilesSuccess } = personnelSchema.safeParse(personnels);
+    const { success: rosterSuccess, error: test2 } =
+      dutyDateSchema.safeParse(roster);
+    const { success: profilesSuccess, error: test3 } =
+      personnelSchema.safeParse(personnels);
 
     if (!rosterSuccess || !profilesSuccess) {
       return NextResponse.json(

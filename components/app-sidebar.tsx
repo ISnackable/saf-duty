@@ -111,11 +111,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const session = useSession();
   const { data: profile } = useProfiles();
 
+  const userGroups = session?.user?.app_metadata?.groups || {};
+  const currentGroupId = Object.keys(userGroups)?.[0]; //TODO: handle multiple groups
+  const userRole = userGroups?.[currentGroupId]?.role;
+
   const teams = [
     {
+      id: '1',
       name: 'Work In Progress',
       logo: Icons.logo,
-      role: session?.user.app_metadata?.groups?.role || 'user',
+      role: userRole || 'user',
     },
   ];
 
@@ -127,7 +132,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <ScrollArea>
           {session &&
-          session.user.app_metadata?.groups?.role !== 'admin' &&
+          userRole !== 'admin' &&
           !isDemoUser(session.user?.id) ? null : (
             <NavCollapsible label='Admin' items={data.admin} />
           )}

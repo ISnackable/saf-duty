@@ -21,7 +21,6 @@ FOR UPDATE
 TO authenticated
 USING (auth.uid () = OWNER) WITH CHECK (bucket_id = 'avatars');
 
--- USE SUPABASE VAULT?
 CREATE OR REPLACE FUNCTION delete_storage_object(bucket text, OBJECT text) RETURNS void LANGUAGE 'plpgsql' SECURITY DEFINER
 SET
   "search_path" TO 'public' AS $$
@@ -29,8 +28,8 @@ declare
   project_url text;
   service_role_key text; --  full access needed
 begin
-  select decrypted_secret into project_url from vault.decrypted_secrets where name = 'project_url';
-  select decrypted_secret into service_role_key from vault.decrypted_secrets where name = 'service_role_key';
+  select decrypted_secret into project_url from vault.decrypted_secrets where name = 'SUPABASE_URL';
+  select decrypted_secret into service_role_key from vault.decrypted_secrets where name = 'SUPABASE_SERVICE_ROLE_KEY';
 
   if project_url is null then
     raise exception 'project_url not found in vault.decrypted_secrets';
@@ -83,19 +82,3 @@ $$;
 create trigger before_profile_changes
 before update or delete on public.profiles
 for each row execute function public.delete_old_avatar();
-
-
-CREATE OR REPLACE FUNCTION delete_old_profile() RETURNS TRIGGER LANGUAGE 'plpgsql' SECURITY DEFINER
-SET
-  "search_path" TO 'public' AS $$
-begin
-  delete from public.profiles where id = old.id;
-  return old;
-end;
-$$;
-
-
-CREATE TRIGGER before_delete_user
-BEFORE
-DELETE ON auth.users
-FOR EACH ROW EXECUTE FUNCTION public.delete_old_profile();

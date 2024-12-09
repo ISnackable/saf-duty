@@ -99,8 +99,11 @@ export const POST = withAuth(async ({ request, params, client, user }) => {
       throw new Error('Invalid request body');
     }
 
+    const userGroups = user.app_metadata?.groups;
+    const currentGroupId = Object.keys(userGroups)?.[0]; //TODO: handle multiple groups
+
     const { error } = await client.from('swap_requests').insert({
-      group_id: user.app_metadata.groups.id,
+      group_id: currentGroupId,
       reason: data.reason,
       receiver_id: data.receiver.id,
       receiver_roster_id: data.receiverRoster.id,

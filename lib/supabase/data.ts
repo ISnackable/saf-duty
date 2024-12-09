@@ -35,10 +35,14 @@ export async function getRosterData(
   let data = dutyRoster;
 
   if (!isDemoUser(user.id)) {
+    const userGroups = user?.app_metadata?.groups;
+    const currentGroupId = Object.keys(userGroups)?.[0]; //TODO: handle multiple groups
+
     const { data: roster, error } = await getRosterByUnitId(
       client,
       month,
-      year
+      year,
+      currentGroupId
     );
 
     if (!data || error) {
@@ -71,7 +75,13 @@ export async function getUsersProfileData(
     return demoUsers;
   }
 
-  const { data: users, error } = await getAllUsersByUnitId(client);
+  const userGroups = user?.app_metadata?.groups;
+  const currentGroupId = Object.keys(userGroups)?.[0]; //TODO: handle multiple groups
+
+  const { data: users, error } = await getAllUsersByUnitId(
+    client,
+    currentGroupId
+  );
 
   if (!users || error) {
     throw new Error('Failed to fetch users');
@@ -86,15 +96,22 @@ export async function getUserProfileData(
 ) {
   if (isDemoUser(user.id)) {
     return demoUsers[0];
-  } else {
-    const { data, error } = await getUserProfileById(client, user.id);
-
-    if (!data || error) {
-      throw new Error('Failed to fetch profile');
-    }
-
-    return data;
   }
+
+  const userGroups = user?.app_metadata?.groups;
+  const currentGroupId = Object.keys(userGroups)?.[0]; //TODO: handle multiple groups
+
+  const { data, error } = await getUserProfileById(
+    client,
+    user.id,
+    currentGroupId
+  );
+
+  if (!data || error) {
+    throw new Error('Failed to fetch profile');
+  }
+
+  return data;
 }
 
 export async function getUserUpcomingDutiesData(
@@ -103,15 +120,22 @@ export async function getUserUpcomingDutiesData(
 ) {
   if (isDemoUser(user.id)) {
     return upcomingDuties;
-  } else {
-    const { data, error } = await getUserUpcomingDuties(client, user.id);
-
-    if (!data || error) {
-      throw new Error('Failed to fetch upcoming duties');
-    }
-
-    return data;
   }
+
+  const userGroups = user?.app_metadata?.groups;
+  const currentGroupId = Object.keys(userGroups)?.[0]; //TODO: handle multiple groups
+
+  const { data, error } = await getUserUpcomingDuties(
+    client,
+    user.id,
+    currentGroupId
+  );
+
+  if (!data || error) {
+    throw new Error('Failed to fetch upcoming duties');
+  }
+
+  return data;
 }
 
 export async function getUserSwapRequestData(
@@ -122,7 +146,10 @@ export async function getUserSwapRequestData(
     return swapRequests;
   }
 
-  const { data, error } = await getSwapRequestByUnitId(client);
+  const userGroups = user?.app_metadata?.groups;
+  const currentGroupId = Object.keys(userGroups)?.[0]; //TODO: handle multiple groups
+
+  const { data, error } = await getSwapRequestByUnitId(client, currentGroupId);
 
   if (!data || error) {
     throw new Error('Failed to fetch swap requests');

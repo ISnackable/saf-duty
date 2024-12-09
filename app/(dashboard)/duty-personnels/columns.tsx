@@ -57,7 +57,7 @@ export const columns: ColumnDef<Profiles>[] = [
       );
     },
     cell: ({ row }) => {
-      const value = row.original.total_duty_done[0].count;
+      const value = row.original.total_duty_done;
       return <div className='px-4 font-medium'>{value}</div>;
     },
   },

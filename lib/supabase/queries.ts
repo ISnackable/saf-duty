@@ -20,7 +20,7 @@ export interface RosterPatch
 export type TypedSupabaseClient = SupabaseClient<Database>;
 export type Profiles = Omit<Tables<'profiles'>, 'updated_at'> & {
   role: 'admin' | 'user' | 'manager' | null;
-  total_duty_done: [{ count: number }];
+  total_duty_done: number;
 };
 export interface SwapRequests
   extends Omit<
@@ -41,7 +41,8 @@ export interface SwapRequests
 export function getRosterByUnitId(
   client: TypedSupabaseClient,
   month: string,
-  year: string
+  year: string,
+  unitId: string
 ) {
   let monthDate = startOfMonth(new Date(`${month} ${year}`));
 
@@ -56,43 +57,15 @@ export function getRosterByUnitId(
       reserve_duty_personnel:reserve_duty_personnel_id(id, name, avatar_url)
     `
     )
+    .eq('group_id', unitId)
     .lte('duty_date', format(addDays(endOfMonth(monthDate), 8), 'yyyy-MM-dd'))
     .gte('duty_date', format(subDays(monthDate, 8), 'yyyy-MM-dd'))
     .returns<RosterPatch[]>();
 }
 
-export function getAllUsersByUnitId(client: TypedSupabaseClient) {
-  const TODAY = format(new Date(), 'yyyy-MM-dd');
-
-  return client
-    .from('profiles')
-    .select(
-      `
-      id,
-      created_at,
-      name,
-      email,
-      avatar_url,
-      group_id,
-      blockout_dates,
-      max_blockouts,
-      weekday_points,
-      weekend_points,
-      ord_date,
-      no_of_extras,
-      onboarded,
-      user_settings,
-      ...group_users!group_users_user_id_fkey1(role),
-      total_duty_done:rosters!rosters_duty_personnel_id_fkey(count)
-      `
-    )
-    .lt('rosters.duty_date', TODAY)
-    .returns<Profiles[]>();
-}
-
-export function getUserProfileById(
+export function getAllUsersByUnitId(
   client: TypedSupabaseClient,
-  userId: string
+  unitId: string
 ) {
   const TODAY = format(new Date(), 'yyyy-MM-dd');
 
@@ -114,19 +87,78 @@ export function getUserProfileById(
       no_of_extras,
       onboarded,
       user_settings,
-      ...group_users!group_users_user_id_fkey1(role),
+      role:group_users!user_id (role),
+      total_duty_done:rosters!rosters_duty_personnel_id_fkey(count)
+      `
+    )
+    .lt('rosters.duty_date', TODAY)
+    .eq('group_id', unitId)
+    .eq('group_users.group_id', unitId) // Filter for the specific group_id
+    .returns<Profiles[]>()
+    .then((res) => {
+      const profiles = res.data;
+      if (profiles && profiles.length) {
+        profiles.forEach((profile) => {
+          // @ts-ignore - Hacky way to flatten the role
+          if (profile.role.length) profile.role = profile.role[0].role; // Extract role as a flat string
+          // @ts-ignore - Hacky way to flatten the role
+          profile.total_duty_done = profile.total_duty_done[0].count || 0;
+        });
+      }
+      return res;
+    });
+}
+
+export function getUserProfileById(
+  client: TypedSupabaseClient,
+  userId: string,
+  unitId: string
+) {
+  const TODAY = format(new Date(), 'yyyy-MM-dd');
+
+  return client
+    .from('profiles')
+    .select(
+      `
+      id,
+      created_at,
+      name,
+      email,
+      avatar_url,
+      group_id,
+      blockout_dates,
+      max_blockouts,
+      weekday_points,
+      weekend_points,
+      ord_date,
+      no_of_extras,
+      onboarded,
+      user_settings,
+      role:group_users!user_id (role),
       total_duty_done:rosters!rosters_duty_personnel_id_fkey(count)
       `
     )
     .eq('id', userId)
-    .eq('group_users.user_id', userId)
+    .eq('group_id', unitId)
+    .eq('group_users.group_id', unitId) // Filter for the specific group_id
     .lt('rosters.duty_date', TODAY)
-    .single<Profiles>();
+    .single<Profiles>()
+    .then((res) => {
+      const profile = res.data;
+      if (profile) {
+        // @ts-ignore - Hacky way to flatten the role
+        profile.role = profile.role[0].role; // Extract role as a flat string
+        // @ts-ignore - Hacky way to flatten the role
+        profile.total_duty_done = profile.total_duty_done[0].count || 0;
+      }
+      return res;
+    });
 }
 
 export function getUserUpcomingDuties(
   client: TypedSupabaseClient,
-  userId: string
+  userId: string,
+  unitId: string
 ) {
   const TODAY = new Date();
   const firstDate = format(startOfMonth(TODAY), 'yyyy-MM-dd');
@@ -144,13 +176,17 @@ export function getUserUpcomingDuties(
     `
     )
     .eq('duty_personnel_id', userId)
+    .eq('group_id', unitId)
     .gte('duty_date', firstDate)
     .lte('duty_date', lastDate)
     .order('duty_date', { ascending: true })
     .returns<RosterPatch[]>();
 }
 
-export function getSwapRequestByUnitId(client: TypedSupabaseClient) {
+export function getSwapRequestByUnitId(
+  client: TypedSupabaseClient,
+  unitId: string
+) {
   return client
     .from('swap_requests')
     .select(
@@ -176,6 +212,7 @@ export function getSwapRequestByUnitId(client: TypedSupabaseClient) {
       )
     `
     )
+    .eq('group_id', unitId)
     .returns<SwapRequests[]>();
 }
 

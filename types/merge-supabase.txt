@@ -28,6 +28,17 @@ export type Database = MergeDeep<
             } | null;
           };
         };
+        notifications: {
+          Row: {
+            action: Database['public']['Enums']['action'] | null;
+          };
+          Insert: {
+            action?: Database['public']['Enums']['action'] | null;
+          };
+          Update: {
+            action?: Database['public']['Enums']['action'] | null;
+          };
+        };
       };
     };
   }

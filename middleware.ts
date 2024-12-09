@@ -68,9 +68,12 @@ export async function middleware(request: NextRequest) {
       data: { user },
     } = await supabase.auth.getUser();
 
+    const userGroups = session.user?.app_metadata?.groups;
+    const currentGroupId = Object.keys(userGroups)?.[0]; //TODO: handle multiple groups
+
     // user here shouldn't be null, as we've already checked for session above
     if (
-      user?.app_metadata?.groups?.role !== 'admin' &&
+      userGroups?.[currentGroupId]?.role !== 'admin' &&
       !isDemoUser(user?.id!)
     ) {
       return redirectToPath(request);

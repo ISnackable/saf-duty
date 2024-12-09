@@ -114,7 +114,7 @@ BEGIN
   END IF;
 
   -- Then check whether the user is an 'admin', early return
-  IF (SELECT (public.has_group_role(new.group_id, 'admin'::text))) THEN
+  IF (SELECT (public.user_has_group_role(new.group_id, 'admin'::text))) THEN
     RETURN NEW;
   END IF;
 
@@ -581,6 +581,11 @@ CREATE TRIGGER on_after_auth_user_created
 AFTER INSERT ON auth.users FOR EACH ROW
 EXECUTE FUNCTION public.handle_new_user ();
 
+-- CREATE TRIGGER on_after_auth_user_verified
+-- AFTER UPDATE ON auth.users FOR EACH ROW
+-- WHEN (OLD.email_confirmed_at IS NULL AND NEW.email_confirmed_at IS NOT NULL)
+-- EXECUTE FUNCTION public.handle_new_user ();
+
 CREATE TRIGGER on_after_auth_user_updated
 AFTER UPDATE of email on auth.users FOR EACH ROW
 EXECUTE FUNCTION public.handle_update_user ();
@@ -610,15 +615,6 @@ EXECUTE FUNCTION public.allow_updating_only (
   'onboarded',
   'user_settings'
 );
-
-CREATE TRIGGER on_change_update_user_metadata
-AFTER INSERT
-OR
-UPDATE ON public.group_users FOR EACH ROW
-EXECUTE FUNCTION public.update_user_roles ();
-
-CREATE TRIGGER on_delete_user INSTEAD OF DELETE ON public.user_roles FOR EACH ROW
-EXECUTE FUNCTION public.delete_group_users ();
 
 ALTER TABLE ONLY "public"."notifications"
 ADD CONSTRAINT "notifications_user_id_fkey" FOREIGN KEY (user_id) REFERENCES public.profiles (id) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -678,7 +674,7 @@ CREATE POLICY "Enable insert for users with 'admin' role" ON "public"."rosters"
 FOR INSERT
 TO authenticated
 WITH
-  CHECK ((public.has_group_role (group_id, 'admin'::text)));
+  CHECK ((public.user_has_group_role (group_id, 'admin'::text)));
 
 CREATE POLICY "Enable insert for users based on requester_id" ON "public"."swap_requests"
 FOR INSERT
@@ -695,7 +691,7 @@ WITH
 CREATE POLICY "Enable read for users based on group_id" ON "public"."rosters"
 FOR SELECT
 TO authenticated
-  USING ((public.is_group_member (group_id)));
+  USING ((public.user_is_group_member (group_id)));
 
 CREATE POLICY "Enable read for users based on receiver_id or requester_id" ON "public"."swap_requests"
 FOR SELECT
@@ -715,9 +711,9 @@ TO authenticated
 CREATE POLICY "Enable update for users with 'admin' role" ON "public"."rosters"
 FOR UPDATE
 TO authenticated
-  USING ((public.has_group_role (group_id, 'admin'::text)))
+  USING ((public.user_has_group_role (group_id, 'admin'::text)))
 WITH
-  CHECK ((public.has_group_role (group_id, 'admin'::text)));
+  CHECK ((public.user_has_group_role (group_id, 'admin'::text)));
 
 CREATE POLICY "Enable update for users based on group_id" ON "public"."push_subscriptions"
 FOR UPDATE
@@ -727,7 +723,7 @@ TO authenticated
 CREATE POLICY "Enable read for users based on group_id" ON "public"."profiles"
 FOR SELECT
 TO authenticated
-  USING ((public.is_group_member (group_id)));
+  USING ((public.user_is_group_member (group_id)));
 
 CREATE POLICY "Enable insert for users based on id or users with 'admin' role" ON "public"."profiles"
 FOR INSERT
@@ -736,7 +732,7 @@ WITH
   CHECK (
     (
       (SELECT auth.uid () = id)
-      OR (public.has_group_role (group_id, 'admin'::text))
+      OR (public.user_has_group_role (group_id, 'admin'::text))
     )
   );
 
@@ -746,14 +742,14 @@ TO authenticated
   USING (
     (
       (SELECT auth.uid () = id)
-      OR (public.has_group_role (group_id, 'admin'::text))
+      OR (public.user_has_group_role (group_id, 'admin'::text))
     )
   )
 WITH
   CHECK (
     (
       (SELECT auth.uid () = id)
-      OR (public.has_group_role (group_id, 'admin'::text))
+      OR (public.user_has_group_role (group_id, 'admin'::text))
     )
   );
 
@@ -763,16 +759,16 @@ TO authenticated
   USING (
     (
       (SELECT auth.uid () = user_id)
-      OR public.has_group_role (group_id, 'admin'::text)
+      OR public.user_has_group_role (group_id, 'admin'::text)
     )
   );
 
 CREATE POLICY "Enable update for users based on user_id or users with 'admin' role" ON "public"."group_users"
 FOR UPDATE
 TO authenticated
-  USING ((public.has_group_role (group_id, 'admin'::text)))
+  USING ((public.user_has_group_role (group_id, 'admin'::text)))
 WITH
-  CHECK ((public.has_group_role (group_id, 'admin'::text)));
+  CHECK ((public.user_has_group_role (group_id, 'admin'::text)));
 
 CREATE POLICY "Enable all for users based on user_id" ON "public"."notifications"
 FOR ALL
