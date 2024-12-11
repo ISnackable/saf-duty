@@ -10,19 +10,9 @@ const pages = appFolders
   .filter((folder) => !folder.name.startsWith('('))
   .map((folder) => folder.name);
 
-const blogs = fs
-  .readdirSync('content/blog', { withFileTypes: true })
-  .filter((file) => !file.isDirectory())
-  .filter((file) => !file.name.startsWith('_'))
-  .filter((file) => !file.name.startsWith('('))
-  .map((file) => file.name.replace('.mdx', ''));
+const blogs = (await blog.getPosts()).map((post) => post._slug);
 
-const legals = fs
-  .readdirSync('content/legal', { withFileTypes: true })
-  .filter((file) => !file.isDirectory())
-  .filter((file) => !file.name.startsWith('_'))
-  .filter((file) => !file.name.startsWith('('))
-  .map((file) => file.name.replace('.mdx', ''));
+const legals = (await legal.getPosts()).map((post) => post._slug);
 
 const sitemap = async (): Promise<MetadataRoute.Sitemap> => [
   {
