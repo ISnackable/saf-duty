@@ -1,6 +1,5 @@
 // biome-ignore lint/correctness/noNodejsModules: Generates sitemap on Node.js
 import fs from 'node:fs';
-import { blog, legal } from '@repo/cms';
 import { env } from '@repo/env';
 import type { MetadataRoute } from 'next';
 
@@ -11,9 +10,19 @@ const pages = appFolders
   .filter((folder) => !folder.name.startsWith('('))
   .map((folder) => folder.name);
 
-const blogs = (await blog.getPosts()).map((post) => post._slug);
+const blogs = fs
+  .readdirSync('content/blog', { withFileTypes: true })
+  .filter((file) => !file.isDirectory())
+  .filter((file) => !file.name.startsWith('_'))
+  .filter((file) => !file.name.startsWith('('))
+  .map((file) => file.name.replace('.mdx', ''));
 
-const legals = (await legal.getPosts()).map((post) => post._slug);
+const legals = fs
+  .readdirSync('content/legal', { withFileTypes: true })
+  .filter((file) => !file.isDirectory())
+  .filter((file) => !file.name.startsWith('_'))
+  .filter((file) => !file.name.startsWith('('))
+  .map((file) => file.name.replace('.mdx', ''));
 
 const sitemap = async (): Promise<MetadataRoute.Sitemap> => [
   {

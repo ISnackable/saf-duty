@@ -43,3 +43,6 @@ next-env.d.ts
 
 # Sentry
 .sentryclirc
+
+# content-collections
+.content-collections

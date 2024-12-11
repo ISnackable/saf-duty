@@ -1,4 +1,3 @@
-import { auth } from '@repo/auth/server';
 import { database } from '@repo/database';
 import { env } from '@repo/env';
 import type { Metadata } from 'next';
@@ -24,7 +23,7 @@ export const metadata: Metadata = {
 
 const App = async () => {
   const pages = await database.page.findMany();
-  const { orgId } = await auth();
+  const organization = useActiveOrganization();
 
   if (!orgId) {
     notFound();

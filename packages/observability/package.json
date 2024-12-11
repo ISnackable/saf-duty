@@ -9,9 +9,7 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "@logtail/next": "^0.1.7",
     "@repo/env": "workspace:*",
-    "@sentry/nextjs": "^8.42.0",
     "react": "^19.0.0"
   },
   "devDependencies": {
