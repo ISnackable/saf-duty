@@ -1,7 +1,7 @@
 {
   "extends": "@repo/typescript-config/react-library.json",
   "compilerOptions": {
-    "baseUrl": ".",
+    "strict": true,
     "declaration": false,
     "declarationMap": false
   },

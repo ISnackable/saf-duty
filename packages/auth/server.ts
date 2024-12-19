@@ -1,5 +1,3 @@
-// import 'server-only';
-
 import { database } from '@repo/database';
 import { betterAuth } from 'better-auth';
 import { emailHarmony } from 'better-auth-harmony';

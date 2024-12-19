@@ -45,9 +45,6 @@ const baseConfig: NextConfig = {
 
     return config;
   },
-
-  // This is required to support PostHog trailing slash API requests
-  skipTrailingSlashRedirect: true,
 };
 
 export const config: NextConfig = env.FLAGS_SECRET
@@ -56,5 +53,3 @@ export const config: NextConfig = env.FLAGS_SECRET
 
 export const withAnalyzer = (sourceConfig: NextConfig): NextConfig =>
   withBundleAnalyzer()(sourceConfig);
-
-export { withLogtail } from '@logtail/next';
