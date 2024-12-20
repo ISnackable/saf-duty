@@ -10,16 +10,16 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "@prisma/client": "6.0.1",
+    "@prisma/client": "6.1.0",
     "@repo/env": "workspace:*",
     "server-only": "^0.0.1",
-    "undici": "^7.1.0"
+    "undici": "^7.2.0"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/node": "22.10.1",
+    "@types/node": "22.10.2",
     "bufferutil": "^4.0.8",
-    "prisma": "6.0.1",
+    "prisma": "6.1.0",
     "typescript": "^5.7.2"
   }
 }

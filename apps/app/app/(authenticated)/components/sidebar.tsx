@@ -1,305 +1,171 @@
 'use client';
 
-import { ModeToggle } from '@repo/design-system/components/mode-toggle';
+import type * as React from 'react';
+
+// import { useProfiles } from '@/hooks/use-profiles';
+import { useSession } from '@repo/auth/client';
+import { Icons } from '@repo/design-system/components/icons';
+import { NavOthers } from '@repo/design-system/components/nav-others';
+import { NavUser } from '@repo/design-system/components/nav-user';
+import { TeamSwitcher } from '@repo/design-system/components/team-switcher';
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@repo/design-system/components/ui/collapsible';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@repo/design-system/components/ui/dropdown-menu';
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@repo/design-system/components/ui/avatar';
+import { ScrollArea } from '@repo/design-system/components/ui/scroll-area';
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarInset,
-  SidebarMenu,
-  SidebarMenuAction,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
+  SidebarHeader,
 } from '@repo/design-system/components/ui/sidebar';
-import {
-  BookOpenIcon,
-  BotIcon,
-  ChevronRightIcon,
-  FolderIcon,
-  FrameIcon,
-  LifeBuoyIcon,
-  MapIcon,
-  MoreHorizontalIcon,
-  PieChartIcon,
-  SendIcon,
-  Settings2Icon,
-  ShareIcon,
-  SquareTerminalIcon,
-  Trash2Icon,
-} from 'lucide-react';
-import type { ReactNode } from 'react';
-
-type GlobalSidebarProperties = {
-  readonly children: ReactNode;
-};
+import { SidebarMenuButton } from '@repo/design-system/components/ui/sidebar';
+import { Skeleton } from '@repo/design-system/components/ui/skeleton';
 
 const data = {
-  user: {
-    name: 'shadcn',
-    email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
-  },
-  navMain: [
+  admin: [
     {
-      title: 'Playground',
+      title: 'Admin Panel',
       url: '#',
-      icon: SquareTerminalIcon,
-      isActive: true,
+      icon: Icons.fingerprint,
+      isActive: false,
       items: [
         {
-          title: 'History',
-          url: '#',
+          title: 'Manage Personnel',
+          url: '/admin/manage-personnel',
+          icon: Icons.user,
         },
         {
-          title: 'Starred',
-          url: '#',
-        },
-        {
-          title: 'Settings',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Models',
-      url: '#',
-      icon: BotIcon,
-      items: [
-        {
-          title: 'Genesis',
-          url: '#',
-        },
-        {
-          title: 'Explorer',
-          url: '#',
-        },
-        {
-          title: 'Quantum',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Documentation',
-      url: '#',
-      icon: BookOpenIcon,
-      items: [
-        {
-          title: 'Introduction',
-          url: '#',
-        },
-        {
-          title: 'Get Started',
-          url: '#',
-        },
-        {
-          title: 'Tutorials',
-          url: '#',
-        },
-        {
-          title: 'Changelog',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Settings',
-      url: '#',
-      icon: Settings2Icon,
-      items: [
-        {
-          title: 'General',
-          url: '#',
-        },
-        {
-          title: 'Team',
-          url: '#',
-        },
-        {
-          title: 'Billing',
-          url: '#',
-        },
-        {
-          title: 'Limits',
-          url: '#',
+          title: 'Schedule Duty',
+          url: '/admin/schedule-duty',
+          icon: Icons.chessKnight,
         },
       ],
     },
   ],
-  navSecondary: [
+  dashboard: [
     {
-      title: 'Support',
-      url: '#',
-      icon: LifeBuoyIcon,
+      name: 'Home',
+      url: '/',
+      icon: Icons.home,
     },
     {
-      title: 'Feedback',
-      url: '#',
-      icon: SendIcon,
+      name: 'Duty Roster',
+      url: '/duty-roster',
+      icon: Icons.calendarEvent,
+    },
+    {
+      name: 'My Availability',
+      url: '/manage-blockouts',
+      icon: Icons.edit,
+    },
+    {
+      name: 'Swap Duties',
+      url: '/swap-duties',
+      icon: Icons.arrowExchange,
+    },
+    {
+      name: 'Duty Personnels',
+      url: '/duty-personnels',
+      icon: Icons.users,
     },
   ],
-  projects: [
+  collections: [
     {
-      name: 'Design Engineering',
-      url: '#',
-      icon: FrameIcon,
+      name: '✨ IPPT',
+      url: '/collections/ippt',
     },
     {
-      name: 'Sales & Marketing',
-      url: '#',
-      icon: PieChartIcon,
+      name: '💰 Pay Day',
+      url: '/collections/pay-day',
     },
     {
-      name: 'Travel',
-      url: '#',
-      icon: MapIcon,
+      name: '📅 ORD',
+      url: '/collections/ord',
+    },
+  ],
+  others: [
+    {
+      name: 'Settings',
+      url: '/settings/account',
+      icon: Icons.settings,
+    },
+    {
+      name: 'Privacy',
+      url: '/privacy',
+      icon: Icons.cloudLock,
+    },
+    {
+      name: 'Terms and Conditions',
+      url: '/terms',
+      icon: Icons.ce,
+    },
+    {
+      name: 'FAQ',
+      url: '/faq',
+      icon: Icons.messageCircleQuestion,
     },
   ],
 };
 
-export const GlobalSidebar = ({ children }: GlobalSidebarProperties) => {
-  // const sidebar = useSidebar();
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: session } = useSession();
+  const profile = session?.user;
+
+  const teams = [
+    {
+      name: 'Work In Progress',
+      logo: Icons.logo,
+      role: 'user',
+    },
+  ];
 
   return (
-    <>
-      <Sidebar variant="inset">
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupLabel>Platform</SidebarGroupLabel>
-            <SidebarMenu>
-              {data.navMain.map((item) => (
-                <Collapsible
-                  key={item.title}
-                  asChild
-                  defaultOpen={item.isActive}
-                >
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild tooltip={item.title}>
-                      <a href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </a>
-                    </SidebarMenuButton>
-                    {item.items?.length ? (
-                      <>
-                        <CollapsibleTrigger asChild>
-                          <SidebarMenuAction className="data-[state=open]:rotate-90">
-                            <ChevronRightIcon />
-                            <span className="sr-only">Toggle</span>
-                          </SidebarMenuAction>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent>
-                          <SidebarMenuSub>
-                            {item.items?.map((subItem) => (
-                              <SidebarMenuSubItem key={subItem.title}>
-                                <SidebarMenuSubButton asChild>
-                                  <a href={subItem.url}>
-                                    <span>{subItem.title}</span>
-                                  </a>
-                                </SidebarMenuSubButton>
-                              </SidebarMenuSubItem>
-                            ))}
-                          </SidebarMenuSub>
-                        </CollapsibleContent>
-                      </>
-                    ) : null}
-                  </SidebarMenuItem>
-                </Collapsible>
-              ))}
-            </SidebarMenu>
-          </SidebarGroup>
-          <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-            <SidebarGroupLabel>Projects</SidebarGroupLabel>
-            <SidebarMenu>
-              {data.projects.map((item) => (
-                <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.name}</span>
-                    </a>
-                  </SidebarMenuButton>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <SidebarMenuAction showOnHover>
-                        <MoreHorizontalIcon />
-                        <span className="sr-only">More</span>
-                      </SidebarMenuAction>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      className="w-48"
-                      side="bottom"
-                      align="end"
-                    >
-                      <DropdownMenuItem>
-                        <FolderIcon className="text-muted-foreground" />
-                        <span>View Project</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <ShareIcon className="text-muted-foreground" />
-                        <span>Share Project</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem>
-                        <Trash2Icon className="text-muted-foreground" />
-                        <span>Delete Project</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </SidebarMenuItem>
-              ))}
-              <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <MoreHorizontalIcon />
-                  <span>More</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroup>
-          <SidebarGroup className="mt-auto">
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {data.navSecondary.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <a href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-        <SidebarFooter>
-          <SidebarMenu>
-            <SidebarMenuItem className="flex items-center gap-2">
-              <ModeToggle />
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
-      </Sidebar>
-      <SidebarInset>{children}</SidebarInset>
-    </>
+    <Sidebar collapsible="offcanvas" className="h-full" {...props}>
+      <SidebarHeader className="h-16 border-b">
+        <TeamSwitcher teams={teams} />
+      </SidebarHeader>
+      <SidebarContent>
+        <ScrollArea>
+          {/* {session &&
+          session.user.app_metadata?.groups?.role !== 'admin' &&
+          !isDemoUser(session.user?.id) ? null : (
+            <NavCollapsible label="Admin" items={data.admin} />
+          )} */}
+          <NavOthers label="Dashboard" others={data.dashboard} />
+          <NavOthers label="Collections" others={data.collections} />
+          <NavOthers label="Others" others={data.others} />
+        </ScrollArea>
+      </SidebarContent>
+      <SidebarFooter className="border-t">
+        <NavUser>
+          <SidebarMenuButton
+            size="lg"
+            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+          >
+            <Avatar className="h-8 w-8 rounded-lg">
+              <AvatarImage
+                src={profile?.image || undefined}
+                alt={`${profile?.name} avtar image`}
+              />
+              <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+            </Avatar>
+            {profile ? (
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-semibold">{profile.name}</span>
+                <span className="truncate text-xs">{profile.email}</span>
+              </div>
+            ) : (
+              <div className="flex flex-col space-y-2">
+                <Skeleton className="h-3 w-6/12" />
+                <Skeleton className="h-3 w-36" />
+              </div>
+            )}
+            <Icons.chevronUp className="ml-auto size-4" />
+          </SidebarMenuButton>
+        </NavUser>
+      </SidebarFooter>
+    </Sidebar>
   );
-};
+}

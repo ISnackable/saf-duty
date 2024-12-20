@@ -10,6 +10,8 @@
         "ARCJET_KEY",
         "BETTER_AUTH_SECRET",
         "DATABASE_URL",
+        "UPSTASH_REDIS_REST_URL",
+        "UPSTASH_REDIS_REST_TOKEN",
         "FLAGS_SECRET",
         "RESEND_FROM",
         "RESEND_TOKEN"

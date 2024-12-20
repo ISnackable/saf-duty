@@ -32,7 +32,8 @@
 			"extensions": [
 				"biomejs.biome",
 				"bradlc.vscode-tailwindcss",
-				"Prisma.prisma"
+				"Prisma.prisma",
+				"yoavbls.pretty-ts-errors"
 			],
 			"settings": {
 				"editor.formatOnSave": true

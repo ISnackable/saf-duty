@@ -1,3 +1,4 @@
+import { site } from '@repo/site-config';
 import merge from 'lodash.merge';
 import type { Metadata } from 'next';
 
@@ -7,13 +8,7 @@ type MetadataGenerator = Omit<Metadata, 'description' | 'title'> & {
   image?: string;
 };
 
-const applicationName = 'next-forge';
-const author: Metadata['authors'] = {
-  name: 'Hayden Bleasel',
-  url: 'https://haydenbleasel.com/',
-};
-const publisher = 'Hayden Bleasel';
-const twitterHandle = '@haydenbleasel';
+const applicationName = site.name;
 
 export const createMetadata = ({
   title,
@@ -26,8 +21,6 @@ export const createMetadata = ({
     title: parsedTitle,
     description,
     applicationName,
-    authors: [author],
-    creator: author.name,
     formatDetection: {
       telephone: false,
     },
@@ -42,11 +35,6 @@ export const createMetadata = ({
       type: 'website',
       siteName: applicationName,
       locale: 'en_US',
-    },
-    publisher,
-    twitter: {
-      card: 'summary_large_image',
-      creator: twitterHandle,
     },
   };
 
