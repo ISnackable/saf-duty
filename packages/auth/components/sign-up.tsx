@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { signUp } from '../client';
 import { useState } from 'react';
+import { signUp } from '../client';
 
 export const SignUp = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
 
   return (
     <form
@@ -15,8 +15,8 @@ export const SignUp = () => {
         await signUp.email({
           email,
           password,
-          name
-        })
+          name,
+        });
       }}
     >
       <input
@@ -37,4 +37,4 @@ export const SignUp = () => {
       <button type="submit">Sign up</button>
     </form>
   );
-}
+};

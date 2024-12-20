@@ -1,8 +1,10 @@
-import { auth, currentUser } from '@repo/auth/server';
+import { auth } from '@repo/auth/server';
 import { SidebarProvider } from '@repo/design-system/components/ui/sidebar';
 import { env } from '@repo/env';
 import { showBetaFeature } from '@repo/feature-flags';
 import { secure } from '@repo/security';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { GlobalSidebar } from './components/sidebar';
 
@@ -15,13 +17,14 @@ const AppLayout = async ({ children }: AppLayoutProperties) => {
     await secure(['CATEGORY:PREVIEW']);
   }
 
-  const user = await currentUser();
-  const { redirectToSignIn } = await auth();
-  const betaFeature = await showBetaFeature();
+  const session = await auth.api.getSession({
+    headers: await headers(), // from next/headers
+  });
 
-  if (!user) {
-    redirectToSignIn();
+  if (!session?.user) {
+    return redirect('/sign-in'); // from next/navigation
   }
+  const betaFeature = await showBetaFeature();
 
   return (
     <SidebarProvider>

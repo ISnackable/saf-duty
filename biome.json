@@ -8,7 +8,8 @@
       "packages/design-system/hooks/**",
       "apps/docs/**/*.json",
       "apps/email/.react-email/**",
-      ".devcontainer"
+      ".devcontainer",
+      ".vscode"
     ]
   }
 }

@@ -20,3 +20,5 @@ export const auth = betterAuth({
     emailHarmony(),
   ],
 });
+
+export { toNextJsHandler } from 'better-auth/next-js';

@@ -1,6 +1,5 @@
 'use client';
 
-import { OrganizationSwitcher, UserButton } from '@repo/auth/client';
 import { ModeToggle } from '@repo/design-system/components/mode-toggle';
 import {
   Collapsible,
@@ -21,7 +20,6 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarHeader,
   SidebarInset,
   SidebarMenu,
   SidebarMenuAction,
@@ -30,9 +28,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  useSidebar,
 } from '@repo/design-system/components/ui/sidebar';
-import { cn } from '@repo/design-system/lib/utils';
 import {
   BookOpenIcon,
   BotIcon,
@@ -180,28 +176,11 @@ const data = {
 };
 
 export const GlobalSidebar = ({ children }: GlobalSidebarProperties) => {
-  const sidebar = useSidebar();
+  // const sidebar = useSidebar();
 
   return (
     <>
       <Sidebar variant="inset">
-        <SidebarHeader>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <div
-                className={cn(
-                  'h-[36px] overflow-hidden transition-all [&>div]:w-full',
-                  sidebar.open ? '' : '-mx-1'
-                )}
-              >
-                <OrganizationSwitcher
-                  hidePersonal
-                  afterSelectOrganizationUrl="/"
-                />
-              </div>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarHeader>
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -315,16 +294,6 @@ export const GlobalSidebar = ({ children }: GlobalSidebarProperties) => {
         <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem className="flex items-center gap-2">
-              <UserButton
-                showName
-                appearance={{
-                  elements: {
-                    rootBox: 'flex overflow-hidden w-full',
-                    userButtonBox: 'flex-row-reverse',
-                    userButtonOuterIdentifier: 'truncate pl-0',
-                  },
-                }}
-              />
               <ModeToggle />
             </SidebarMenuItem>
           </SidebarMenu>
