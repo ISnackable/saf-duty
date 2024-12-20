@@ -1,16 +1,15 @@
 {
   "name": "next-forge",
-  "version": "2.20.27",
+  "version": "2.21.11",
   "bin": {
     "next-forge": "scripts/init.mjs"
   },
-  "files": [
-    "scripts/init.mjs"
-  ],
+  "files": ["scripts/init.mjs"],
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "turbo lint",
+    "lint": "ultracite lint",
+    "format": "ultracite format",
     "test": "turbo test",
     "analyze": "turbo analyze",
     "bump-deps": "pnpx npm-check-updates --deep -u -x react-day-picker && pnpm install",
@@ -23,10 +22,10 @@
     "@auto-it/first-time-contributor": "^11.3.0",
     "@biomejs/biome": "1.9.4",
     "@repo/typescript-config": "workspace:*",
-    "@turbo/gen": "^2.3.3",
     "turbo": "^2.3.3",
+    "@turbo/gen": "^2.3.3",
     "typescript": "^5.7.2",
-    "ultracite": "^4.1.14"
+    "ultracite": "^4.1.12"
   },
   "engines": {
     "node": ">=18"

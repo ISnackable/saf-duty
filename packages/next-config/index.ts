@@ -5,7 +5,6 @@ import { PrismaPlugin } from '@prisma/nextjs-monorepo-workaround-plugin';
 import { env } from '@repo/env';
 import withVercelToolbar from '@vercel/toolbar/plugins/next';
 import type { NextConfig } from 'next';
-import { createSecureHeaders } from 'next-secure-headers';
 
 const otelRegex = /@opentelemetry\/instrumentation/;
 
@@ -18,22 +17,6 @@ const baseConfig: NextConfig = {
     //     hostname: 'img.clerk.com',
     //   },
     // ],
-  },
-
-  // biome-ignore lint/suspicious/useAwait: headers is async
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: createSecureHeaders({
-          // HSTS Preload: https://hstspreload.org/
-          forceHTTPSRedirect: [
-            true,
-            { maxAge: 63_072_000, includeSubDomains: true, preload: true },
-          ],
-        }),
-      },
-    ];
   },
 
   webpack(config, { isServer }) {

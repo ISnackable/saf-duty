@@ -7,8 +7,6 @@
     "analyze": "prisma generate --no-hints",
     "build": "prisma generate --no-hints",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "format": "biome lint --write .",
-    "lint": "biome lint .",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
@@ -19,7 +17,7 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/node": "22.10.2",
+    "@types/node": "22.10.1",
     "bufferutil": "^4.0.8",
     "prisma": "6.0.1",
     "typescript": "^5.7.2"

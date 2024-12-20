@@ -4,8 +4,6 @@
   "private": true,
   "scripts": {
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "format": "biome lint --write .",
-    "lint": "biome lint .",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
@@ -15,6 +13,6 @@
   "devDependencies": {
     "typescript": "^5.7.2",
     "@repo/typescript-config": "workspace:*",
-    "@types/node": "22.10.2"
+    "@types/node": "22.10.1"
   }
 }

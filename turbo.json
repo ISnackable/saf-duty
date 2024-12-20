@@ -18,15 +18,18 @@
     "test": {
       "dependsOn": ["^test"]
     },
-    "lint": {
-      "dependsOn": ["^lint"]
-    },
     "analyze": {
       "dependsOn": ["^analyze"]
     },
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "clean": {
+      "cache": false
+    },
+    "//#clean": {
+      "cache": false
     }
   }
 }

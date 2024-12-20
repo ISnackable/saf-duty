@@ -11,27 +11,32 @@
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// This can be used to network with other containers or with the host.
-	// "forwardPorts": [3000, 5432],
+	"forwardPorts": [3000, 3003, 3004, 3005, 6006],
+	"portsAttributes": {
+		"3000": { "label": "App" },
+		"3003": { "label": "Email - Web" },
+		"3004": { "label": "Docs - Mintlify" },
+		"3005": { "label": "Database - Studio" },
+		"6006": { "label": "Storybook - App" }
+	},
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "yarn install",
+	"postCreateCommand": "npm add -g @mintlify/cli && pnpm install",
 
 	// Configure tool-specific properties.
 	"customizations": {
 		"containerEnv": {
-		"NODE_ENV": "development"
+			"NODE_ENV": "development"
 		},
 		"vscode": {
-		"extensions": [
-			"biomejs.biome",
-			"bradlc.vscode-tailwindcss",
-			"Prisma.prisma"
-		],
-		"settings": {
-			"editor.formatOnSave": true
-		}
+			"extensions": [
+				"biomejs.biome",
+				"bradlc.vscode-tailwindcss",
+				"Prisma.prisma"
+			],
+			"settings": {
+				"editor.formatOnSave": true
+			}
 		}
 	}
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
 }
