@@ -9,7 +9,8 @@
     ],
     "paths": {
       "@repo/*": ["../*"],
-      "@repo/design-system/*": ["./*"]
+      "@repo/design-system/*": ["./*"],
+      "@/*": ["./*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],
