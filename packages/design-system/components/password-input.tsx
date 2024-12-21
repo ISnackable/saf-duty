@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 
-import { Icons } from '@/components/icons';
 import { cn } from '../lib/utils';
+import { Icons } from './icons';
 
 export interface PasswordInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {}

@@ -1,43 +1,60 @@
+'use client';
+
+import { useSession } from '@repo/auth/client';
+import { Icons } from '@repo/design-system/components/icons';
+import { NavUser } from '@repo/design-system/components/nav-user';
+// import { NotificationsPopover } from '@repo/design-system/components/notifications-popover';
+import { ThemeSwitcher } from '@repo/design-system/components/theme-switcher';
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@repo/design-system/components/ui/breadcrumb';
-import { Separator } from '@repo/design-system/components/ui/separator';
-import { SidebarTrigger } from '@repo/design-system/components/ui/sidebar';
-import { Fragment, type ReactNode } from 'react';
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@repo/design-system/components/ui/avatar';
+import { Button } from '@repo/design-system/components/ui/button';
+import { useSidebar } from '@repo/design-system/components/ui/sidebar';
 
-type HeaderProps = {
-  pages: string[];
-  page: string;
-  children?: ReactNode;
-};
+export function Header() {
+  const { toggleSidebar } = useSidebar();
+  const { data: session } = useSession();
+  const profile = session?.user;
 
-export const Header = ({ pages, page, children }: HeaderProps) => (
-  <header className="flex h-16 shrink-0 items-center justify-between gap-2">
-    <div className="flex items-center gap-2 px-4">
-      <SidebarTrigger className="-ml-1" />
-      <Separator orientation="vertical" className="mr-2 h-4" />
-      <Breadcrumb>
-        <BreadcrumbList>
-          {pages.map((page, index) => (
-            <Fragment key={page}>
-              {index > 0 && <BreadcrumbSeparator className="hidden md:block" />}
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">{page}</BreadcrumbLink>
-              </BreadcrumbItem>
-            </Fragment>
-          ))}
-          <BreadcrumbSeparator className="hidden md:block" />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{page}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-    </div>
-    {children}
-  </header>
-);
+  return (
+    <header
+      data-tour="header"
+      className="sticky top-0 z-50 flex h-16 w-full flex-row items-center border-b bg-popover px-3 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
+    >
+      <div className="flex grow basis-0 justify-start">
+        <Button
+          data-tour="side-nav-button"
+          type="button"
+          aria-label="Menu"
+          variant="ghost"
+          size="icon"
+          onClick={toggleSidebar}
+        >
+          <Icons.menu size={30} />
+        </Button>
+      </div>
+
+      <div>
+        <ThemeSwitcher />
+      </div>
+
+      <div className="flex grow basis-0 justify-end space-x-2 align-middle">
+        {/* <NotificationsPopover /> */}
+        <NavUser name={profile?.name ?? 'User'} email={profile?.email ?? ''}>
+          <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+            <Avatar className="relative h-9 w-9 rounded-full">
+              <AvatarImage
+                src={profile?.image ?? undefined}
+                alt={`${profile?.name} avatar image`}
+                className="object-cover"
+              />
+              <AvatarFallback>O</AvatarFallback>
+            </Avatar>
+          </Button>
+        </NavUser>
+      </div>
+    </header>
+  );
+}

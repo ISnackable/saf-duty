@@ -9,6 +9,10 @@ import type { NextConfig } from 'next';
 const otelRegex = /@opentelemetry\/instrumentation/;
 
 const baseConfig: NextConfig = {
+  experimental: {
+    reactCompiler: true,
+  },
+
   images: {
     formats: ['image/avif', 'image/webp'],
     // remotePatterns: [

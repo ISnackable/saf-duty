@@ -1,15 +1,17 @@
+'use client';
+
 import type { Icon } from '@tabler/icons-react';
 import { usePathname } from 'next/navigation';
 
-import { ProgressBarLink } from '@/components/progress-bar';
+import { cn } from '../lib/utils';
+import { ProgressBarLink } from './progress-bar';
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui/sidebar';
-import { cn } from '@/lib/utils';
+} from './ui/sidebar';
 
 export function NavOthers({
   label,

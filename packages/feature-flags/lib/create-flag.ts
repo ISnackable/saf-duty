@@ -18,7 +18,7 @@ export const createFlag = (key: string) =>
       }
 
       // TODO: Implement feature flag logic here
-      const isEnabled = false;
+      const isEnabled = true;
 
       return isEnabled ?? (this.defaultValue as boolean);
     },

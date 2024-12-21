@@ -1,3 +1,4 @@
+import { host } from '@repo/site-config';
 import {
   multiSessionClient,
   organizationClient,
@@ -6,6 +7,7 @@ import {
 import { createAuthClient } from 'better-auth/react';
 
 export const client = createAuthClient({
+  baseURL: host, // the base url of your auth server
   plugins: [organizationClient(), passkeyClient(), multiSessionClient()],
 });
 

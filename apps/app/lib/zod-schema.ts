@@ -1,11 +1,10 @@
-import { z } from 'zod';
 import { requirements } from '@repo/auth/lib/utils';
+import { z } from 'zod';
 
 export const loginFormSchema = z.object({
   email: z.string().email().trim().toLowerCase(),
   password: z.string().min(1, { message: 'Password is required' }),
 });
-
 
 export const registerFormSchema = z.object({
   name: z

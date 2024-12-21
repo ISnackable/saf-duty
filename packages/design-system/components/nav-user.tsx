@@ -2,9 +2,11 @@
 
 import * as React from 'react';
 
-import { Icons } from '@/components/icons';
-import { InstallPWA } from '@/components/install-pwa';
-import { ProgressBarLink } from '@/components/progress-bar';
+import { signOut } from '@repo/auth/client';
+import { redirect } from 'next/navigation';
+import { Icons } from './icons';
+import { InstallPWA } from './install-pwa';
+import { ProgressBarLink } from './progress-bar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,13 +16,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { signOut } from '@repo/auth/client';
-import { redirect } from 'next/navigation';
+} from './ui/dropdown-menu';
 
-export function NavUser({ children }: { children: React.ReactNode }) {
+interface NavUserProps {
+  email?: string;
+  name?: string;
+  children: React.ReactNode;
+}
+
+export function NavUser({ email, name, children }: NavUserProps) {
   const [open, setOpen] = React.useState(false);
-  //   const { data: profile } = useProfiles();
 
   return (
     <DropdownMenu>
@@ -32,9 +37,11 @@ export function NavUser({ children }: { children: React.ReactNode }) {
       >
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="font-medium text-sm leading-none">{'Anonymous'}</p>
+            <p className="font-medium text-sm leading-none">
+              {name ?? 'Anonymous'}
+            </p>
             <p className="text-muted-foreground text-xs leading-none">
-              {'No email'}
+              {email ?? 'No email'}
             </p>
           </div>
         </DropdownMenuLabel>
@@ -74,7 +81,7 @@ export function NavUser({ children }: { children: React.ReactNode }) {
             await signOut({
               fetchOptions: {
                 onSuccess: () => {
-                  redirect('/sign-in');
+                  redirect('/login');
                 },
               },
             });

@@ -1,6 +1,15 @@
 import { render, screen } from '@testing-library/react';
 import { expect, test } from 'vitest';
-import Page from '../app/(unauthenticated)/sign-up/[[...sign-up]]/page';
+import Page from '../app/(unauthenticated)/register/page';
+
+global.ResizeObserver = class {
+  // biome-ignore lint/suspicious/noEmptyBlockStatements: Hacky workaround for ResizeObserver
+  observe() {}
+  // biome-ignore lint/suspicious/noEmptyBlockStatements: Hacky workaround for ResizeObserver
+  unobserve() {}
+  // biome-ignore lint/suspicious/noEmptyBlockStatements: Hacky workaround for ResizeObserver
+  disconnect() {}
+};
 
 test('Sign Up Page', () => {
   render(<Page />);

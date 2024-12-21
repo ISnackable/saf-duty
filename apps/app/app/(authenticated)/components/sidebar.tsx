@@ -2,8 +2,7 @@
 
 import type * as React from 'react';
 
-// import { useProfiles } from '@/hooks/use-profiles';
-import { useSession } from '@repo/auth/client';
+import { useListOrganizations, useSession } from '@repo/auth/client';
 import { Icons } from '@repo/design-system/components/icons';
 import { NavOthers } from '@repo/design-system/components/nav-others';
 import { NavUser } from '@repo/design-system/components/nav-user';
@@ -111,15 +110,16 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = useSession();
+  const { data: organizations } = useListOrganizations();
   const profile = session?.user;
 
-  const teams = [
-    {
-      name: 'Work In Progress',
-      logo: Icons.logo,
-      role: 'user',
-    },
-  ];
+  const teams =
+    organizations?.map((org) => ({
+      id: org.id,
+      name: org.name,
+      logo: org.logo,
+      metadata: org.metadata,
+    })) ?? [];
 
   return (
     <Sidebar collapsible="offcanvas" className="h-full" {...props}>
@@ -139,15 +139,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </ScrollArea>
       </SidebarContent>
       <SidebarFooter className="border-t">
-        <NavUser>
+        <NavUser name={profile?.name} email={profile?.email}>
           <SidebarMenuButton
             size="lg"
             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
           >
             <Avatar className="h-8 w-8 rounded-lg">
               <AvatarImage
-                src={profile?.image || undefined}
-                alt={`${profile?.name} avtar image`}
+                src={profile?.image ?? undefined}
+                alt={`${profile?.name} avatar image`}
               />
               <AvatarFallback className="rounded-lg">CN</AvatarFallback>
             </Avatar>

@@ -1,7 +1,15 @@
 'use client';
 
-import { Icons } from '@/components/icons';
-import { Button } from '@/components/ui/button';
+import { useOs } from '@repo/design-system/hooks/use-os';
+import { site } from '@repo/site-config';
+import {
+  IconDotsVertical,
+  IconShare2,
+  IconSquarePlus,
+} from '@tabler/icons-react';
+import type * as React from 'react';
+import { Icons } from './icons';
+import { Button } from './ui/button';
 import {
   Credenza,
   CredenzaBody,
@@ -11,15 +19,7 @@ import {
   CredenzaFooter,
   CredenzaHeader,
   CredenzaTitle,
-} from '@/components/ui/credenza';
-import { useOs } from '@repo/design-system/hooks/use-os';
-import { site } from '@repo/site-config';
-import {
-  IconDotsVertical,
-  IconShare2,
-  IconSquarePlus,
-} from '@tabler/icons-react';
-import type * as React from 'react';
+} from './ui/credenza';
 
 export function InstallPWA({
   children,

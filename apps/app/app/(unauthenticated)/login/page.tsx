@@ -3,14 +3,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
 
-import svgImage from '@/public/undraw_fingerprint_re_uf3f.svg';
 import { PasswordInput } from '@repo/design-system/components/password-input';
-import { UserLoginForm } from '@repo/design-system/components/sign-in';
 import { buttonVariants } from '@repo/design-system/components/ui/button';
 import { Input } from '@repo/design-system/components/ui/input';
 import { Label } from '@repo/design-system/components/ui/label';
 import { cn } from '@repo/design-system/lib/utils';
 import { site } from '@repo/site-config';
+import svgImage from '../../../public/undraw_fingerprint_re_uf3f.svg';
+import { UserLoginForm } from '../components/sign-in';
 
 export const metadata: Metadata = {
   title: 'Login',

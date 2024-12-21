@@ -1,20 +1,20 @@
 'use client';
 
-import { Icons } from '@/components/icons';
-import { PasswordInput } from '@/components/password-input';
-import { buttonVariants } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { cn } from '@/lib/utils';
-import { loginFormSchema } from '@/lib/zod-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from '@repo/auth/client';
+import { Icons } from '@repo/design-system/components/icons';
+import { PasswordInput } from '@repo/design-system/components/password-input';
+import { buttonVariants } from '@repo/design-system/components/ui/button';
+import { Input } from '@repo/design-system/components/ui/input';
+import { Label } from '@repo/design-system/components/ui/label';
+import { cn } from '@repo/design-system/lib/utils';
 import { demo } from '@repo/site-config';
 import Link from 'next/link';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import type * as z from 'zod';
+import { loginFormSchema } from '../../../lib/zod-schema';
 
 type UserLoginFormProps = React.HTMLAttributes<HTMLDivElement>;
 

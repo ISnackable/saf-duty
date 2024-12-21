@@ -33,7 +33,6 @@ export default async function middleware(request: NextRequest) {
     {
       baseURL: request.nextUrl.origin,
       headers: {
-        //get the cookie from the request
         cookie: request.headers.get('cookie') || '',
       },
     }
@@ -51,6 +50,7 @@ export default async function middleware(request: NextRequest) {
       return redirectToPath(request, redirectSearchParams);
     }
 
+    // Redirect to home page if user is already authenticated
     return redirectToPath(request);
   }
 

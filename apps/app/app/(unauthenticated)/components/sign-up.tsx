@@ -1,15 +1,17 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PopoverAnchor } from '@radix-ui/react-popover';
+import { PopoverAnchor } from '@repo/design-system/components/ui/popover';
 import * as React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 import type * as z from 'zod';
 
-import { Icons } from '@/components/icons';
-import { PasswordInput } from '@/components/password-input';
-import { Button } from '@/components/ui/button';
+import { signUp } from '@repo/auth/client';
+import { getStrength, requirements } from '@repo/auth/lib/utils';
+import { Icons } from '@repo/design-system/components/icons';
+import { PasswordInput } from '@repo/design-system/components/password-input';
+import { Button } from '@repo/design-system/components/ui/button';
 import {
   Form,
   FormControl,
@@ -17,19 +19,20 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@repo/design-system/components/ui/form';
+import { Input } from '@repo/design-system/components/ui/input';
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from '@/components/ui/input-otp';
-import { Popover, PopoverContent } from '@/components/ui/popover';
-import { Progress } from '@/components/ui/progress';
-import { cn } from '@/lib/utils';
-import { registerFormSchema } from '@/lib/zod-schema';
-import { signUp } from '@repo/auth/client';
-import { getStrength, requirements } from '@repo/auth/lib/utils';
+} from '@repo/design-system/components/ui/input-otp';
+import {
+  Popover,
+  PopoverContent,
+} from '@repo/design-system/components/ui/popover';
+import { Progress } from '@repo/design-system/components/ui/progress';
+import { cn } from '@repo/design-system/lib/utils';
+import { registerFormSchema } from '../../../lib/zod-schema';
 
 type UserRegisterFormProps = React.HTMLAttributes<HTMLDivElement>;
 

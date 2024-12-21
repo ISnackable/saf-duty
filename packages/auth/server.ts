@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { database } from '@repo/database';
 import { redis } from '@repo/rate-limit';
 import { site } from '@repo/site-config';
@@ -5,7 +7,8 @@ import { betterAuth } from 'better-auth';
 import { emailHarmony } from 'better-auth-harmony';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { nextCookies } from 'better-auth/next-js';
-import { multiSession, organization, passkey } from 'better-auth/plugins';
+import { multiSession, organization } from 'better-auth/plugins';
+import { passkey } from 'better-auth/plugins/passkey';
 
 export const auth = betterAuth({
   database: prismaAdapter(database, { provider: 'postgresql' }),

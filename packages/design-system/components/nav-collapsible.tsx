@@ -4,12 +4,13 @@ import { ChevronRightIcon } from '@radix-ui/react-icons';
 import type { Icon } from '@tabler/icons-react';
 import { usePathname } from 'next/navigation';
 
-import { ProgressBarLink } from '@/components/progress-bar';
+import { cn } from '../lib/utils';
+import { ProgressBarLink } from './progress-bar';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+} from './ui/collapsible';
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -19,8 +20,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from '@/components/ui/sidebar';
-import { cn } from '@/lib/utils';
+} from './ui/sidebar';
 
 export function NavCollapsible({
   label,
