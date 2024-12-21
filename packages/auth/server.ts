@@ -7,7 +7,7 @@ import { betterAuth } from 'better-auth';
 import { emailHarmony } from 'better-auth-harmony';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { nextCookies } from 'better-auth/next-js';
-import { multiSession, organization } from 'better-auth/plugins';
+import { admin, organization } from 'better-auth/plugins';
 import { passkey } from 'better-auth/plugins/passkey';
 
 export const auth = betterAuth({
@@ -29,26 +29,36 @@ export const auth = betterAuth({
       return null;
     },
   },
-  emailAndPassword: {
-    enabled: true,
-  },
-  emailVerification: {
-    sendOnSignUp: true,
-  },
   rateLimit: {
     storage: 'secondary-storage',
   },
+  emailAndPassword: {
+    enabled: true,
+    sendResetPassword: async ({ user, url, token }, request) => {
+      // TODO: send email
+    },
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url, token }, request) => {
+      // TODO: send email
+    },
+  },
   plugins: [
     nextCookies(),
-    organization(),
-    passkey(),
-    multiSession({
-      maximumSessions: 3,
+    admin(),
+    organization({
+      async sendInvitationEmail(data) {
+        const inviteLink = `https://example.com/accept-invitation/${data.id}`;
+
+        // TODO: send email
+      },
     }),
+    passkey(),
     emailHarmony(),
   ],
   advanced: {
-    cookiePrefix: site.shortName,
+    cookiePrefix: site.shortName.toLowerCase(),
   },
 });
 

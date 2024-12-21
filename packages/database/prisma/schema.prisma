@@ -28,6 +28,11 @@ model User {
   invitations     Invitation[]
   passkeys        Passkey[]
 
+  role       String?
+  banned     Boolean?
+  banReason  String?
+  banExpires DateTime?
+
   @@unique([email])
   @@unique([normalizedEmail])
   @@map("user")
@@ -44,6 +49,8 @@ model Session {
   userId               String
   user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   activeOrganizationId String?
+
+  impersonatedBy String?
 
   @@unique([token])
   @@map("session")
@@ -131,6 +138,8 @@ model Passkey {
   backedUp       Boolean
   transports     String?
   createdAt      DateTime?
+
+  credentialID String
 
   @@map("passkey")
 }

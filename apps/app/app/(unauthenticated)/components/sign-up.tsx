@@ -95,9 +95,13 @@ export function UserRegisterForm({
     });
 
     if (error) {
-      toast.error(error.message || 'Something went wrong.', {
-        description: 'Your sign up request failed. Please try again.',
-      });
+      if (error.status === 403) {
+        toast.error('Please verify your email address');
+      } else {
+        toast.error(error.message || 'Something went wrong.', {
+          description: 'Your sign up request failed. Please try again.',
+        });
+      }
     } else {
       toast.success('Check your email.', {
         description:
