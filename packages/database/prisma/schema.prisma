@@ -14,24 +14,24 @@ datasource db {
 }
 
 model User {
-  id              String       @id
-  name            String
-  email           String
-  emailVerified   Boolean
-  image           String?
-  createdAt       DateTime
-  updatedAt       DateTime
-  normalizedEmail String?
-  sessions        Session[]
-  accounts        Account[]
-  members         Member[]
-  invitations     Invitation[]
-  passkeys        Passkey[]
-
-  role       String?
-  banned     Boolean?
-  banReason  String?
-  banExpires DateTime?
+  id                    String       @id
+  name                  String
+  email                 String
+  emailVerified         Boolean
+  image                 String?
+  createdAt             DateTime
+  updatedAt             DateTime
+  role                  String?
+  banned                Boolean?
+  banReason             String?
+  banExpires            DateTime?
+  normalizedEmail       String?
+  initialOrganizationId String
+  sessions              Session[]
+  accounts              Account[]
+  members               Member[]
+  invitations           Invitation[]
+  passkeys              Passkey[]
 
   @@unique([email])
   @@unique([normalizedEmail])
@@ -48,9 +48,8 @@ model Session {
   userAgent            String?
   userId               String
   user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  impersonatedBy       String?
   activeOrganizationId String?
-
-  impersonatedBy String?
 
   @@unique([token])
   @@map("session")
@@ -127,19 +126,17 @@ model Invitation {
 }
 
 model Passkey {
-  id             String    @id
-  name           String?
-  publicKey      String
-  userId         String
-  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  webauthnUserID String
-  counter        Int
-  deviceType     String
-  backedUp       Boolean
-  transports     String?
-  createdAt      DateTime?
-
+  id           String    @id
+  name         String?
+  publicKey    String
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   credentialID String
+  counter      Int
+  deviceType   String
+  backedUp     Boolean
+  transports   String?
+  createdAt    DateTime?
 
   @@map("passkey")
 }

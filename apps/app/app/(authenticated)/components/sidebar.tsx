@@ -2,7 +2,13 @@
 
 import type * as React from 'react';
 
-import { useListOrganizations, useSession } from '@repo/auth/client';
+import {
+  organization,
+  useActiveOrganization,
+  useListOrganizations,
+  useSession,
+} from '@repo/auth/client';
+import type { Organization } from '@repo/auth/types';
 import { Icons } from '@repo/design-system/components/icons';
 import { NavOthers } from '@repo/design-system/components/nav-others';
 import { NavUser } from '@repo/design-system/components/nav-user';
@@ -111,20 +117,23 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = useSession();
   const { data: organizations } = useListOrganizations();
+  const { data: activeOrganization } = useActiveOrganization();
   const profile = session?.user;
 
-  const teams =
-    organizations?.map((org) => ({
-      id: org.id,
-      name: org.name,
-      logo: org.logo,
-      metadata: org.metadata,
-    })) ?? [];
+  async function setActiveOrganization(team: Organization) {
+    await organization.setActive({
+      organizationId: team.id,
+    });
+  }
 
   return (
     <Sidebar collapsible="offcanvas" className="h-full" {...props}>
       <SidebarHeader className="h-16 border-b">
-        <TeamSwitcher teams={teams} />
+        <TeamSwitcher
+          teams={organizations}
+          activeTeam={activeOrganization}
+          setActiveTeam={setActiveOrganization}
+        />
       </SidebarHeader>
       <SidebarContent>
         <ScrollArea>

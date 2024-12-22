@@ -92,6 +92,7 @@ export function UserRegisterForm({
       email: data.email,
       password: data.password,
       name: data.name,
+      initialOrganizationId: data.unit,
     });
 
     if (error) {

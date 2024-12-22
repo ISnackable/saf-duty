@@ -9,9 +9,12 @@
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "6.1.0",
-    "@repo/env": "workspace:*",
+    "@repo/auth": "workspace:*",
     "server-only": "^0.0.1",
     "undici": "^7.2.0"
   },
@@ -20,6 +23,7 @@
     "@types/node": "22.10.2",
     "bufferutil": "^4.0.8",
     "prisma": "6.1.0",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   }
 }

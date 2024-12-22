@@ -1,8 +1,8 @@
 'use client';
 
 import { CaretSortIcon, PlusIcon } from '@radix-ui/react-icons';
+import type { Organization } from '@repo/auth/types';
 import { Icons } from '@repo/design-system/components/icons';
-import * as React from 'react';
 
 import {
   DropdownMenu,
@@ -20,18 +20,18 @@ import {
   useSidebar,
 } from './ui/sidebar';
 
+interface TeamSwitcherProps {
+  teams: Organization[] | null;
+  activeTeam: Organization | null;
+  setActiveTeam: (team: Organization) => void;
+}
+
 export function TeamSwitcher({
   teams,
-}: {
-  teams: {
-    id: string;
-    name: string;
-    logo: string | null | undefined;
-    metadata?: string;
-  }[];
-}) {
+  activeTeam,
+  setActiveTeam,
+}: TeamSwitcherProps) {
   const { isMobile } = useSidebar();
-  const [activeTeam, setActiveTeam] = React.useState(teams[0]);
 
   return (
     <SidebarMenu>

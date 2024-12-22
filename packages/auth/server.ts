@@ -1,37 +1,39 @@
 import 'server-only';
 
 import { database } from '@repo/database';
-import { redis } from '@repo/rate-limit';
+// import { redis } from '@repo/rate-limit';
 import { site } from '@repo/site-config';
-import { betterAuth } from 'better-auth';
+import { type BetterAuthOptions, betterAuth } from 'better-auth';
 import { emailHarmony } from 'better-auth-harmony';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { APIError } from 'better-auth/api';
 import { nextCookies } from 'better-auth/next-js';
 import { admin, organization } from 'better-auth/plugins';
 import { passkey } from 'better-auth/plugins/passkey';
 
-export const auth = betterAuth({
+export const betterAuthConfig = {
   database: prismaAdapter(database, { provider: 'postgresql' }),
-  secondaryStorage: {
-    get: async (key) => {
-      const value = (await redis.get(key)) as string | null;
-      return value ? JSON.parse(JSON.stringify(value)) : null;
-    },
-    set: async (key, value, ttl) => {
-      if (ttl) {
-        await redis.set(key, JSON.stringify(value), { ex: ttl });
-      } else {
-        await redis.set(key, JSON.stringify(value));
-      }
-    },
-    delete: async (key) => {
-      await redis.del(key);
-      return null;
-    },
-  },
-  rateLimit: {
-    storage: 'secondary-storage',
-  },
+  // TODO: Bug with setting activeOrganizationId when using secondary storage
+  // secondaryStorage: {
+  //   get: async (key) => {
+  //     const value = (await redis.get(key)) as string | null;
+  //     return value ? JSON.parse(JSON.stringify(value)) : null;
+  //   },
+  //   set: async (key, value, ttl) => {
+  //     if (ttl) {
+  //       await redis.set(key, JSON.stringify(value), { ex: ttl });
+  //     } else {
+  //       await redis.set(key, JSON.stringify(value));
+  //     }
+  //   },
+  //   delete: async (key) => {
+  //     await redis.del(key);
+  //     return null;
+  //   },
+  // },
+  // rateLimit: {
+  //   storage: 'secondary-storage',
+  // },
   emailAndPassword: {
     enabled: true,
     sendResetPassword: async ({ user, url, token }, request) => {
@@ -44,15 +46,10 @@ export const auth = betterAuth({
       // TODO: send email
     },
   },
-
   plugins: [
     nextCookies(),
     admin(),
     organization({
-      allowUserToCreateOrganization: (user) => {
-        // @ts-expect-error - user is not typed
-        return user.role === 'admin';
-      },
       async sendInvitationEmail(data) {
         const inviteLink = `https://example.com/accept-invitation/${data.id}`;
 
@@ -62,11 +59,70 @@ export const auth = betterAuth({
     passkey(),
     emailHarmony(),
   ],
+  advanced: {
+    cookiePrefix: site.shortName.toLowerCase(),
+  },
+} satisfies BetterAuthOptions;
+
+export const auth = betterAuth({
+  ...betterAuthConfig,
+  user: {
+    additionalFields: {
+      initialOrganizationId: {
+        type: 'string',
+        required: true,
+        input: true,
+        returned: false,
+      },
+    },
+  },
   databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          // @ts-expect-error - unit is not typed here
+          if (!user.initialOrganizationId) {
+            throw new APIError('BAD_REQUEST');
+          }
+
+          const organizationId = await getOrganizationByName(
+            // @ts-expect-error - unit is not typed
+            user.initialOrganizationId
+          );
+
+          return {
+            data: {
+              ...user,
+              initialOrganizationId: organizationId,
+            },
+          };
+        },
+        after: async (user) => {
+          const organizationId = await getOrganizationById(
+            // @ts-expect-error - unit is not typed
+            user.initialOrganizationId
+          );
+
+          // Add the user to the organization
+          const auth = betterAuth(betterAuthConfig);
+
+          await auth.api.addMember({
+            body: {
+              userId: user.id,
+              organizationId,
+              role: 'member',
+            },
+          });
+        },
+      },
+    },
     session: {
       create: {
         before: async (session) => {
-          const organizationId = await getActiveOrganizationId(session.userId);
+          const organizationId = await getActiveOrganizationByUserId(
+            session.userId
+          );
+
           return {
             data: {
               ...session,
@@ -77,13 +133,9 @@ export const auth = betterAuth({
       },
     },
   },
-  advanced: {
-    cookiePrefix: site.shortName.toLowerCase(),
-  },
 });
 
-async function getActiveOrganizationId(userId: string) {
-  // If the user has no active organization, return the first one
+async function getActiveOrganizationByUserId(userId: string) {
   const organization = await database.organization.findFirst({
     where: {
       members: {
@@ -96,7 +148,35 @@ async function getActiveOrganizationId(userId: string) {
 
   // Part of the onboarding process is to join an organization so this should never happen
   if (!organization) {
-    throw new Error('User is not part of any organization');
+    throw new APIError('BAD_REQUEST');
+  }
+
+  return organization.id;
+}
+
+async function getOrganizationByName(organizationName: string) {
+  const organization = await database.organization.findFirst({
+    where: {
+      name: organizationName,
+    },
+  });
+
+  if (!organization) {
+    throw new APIError('BAD_REQUEST');
+  }
+
+  return organization.id;
+}
+
+async function getOrganizationById(organizationId: string) {
+  const organization = await database.organization.findUnique({
+    where: {
+      id: organizationId,
+    },
+  });
+
+  if (!organization) {
+    throw new APIError('BAD_REQUEST');
   }
 
   return organization.id;
