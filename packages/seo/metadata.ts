@@ -1,4 +1,4 @@
-import { site } from '@repo/site-config';
+import { host, site } from '@repo/site-config';
 import merge from 'lodash.merge';
 import type { Metadata } from 'next';
 
@@ -18,6 +18,7 @@ export const createMetadata = ({
 }: MetadataGenerator): Metadata => {
   const parsedTitle = `${title} | ${applicationName}`;
   const defaultMetadata: Metadata = {
+    metadataBase: new URL(host),
     title: parsedTitle,
     description,
     applicationName,

@@ -7,7 +7,8 @@ const securityHeaders = noseconeMiddleware(noseconeConfig);
 import { type NextRequest, NextResponse } from 'next/server';
 
 // Public paths that do not require authentication, /change-password SHOULD be accessible only to authenticated users.
-const PUBLIC_PATHS = ['/register', '/login', '/reset-password'];
+const PUBLIC_AUTH_PATHS = ['/register', '/login', '/reset-password'];
+const PUBLIC_PATHS = [...PUBLIC_AUTH_PATHS, '/privacy', '/terms', '/faq'];
 
 function redirectToPath(request: NextRequest, path = '/') {
   const url = request.nextUrl.clone();
@@ -42,7 +43,7 @@ export default async function middleware(request: NextRequest) {
     return redirectToLogin(request);
   }
 
-  if (PUBLIC_PATHS.includes(request.nextUrl.pathname)) {
+  if (PUBLIC_AUTH_PATHS.includes(request.nextUrl.pathname)) {
     // Authenticated user should not be able to access /login, /register and /reset-password routes
     const redirectSearchParams = request.nextUrl.searchParams.get('redirect');
 

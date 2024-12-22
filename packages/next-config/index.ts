@@ -15,12 +15,12 @@ const baseConfig: NextConfig = {
 
   images: {
     formats: ['image/avif', 'image/webp'],
-    // remotePatterns: [
-    //   {
-    //     protocol: 'https',
-    //     hostname: 'img.clerk.com',
-    //   },
-    // ],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'avatars.dicebear.com',
+      },
+    ],
   },
 
   webpack(config, { isServer }) {

@@ -44,10 +44,15 @@ export const auth = betterAuth({
       // TODO: send email
     },
   },
+
   plugins: [
     nextCookies(),
     admin(),
     organization({
+      allowUserToCreateOrganization: (user) => {
+        // @ts-expect-error - user is not typed
+        return user.role === 'admin';
+      },
       async sendInvitationEmail(data) {
         const inviteLink = `https://example.com/accept-invitation/${data.id}`;
 
@@ -57,9 +62,44 @@ export const auth = betterAuth({
     passkey(),
     emailHarmony(),
   ],
+  databaseHooks: {
+    session: {
+      create: {
+        before: async (session) => {
+          const organizationId = await getActiveOrganizationId(session.userId);
+          return {
+            data: {
+              ...session,
+              activeOrganizationId: organizationId,
+            },
+          };
+        },
+      },
+    },
+  },
   advanced: {
     cookiePrefix: site.shortName.toLowerCase(),
   },
 });
+
+async function getActiveOrganizationId(userId: string) {
+  // If the user has no active organization, return the first one
+  const organization = await database.organization.findFirst({
+    where: {
+      members: {
+        some: {
+          userId,
+        },
+      },
+    },
+  });
+
+  // Part of the onboarding process is to join an organization so this should never happen
+  if (!organization) {
+    throw new Error('User is not part of any organization');
+  }
+
+  return organization.id;
+}
 
 export { toNextJsHandler } from 'better-auth/next-js';

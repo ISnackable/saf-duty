@@ -1,7 +1,7 @@
 import { site } from '@repo/site-config';
 import { render, screen } from '@testing-library/react';
 import { expect, test } from 'vitest';
-import Page from '../app/(unauthenticated)/login/page';
+import Page from '../app/(auth)/login/page';
 
 test('Sign In Page', () => {
   render(<Page />);
