@@ -2,7 +2,7 @@ import 'server-only';
 
 import { database } from '@repo/database';
 // import { redis } from '@repo/rate-limit';
-import { site } from '@repo/site-config';
+import { host, site } from '@repo/site-config';
 import { type BetterAuthOptions, betterAuth } from 'better-auth';
 import { emailHarmony } from 'better-auth-harmony';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
@@ -62,6 +62,7 @@ export const betterAuthConfig = {
   advanced: {
     cookiePrefix: site.shortName.toLowerCase(),
   },
+  trustedOrigins: [host],
 } satisfies BetterAuthOptions;
 
 export const auth = betterAuth({

@@ -23,7 +23,7 @@ const client: Parameters<typeof createEnv>[0]['client'] = {
   NEXT_PUBLIC_DOCS_URL: z.string().min(1).url().optional(),
 
   // Added by Vercel
-  NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL: z.string().min(1).optional(),
+  NEXT_PUBLIC_VERCEL_URL: z.string().min(1).optional(),
 };
 
 export const env = createEnv({
@@ -44,7 +44,6 @@ export const env = createEnv({
     BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_DOCS_URL: process.env.NEXT_PUBLIC_DOCS_URL,
-    NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL:
-      process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL,
+    NEXT_PUBLIC_VERCEL_URL: process.env.NEXT_PUBLIC_VERCEL_URL,
   },
 });

@@ -264,19 +264,6 @@ export default function RootLayout({ children }: RootLayoutProperties) {
         />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-touch-fullscreen" content="yes" />
-
-        <script
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                if (localStorage.theme === 'light' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: light)').matches)) {
-                  document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
-                }
-              } catch (_) {}
-            `,
-          }}
-        />
       </head>
       <body className="bg-background text-foreground">
         <main className="antialiased">
