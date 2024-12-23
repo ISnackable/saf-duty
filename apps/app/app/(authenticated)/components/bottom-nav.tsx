@@ -37,7 +37,6 @@ export function BottomNav() {
       }}
       className="fixed bottom-0 z-30 h-[60px] w-full border-border border-t bg-card shadow-lg sm:hidden dark:border-zinc-800 dark:bg-[#141517]"
     >
-      'bordert'
       <div
         className={cn('flex h-full flex-row items-center justify-start gap-4')}
       >
