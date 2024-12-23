@@ -7,7 +7,6 @@ import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 import type * as z from 'zod';
 
-import { registerFormSchema } from '@/schemas/auth';
 import { signUp } from '@repo/auth/client';
 import { getStrength, requirements } from '@repo/auth/lib/utils';
 import { Icons } from '@repo/design-system/components/icons';
@@ -33,6 +32,7 @@ import {
 } from '@repo/design-system/components/ui/popover';
 import { Progress } from '@repo/design-system/components/ui/progress';
 import { cn } from '@repo/design-system/lib/utils';
+import { registerFormSchema } from '../../../schemas/auth';
 
 type UserRegisterFormProps = React.HTMLAttributes<HTMLDivElement>;
 

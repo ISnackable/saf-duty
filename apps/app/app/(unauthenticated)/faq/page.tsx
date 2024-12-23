@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import svgImage from '@/public/undraw_questions_re_1fy7.svg';
 import {
   Accordion,
   AccordionContent,
@@ -10,6 +9,7 @@ import {
   AccordionTrigger,
 } from '@repo/design-system/components/ui/accordion';
 import { Button } from '@repo/design-system/components/ui/button';
+import svgImage from '../../../public/undraw_questions_re_1fy7.svg';
 
 export const metadata: Metadata = {
   title: 'FAQ',

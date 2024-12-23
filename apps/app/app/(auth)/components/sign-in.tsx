@@ -1,6 +1,5 @@
 'use client';
 
-import { loginFormSchema } from '@/schemas/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from '@repo/auth/client';
 import { Icons } from '@repo/design-system/components/icons';
@@ -15,6 +14,7 @@ import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import type * as z from 'zod';
+import { loginFormSchema } from '../../../schemas/auth';
 
 type UserLoginFormProps = React.HTMLAttributes<HTMLDivElement>;
 

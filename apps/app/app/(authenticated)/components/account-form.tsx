@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import type * as z from 'zod';
 
-import { updateFormSchema } from '@/schemas/auth';
 import { useSession } from '@repo/auth/client';
 // import { deleteAccount, updateAccount } from '@/app/(auth)/actions';
 import { PasswordInput } from '@repo/design-system/components/password-input';
@@ -35,6 +34,7 @@ import {
   FormMessage,
 } from '@repo/design-system/components/ui/form';
 import { Input } from '@repo/design-system/components/ui/input';
+import { updateFormSchema } from '../../../schemas/auth';
 
 const accountFormSchema = updateFormSchema.refine(
   (data) => data.newPassword !== data.oldPassword,

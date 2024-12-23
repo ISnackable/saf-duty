@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import svgImage from '@/public/undraw_exciting_news_re_y1iw.svg';
 import { buttonVariants } from '@repo/design-system/components/ui/button';
 import { cn } from '@repo/design-system/lib/utils';
+import svgImage from '../../../public/undraw_exciting_news_re_y1iw.svg';
 import { UserRegisterForm } from '../components/sign-up';
 
 export const metadata: Metadata = {

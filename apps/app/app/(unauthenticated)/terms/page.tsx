@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import svgImage from '@/public/undraw_personal_information.svg';
 import { Button } from '@repo/design-system/components/ui/button';
+import svgImage from '../../../public/undraw_personal_information.svg';
 
 export const metadata: Metadata = {
   title: 'Terms and Conditions',
