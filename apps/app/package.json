@@ -10,9 +10,6 @@
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
-  "imports": {
-    "@": "./*"
-  },
   "dependencies": {
     "@better-fetch/fetch": "^1.1.12",
     "@hookform/resolvers": "^3.9.1",
