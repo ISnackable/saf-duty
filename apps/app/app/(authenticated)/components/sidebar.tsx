@@ -8,8 +8,10 @@ import {
   useListOrganizations,
   useSession,
 } from '@repo/auth/client';
+import { isDemoUser } from '@repo/auth/lib/utils';
 import type { Organization } from '@repo/auth/types';
 import { Icons } from '@repo/design-system/components/icons';
+import { NavCollapsible } from '@repo/design-system/components/nav-collapsible';
 import { NavOthers } from '@repo/design-system/components/nav-others';
 import { NavUser } from '@repo/design-system/components/nav-user';
 import { TeamSwitcher } from '@repo/design-system/components/team-switcher';
@@ -137,11 +139,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <ScrollArea>
-          {/* {session &&
-          session.user.app_metadata?.groups?.role !== 'admin' &&
+          {session &&
+          session.user.role !== 'admin' &&
           !isDemoUser(session.user?.id) ? null : (
             <NavCollapsible label="Admin" items={data.admin} />
-          )} */}
+          )}
           <NavOthers label="Dashboard" others={data.dashboard} />
           <NavOthers label="Collections" others={data.collections} />
           <NavOthers label="Others" others={data.others} />

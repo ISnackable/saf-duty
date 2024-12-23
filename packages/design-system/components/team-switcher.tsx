@@ -1,9 +1,11 @@
-'use client';
-
 import { CaretSortIcon, PlusIcon } from '@radix-ui/react-icons';
 import type { Organization } from '@repo/auth/types';
 import { Icons } from '@repo/design-system/components/icons';
-
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@repo/design-system/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,7 +46,10 @@ export function TeamSwitcher({
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary-700 bg-opacity-60 text-sidebar-primary-foreground">
                 {activeTeam?.logo ? (
-                  'TESAWDUAWDAWT'
+                  <Avatar>
+                    <AvatarImage src={activeTeam.logo} alt="team logo" />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
                 ) : (
                   <Icons.logo className="size-8 text-accent-foreground" />
                 )}
@@ -71,7 +76,7 @@ export function TeamSwitcher({
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Teams
             </DropdownMenuLabel>
-            {teams.map((team, index) => (
+            {teams?.map((team, index) => (
               <DropdownMenuItem
                 key={team.name}
                 onClick={() => setActiveTeam(team)}
@@ -79,7 +84,10 @@ export function TeamSwitcher({
               >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
                   {activeTeam?.logo ? (
-                    'TEST'
+                    <Avatar>
+                      <AvatarImage src={activeTeam.logo} alt="team logo" />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
                   ) : (
                     <Icons.logo className="size-4 shrink-0" />
                   )}

@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@prisma/client": "6.1.0",
-    "@repo/auth": "workspace:*",
     "server-only": "^0.0.1",
     "undici": "^7.2.0"
   },

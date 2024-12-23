@@ -2,6 +2,7 @@
   "name": "@repo/next-config",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
@@ -16,6 +17,7 @@
   "dependencies": {
     "@next/bundle-analyzer": "^15.1.2",
     "@prisma/nextjs-monorepo-workaround-plugin": "^6.1.0",
+    "@serwist/next": "^9.0.11",
     "@vercel/toolbar": "^0.1.30"
   }
 }

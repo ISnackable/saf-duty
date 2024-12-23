@@ -5,7 +5,7 @@ import defaultTheme from 'tailwindcss/defaultTheme';
 import typographyConfig from './typography.config';
 
 export const config: Config = {
-  darkMode: ['class'],
+  darkMode: ['selector', '[class$="dark"]'],
   content: [
     './node_modules/@repo/design-system/components/**/*.{ts,tsx}',
     './node_modules/@repo/design-system/lib/**/*.{ts,tsx}',
@@ -85,19 +85,70 @@ export const config: Config = {
         sans: ['var(--font-geist-sans)', ...defaultTheme.fontFamily.sans],
         mono: ['var(--font-geist-mono)', ...defaultTheme.fontFamily.mono],
       },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+      },
       keyframes: {
-        'accordion-down': {
+        'collapsible-down': {
           from: { height: '0' },
-          to: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: 'var(--radix-collapsible-content-height)' },
+        },
+        'collapsible-up': {
+          from: { height: 'var(--radix-collapsible-content-height)' },
+          to: { height: '0' },
+        },
+        'accordion-down': {
+          from: {
+            height: '0',
+          },
+          to: {
+            height: 'var(--radix-accordion-content-height)',
+          },
         },
         'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' },
+          from: {
+            height: 'var(--radix-accordion-content-height)',
+          },
+          to: {
+            height: '0',
+          },
+        },
+        'caret-blink': {
+          '0%,70%,100%': {
+            opacity: '1',
+          },
+          '20%,50%': {
+            opacity: '0',
+          },
+        },
+        'gauge-fadeIn': {
+          from: {
+            opacity: '0',
+          },
+          to: {
+            opacity: '1',
+          },
+        },
+        'gauge-fill': {
+          from: {
+            'stroke-dashoffset': '200',
+            opacity: '0',
+          },
+          to: {
+            opacity: '1',
+          },
         },
       },
       animation: {
+        'collapsible-down': 'collapsible-down 0.2s ease-out',
+        'collapsible-up': 'collapsible-up 0.2s ease-out',
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'caret-blink': 'caret-blink 1.25s ease-out infinite',
+        'gauge-fadeIn': 'gauge-fadeIn 1s ease forwards',
+        'gauge-fill': 'gauge-fill 1s ease forwards',
       },
       typography: typographyConfig,
     },

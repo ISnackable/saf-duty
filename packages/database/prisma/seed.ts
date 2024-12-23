@@ -21,7 +21,7 @@ async function main() {
     where: { email: demo.email },
     update: {},
     create: {
-      id: ctx.generateId({ model: 'user' }),
+      id: demo.id,
       name: 'demo',
       email: demo.email,
       emailVerified: true,
@@ -32,21 +32,25 @@ async function main() {
     },
   });
 
-  const _account = await database.account.create({
-    data: {
-      id: ctx.generateId({ model: 'account' }),
+  const _account = await database.account.upsert({
+    where: { id: `${demo.id.slice(0, -1)}a` },
+    update: {},
+    create: {
+      id: `${demo.id.slice(0, -1)}a`,
       userId: user.id,
       accountId: user.id,
-      providerId: '',
+      providerId: 'credential',
       createdAt: new Date(),
       updatedAt: new Date(),
       password: hash,
     },
   });
 
-  const _member = await database.member.create({
-    data: {
-      id: ctx.generateId({ model: 'member' }),
+  const _member = await database.member.upsert({
+    where: { id: `${demo.id.slice(0, -1)}m` },
+    update: {},
+    create: {
+      id: `${demo.id.slice(0, -1)}m`,
       organizationId: organization.id,
       userId: user.id,
       role: 'owner',

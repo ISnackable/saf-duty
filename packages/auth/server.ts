@@ -85,7 +85,7 @@ export const auth = betterAuth({
             throw new APIError('BAD_REQUEST');
           }
 
-          const organizationId = await getOrganizationByName(
+          const organizationId = await getOrganizationBySlug(
             // @ts-expect-error - unit is not typed
             user.initialOrganizationId
           );
@@ -98,18 +98,14 @@ export const auth = betterAuth({
           };
         },
         after: async (user) => {
-          const organizationId = await getOrganizationById(
-            // @ts-expect-error - unit is not typed
-            user.initialOrganizationId
-          );
-
           // Add the user to the organization
           const auth = betterAuth(betterAuthConfig);
 
           await auth.api.addMember({
             body: {
               userId: user.id,
-              organizationId,
+              // @ts-expect-error - unit is not typed
+              organizationId: user.initialOrganizationId,
               role: 'member',
             },
           });
@@ -154,24 +150,10 @@ async function getActiveOrganizationByUserId(userId: string) {
   return organization.id;
 }
 
-async function getOrganizationByName(organizationName: string) {
+async function getOrganizationBySlug(organizationSlug: string) {
   const organization = await database.organization.findFirst({
     where: {
-      name: organizationName,
-    },
-  });
-
-  if (!organization) {
-    throw new APIError('BAD_REQUEST');
-  }
-
-  return organization.id;
-}
-
-async function getOrganizationById(organizationId: string) {
-  const organization = await database.organization.findUnique({
-    where: {
-      id: organizationId,
+      slug: organizationSlug,
     },
   });
 

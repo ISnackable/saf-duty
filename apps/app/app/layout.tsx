@@ -6,7 +6,7 @@ import type { ReactNode } from 'react';
 import type { Metadata, Viewport } from 'next';
 
 import { host, site } from '@repo/site-config';
-import { SWRProvider } from './_components/swr-provider';
+import { SWRProvider } from './providers/swr-provider';
 
 export const metadata: Metadata = {
   metadataBase: new URL(host),

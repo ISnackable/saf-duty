@@ -10,6 +10,9 @@
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
+  "imports": {
+    "@": "./*"
+  },
   "dependencies": {
     "@better-fetch/fetch": "^1.1.12",
     "@hookform/resolvers": "^3.9.1",
@@ -25,7 +28,9 @@
     "@repo/seo": "workspace:*",
     "@repo/site-config": "workspace:*",
     "@repo/tailwind-config": "workspace:*",
+    "@serwist/next": "^9.0.11",
     "@tabler/icons-react": "^3.26.0",
+    "date-fns": "^4.1.0",
     "fuse.js": "^7.0.0",
     "import-in-the-middle": "^1.12.0",
     "motion": "^11.15.0",
@@ -48,6 +53,7 @@
     "@types/react": "19.0.2",
     "@types/react-dom": "19.0.2",
     "jsdom": "^25.0.1",
+    "serwist": "^9.0.11",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"

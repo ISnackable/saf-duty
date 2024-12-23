@@ -8,7 +8,7 @@ export default {
   description: 'The official app of the AFPN CDO',
 
   demo: {
-    id: 'a8692dad-d019-4122-9f31-a1a350452461',
+    id: 'AuHy9drLwy1vBDPtH4B5Nm8oundErr9j',
     email: 'demo@example.com',
     password: 'Password@1234',
   },
