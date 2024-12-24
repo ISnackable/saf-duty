@@ -1,11 +1,11 @@
-import 'server-only';
+// import 'server-only';
 
 // https://gist.github.com/kincaidoneil/bc2516111f0ec8850cd6020b8191b27b
 import { Pool, neonConfig } from '@neondatabase/serverless';
-import { PrismaNeon } from '@prisma/adapter-neon';
-import { PrismaClient } from '@prisma/client';
 import { env } from '@repo/env';
+import { drizzle } from 'drizzle-orm/neon-serverless';
 import { WebSocket } from 'ws';
+import * as schema from './schema';
 
 // Example Supabase pooled connection string (must use Supavisor)
 const connectionString = env.DATABASE_URL;
@@ -27,9 +27,6 @@ neonConfig.webSocketConstructor = WebSocket;
 const pool = new Pool({
   connectionString,
 });
-const adapter = new PrismaNeon(pool);
-export const database = new PrismaClient({
-  adapter,
-});
+export const database = drizzle({ client: pool, schema });
 
-export * from '@prisma/client';
+export * from 'drizzle-orm';

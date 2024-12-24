@@ -10,9 +10,10 @@
     "analyze": "turbo analyze",
     "bump-deps": "pnpx npm-check-updates --deep -u -x react-day-picker && pnpm install",
     "bump-ui": "pnpx shadcn@latest add --all --overwrite -c packages/design-system",
-    "migrate": "cd packages/database && npx prisma format && npx prisma generate && npx prisma db push",
     "clean": "git clean -xdf node_modules",
-    "seed": "cd packages/database && npx prisma db seed"
+    "migrate": "cd packages/database && npx drizzle-kit migrate",
+    "db:generate": "cd packages/database && npx drizzle-kit generate",
+    "db:pull": "cd packages/database && npx drizzle-kit pull"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

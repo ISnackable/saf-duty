@@ -32,7 +32,6 @@
 			"extensions": [
 				"biomejs.biome",
 				"bradlc.vscode-tailwindcss",
-				"Prisma.prisma",
 				"yoavbls.pretty-ts-errors"
 			],
 			"settings": {

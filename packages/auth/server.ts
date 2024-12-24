@@ -1,38 +1,37 @@
 import 'server-only';
 
-import { database } from '@repo/database';
-import { redis } from '@repo/rate-limit';
+import { database, eq } from '@repo/database';
+import { organization as _organization, member } from '@repo/database/schema';
+// import { redis } from '@repo/rate-limit';
 import { host, site } from '@repo/site-config';
 import { type BetterAuthOptions, betterAuth } from 'better-auth';
-import { emailHarmony } from 'better-auth-harmony';
-import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { APIError } from 'better-auth/api';
 import { nextCookies } from 'better-auth/next-js';
 import { admin, organization } from 'better-auth/plugins';
-import { passkey } from 'better-auth/plugins/passkey';
 
 export const betterAuthConfig = {
-  database: prismaAdapter(database, { provider: 'postgresql' }),
-  secondaryStorage: {
-    get: async (key) => {
-      const value = (await redis.get(key)) as string | null;
-      return value ? JSON.parse(JSON.stringify(value)) : null;
-    },
-    set: async (key, value, ttl) => {
-      if (ttl) {
-        await redis.set(key, JSON.stringify(value), { ex: ttl });
-      } else {
-        await redis.set(key, JSON.stringify(value));
-      }
-    },
-    delete: async (key) => {
-      await redis.del(key);
-    },
-  },
-  rateLimit: {
-    // Because we are using Free tier, so we try to keep the rate limit low 😢
-    storage: 'memory',
-  },
+  database: drizzleAdapter(database, { provider: 'pg' }),
+  // secondaryStorage: {
+  //   get: async (key) => {
+  //     const value = (await redis.get(key)) as string | null;
+  //     return value ? JSON.parse(JSON.stringify(value)) : null;
+  //   },
+  //   set: async (key, value, ttl) => {
+  //     if (ttl) {
+  //       await redis.set(key, JSON.stringify(value), { ex: ttl });
+  //     } else {
+  //       await redis.set(key, JSON.stringify(value));
+  //     }
+  //   },
+  //   delete: async (key) => {
+  //     await redis.del(key);
+  //   },
+  // },
+  // rateLimit: {
+  //   // Because we are using Free tier, so we try to keep the rate limit low 😢
+  //   storage: 'memory',
+  // },
   session: {
     cookieCache: {
       enabled: true,
@@ -49,8 +48,6 @@ export const betterAuthConfig = {
         // TODO: send email
       },
     }),
-    passkey(),
-    emailHarmony(),
   ],
   advanced: {
     cookiePrefix: site.shortName.toLowerCase(),
@@ -138,14 +135,8 @@ export const auth = betterAuth({
 });
 
 async function getActiveOrganizationByUserId(userId: string) {
-  const organization = await database.organization.findFirst({
-    where: {
-      members: {
-        some: {
-          userId,
-        },
-      },
-    },
+  const organization = await database.query.member.findFirst({
+    where: eq(member.userId, userId),
   });
 
   // Part of the onboarding process is to join an organization so this should never happen
@@ -157,10 +148,8 @@ async function getActiveOrganizationByUserId(userId: string) {
 }
 
 async function getOrganizationBySlug(organizationSlug: string) {
-  const organization = await database.organization.findFirst({
-    where: {
-      slug: organizationSlug,
-    },
+  const organization = await database.query.organization.findFirst({
+    where: eq(_organization.slug, organizationSlug),
   });
 
   if (!organization) {

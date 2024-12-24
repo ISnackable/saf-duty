@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@next/bundle-analyzer": "^15.1.2",
-    "@prisma/nextjs-monorepo-workaround-plugin": "^6.1.0",
     "@serwist/next": "^9.0.11",
     "@vercel/toolbar": "^0.1.30"
   }

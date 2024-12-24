@@ -13,7 +13,6 @@
   "dependencies": {
     "@better-fetch/fetch": "^1.1.12",
     "@hookform/resolvers": "^3.9.1",
-    "@prisma/client": "6.1.0",
     "@repo/analytics": "workspace:*",
     "@repo/auth": "workspace:*",
     "@repo/database": "workspace:*",
