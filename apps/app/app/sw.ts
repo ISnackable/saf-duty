@@ -2,8 +2,6 @@ import { defaultCache } from '@serwist/next/worker';
 import type { PrecacheEntry, SerwistGlobalConfig } from 'serwist';
 import { Serwist } from 'serwist';
 
-import { site } from '@repo/site-config';
-
 // This declares the value of `injectionPoint` to TypeScript.
 // `injectionPoint` is the string that will be replaced by the
 // actual precache manifest. By default, this string is set to
@@ -30,7 +28,7 @@ const serwist = new Serwist({
   // Whether the service worker should claim any currently available clients.
   clientsClaim: true,
   // Whether navigation preloading should be used.
-  navigationPreload: false,
+  navigationPreload: true,
   // Whether Serwist should log in development mode.
   disableDevLogs: true,
   // A list of runtime caching entries. When a request is made and its URL match
@@ -45,7 +43,7 @@ self.addEventListener('push', (event) => {
     const unreadCount = data?.unreadCount;
 
     const notificationPromise = self.registration.showNotification(
-      data.title || site.name,
+      data.title || 'New Notification',
       {
         body: data.message || 'You have a new notification!',
         icon: '/icons/manifest-icon-192.maskable.png',

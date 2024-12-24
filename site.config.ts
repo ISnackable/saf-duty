@@ -1,4 +1,4 @@
-import type { SiteConfig } from '@repo/site-config';
+import type { SiteConfig } from '@repo/site-config/types';
 
 export default {
   // basic site info (required)

@@ -1,18 +1,5 @@
 import { getSiteConfig } from './lib/get-config-value';
 
-export interface SiteConfig {
-  name: string;
-  shortName: string;
-  domain: string;
-  description?: string;
-
-  demo: {
-    id: string;
-    email: string;
-    password: string;
-  };
-}
-
 export const environment = process.env.NODE_ENV || 'development';
 export const isDev = environment === 'development';
 
