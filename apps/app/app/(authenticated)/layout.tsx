@@ -2,8 +2,8 @@ import {
   SidebarInset,
   SidebarProvider,
 } from '@repo/design-system/components/ui/sidebar';
-import { env } from '@repo/env';
-import { secure } from '@repo/security';
+// import { env } from '@repo/env';
+// import { secure } from '@repo/security';
 import type * as React from 'react';
 import { BottomNav } from './components/bottom-nav';
 import { Header } from './components/header';
@@ -14,9 +14,9 @@ type AppLayoutProperties = {
 };
 
 const AppLayout = async ({ children }: AppLayoutProperties) => {
-  if (env.ARCJET_KEY) {
-    await secure(['CATEGORY:PREVIEW']);
-  }
+  // if (env.ARCJET_KEY) {
+  //   await secure(['CATEGORY:PREVIEW']);
+  // }
 
   return (
     <SidebarProvider>
