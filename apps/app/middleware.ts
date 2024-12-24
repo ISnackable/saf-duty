@@ -1,4 +1,5 @@
 import { betterFetch } from '@better-fetch/fetch';
+import { isDemoUser } from '@repo/auth/lib/utils';
 import type { Session } from '@repo/auth/types';
 import { noseconeConfig, noseconeMiddleware } from '@repo/security/middleware';
 
@@ -55,19 +56,31 @@ export default async function middleware(request: NextRequest) {
     return redirectToPath(request);
   }
 
+  // Authenticated user should not be able to access /admin routes if not an "admin" role (unless it's a demo user)
+  if (
+    request.nextUrl.pathname.startsWith('/admin') &&
+    session.user.role !== 'admin' &&
+    !isDemoUser(session.user.id)
+  ) {
+    return redirectToPath(request);
+  }
+
   return securityHeaders();
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
-     * - icons, splash_screens (PWA files)
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|icons|splash_screens).*)',
+    '/',
+    '/login',
+    '/register',
+    '/reset-password',
+    '/change-password',
+    '/duty-personnels',
+    '/duty-roster',
+    '/manage-blockouts',
+    '/swap-duties',
+    '/settings/:path*',
+    '/admin/:path*',
+    '/collections/:path*',
   ],
 };

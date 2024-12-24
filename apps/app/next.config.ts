@@ -1,11 +1,11 @@
 import { env } from '@repo/env';
-import { config, withAnalyzer } from '@repo/next-config';
+import { config, withAnalyzer, withSerwist } from '@repo/next-config';
 import { host } from '@repo/site-config';
 import type { NextConfig } from 'next';
 
 let nextConfig: NextConfig = {
   ...config,
-  // biome-ignore lint/suspicious/useAwait: <explanation>
+  // biome-ignore lint/suspicious/useAwait: headers is a Next.js API that must be async
   async headers() {
     return [
       {
@@ -33,4 +33,4 @@ if (env.ANALYZE === 'true') {
   nextConfig = withAnalyzer(nextConfig);
 }
 
-export default nextConfig;
+export default withSerwist(nextConfig);
