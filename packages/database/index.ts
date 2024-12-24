@@ -1,6 +1,6 @@
 // import 'server-only';
 
-// https://gist.github.com/kincaidoneil/bc2516111f0ec8850cd6020b8191b27b
+// https://github.com/nextauthjs/next-auth/issues/10773
 import { Pool, neonConfig } from '@neondatabase/serverless';
 import { env } from '@repo/env';
 import { drizzle } from 'drizzle-orm/neon-serverless';

@@ -160,3 +160,4 @@ async function getOrganizationBySlug(organizationSlug: string) {
 }
 
 export { toNextJsHandler } from 'better-auth/next-js';
+export const { handler } = auth;
