@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { database } from '@repo/database';
-// import { redis } from '@repo/rate-limit';
+import { redis } from '@repo/rate-limit';
 import { host, site } from '@repo/site-config';
 import { type BetterAuthOptions, betterAuth } from 'better-auth';
 import { emailHarmony } from 'better-auth-harmony';
@@ -13,27 +13,25 @@ import { passkey } from 'better-auth/plugins/passkey';
 
 export const betterAuthConfig = {
   database: prismaAdapter(database, { provider: 'postgresql' }),
-  // TODO: Bug with setting activeOrganizationId when using secondary storage
-  // secondaryStorage: {
-  //   get: async (key) => {
-  //     const value = (await redis.get(key)) as string | null;
-  //     return value ? JSON.parse(JSON.stringify(value)) : null;
-  //   },
-  //   set: async (key, value, ttl) => {
-  //     if (ttl) {
-  //       await redis.set(key, JSON.stringify(value), { ex: ttl });
-  //     } else {
-  //       await redis.set(key, JSON.stringify(value));
-  //     }
-  //   },
-  //   delete: async (key) => {
-  //     await redis.del(key);
-  //     return null;
-  //   },
-  // },
-  // rateLimit: {
-  //   storage: 'secondary-storage',
-  // },
+  secondaryStorage: {
+    get: async (key) => {
+      const value = (await redis.get(key)) as string | null;
+      return value ? JSON.parse(JSON.stringify(value)) : null;
+    },
+    set: async (key, value, ttl) => {
+      if (ttl) {
+        await redis.set(key, JSON.stringify(value), { ex: ttl });
+      } else {
+        await redis.set(key, JSON.stringify(value));
+      }
+    },
+    delete: async (key) => {
+      await redis.del(key);
+    },
+  },
+  rateLimit: {
+    storage: 'secondary-storage',
+  },
   emailAndPassword: {
     enabled: true,
     sendResetPassword: async ({ user, url, token }, request) => {

@@ -38,7 +38,7 @@
     "react-hook-form": "^7.54.2",
     "require-in-the-middle": "^7.4.0",
     "sonner": "^1.7.1",
-    "swr": "^2.2.5",
+    "swr": "^2.3.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {

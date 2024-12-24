@@ -28,7 +28,7 @@
   },
   "packageManager": "pnpm@9.15.1",
   "dependencies": {
-    "chalk": "^5.4.0",
+    "chalk": "^5.4.1",
     "commander": "^12.1.0"
   }
 }
