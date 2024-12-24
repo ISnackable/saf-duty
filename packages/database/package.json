@@ -1,8 +1,6 @@
 {
   "name": "@repo/database",
   "version": "0.0.0",
-  "main": "./index.ts",
-  "types": "./index.ts",
   "scripts": {
     "analyze": "drizzle-kit generate",
     "build": "drizzle-kit generate",
@@ -12,10 +10,9 @@
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
     "@repo/env": "workspace:*",
-    "@types/ws": "^8.5.13",
     "drizzle-orm": "^0.38.2",
-    "server-only": "^0.0.1",
-    "ws": "^8.18.0"
+    "postgres": "^3.4.5",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
@@ -24,5 +21,16 @@
     "drizzle-kit": "^0.30.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.node.ts",
+      "node": "./index.node.ts",
+      "edge-light": "./index.edge.ts"
+    },
+    "./schema": {
+      "types": "./schema.ts",
+      "default": "./schema.ts"
+    }
   }
 }
