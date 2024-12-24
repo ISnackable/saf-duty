@@ -30,7 +30,8 @@ export const betterAuthConfig = {
     },
   },
   rateLimit: {
-    storage: 'secondary-storage',
+    // Because we are using Free tier, so we try to keep the rate limit low 😢
+    storage: 'memory',
   },
   session: {
     cookieCache: {
