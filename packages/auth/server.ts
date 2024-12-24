@@ -32,16 +32,10 @@ export const betterAuthConfig = {
   rateLimit: {
     storage: 'secondary-storage',
   },
-  emailAndPassword: {
-    enabled: true,
-    sendResetPassword: async ({ user, url, token }, request) => {
-      // TODO: send email
-    },
-  },
-  emailVerification: {
-    sendOnSignUp: true,
-    sendVerificationEmail: async ({ user, url, token }, request) => {
-      // TODO: send email
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60, // Cache duration in seconds
     },
   },
   plugins: [
@@ -126,6 +120,18 @@ export const auth = betterAuth({
           };
         },
       },
+    },
+  },
+  emailAndPassword: {
+    enabled: true,
+    sendResetPassword: async ({ user, url, token }, request) => {
+      // TODO: send email
+    },
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url, token }, request) => {
+      // TODO: send email
     },
   },
 });
