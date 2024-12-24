@@ -354,12 +354,12 @@ importers:
 
   packages/database:
     dependencies:
-      '@neondatabase/serverless':
-        specifier: ^0.10.4
-        version: 0.10.4
       '@repo/env':
         specifier: workspace:*
         version: link:../env
+      '@vercel/postgres':
+        specifier: ^0.10.0
+        version: 0.10.0
       drizzle-orm:
         specifier: ^0.38.2
         version: 0.38.2(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.1.0(prisma@6.1.0))(@types/pg@8.11.6)(@types/react@19.0.2)(@vercel/postgres@0.10.0)(kysely@0.27.5)(pg@8.13.1)(postgres@3.4.5)(prisma@6.1.0)(react@19.0.0)
@@ -9831,11 +9831,11 @@ snapshots:
   '@neondatabase/serverless@0.10.4':
     dependencies:
       '@types/pg': 8.11.6
+    optional: true
 
   '@neondatabase/serverless@0.9.5':
     dependencies:
       '@types/pg': 8.11.6
-    optional: true
 
   '@next/bundle-analyzer@15.1.2(bufferutil@4.0.8)':
     dependencies:
@@ -11770,7 +11770,6 @@ snapshots:
       ws: 8.18.0(bufferutil@4.0.8)
     transitivePeerDependencies:
       - utf-8-validate
-    optional: true
 
   '@vercel/toolbar@0.1.30(next@15.1.2(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@19.0.0-beta-b2e8e9c-20241220)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)(vite@5.4.10(@types/node@22.10.2)(terser@5.31.0))':
     dependencies:

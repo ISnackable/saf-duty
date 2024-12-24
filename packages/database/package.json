@@ -8,8 +8,8 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^0.10.4",
     "@repo/env": "workspace:*",
+    "@vercel/postgres": "^0.10.0",
     "drizzle-orm": "^0.38.2",
     "postgres": "^3.4.5",
     "server-only": "^0.0.1"

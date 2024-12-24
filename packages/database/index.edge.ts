@@ -1,19 +1,17 @@
 import 'server-only';
 
 // https://github.com/nextauthjs/next-auth/issues/10773
-import { Pool, neonConfig } from '@neondatabase/serverless';
 import { env } from '@repo/env';
-import { drizzle } from 'drizzle-orm/neon-serverless';
+import { createPool } from '@vercel/postgres';
+
+import { drizzle } from 'drizzle-orm/vercel-postgres';
 import * as schema from './schema';
 
 // Example Supabase pooled connection string (must use Supavisor)
 const connectionString = env.DATABASE_URL;
-// Only Neon hosts support this -- non-deterministic errors otherwise
-neonConfig.pipelineConnect = false;
-
-const pool = new Pool({
+const pool = createPool({
   connectionString,
 });
-export const database = drizzle({ client: pool, schema });
+export const database = drizzle(pool, { schema });
 
 export * from 'drizzle-orm';
