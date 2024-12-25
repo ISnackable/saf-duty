@@ -7,7 +7,8 @@ import {
 import { createAuthClient } from 'better-auth/react';
 
 export const client = createAuthClient({
-  baseURL: host, // the base url of your auth server
+  // TODO: Refactor https://github.com/better-auth/better-auth/issues/480#issuecomment-2548359974
+  baseURL: host,
   plugins: [
     inferAdditionalFields({
       user: {

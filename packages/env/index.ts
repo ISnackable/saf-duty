@@ -16,6 +16,7 @@ const server: Parameters<typeof createEnv>[0]['server'] = {
   NEXT_RUNTIME: z.enum(['nodejs', 'edge']).optional(),
   FLAGS_SECRET: z.string().min(1).optional(),
   BLOB_READ_WRITE_TOKEN: z.string().min(1).optional(),
+  VERCEL_ENV: z.string().min(1).optional(),
 };
 
 const client: Parameters<typeof createEnv>[0]['client'] = {
@@ -39,6 +40,7 @@ export const env = createEnv({
     ARCJET_KEY: process.env.ARCJET_KEY,
     ANALYZE: process.env.ANALYZE,
     VERCEL: process.env.VERCEL,
+    VERCEL_ENV: process.env.VERCEL_ENV,
     NEXT_RUNTIME: process.env.NEXT_RUNTIME,
     FLAGS_SECRET: process.env.FLAGS_SECRET,
     BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,

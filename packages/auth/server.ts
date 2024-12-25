@@ -106,9 +106,8 @@ export const auth = betterAuth({
     session: {
       create: {
         before: async (session) => {
-          const organizationId = await getActiveOrganizationByUserId(
-            session.userId
-          );
+          // Maybe we use redis to store the active organization
+          const organizationId = await getOrganizationByUserId(session.userId);
 
           return {
             data: {
@@ -122,6 +121,7 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
     sendResetPassword: async ({ user, url, token }, request) => {
       // TODO: send email
     },
@@ -134,7 +134,7 @@ export const auth = betterAuth({
   },
 });
 
-async function getActiveOrganizationByUserId(userId: string) {
+async function getOrganizationByUserId(userId: string) {
   const organization = await database.query.member.findFirst({
     where: eq(member.userId, userId),
   });
