@@ -13,7 +13,8 @@
     "clean": "git clean -xdf node_modules",
     "migrate": "cd packages/database && npx drizzle-kit migrate",
     "db:generate": "cd packages/database && npx drizzle-kit generate",
-    "db:pull": "cd packages/database && npx drizzle-kit pull"
+    "db:pull": "cd packages/database && npx drizzle-kit pull",
+    "db:push": "cd packages/database && npx drizzle-kit push"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
@@ -31,5 +32,10 @@
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^12.1.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@neondatabase/serverless": "^0.10.4"
+    }
   }
 }

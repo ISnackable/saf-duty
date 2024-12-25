@@ -9,6 +9,7 @@
       "@repo/*": ["../../packages/*"]
     }
   },
+  "types": ["@serwist/next/typings"],
   "include": [
     "next-env.d.ts",
     "next.config.ts",

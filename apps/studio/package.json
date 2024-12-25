@@ -2,7 +2,7 @@
   "name": "studio",
   "version": "0.0.0",
   "scripts": {
-    "dev": "drizzle-kit studio --port 3005",
+    "dev": "drizzle-kit studio --config ../../packages/database/drizzle.config.ts --verbose",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },

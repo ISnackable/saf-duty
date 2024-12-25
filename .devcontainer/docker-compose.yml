@@ -23,6 +23,17 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
 
+  pg_proxy:
+    image: ghcr.io/neondatabase/wsproxy:latest
+    network_mode: service:app
+    environment:
+      LISTEN_PORT: "localhost:54330"
+      APPEND_PORT: 'localhost:5432'
+      ALLOW_ADDR_REGEX: '.*'
+      LOG_TRAFFIC: 'true'
+    depends_on:
+      - db
+
   redis:
     image: redis:latest
     network_mode: service:app

@@ -12,8 +12,7 @@
     "paths": {
       "@/*": ["./*"],
       "@repo/*": ["../../packages/*"]
-    },
-    "types": ["@serwist/next/typings"]
+    }
   },
   "exclude": ["node_modules"]
 }
