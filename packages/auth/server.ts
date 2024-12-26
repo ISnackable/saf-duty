@@ -6,9 +6,10 @@ import { redis } from '@repo/rate-limit';
 import { host, site } from '@repo/site-config';
 import { type BetterAuthOptions, betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { APIError } from 'better-auth/api';
+import { APIError, createAuthMiddleware } from 'better-auth/api';
 import { nextCookies } from 'better-auth/next-js';
 import { admin, organization } from 'better-auth/plugins';
+import { type JWTPayload, type JWTVerifyResult, jwtVerify } from 'jose';
 
 export const betterAuthConfig = {
   database: drizzleAdapter(database, { provider: 'pg', usePlural: true }),
@@ -59,6 +60,19 @@ export const betterAuthConfig = {
 export const auth = betterAuth({
   ...betterAuthConfig,
   user: {
+    changeEmail: {
+      enabled: true,
+      sendChangeEmailVerification: async (
+        { user, newEmail, url, token },
+        request
+      ) => {
+        console.dir({
+          to: newEmail,
+          subject: 'Verify your email change',
+          text: `Click the link to verify: ${url}`,
+        });
+      },
+    },
     additionalFields: {
       initialOrganizationId: {
         type: 'string',
@@ -114,23 +128,6 @@ export const auth = betterAuth({
             },
           };
         },
-        after: async (user) => {
-          // TODO: User may not been verified yet...
-          // So for now, we just add the user to the organization
-          // Before production, we will remove this, and create a page to handle the onboarding process
-
-          // Add the user to the organization
-          const auth = betterAuth(betterAuthConfig);
-
-          await auth.api.addMember({
-            body: {
-              userId: user.id,
-              // @ts-expect-error - unit is not typed
-              organizationId: user.initialOrganizationId,
-              role: 'member',
-            },
-          });
-        },
       },
     },
     session: {
@@ -148,6 +145,60 @@ export const auth = betterAuth({
         },
       },
     },
+  },
+  hooks: {
+    after: createAuthMiddleware(async (ctx) => {
+      if (ctx.path === '/verify-email' && ctx?.query?.token) {
+        let jwt: JWTVerifyResult<JWTPayload>;
+        try {
+          jwt = await jwtVerify(
+            ctx.query.token,
+            new TextEncoder().encode(ctx.context.secret),
+            { algorithms: ['HS256'] }
+          );
+        } catch (_error) {
+          // If the token is invalid, immediately return
+          return;
+        }
+
+        const parsed = jwt.payload;
+        // updatedTo is the new email, which means the user is updating the email
+        if (parsed.updateTo || !parsed.email) {
+          // Since we only want to do something when the user is verifying the email for the first time
+          // We can quickly return here
+          return;
+        }
+
+        const user = await ctx.context.internalAdapter.findUserByEmail(
+          // Since this hook is called after email is verified, we can safely assume that the email is valid
+          parsed.email as string
+        );
+
+        if (!user) {
+          // If the user is not found, then we should throw an error
+          return;
+        }
+
+        // @ts-expect-error - additonal fields are not typed
+        if (!user.user.onboarded) {
+          // If the user is not already a member of the organization, then add the user
+          const auth = betterAuth(betterAuthConfig);
+
+          await auth.api.addMember({
+            body: {
+              userId: user.user.id,
+              // @ts-expect-error - additonal fields are not typed
+              organizationId: user.user.initialOrganizationId,
+              role: 'member',
+            },
+          });
+
+          await ctx.context.internalAdapter.updateUser(user.user.id, {
+            onboarded: true,
+          });
+        }
+      }
+    }),
   },
 });
 
