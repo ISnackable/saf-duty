@@ -18,7 +18,7 @@ const baseConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'avatars.dicebear.com',
+        hostname: 'api.dicebear.com',
       },
     ],
   },

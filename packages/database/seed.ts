@@ -12,16 +12,16 @@ async function main() {
   const hash = await ctx.password.hash(demo.password);
 
   await seed(database, {
-    organization: schema.organization,
-    user: schema.user,
-    account: schema.account,
-    member: schema.member,
+    organizations: schema.organizations,
+    users: schema.users,
+    accounts: schema.accounts,
+    members: schema.members,
   }).refine((funcs) => ({
-    organization: {
+    organizations: {
       count: 1,
       columns: {
         id: funcs.default({
-          defaultValue: `${demo.id.slice(0, -1)}o`,
+          defaultValue: `${demo.id.slice(0, -1)}c`,
         }),
         name: funcs.default({
           defaultValue: '1234',
@@ -32,7 +32,7 @@ async function main() {
         createdAt: funcs.timestamp(),
       },
     },
-    user: {
+    users: {
       count: 1,
       columns: {
         id: funcs.default({
@@ -41,6 +41,9 @@ async function main() {
         name: funcs.default({
           defaultValue: 'demo',
         }),
+        image: funcs.default({
+          defaultValue: 'https://api.dicebear.com/7.x/adventurer/svg?seed=demo',
+        }),
         email: funcs.default({
           defaultValue: demo.email,
         }),
@@ -48,7 +51,7 @@ async function main() {
           defaultValue: true,
         }),
         initialOrganizationId: funcs.default({
-          defaultValue: `${demo.id.slice(0, -1)}o`,
+          defaultValue: `${demo.id.slice(0, -1)}c`,
         }),
         createdAt: funcs.timestamp(),
         updatedAt: funcs.timestamp(),
@@ -57,7 +60,7 @@ async function main() {
         }),
       },
     },
-    account: {
+    accounts: {
       count: 1,
       columns: {
         id: funcs.default({
@@ -79,14 +82,14 @@ async function main() {
         }),
       },
     },
-    member: {
+    members: {
       count: 1,
       columns: {
         id: funcs.default({
-          defaultValue: `${demo.id.slice(0, -1)}m`,
+          defaultValue: `${demo.id.slice(0, -1)}b`,
         }),
         organizationId: funcs.default({
-          defaultValue: `${demo.id.slice(0, -1)}o`,
+          defaultValue: `${demo.id.slice(0, -1)}c`,
         }),
         userId: funcs.default({
           defaultValue: demo.id,

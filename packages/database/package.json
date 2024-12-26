@@ -35,6 +35,9 @@
     "./schema": {
       "types": "./schema.ts",
       "default": "./schema.ts"
+    },
+    "./drizzle.config": {
+      "default": "./drizzle.config.ts"
     }
   }
 }

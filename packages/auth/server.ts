@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { database, eq } from '@repo/database';
-import { organization as _organization, member } from '@repo/database/schema';
+import { members, organizations } from '@repo/database/schema';
 import { redis } from '@repo/rate-limit';
 import { host, site } from '@repo/site-config';
 import { type BetterAuthOptions, betterAuth } from 'better-auth';
@@ -11,7 +11,7 @@ import { nextCookies } from 'better-auth/next-js';
 import { admin, organization } from 'better-auth/plugins';
 
 export const betterAuthConfig = {
-  database: drizzleAdapter(database, { provider: 'pg' }),
+  database: drizzleAdapter(database, { provider: 'pg', usePlural: true }),
   secondaryStorage: {
     get: async (key) => {
       const value = (await redis.get(key)) as string | null;
@@ -50,6 +50,7 @@ export const betterAuthConfig = {
     }),
   ],
   advanced: {
+    generateId: false,
     cookiePrefix: site.shortName.toLowerCase(),
   },
   trustedOrigins: [host],
@@ -63,8 +64,31 @@ export const auth = betterAuth({
         type: 'string',
         required: true,
         input: true,
-        returned: false,
+        returned: true,
       },
+      onboarded: {
+        type: 'boolean',
+        required: true,
+        defaultValue: 'false',
+        input: false,
+        returned: true,
+      },
+    },
+  },
+  emailAndPassword: {
+    enabled: true,
+    minPasswordLength: 6,
+    requireEmailVerification: true,
+    autoSignIn: true,
+    sendResetPassword: async ({ user, url, token }, request) => {
+      // TODO: send email
+    },
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url, token }, request) => {
+      console.log('sendVerificationEmail', user, url, token);
+      // TODO: send email
     },
   },
   databaseHooks: {
@@ -84,11 +108,17 @@ export const auth = betterAuth({
           return {
             data: {
               ...user,
+              role: 'user',
+              image: `https://api.dicebear.com/9.x/adventurer/svg?seed=${user.name}`,
               initialOrganizationId: organizationId,
             },
           };
         },
         after: async (user) => {
+          // TODO: User may not been verified yet...
+          // So for now, we just add the user to the organization
+          // Before production, we will remove this, and create a page to handle the onboarding process
+
           // Add the user to the organization
           const auth = betterAuth(betterAuthConfig);
 
@@ -119,24 +149,11 @@ export const auth = betterAuth({
       },
     },
   },
-  emailAndPassword: {
-    enabled: true,
-    requireEmailVerification: true,
-    sendResetPassword: async ({ user, url, token }, request) => {
-      // TODO: send email
-    },
-  },
-  emailVerification: {
-    sendOnSignUp: true,
-    sendVerificationEmail: async ({ user, url, token }, request) => {
-      // TODO: send email
-    },
-  },
 });
 
 async function getOrganizationByUserId(userId: string) {
-  const organization = await database.query.member.findFirst({
-    where: eq(member.userId, userId),
+  const organization = await database.query.members.findFirst({
+    where: eq(members.userId, userId),
   });
 
   // Part of the onboarding process is to join an organization so this should never happen
@@ -148,8 +165,8 @@ async function getOrganizationByUserId(userId: string) {
 }
 
 async function getOrganizationBySlug(organizationSlug: string) {
-  const organization = await database.query.organization.findFirst({
-    where: eq(_organization.slug, organizationSlug),
+  const organization = await database.query.organizations.findFirst({
+    where: eq(organizations.slug, organizationSlug),
   });
 
   if (!organization) {
