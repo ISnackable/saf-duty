@@ -16,6 +16,11 @@ export const host = isDev
     ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
     : `https://${domain}`;
 
+export const trustedOrigins = [
+  host,
+  `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}`,
+];
+
 export const demo: { id: string; email: string; password: string } =
   getSiteConfig('demo', {
     id: '',

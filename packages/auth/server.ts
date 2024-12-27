@@ -1,15 +1,14 @@
 import 'server-only';
 
 import { database, eq } from '@repo/database';
-import { members, organizations } from '@repo/database/schema';
+import { organizations, users } from '@repo/database/schema';
 import { redis } from '@repo/rate-limit';
-import { host, site } from '@repo/site-config';
+import { site, trustedOrigins } from '@repo/site-config';
 import { type BetterAuthOptions, betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { APIError, createAuthMiddleware } from 'better-auth/api';
+import { APIError } from 'better-auth/api';
 import { nextCookies } from 'better-auth/next-js';
 import { admin, organization } from 'better-auth/plugins';
-import { type JWTPayload, type JWTVerifyResult, jwtVerify } from 'jose';
 
 export const betterAuthConfig = {
   database: drizzleAdapter(database, { provider: 'pg', usePlural: true }),
@@ -54,25 +53,8 @@ export const betterAuthConfig = {
     generateId: false,
     cookiePrefix: site.shortName.toLowerCase(),
   },
-  trustedOrigins: [host],
-} satisfies BetterAuthOptions;
-
-export const auth = betterAuth({
-  ...betterAuthConfig,
+  trustedOrigins,
   user: {
-    changeEmail: {
-      enabled: true,
-      sendChangeEmailVerification: async (
-        { user, newEmail, url, token },
-        request
-      ) => {
-        console.dir({
-          to: newEmail,
-          subject: 'Verify your email change',
-          text: `Click the link to verify: ${url}`,
-        });
-      },
-    },
     additionalFields: {
       initialOrganizationId: {
         type: 'string',
@@ -84,8 +66,28 @@ export const auth = betterAuth({
         type: 'boolean',
         required: true,
         defaultValue: 'false',
-        input: false,
+        input: true,
         returned: true,
+      },
+    },
+  },
+} satisfies BetterAuthOptions;
+
+export const auth = betterAuth({
+  ...betterAuthConfig,
+  user: {
+    ...betterAuthConfig.user,
+    changeEmail: {
+      enabled: true,
+      sendChangeEmailVerification: async (
+        { user, newEmail, url, token },
+        request
+      ) => {
+        console.dir({
+          to: newEmail,
+          subject: 'Verify your email change',
+          text: `Click the link to verify: ${url}`,
+        });
       },
     },
   },
@@ -133,86 +135,50 @@ export const auth = betterAuth({
     session: {
       create: {
         before: async (session) => {
-          // Maybe we use redis to store the active organization
-          const organizationId = await getOrganizationByUserId(session.userId);
+          const headers = new Headers({
+            Authorization: `Bearer ${session.token}`,
+          });
+
+          const auth = betterAuth(betterAuthConfig);
+
+          const organizations = await auth.api.listOrganizations({
+            headers,
+          });
+
+          if (organizations.length === 0) {
+            const user = await getUserById(session.userId);
+
+            await auth.api.addMember({
+              body: {
+                userId: user.id,
+                organizationId: user.initialOrganizationId,
+                role: 'member',
+              },
+            });
+          }
 
           return {
             data: {
               ...session,
-              activeOrganizationId: organizationId,
+              activeOrganizationId: organizations[0].id,
             },
           };
         },
       },
     },
   },
-  hooks: {
-    after: createAuthMiddleware(async (ctx) => {
-      if (ctx.path === '/verify-email' && ctx?.query?.token) {
-        let jwt: JWTVerifyResult<JWTPayload>;
-        try {
-          jwt = await jwtVerify(
-            ctx.query.token,
-            new TextEncoder().encode(ctx.context.secret),
-            { algorithms: ['HS256'] }
-          );
-        } catch (_error) {
-          // If the token is invalid, immediately return
-          return;
-        }
-
-        const parsed = jwt.payload;
-        // updatedTo is the new email, which means the user is updating the email
-        if (parsed.updateTo || !parsed.email) {
-          // Since we only want to do something when the user is verifying the email for the first time
-          // We can quickly return here
-          return;
-        }
-
-        const user = await ctx.context.internalAdapter.findUserByEmail(
-          // Since this hook is called after email is verified, we can safely assume that the email is valid
-          parsed.email as string
-        );
-
-        if (!user) {
-          // If the user is not found, then we should throw an error
-          return;
-        }
-
-        // @ts-expect-error - additonal fields are not typed
-        if (!user.user.onboarded) {
-          // If the user is not already a member of the organization, then add the user
-          const auth = betterAuth(betterAuthConfig);
-
-          await auth.api.addMember({
-            body: {
-              userId: user.user.id,
-              // @ts-expect-error - additonal fields are not typed
-              organizationId: user.user.initialOrganizationId,
-              role: 'member',
-            },
-          });
-
-          await ctx.context.internalAdapter.updateUser(user.user.id, {
-            onboarded: true,
-          });
-        }
-      }
-    }),
-  },
 });
 
-async function getOrganizationByUserId(userId: string) {
-  const organization = await database.query.members.findFirst({
-    where: eq(members.userId, userId),
+async function getUserById(userId: string) {
+  const user = await database.query.users.findFirst({
+    where: eq(users.id, userId),
   });
 
-  // Part of the onboarding process is to join an organization so this should never happen
-  if (!organization) {
+  if (!user) {
     throw new APIError('BAD_REQUEST');
   }
 
-  return organization.organizationId;
+  return user;
 }
 
 async function getOrganizationBySlug(organizationSlug: string) {

@@ -12,6 +12,13 @@ export const client = createAuthClient({
   plugins: [
     inferAdditionalFields({
       user: {
+        onboarded: {
+          type: 'boolean',
+          required: true,
+          defaultValue: 'false',
+          input: true,
+          returned: true,
+        },
         initialOrganizationId: {
           type: 'string',
           required: true,
