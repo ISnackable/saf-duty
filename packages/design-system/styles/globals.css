@@ -244,22 +244,18 @@
   }
 
   .top-safe {
-    top: 0;
     top: env(safe-area-inset-top);
   }
 
   .right-safe {
-    right: 0;
     right: env(safe-area-inset-right);
   }
 
   .bottom-safe {
-    bottom: 0;
     bottom: env(safe-area-inset-bottom);
   }
 
   .left-safe {
-    left: 0;
     left: env(safe-area-inset-right);
   }
 }
@@ -267,8 +263,8 @@
 @media screen and (max-width: 767px) {
   select,
   textarea,
-  input[type='text'],
-  input[type='number'],
+  input[type="text"],
+  input[type="number"],
   input {
     font-size: 16px !important;
   }

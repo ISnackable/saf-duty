@@ -169,7 +169,6 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
               month={month}
               onMonthChange={setMonth}
               selected={date}
-              // @ts-ignore
               onSelect={setDate}
               fromYear={CURRENT_YEAR - 5}
               toYear={CURRENT_YEAR + 5}
@@ -229,7 +228,6 @@ export function DatePicker<T extends DaySelectionMode = 'default'>({
           month={month}
           onMonthChange={setMonth}
           selected={date}
-          // @ts-ignore
           onSelect={setDate}
           fromYear={CURRENT_YEAR - 5}
           toYear={CURRENT_YEAR + 5}
