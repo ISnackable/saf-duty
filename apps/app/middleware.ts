@@ -1,6 +1,5 @@
-import { betterFetch } from '@better-fetch/fetch';
 import { isDemoUser } from '@repo/auth/lib/utils';
-import type { Member, Session } from '@repo/auth/types';
+import { auth } from '@repo/auth/server';
 import { noseconeConfig, noseconeMiddleware } from '@repo/security/middleware';
 
 const securityHeaders = noseconeMiddleware(noseconeConfig);
@@ -30,15 +29,9 @@ function redirectToLogin(request: NextRequest) {
 }
 
 export default async function middleware(request: NextRequest) {
-  const { data: session } = await betterFetch<Session>(
-    '/api/auth/get-session',
-    {
-      baseURL: request.nextUrl.origin,
-      headers: {
-        cookie: request.headers.get('cookie') || '',
-      },
-    }
-  );
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  });
 
   if (!session) {
     return redirectToLogin(request);
@@ -71,15 +64,9 @@ export default async function middleware(request: NextRequest) {
   }
 
   if (request.nextUrl.pathname.startsWith('/organization')) {
-    const { data: member } = await betterFetch<Member>(
-      '/api/auth/organization/get-active-member',
-      {
-        baseURL: request.nextUrl.origin,
-        headers: {
-          cookie: request.headers.get('cookie') || '',
-        },
-      }
-    );
+    const member = await auth.api.getActiveMember({
+      headers: request.headers,
+    });
 
     if (!member) {
       return redirectToPath(request, '/onboarding');
@@ -109,7 +96,7 @@ export const config = {
     '/settings/:path*',
     '/admin/:path*',
     '/collections/:path*',
-    // '/onboarding',
-    // '/organization/:path*',
+    '/onboarding',
+    '/organization/:path*',
   ],
 };
