@@ -135,19 +135,9 @@ export const auth = betterAuth({
     session: {
       create: {
         before: async (session) => {
-          const headers = new Headers({
-            Authorization: `Bearer ${session.token}`,
-          });
+          const user = await getUserById(session.userId);
 
-          const auth = betterAuth(betterAuthConfig);
-
-          const organizations = await auth.api.listOrganizations({
-            headers,
-          });
-
-          if (organizations.length === 0) {
-            const user = await getUserById(session.userId);
-
+          if (!user.onboarded) {
             await auth.api.addMember({
               body: {
                 userId: user.id,
@@ -160,7 +150,7 @@ export const auth = betterAuth({
           return {
             data: {
               ...session,
-              activeOrganizationId: organizations[0].id,
+              activeOrganizationId: user.initialOrganizationId,
             },
           };
         },

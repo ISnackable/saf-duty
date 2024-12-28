@@ -12,10 +12,10 @@
     "@repo/typescript-config": "workspace:*",
     "babel-plugin-react-compiler": "19.0.0-beta-b2e8e9c-20241220",
     "eslint-plugin-react-compiler": "19.0.0-beta-b2e8e9c-20241220",
-    "next": "15.1.2"
+    "next": "15.1.3"
   },
   "dependencies": {
-    "@next/bundle-analyzer": "^15.1.2",
+    "@next/bundle-analyzer": "^15.1.3",
     "@serwist/next": "^9.0.11",
     "@vercel/toolbar": "^0.1.30"
   }

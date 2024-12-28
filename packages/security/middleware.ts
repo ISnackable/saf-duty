@@ -34,7 +34,7 @@ const noseconeOptions: NoseconeOptions = {
       ],
       // We only set this in production because the server may be started
       // without HTTPS
-      upgradeInsecureRequests: process.env.NODE_ENV === 'production',
+      upgradeInsecureRequests: env.VERCEL_ENV === 'production',
     },
   },
   crossOriginEmbedderPolicy: {
