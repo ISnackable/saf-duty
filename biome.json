@@ -13,6 +13,7 @@
       "packages/design-system/components/ui/**",
       "packages/design-system/lib/**",
       "packages/design-system/hooks/**",
+      "packages/database/drizzle",
       "apps/docs/**/*.json",
       "apps/email/.react-email/**",
       ".devcontainer",

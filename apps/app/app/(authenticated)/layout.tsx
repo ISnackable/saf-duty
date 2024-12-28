@@ -13,7 +13,7 @@ type AppLayoutProperties = {
   readonly children: React.ReactNode;
 };
 
-const AppLayout = async ({ children }: AppLayoutProperties) => {
+export default function AppLayout({ children }: AppLayoutProperties) {
   // if (env.ARCJET_KEY) {
   //   await secure(['CATEGORY:PREVIEW']);
   // }
@@ -36,6 +36,4 @@ const AppLayout = async ({ children }: AppLayoutProperties) => {
       {/* {data?.onboarded ? null : <DriverTour />} */}
     </SidebarProvider>
   );
-};
-
-export default AppLayout;
+}

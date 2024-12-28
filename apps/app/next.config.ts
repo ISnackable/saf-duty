@@ -5,6 +5,14 @@ import type { NextConfig } from 'next';
 
 let nextConfig: NextConfig = {
   ...config,
+  experimental: {
+    ...config.experimental,
+    optimizePackageImports: [
+      'better-auth',
+      'better-auth/plugins',
+      'add-to-calendar-button-react',
+    ],
+  },
   // biome-ignore lint/suspicious/useAwait: headers is a Next.js API that must be async
   async headers() {
     return [
@@ -22,6 +30,19 @@ let nextConfig: NextConfig = {
             key: 'Access-Control-Allow-Headers',
             value:
               'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
+          },
+        ],
+      },
+      {
+        source: '/sw.js',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/javascript; charset=utf-8',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate',
           },
         ],
       },

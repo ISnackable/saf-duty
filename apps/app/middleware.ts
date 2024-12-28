@@ -1,6 +1,6 @@
 import { betterFetch } from '@better-fetch/fetch';
 import { isDemoUser } from '@repo/auth/lib/utils';
-import type { Session } from '@repo/auth/types';
+import type { Member, Session } from '@repo/auth/types';
 import { noseconeConfig, noseconeMiddleware } from '@repo/security/middleware';
 
 const securityHeaders = noseconeMiddleware(noseconeConfig);
@@ -20,7 +20,7 @@ function redirectToPath(request: NextRequest, path = '/') {
 
 function redirectToLogin(request: NextRequest) {
   if (PUBLIC_PATHS.includes(request.nextUrl.pathname)) {
-    return NextResponse.next();
+    return securityHeaders();
   }
 
   const url = request.nextUrl.clone();
@@ -65,6 +65,33 @@ export default async function middleware(request: NextRequest) {
     return redirectToPath(request);
   }
 
+  //TODO: Finally, we check whether the user has an active organization, else we redirect them to the onboarding page
+  if (!session.session.activeOrganizationId) {
+    return redirectToPath(request, '/onboarding');
+  }
+
+  if (request.nextUrl.pathname.startsWith('/organization')) {
+    const { data: member } = await betterFetch<Member>(
+      '/api/auth/organization/get-active-member',
+      {
+        baseURL: request.nextUrl.origin,
+        headers: {
+          cookie: request.headers.get('cookie') || '',
+        },
+      }
+    );
+
+    if (!member) {
+      return redirectToPath(request, '/onboarding');
+    }
+
+    if (['owner', 'admin'].includes(member.role)) {
+      return securityHeaders();
+    }
+
+    return redirectToPath(request);
+  }
+
   return securityHeaders();
 }
 
@@ -82,5 +109,7 @@ export const config = {
     '/settings/:path*',
     '/admin/:path*',
     '/collections/:path*',
+    // '/onboarding',
+    // '/organization/:path*',
   ],
 };
