@@ -9,16 +9,17 @@ import { createPool } from '@vercel/postgres';
 import { drizzle } from 'drizzle-orm/vercel-postgres';
 import * as schema from './schema';
 
-// // if we're running locally
-if (!process.env.VERCEL_ENV) {
+// Example Supabase pooled connection string, add the following sufix "?workaround=supabase-pooler.vercel" (important)
+const connectionString = env.DATABASE_URL;
+
+// if we're running locally
+if (!process.env.VERCEL_ENV && !connectionString.includes('workaround=')) {
   neonConfig.wsProxy = (host) => `${host}:54330/v1`;
   neonConfig.useSecureWebSocket = false;
   neonConfig.pipelineTLS = false;
   neonConfig.pipelineConnect = false;
 }
 
-// Example Supabase pooled connection string, add the following sufix "?workaround=supabase-pooler.vercel" (important)
-const connectionString = env.DATABASE_URL;
 const pool = createPool({
   connectionString,
   // https://github.com/vercel/storage/blob/3333217438a7b601a4a96e11c8df7c75b77f49b6/packages/postgres/src/create-pool.ts#L106
