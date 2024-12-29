@@ -2,6 +2,7 @@ import 'server-only';
 
 import { database, eq } from '@repo/database';
 import { organizations, users } from '@repo/database/schema';
+import { env } from '@repo/env';
 import { redis } from '@repo/rate-limit';
 import { site, trustedOrigins } from '@repo/site-config';
 import { type BetterAuthOptions, betterAuth } from 'better-auth';
@@ -39,7 +40,6 @@ export const betterAuthConfig = {
     },
   },
   plugins: [
-    nextCookies(),
     admin(),
     organization({
       async sendInvitationEmail(data) {
@@ -48,9 +48,11 @@ export const betterAuthConfig = {
         // TODO: send email
       },
     }),
+    nextCookies(),
   ],
   advanced: {
     generateId: false,
+    useSecureCookies: !!env.VERCEL_ENV,
     cookiePrefix: site.shortName.toLowerCase(),
   },
   trustedOrigins,

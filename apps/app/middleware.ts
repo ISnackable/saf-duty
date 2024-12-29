@@ -1,5 +1,5 @@
 import { isDemoUser } from '@repo/auth/lib/utils';
-import { auth } from '@repo/auth/server';
+import { getSession } from '@repo/auth/middleware';
 import { noseconeConfig, noseconeMiddleware } from '@repo/security/middleware';
 
 const securityHeaders = noseconeMiddleware(noseconeConfig);
@@ -29,9 +29,7 @@ function redirectToLogin(request: NextRequest) {
 }
 
 export default async function middleware(request: NextRequest) {
-  const session = await auth.api.getSession({
-    headers: request.headers,
-  });
+  const { data: session, response } = await getSession(request);
 
   if (!session) {
     return redirectToLogin(request);
@@ -64,22 +62,31 @@ export default async function middleware(request: NextRequest) {
   }
 
   if (request.nextUrl.pathname.startsWith('/organization')) {
-    const member = await auth.api.getActiveMember({
-      headers: request.headers,
-    });
+    const res = await fetch(
+      new URL(
+        '/api/auth/organization/get-active-member',
+        request.nextUrl.origin
+      ),
+      {
+        headers: {
+          cookie: request.headers.get('cookie') || '',
+        },
+      }
+    );
+    const member = res.ok ? await res.json() : null;
 
     if (!member) {
       return redirectToPath(request, '/onboarding');
     }
 
     if (['owner', 'admin'].includes(member.role)) {
-      return securityHeaders();
+      return response;
     }
 
     return redirectToPath(request);
   }
 
-  return securityHeaders();
+  return response;
 }
 
 export const config = {
