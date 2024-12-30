@@ -1,26 +1,22 @@
 import 'server-only';
 
+import { Pool, neonConfig } from '@neondatabase/serverless';
 // https://github.com/supabase/supabase/blob/master/apps/docs/content/guides/database/connecting-to-postgres/serverless-drivers.mdx
 // https://github.com/nextauthjs/next-auth/issues/10773
-import { neonConfig } from '@neondatabase/serverless';
 import { env } from '@repo/env';
-import { createPool } from '@vercel/postgres';
-
-import { drizzle } from 'drizzle-orm/vercel-postgres';
+import { drizzle } from 'drizzle-orm/neon-serverless';
 import * as schema from './schema';
 
-// Example Supabase pooled connection string, add the following sufix "?workaround=supabase-pooler.vercel" (important)
-const connectionString = env.DATABASE_URL;
-
 // if we're running locally
-if (!process.env.VERCEL_ENV || !connectionString.includes('workaround=')) {
+if (!process.env.VERCEL_ENV) {
   neonConfig.wsProxy = (host) => `${host}:54330/v1`;
   neonConfig.useSecureWebSocket = false;
   neonConfig.pipelineTLS = false;
   neonConfig.pipelineConnect = false;
 }
 
-const pool = createPool({
+const connectionString = env.DATABASE_URL;
+const pool = new Pool({
   connectionString,
   // https://github.com/vercel/storage/blob/3333217438a7b601a4a96e11c8df7c75b77f49b6/packages/postgres/src/create-pool.ts#L106
   // This is probably the reason why Vercel Functions hangs,

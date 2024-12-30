@@ -32,10 +32,5 @@
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^12.1.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "@neondatabase/serverless": "^0.10.4"
-    }
   }
 }
