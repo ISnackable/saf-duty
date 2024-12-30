@@ -43,6 +43,6 @@ const noseconeOptions: NoseconeOptions = {
 };
 
 export const noseconeConfig: NoseconeOptions =
-  env.NODE_ENV === 'development' && env.FLAGS_SECRET
+  env.VERCEL_ENV === 'preview' && env.FLAGS_SECRET
     ? withVercelToolbar(noseconeOptions)
     : noseconeOptions;
