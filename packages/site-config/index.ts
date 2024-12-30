@@ -1,4 +1,5 @@
 import { getSiteConfig } from './lib/get-config-value';
+import { getTrustedOrigins } from './lib/get-trusted-origins';
 
 export const environment = process.env.NODE_ENV || 'development';
 export const isDev = environment === 'development';
@@ -11,16 +12,15 @@ const description: string = getSiteConfig('description', 'Default description');
 
 export const host = isDev
   ? 'http://localhost:3000'
-  : // biome-ignore lint/nursery/noNestedTernary: Elegant solution
-    process.env.NEXT_PUBLIC_VERCEL_URL
-    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-    : `https://${domain}`;
+  : // biome-ignore lint/nursery/noNestedTernary: I'm lazy
+    process.env.VERCEL_ENV === 'production'
+    ? `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`
+    : // biome-ignore lint/nursery/noNestedTernary: I'm lazy
+      process.env.VERCEL_ENV === 'preview'
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : `https://${domain}`;
 
-export const trustedOrigins = [
-  host,
-  'http://localhost:3000',
-  `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}`,
-];
+export const trustedOrigins: string[] = getTrustedOrigins();
 
 export const demo: { id: string; email: string; password: string } =
   getSiteConfig('demo', {

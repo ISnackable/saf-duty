@@ -4,6 +4,7 @@ import {
   withVercelToolbar,
 } from '@nosecone/next';
 import { env } from '@repo/env';
+import { host } from '@repo/site-config';
 export { createMiddleware as noseconeMiddleware } from '@nosecone/next';
 
 // Nosecone security headers configuration
@@ -23,6 +24,10 @@ const noseconeOptions: NoseconeOptions = {
         "'self'",
         "'unsafe-inline'",
         'https://va.vercel-scripts.com',
+      ],
+      connectSrc: [
+        ...noseconeDefaults.contentSecurityPolicy.directives.connectSrc,
+        host as 'https:',
       ],
       workerSrc: [
         ...noseconeDefaults.contentSecurityPolicy.directives.workerSrc,
