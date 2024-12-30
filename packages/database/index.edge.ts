@@ -13,7 +13,7 @@ import * as schema from './schema';
 const connectionString = env.DATABASE_URL;
 
 // if we're running locally
-if (!process.env.VERCEL_ENV && !connectionString.includes('workaround=')) {
+if (!process.env.VERCEL_ENV || !connectionString.includes('workaround=')) {
   neonConfig.wsProxy = (host) => `${host}:54330/v1`;
   neonConfig.useSecureWebSocket = false;
   neonConfig.pipelineTLS = false;

@@ -140,13 +140,17 @@ export const auth = betterAuth({
           const user = await getUserById(session.userId);
 
           if (!user.onboarded) {
-            await auth.api.addMember({
-              body: {
-                userId: user.id,
-                organizationId: user.initialOrganizationId,
-                role: 'member',
-              },
-            });
+            try {
+              await auth.api.addMember({
+                body: {
+                  userId: user.id,
+                  organizationId: user.initialOrganizationId,
+                  role: 'member',
+                },
+              });
+            } catch (_error) {
+              throw new APIError('INTERNAL_SERVER_ERROR');
+            }
           }
 
           return {
