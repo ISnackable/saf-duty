@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { BellRing } from 'lucide-react';
+import { IconBellRinging } from '@tabler/icons-react';
 
 import {
   Card,
@@ -45,7 +45,7 @@ const meta = {
       <CardContent className="grid gap-4">
         {notifications.map((notification, index) => (
           <div key={index} className="flex items-center gap-4">
-            <BellRing className="size-6" />
+            <IconBellRinging className="size-6" />
             <div>
               <p>{notification.title}</p>
               <p className="text-foreground/50">{notification.description}</p>

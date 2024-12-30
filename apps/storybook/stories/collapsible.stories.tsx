@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Info } from 'lucide-react';
+import { IconInfoSmall } from '@tabler/icons-react';
 
 import {
   Collapsible,
@@ -23,7 +23,7 @@ const meta = {
     <Collapsible {...args}>
       <CollapsibleTrigger className="flex gap-2">
         <h3 className="font-semibold">Can I use this in my project?</h3>
-        <Info className="size-6" />
+        <IconInfoSmall className="size-6" />
       </CollapsibleTrigger>
       <CollapsibleContent>
         Yes. Free to use for personal and commercial projects. No attribution

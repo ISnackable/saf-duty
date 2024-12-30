@@ -11,7 +11,7 @@
     "bump-deps": "pnpx npm-check-updates --deep -u -x react-day-picker && pnpm install",
     "bump-ui": "pnpx shadcn@latest add --all --overwrite -c packages/design-system",
     "clean": "git clean -xdf node_modules",
-    "migrate": "cd packages/database && npx drizzle-kit migrate",
+    "db:migrate": "cd packages/database && npx drizzle-kit migrate",
     "db:generate": "cd packages/database && npx drizzle-kit generate",
     "db:pull": "cd packages/database && npx drizzle-kit pull",
     "db:push": "cd packages/database && npx drizzle-kit push"
@@ -28,9 +28,9 @@
   "engines": {
     "node": ">=18"
   },
-  "packageManager": "pnpm@9.15.1",
+  "packageManager": "pnpm@9.15.2",
   "dependencies": {
     "chalk": "^5.4.1",
-    "commander": "^12.1.0"
+    "commander": "^13.0.0"
   }
 }

@@ -11,17 +11,18 @@
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// This can be used to network with other containers or with the host.
-	"forwardPorts": [3000, 3003, 3004, 3005, 6006],
+	"forwardPorts": [3000, 3003, 3004, 3005, 4983, 6006],
 	"portsAttributes": {
 		"3000": { "label": "App" },
 		"3003": { "label": "Email - Web" },
 		"3004": { "label": "Docs - Mintlify" },
-		"3005": { "label": "Database - Studio" },
+		"3005": { "label": "Studio - Database" },
+		"4983": { "label": "Studio - Server" },
 		"6006": { "label": "Storybook - App" }
 	},
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "npm add -g @mintlify/cli && pnpm install",
+	"postCreateCommand": "npm add -g @mintlify/cli",
 
 	// Configure tool-specific properties.
 	"customizations": {

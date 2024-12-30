@@ -18,6 +18,7 @@ export const host = isDev
 
 export const trustedOrigins = [
   host,
+  'http://localhost:3000',
   `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}`,
 ];
 

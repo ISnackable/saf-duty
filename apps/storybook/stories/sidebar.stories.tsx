@@ -1,29 +1,28 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import {
-  AudioWaveform,
-  BadgeCheck,
-  Bell,
-  BookOpen,
-  Bot,
-  ChevronRight,
-  ChevronsUpDown,
-  Command,
-  CreditCard,
-  Folder,
-  Forward,
-  Frame,
-  GalleryVerticalEnd,
-  LogOut,
-  // biome-ignore lint/suspicious/noShadowRestrictedNames: "icon name"
-  Map,
-  MoreHorizontal,
-  PieChart,
-  Plus,
-  Settings2,
-  Sparkles,
-  SquareTerminal,
-  Trash2,
-} from 'lucide-react';
+  IconArrowForwardUp,
+  IconBell,
+  IconBook,
+  IconBorderHorizontal,
+  IconCarouselVertical,
+  IconChartPie,
+  IconChevronRight,
+  IconCommand,
+  IconCreditCard,
+  IconFolder,
+  IconFrame,
+  IconLogout,
+  IconMap,
+  IconPlus,
+  IconRobot,
+  IconRosetteDiscountCheck,
+  IconSelector,
+  IconSettings2,
+  IconSparkles,
+  IconTerminal2,
+  IconTrash,
+  IconWaveSquare,
+} from '@tabler/icons-react';
 
 import {
   Avatar,
@@ -94,17 +93,17 @@ const data = {
   teams: [
     {
       name: 'Acme Inc',
-      logo: GalleryVerticalEnd,
+      logo: IconCarouselVertical,
       plan: 'Enterprise',
     },
     {
       name: 'Acme Corp.',
-      logo: AudioWaveform,
+      logo: IconWaveSquare,
       plan: 'Startup',
     },
     {
       name: 'Evil Corp.',
-      logo: Command,
+      logo: IconCommand,
       plan: 'Free',
     },
   ],
@@ -112,7 +111,7 @@ const data = {
     {
       title: 'Playground',
       url: '#',
-      icon: SquareTerminal,
+      icon: IconTerminal2,
       isActive: true,
       items: [
         {
@@ -132,7 +131,7 @@ const data = {
     {
       title: 'Models',
       url: '#',
-      icon: Bot,
+      icon: IconRobot,
       items: [
         {
           title: 'Genesis',
@@ -151,7 +150,7 @@ const data = {
     {
       title: 'Documentation',
       url: '#',
-      icon: BookOpen,
+      icon: IconBook,
       items: [
         {
           title: 'Introduction',
@@ -174,7 +173,7 @@ const data = {
     {
       title: 'Settings',
       url: '#',
-      icon: Settings2,
+      icon: IconSettings2,
       items: [
         {
           title: 'General',
@@ -199,17 +198,16 @@ const data = {
     {
       name: 'Design Engineering',
       url: '#',
-      icon: Frame,
+      icon: IconFrame,
     },
     {
       name: 'Sales & Marketing',
       url: '#',
-      icon: PieChart,
+      icon: IconChartPie,
     },
     {
       name: 'Travel',
-      url: '#',
-      icon: Map,
+      icon: IconMap,
     },
   ],
 };
@@ -241,7 +239,7 @@ export const Base: Story = {
                           {activeTeam.plan}
                         </span>
                       </div>
-                      <ChevronsUpDown className="ml-auto" />
+                      <IconSelector className="ml-auto" />
                     </SidebarMenuButton>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
@@ -271,7 +269,7 @@ export const Base: Story = {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className="gap-2 p-2">
                       <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                        <Plus className="size-4" />
+                        <IconPlus className="size-4" />
                       </div>
                       <div className="font-medium text-muted-foreground">
                         Add team
@@ -296,9 +294,9 @@ export const Base: Story = {
                     <SidebarMenuItem>
                       <CollapsibleTrigger asChild>
                         <SidebarMenuButton tooltip={item.title}>
-                          {item.icon && <item.icon />}
+                          <item.icon />
                           <span>{item.title}</span>
-                          <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                          <IconChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                         </SidebarMenuButton>
                       </CollapsibleTrigger>
                       <CollapsibleContent>
@@ -326,14 +324,14 @@ export const Base: Story = {
                   <SidebarMenuItem key={item.name}>
                     <SidebarMenuButton asChild>
                       <a href={item.url}>
-                        <item.icon />
+                        {item.icon && <item.icon />}
                         <span>{item.name}</span>
                       </a>
                     </SidebarMenuButton>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <SidebarMenuAction showOnHover>
-                          <MoreHorizontal />
+                          <IconBorderHorizontal />
                           <span className="sr-only">More</span>
                         </SidebarMenuAction>
                       </DropdownMenuTrigger>
@@ -343,16 +341,16 @@ export const Base: Story = {
                         align="end"
                       >
                         <DropdownMenuItem>
-                          <Folder className="text-muted-foreground" />
+                          <IconFolder className="text-muted-foreground" />
                           <span>View Project</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
-                          <Forward className="text-muted-foreground" />
+                          <IconArrowForwardUp className="text-muted-foreground" />
                           <span>Share Project</span>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
-                          <Trash2 className="text-muted-foreground" />
+                          <IconTrash className="text-muted-foreground" />
                           <span>Delete Project</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -361,7 +359,7 @@ export const Base: Story = {
                 ))}
                 <SidebarMenuItem>
                   <SidebarMenuButton className="text-sidebar-foreground/70">
-                    <MoreHorizontal className="text-sidebar-foreground/70" />
+                    <IconBorderHorizontal className="text-sidebar-foreground/70" />
                     <span>More</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -394,7 +392,7 @@ export const Base: Story = {
                           {data.user.email}
                         </span>
                       </div>
-                      <ChevronsUpDown className="ml-auto size-4" />
+                      <IconSelector className="ml-auto size-4" />
                     </SidebarMenuButton>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
@@ -427,28 +425,28 @@ export const Base: Story = {
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
                       <DropdownMenuItem>
-                        <Sparkles />
+                        <IconSparkles />
                         Upgrade to Pro
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
                       <DropdownMenuItem>
-                        <BadgeCheck />
+                        <IconRosetteDiscountCheck />
                         Account
                       </DropdownMenuItem>
                       <DropdownMenuItem>
-                        <CreditCard />
+                        <IconCreditCard />
                         Billing
                       </DropdownMenuItem>
                       <DropdownMenuItem>
-                        <Bell />
+                        <IconBell />
                         Notifications
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>
-                      <LogOut />
+                      <IconLogout />
                       Log out
                     </DropdownMenuItem>
                   </DropdownMenuContent>

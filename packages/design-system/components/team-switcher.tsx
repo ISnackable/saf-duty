@@ -21,6 +21,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from './ui/sidebar';
+import { Skeleton } from './ui/skeleton';
 
 interface TeamSwitcherProps {
   teams: Organization[] | null;
@@ -56,7 +57,7 @@ export function TeamSwitcher({
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {activeTeam?.name ?? 'No team'}
+                  {activeTeam?.name ?? <Skeleton className="h-4 w-[10px]" />}
                 </span>
                 {activeTeam?.metadata && (
                   <span className="truncate text-xs">

@@ -14,7 +14,7 @@
     "@repo/rate-limit": "workspace:*",
     "@repo/security": "workspace:*",
     "@repo/tailwind-config": "workspace:*",
-    "better-auth": "1.1.4",
+    "better-auth": "1.1.5",
     "better-auth-harmony": "^1.1.1",
     "better-call": "0.3.3-beta.4",
     "jose": "^5.9.6",

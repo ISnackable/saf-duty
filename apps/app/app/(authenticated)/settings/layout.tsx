@@ -29,7 +29,7 @@ const settingsNavItems = [
 ];
 
 interface SettingsLayoutProps {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }
 
 export default function SettingsLayout({ children }: SettingsLayoutProps) {

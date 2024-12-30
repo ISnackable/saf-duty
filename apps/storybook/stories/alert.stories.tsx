@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { AlertCircle } from 'lucide-react';
+import { IconAlertCircle } from '@tabler/icons-react';
 
 import {
   Alert,
@@ -47,7 +47,7 @@ export const Default: Story = {};
 export const Destructive: Story = {
   render: (args) => (
     <Alert {...args}>
-      <AlertCircle className="h-4 w-4" />
+      <IconAlertCircle className="h-4 w-4" />
       <AlertTitle>Error</AlertTitle>
       <AlertDescription>
         Your session has expired. Please log in again.

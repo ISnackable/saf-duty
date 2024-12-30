@@ -1,14 +1,49 @@
 import { isDemoUser } from '@repo/auth/lib/utils';
 import { getSession } from '@repo/auth/middleware';
 import { noseconeConfig, noseconeMiddleware } from '@repo/security/middleware';
+import { trustedOrigins } from '@repo/site-config';
+import { type NextRequest, NextResponse } from 'next/server';
 
 const securityHeaders = noseconeMiddleware(noseconeConfig);
-
-import { type NextRequest, NextResponse } from 'next/server';
 
 // Public paths that do not require authentication, /change-password SHOULD be accessible only to authenticated users.
 const PUBLIC_AUTH_PATHS = ['/register', '/login', '/reset-password'];
 const PUBLIC_PATHS = [...PUBLIC_AUTH_PATHS, '/privacy', '/terms', '/faq'];
+const corsOptions = {
+  'Access-Control-Allow-Credentials': 'true',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
+function setCorsHeaders(request: NextRequest) {
+  // Check the origin from the request
+  const origin = request.nextUrl.origin ?? '';
+  const isAllowedOrigin = trustedOrigins.includes(origin);
+
+  // Handle preflighted requests
+  const isPreflight = request.method === 'OPTIONS';
+
+  if (isPreflight) {
+    const preflightHeaders = {
+      ...(isAllowedOrigin && { 'Access-Control-Allow-Origin': origin }),
+      ...corsOptions,
+    };
+    return NextResponse.json({}, { headers: preflightHeaders });
+  }
+
+  // Handle simple requests
+  const response = NextResponse.next();
+
+  if (isAllowedOrigin) {
+    response.headers.set('Access-Control-Allow-Origin', origin);
+  }
+
+  Object.entries(corsOptions).forEach(([key, value]) => {
+    response.headers.set(key, value);
+  });
+
+  return response;
+}
 
 function redirectToPath(request: NextRequest, path = '/') {
   const url = request.nextUrl.clone();
@@ -29,6 +64,10 @@ function redirectToLogin(request: NextRequest) {
 }
 
 export default async function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname.startsWith('/api')) {
+    return setCorsHeaders(request);
+  }
+
   const { data: session, response } = await getSession(request);
 
   if (!session) {
@@ -56,10 +95,10 @@ export default async function middleware(request: NextRequest) {
     return redirectToPath(request);
   }
 
-  //TODO: Finally, we check whether the user has an active organization, else we redirect them to the onboarding page
-  if (!session.session.activeOrganizationId) {
-    return redirectToPath(request, '/onboarding');
-  }
+  // //TODO: Finally, we check whether the user has an active organization, else we redirect them to the onboarding page
+  // if (!session.session.activeOrganizationId) {
+  //   return redirectToPath(request, '/onboarding');
+  // }
 
   if (request.nextUrl.pathname.startsWith('/organization')) {
     const res = await fetch(
@@ -91,19 +130,9 @@ export default async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/',
-    '/login',
-    '/register',
-    '/reset-password',
-    '/change-password',
-    '/duty-personnels',
-    '/duty-roster',
-    '/manage-blockouts',
-    '/swap-duties',
-    '/settings/:path*',
-    '/admin/:path*',
-    '/collections/:path*',
-    '/onboarding',
-    '/organization/:path*',
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
   ],
 };

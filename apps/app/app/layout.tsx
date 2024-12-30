@@ -1,7 +1,7 @@
 import '@repo/design-system/styles/globals.css';
 import { DesignSystemProvider } from '@repo/design-system';
 import { fonts } from '@repo/design-system/lib/fonts';
-import type { ReactNode } from 'react';
+import type * as React from 'react';
 
 import type { Metadata, Viewport } from 'next';
 
@@ -245,7 +245,7 @@ export const viewport: Viewport = {
 };
 
 type RootLayoutProperties = {
-  readonly children: ReactNode;
+  readonly children: React.ReactNode;
 };
 
 export default function RootLayout({ children }: RootLayoutProperties) {
