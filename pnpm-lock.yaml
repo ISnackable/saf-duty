@@ -333,14 +333,14 @@ importers:
         specifier: workspace:*
         version: link:../tailwind-config
       better-auth:
-        specifier: 1.1.5
-        version: 1.1.5
+        specifier: 1.1.7
+        version: 1.1.7
       better-auth-harmony:
         specifier: ^1.1.1
-        version: 1.1.1(better-auth@1.1.5)
+        version: 1.1.1(better-auth@1.1.7)
       better-call:
-        specifier: 0.3.3-beta.4
-        version: 0.3.3-beta.4
+        specifier: 0.3.3
+        version: 0.3.3
       jose:
         specifier: ^5.9.6
         version: 5.9.6
@@ -4634,11 +4634,11 @@ packages:
     peerDependencies:
       better-auth: ^1.0.3
 
-  better-auth@1.1.5:
-    resolution: {integrity: sha512-hhi0l70Pvu+3orScNWeUGta62Ifp8jhdBUe9hK0mneaZxLpbQBrzg5t+dhxQ6FHJGmQ3ZNc0ZeLcpRMUzKU9rA==}
+  better-auth@1.1.7:
+    resolution: {integrity: sha512-aY1LQ4qmbNHygR7rWirLL/45Aidq9KEu6jsqtflxuxJIwP/C5mwuksutX8L0WqRmi+OlPH0gmjmSWO5TcCuHYQ==}
 
-  better-call@0.3.3-beta.4:
-    resolution: {integrity: sha512-txigUTFsjOlE4dfkfhDhu6Gk0I1Xo3S4Nye+nfMKJXknb+WsymcWtqoRUSUGdhOMumM3LT9R3QttTUxwny9lWQ==}
+  better-call@0.3.3:
+    resolution: {integrity: sha512-N4lDVm0NGmFfDJ0XMQ4O83Zm/3dPlvIQdxvwvgSLSkjFX5PM4GUYSVAuxNzXN27QZMHDkrJTWUqxBrm4tPC3eA==}
 
   better-opn@3.0.2:
     resolution: {integrity: sha512-aVNobHnJqLiUelTaHat9DZ1qM2w0C0Eym4LPI/3JxOnSokGVdsl1T1kN7TFvsEAD8G47A6VKQ0TVHqbBnYMJlQ==}
@@ -7522,9 +7522,6 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
-
-  set-cookie-parser@2.7.1:
-    resolution: {integrity: sha512-IOc8uWeOZgnb3ptbCURJWNjWUPcO3ZnTTdzsurqERrP6nPyv+paC55vJM0LpOlT2ne+Ix+9+CRG1MNLlyZ4GjQ==}
 
   set-function-length@1.2.2:
     resolution: {integrity: sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==}
@@ -12322,14 +12319,14 @@ snapshots:
 
   basic-ftp@5.0.5: {}
 
-  better-auth-harmony@1.1.1(better-auth@1.1.5):
+  better-auth-harmony@1.1.1(better-auth@1.1.7):
     dependencies:
-      better-auth: 1.1.5
+      better-auth: 1.1.7
       libphonenumber-js: 1.11.17
       mailchecker: 6.0.14
       validator: 13.12.0
 
-  better-auth@1.1.5:
+  better-auth@1.1.7:
     dependencies:
       '@better-auth/utils': 0.2.3
       '@better-fetch/fetch': 1.1.12
@@ -12337,7 +12334,7 @@ snapshots:
       '@noble/hashes': 1.6.1
       '@simplewebauthn/browser': 13.0.0
       '@simplewebauthn/server': 13.0.0
-      better-call: 0.3.3-beta.4
+      better-call: 0.3.3
       defu: 6.1.4
       jose: 5.9.6
       kysely: 0.27.5
@@ -12346,11 +12343,10 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  better-call@0.3.3-beta.4:
+  better-call@0.3.3:
     dependencies:
       '@better-fetch/fetch': 1.1.12
       rou3: 0.5.1
-      set-cookie-parser: 2.7.1
       uncrypto: 0.1.3
       zod: 3.24.1
 
@@ -15533,8 +15529,6 @@ snapshots:
       idb: 8.0.0
     optionalDependencies:
       typescript: 5.7.2
-
-  set-cookie-parser@2.7.1: {}
 
   set-function-length@1.2.2:
     dependencies:
