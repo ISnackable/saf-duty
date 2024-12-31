@@ -10,6 +10,7 @@ import { Label } from '@repo/design-system/components/ui/label';
 import { cn } from '@repo/design-system/lib/utils';
 import { demo } from '@repo/site-config';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -30,6 +31,8 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
     resolver: zodResolver(loginFormSchema),
   });
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   async function handleLoginForm(data: LoginFormData) {
     setIsLoading(true);
@@ -37,7 +40,6 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
     const { error } = await signIn.email({
       email: data.email,
       password: data.password,
-      callbackURL: '/',
     });
 
     if (error) {
@@ -50,6 +52,10 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
         description:
           'Your sign in request was successful. You will be redirected shortly.',
       });
+      const redirect = searchParams.get('redirect');
+
+      // redirect to dashboard
+      router.replace(redirect ? redirect : '/');
     }
   }
 

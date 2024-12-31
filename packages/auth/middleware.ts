@@ -7,7 +7,7 @@ import { betterFetch } from '@better-fetch/fetch';
 import { env } from '@repo/env';
 import { noseconeConfig, noseconeMiddleware } from '@repo/security/middleware';
 import { site } from '@repo/site-config';
-import { getCookie, getSignedCookie } from 'better-call';
+import { getCookie, getSignedCookie, parse } from 'better-call';
 import type { NextRequest } from 'next/server';
 import type { Session } from './types';
 
@@ -96,8 +96,13 @@ export async function getSession(
         },
         onResponse: (responseContext) => {
           // Set cookies from the session response
-          const cookies = responseContext?.response.headers.getSetCookie();
-          cookies?.forEach((cookie) =>
+          const cookiesToSet = responseContext?.response.headers.getSetCookie();
+          // Just to be safe, we set the cookies in the request headers
+          cookiesToSet?.forEach((cookie) => {
+            const [name, value] = Object.entries(parse(cookie))[0];
+            request.headers.set(name, value);
+          });
+          cookiesToSet?.forEach((cookie) =>
             response.headers.append('Set-Cookie', cookie)
           );
         },

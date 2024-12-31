@@ -139,6 +139,8 @@ export const auth = betterAuth({
         before: async (session) => {
           const user = await getUserById(session.userId);
 
+          // TODO: set the user onboarded status based on later
+          user.onboarded = true;
           if (!user.onboarded) {
             try {
               await auth.api.addMember({
@@ -149,7 +151,9 @@ export const auth = betterAuth({
                 },
               });
             } catch (_error) {
-              throw new APIError('INTERNAL_SERVER_ERROR');
+              throw new APIError('INTERNAL_SERVER_ERROR', {
+                message: 'Failed to add user to organization',
+              });
             }
           }
 
