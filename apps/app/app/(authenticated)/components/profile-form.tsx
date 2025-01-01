@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { type ElementRef, useRef } from 'react';
 import * as React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import * as z from 'zod';
@@ -70,10 +69,11 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export function ProfileForm() {
   const { data: session } = useSession();
+
   const profile = session?.user;
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const refImageInput = useRef<ElementRef<'input'> | null>(null);
+  const refImageInput = React.useRef<React.ComponentRef<'input'> | null>(null);
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     values: {
@@ -113,6 +113,7 @@ export function ProfileForm() {
                     render={({ field: { ref, name, onBlur, onChange } }) => (
                       <FormItem>
                         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+                        {/* biome-ignore lint/nursery/noStaticElementInteractions: <explanation> */}
                         <div
                           className="m-auto mb-5 h-36 w-36 cursor-pointer rounded-full border border-dashed p-2"
                           onClick={() => {
@@ -127,7 +128,9 @@ export function ProfileForm() {
                               onChange={(event) => {
                                 const file = event.target.files?.[0];
 
-                                if (!file) return;
+                                if (!file) {
+                                  return;
+                                }
                               }}
                               name={name}
                               ref={(e) => {

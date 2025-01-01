@@ -6,7 +6,7 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 import { isDemoUser } from '@repo/auth/lib/utils';
 import { auth } from '@repo/auth/server';
-import type { Member, Roles } from '@repo/auth/types';
+import type { ActiveMember, Roles } from '@repo/auth/types';
 import { ratelimit } from '@repo/rate-limit';
 import { headers as nextHeaders } from 'next/headers';
 
@@ -21,7 +21,7 @@ type WithAuthHandler = ({
   params: Record<string, string>;
   searchParams: URLSearchParams;
   headers: Headers;
-  user: Member;
+  user: ActiveMember;
 }) => Promise<NextResponse>;
 
 interface WithAuthOptions {
@@ -40,7 +40,6 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
   return async (
     request: NextRequest,
     segmentData: { params: Promise<Record<string, string> | undefined> }
-    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
   ) => {
     const { searchParams } = new URL(request.url);
     const headers = await nextHeaders();

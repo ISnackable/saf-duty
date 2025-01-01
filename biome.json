@@ -3,8 +3,13 @@
   "extends": ["ultracite"],
   "linter": {
     "rules": {
+      "style": {
+        "useForOf": "off",
+        "noParameterAssign": "off"
+      },
       "complexity": {
-        "noForEach": "off"
+        "noForEach": "off",
+        "noExcessiveCognitiveComplexity": "off"
       }
     }
   },
