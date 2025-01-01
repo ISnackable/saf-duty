@@ -15,7 +15,7 @@ export const client = createAuthClient({
           type: 'boolean',
           required: true,
           defaultValue: 'false',
-          input: true,
+          input: false,
           returned: true,
         },
         initialOrganizationId: {

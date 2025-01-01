@@ -118,7 +118,6 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = useSession();
-  //TODO: only call this when session is available
   const { data: organizations } = useListOrganizations();
   const { data: activeOrganization } = useActiveOrganization();
   const profile = session?.user;

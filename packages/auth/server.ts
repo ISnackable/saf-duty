@@ -68,7 +68,7 @@ export const betterAuthConfig = {
         type: 'boolean',
         required: true,
         defaultValue: 'false',
-        input: true,
+        input: false,
         returned: true,
       },
     },
@@ -122,12 +122,13 @@ export const auth = betterAuth({
             // @ts-expect-error - unit is not typed
             user.initialOrganizationId
           );
+          const seed = Math.random();
 
           return {
             data: {
               ...user,
               role: 'user',
-              image: `https://api.dicebear.com/9.x/adventurer/svg?seed=${user.name}`,
+              image: `https://api.dicebear.com/9.x/adventurer/svg?backgroundColor=c0aede&seed=${seed}`,
               initialOrganizationId: organizationId,
             },
           };
@@ -139,17 +140,23 @@ export const auth = betterAuth({
         before: async (session) => {
           const user = await getUserById(session.userId);
 
-          // TODO: set the user onboarded status based on later
-          user.onboarded = true;
           if (!user.onboarded) {
             try {
-              await auth.api.addMember({
+              const context = await auth.$context;
+              const task1 = auth.api.addMember({
                 body: {
                   userId: user.id,
                   organizationId: user.initialOrganizationId,
                   role: 'member',
                 },
               });
+
+              // Update user onboarded status
+              const task2 = context.internalAdapter.updateUser(user.id, {
+                onboarded: true,
+              });
+
+              await Promise.all([task1, task2]);
             } catch (_error) {
               throw new APIError('INTERNAL_SERVER_ERROR', {
                 message: 'Failed to add user to organization',
