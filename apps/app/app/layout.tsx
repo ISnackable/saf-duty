@@ -1,6 +1,7 @@
 import '@repo/design-system/styles/globals.css';
 import { DesignSystemProvider } from '@repo/design-system';
 import { fonts } from '@repo/design-system/lib/fonts';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import type * as React from 'react';
 
 import type { Metadata, Viewport } from 'next';
@@ -274,7 +275,9 @@ export default function RootLayout({ children }: RootLayoutProperties) {
             disableTransitionOnChange
             themes={['light', 'dark', 'darkcord-dark']}
           >
-            <SWRProvider>{children}</SWRProvider>
+            <SWRProvider>
+              <NuqsAdapter>{children}</NuqsAdapter>
+            </SWRProvider>
           </DesignSystemProvider>
         </main>
       </body>

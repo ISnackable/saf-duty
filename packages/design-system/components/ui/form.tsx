@@ -9,7 +9,7 @@ import {
   FieldPath,
   FieldValues,
   FormProvider,
-  useFormContext,
+  useController,
 } from "react-hook-form"
 
 import { cn } from "@repo/design-system/lib/utils"
@@ -44,9 +44,8 @@ const FormField = <
 const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext)
   const itemContext = React.useContext(FormItemContext)
-  const { getFieldState, formState } = useFormContext()
 
-  const fieldState = getFieldState(fieldContext.name, formState)
+ const { fieldState } = useController({ name: fieldContext.name })
 
   if (!fieldContext) {
     throw new Error("useFormField should be used within <FormField>")
