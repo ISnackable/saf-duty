@@ -1,12 +1,12 @@
 import { resolve } from 'node:path';
-import { env } from '@repo/env';
 import { type Config, defineConfig } from 'drizzle-kit';
+import { keys } from './keys';
 
 const baseConfig = {
   dialect: 'postgresql',
   casing: 'snake_case',
   dbCredentials: {
-    url: env.DATABASE_URL,
+    url: keys().DATABASE_URL,
   },
 } satisfies Config;
 

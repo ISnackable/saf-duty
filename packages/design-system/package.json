@@ -39,7 +39,6 @@
     "@radix-ui/react-visually-hidden": "^1.1.1",
     "@repo/analytics": "workspace:*",
     "@repo/auth": "workspace:*",
-    "@repo/env": "workspace:*",
     "@repo/observability": "workspace:*",
     "@tabler/icons-react": "^3.26.0",
     "@vercel/toolbar": "^0.1.30",

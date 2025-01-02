@@ -4,6 +4,7 @@ import {
   withVercelToolbar,
 } from '@nosecone/next';
 export { createMiddleware as noseconeMiddleware } from '@nosecone/next';
+import { host } from '@repo/site-config';
 
 // Nosecone security headers configuration
 // https://docs.arcjet.com/nosecone/quick-start
@@ -37,7 +38,7 @@ const noseconeOptions: NoseconeOptions = {
       ],
       // We only set this in production because the server may be started
       // without HTTPS
-      upgradeInsecureRequests: env.VERCEL_ENV === 'production',
+      upgradeInsecureRequests: process.env.VERCEL_ENV === 'production',
     },
   },
   crossOriginEmbedderPolicy: {

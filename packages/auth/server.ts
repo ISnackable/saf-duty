@@ -2,7 +2,6 @@ import 'server-only';
 
 import { database, eq } from '@repo/database';
 import { organizations, users } from '@repo/database/schema';
-import { env } from '@repo/env';
 import { redis } from '@repo/rate-limit';
 import { site, trustedOrigins } from '@repo/site-config';
 import { type BetterAuthOptions, betterAuth } from 'better-auth';
@@ -52,7 +51,7 @@ export const betterAuthConfig = {
   ],
   advanced: {
     generateId: false,
-    useSecureCookies: !!env.VERCEL_ENV,
+    useSecureCookies: !!process.env.VERCEL_ENV,
     cookiePrefix: site.shortName.toLowerCase(),
   },
   trustedOrigins,

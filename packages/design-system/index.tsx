@@ -1,6 +1,5 @@
 import { AnalyticsProvider } from '@repo/analytics';
 import { AuthProvider } from '@repo/auth/provider';
-import { env } from '@repo/env';
 import { VercelToolbar } from '@vercel/toolbar/next';
 import type { ThemeProviderProps } from 'next-themes';
 import { Icons } from './components/icons';
@@ -35,9 +34,7 @@ export const DesignSystemProvider = ({
               ),
             }}
           />
-          {env.NODE_ENV === 'development' && env.FLAGS_SECRET && (
-            <VercelToolbar />
-          )}
+          <VercelToolbar />
         </ProgressBar>
       </AnalyticsProvider>
     </AuthProvider>

@@ -1,10 +1,10 @@
 import 'server-only';
 
 import { Pool, neonConfig } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
 // https://github.com/supabase/supabase/blob/master/apps/docs/content/guides/database/connecting-to-postgres/serverless-drivers.mdx
 // https://github.com/nextauthjs/next-auth/issues/10773
-import { env } from '@repo/env';
-import { drizzle } from 'drizzle-orm/neon-serverless';
+import { keys } from './keys';
 import * as schema from './schema';
 
 // if we're running locally
@@ -15,7 +15,7 @@ if (!process.env.VERCEL_ENV) {
   neonConfig.pipelineConnect = false;
 }
 
-const connectionString = env.DATABASE_URL;
+const connectionString = keys().DATABASE_URL;
 const pool = new Pool({
   connectionString,
   // https://github.com/vercel/storage/blob/3333217438a7b601a4a96e11c8df7c75b77f49b6/packages/postgres/src/create-pool.ts#L106

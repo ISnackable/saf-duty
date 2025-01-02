@@ -1,13 +1,11 @@
 import withBundleAnalyzer from '@next/bundle-analyzer';
 
-import { env } from '@repo/env';
 import withSerwistInit from '@serwist/next';
-import withVercelToolbar from '@vercel/toolbar/plugins/next';
 import type { NextConfig } from 'next';
 
 const otelRegex = /@opentelemetry\/instrumentation/;
 
-const baseConfig: NextConfig = {
+export const config: NextConfig = {
   experimental: {
     reactCompiler: true,
     optimizePackageImports: ['better-auth', 'better-auth/plugins'],
@@ -23,23 +21,44 @@ const baseConfig: NextConfig = {
     ],
   },
 
-  webpack(config) {
+  // biome-ignore lint/suspicious/useAwait: rewrites is async
+  async rewrites() {
+    return [
+      {
+        source: '/ingest/static/:path*',
+        destination: 'https://us-assets.i.posthog.com/static/:path*',
+      },
+      {
+        source: '/ingest/:path*',
+        destination: 'https://us.i.posthog.com/:path*',
+      },
+      {
+        source: '/ingest/decide',
+        destination: 'https://us.i.posthog.com/decide',
+      },
+    ];
+  },
+
+  webpack(config, { isServer }) {
+    if (isServer) {
+      config.plugins = [...config.plugins];
+    }
+
     config.ignoreWarnings = [{ module: otelRegex }];
 
     return config;
   },
-};
 
-export const config: NextConfig = env.FLAGS_SECRET
-  ? withVercelToolbar()(baseConfig)
-  : baseConfig;
+  // This is required to support PostHog trailing slash API requests
+  skipTrailingSlashRedirect: true,
+};
 
 export const withAnalyzer = (sourceConfig: NextConfig): NextConfig =>
   withBundleAnalyzer()(sourceConfig);
 
 export const withSerwist = (sourceConfig: NextConfig): NextConfig =>
   withSerwistInit({
-    disable: env.NODE_ENV === 'development',
+    disable: process.env.NODE_ENV === 'development',
     swSrc: 'app/sw.ts',
     swDest: 'public/sw.js',
   })(sourceConfig);
