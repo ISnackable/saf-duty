@@ -3,8 +3,6 @@ import {
   defaults as noseconeDefaults,
   withVercelToolbar,
 } from '@nosecone/next';
-import { env } from '@repo/env';
-import { host } from '@repo/site-config';
 export { createMiddleware as noseconeMiddleware } from '@nosecone/next';
 
 // Nosecone security headers configuration
@@ -47,7 +45,5 @@ const noseconeOptions: NoseconeOptions = {
   },
 };
 
-export const noseconeConfig: NoseconeOptions =
-  env.VERCEL_ENV === 'preview' && env.FLAGS_SECRET
-    ? withVercelToolbar(noseconeOptions)
-    : noseconeOptions;
+export const noseconeOptionsWithToolbar: NoseconeOptions =
+  withVercelToolbar(noseconeOptions);

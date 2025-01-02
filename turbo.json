@@ -2,20 +2,11 @@
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
   "ui": "tui",
+  "envMode": "loose",
   "tasks": {
     "build": {
       "dependsOn": ["^build", "test"],
-      "outputs": [".next/**", "!.next/cache/**"],
-      "env": [
-        "ARCJET_KEY",
-        "BETTER_AUTH_SECRET",
-        "DATABASE_URL",
-        "UPSTASH_REDIS_REST_URL",
-        "UPSTASH_REDIS_REST_TOKEN",
-        "FLAGS_SECRET",
-        "RESEND_FROM",
-        "RESEND_TOKEN"
-      ]
+      "outputs": [".next/**", "!.next/cache/**"]
     },
     "test": {
       "dependsOn": ["^test"]

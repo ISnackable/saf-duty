@@ -15,7 +15,7 @@
     "@repo/typescript-config": "workspace:*",
     "@repo/site-config": "workspace:*",
     "@types/lodash.merge": "^4.6.9",
-    "@types/node": "22.10.2",
+    "@types/node": "22.10.3",
     "@types/react": "19.0.2",
     "@types/react-dom": "^19.0.2",
     "next": "15.1.3"

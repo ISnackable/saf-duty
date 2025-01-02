@@ -1,3 +1,4 @@
+import { analytics } from '@repo/analytics/posthog/server';
 import { auth } from '@repo/auth/server';
 import { unstable_flag as flag } from '@vercel/flags/next';
 import { headers } from 'next/headers';
@@ -17,8 +18,7 @@ export const createFlag = (key: string) =>
         return this.defaultValue as boolean;
       }
 
-      // TODO: Implement feature flag logic here
-      const isEnabled = true;
+      const isEnabled = await analytics.isFeatureEnabled(key, userId);
 
       return isEnabled ?? (this.defaultValue as boolean);
     },
