@@ -231,12 +231,6 @@ export const profiles = pgTable(
         onDelete: 'cascade',
         onUpdate: 'cascade',
       }),
-    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
-      .defaultNow()
-      .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
     ordDate: date('ord_date'),
     blockoutDates: date('blockout_dates').array(),
     maxBlockouts: integer('max_blockouts').default(8).notNull(),
@@ -248,6 +242,12 @@ export const profiles = pgTable(
       notify_on_swap_requests: true,
       notify_on_rosters_published: true,
     }),
+    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
+      .defaultNow()
+      .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
   },
   (table) => [
     index('profiles_user_id_idx').using(
@@ -280,12 +280,12 @@ export const rosters = pgTable(
       }),
     dutyDate: date('duty_date').notNull().unique(),
     isExtra: boolean('is_extra').default(false).notNull(),
-    dutyPersonnelId: uuid('duty_personnel_id').references(() => users.id, {
+    dutyPersonnelId: uuid('duty_personnel_id').references(() => profiles.id, {
       onDelete: 'cascade',
       onUpdate: 'cascade',
     }),
     reserveDutyPersonnelId: uuid('reserve_duty_personnel_id').references(
-      () => users.id,
+      () => profiles.id,
       { onDelete: 'cascade', onUpdate: 'cascade' }
     ),
     createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
@@ -315,18 +315,18 @@ export const swapRequests = pgTable(
       minValue: 1,
       cache: 1,
     }),
-    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
-      .defaultNow()
-      .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
     receiverId: uuid('receiver_id')
       .notNull()
-      .references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+      .references(() => profiles.id, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+      }),
     requesterId: uuid('requester_id')
       .notNull()
-      .references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+      .references(() => profiles.id, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+      }),
     reason: text(),
     organizationId: uuid('organization_id')
       .notNull()
@@ -351,6 +351,12 @@ export const swapRequests = pgTable(
         onDelete: 'cascade',
         onUpdate: 'cascade',
       }),
+    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
+      .defaultNow()
+      .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
   },
   (table) => [
     index('swap_requests_multi_idx').using(
@@ -384,26 +390,33 @@ export const notifications = pgTable(
       minValue: 1,
       cache: 1,
     }),
-    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
-      .defaultNow()
-      .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
-    userId: uuid('user_id')
+    organizationId: uuid('organization_id')
       .notNull()
-      .references(() => users.id, {
+      .references(() => organizations.id, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+      }),
+    dutyPersonnelId: uuid('duty_personnel_id')
+      .notNull()
+      .references(() => profiles.id, {
         onDelete: 'cascade',
         onUpdate: 'cascade',
       }),
     title: text().notNull(),
     message: text().notNull(),
     isRead: boolean('is_read').default(false).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
+      .defaultNow()
+      .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
   },
   (table) => [
-    index('notifications_user_id_idx').using(
+    index('notifications_multi_idx').using(
       'btree',
-      table.userId.asc().nullsLast().op('uuid_ops')
+      table.organizationId.asc().nullsLast().op('uuid_ops'),
+      table.dutyPersonnelId.asc().nullsLast().op('uuid_ops')
     ),
   ]
 );

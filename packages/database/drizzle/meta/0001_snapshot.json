@@ -1,6 +1,6 @@
 {
-  "id": "e98fcc41-4daf-4e98-9e3b-5055bb8bed9c",
-  "prevId": "b84558ba-2897-4850-9306-9823c3403cb8",
+  "id": "a5cffd62-c351-4b3d-9c1f-c5c8a6fb69ff",
+  "prevId": "4da4bb99-ce10-4386-83aa-a7b1ec074c7e",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -127,8 +127,12 @@
           "name": "accounts_user_id_users_id_fk",
           "tableFrom": "accounts",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -240,8 +244,12 @@
           "name": "invitations_organization_id_organizations_id_fk",
           "tableFrom": "invitations",
           "tableTo": "organizations",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -249,8 +257,12 @@
           "name": "invitations_inviter_id_users_id_fk",
           "tableFrom": "invitations",
           "tableTo": "users",
-          "columnsFrom": ["inviter_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "inviter_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -336,8 +348,12 @@
           "name": "members_organization_id_organizations_id_fk",
           "tableFrom": "members",
           "tableTo": "organizations",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -345,8 +361,12 @@
           "name": "members_user_id_users_id_fk",
           "tableFrom": "members",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -378,22 +398,14 @@
             "cycle": false
           }
         },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
+        "organization_id": {
+          "name": "organization_id",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": true
         },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "user_id": {
-          "name": "user_id",
+        "duty_personnel_id": {
+          "name": "duty_personnel_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -416,14 +428,35 @@
           "primaryKey": false,
           "notNull": true,
           "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
         }
       },
       "indexes": {
-        "notifications_user_id_idx": {
-          "name": "notifications_user_id_idx",
+        "notifications_multi_idx": {
+          "name": "notifications_multi_idx",
           "columns": [
             {
-              "expression": "user_id",
+              "expression": "organization_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "uuid_ops"
+            },
+            {
+              "expression": "duty_personnel_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last",
@@ -437,12 +470,29 @@
         }
       },
       "foreignKeys": {
-        "notifications_user_id_users_id_fk": {
-          "name": "notifications_user_id_users_id_fk",
+        "notifications_organization_id_organizations_id_fk": {
+          "name": "notifications_organization_id_organizations_id_fk",
           "tableFrom": "notifications",
-          "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "tableTo": "organizations",
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "notifications_duty_personnel_id_profiles_id_fk": {
+          "name": "notifications_duty_personnel_id_profiles_id_fk",
+          "tableFrom": "notifications",
+          "tableTo": "profiles",
+          "columnsFrom": [
+            "duty_personnel_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -534,7 +584,9 @@
         "organizations_slug_unique": {
           "name": "organizations_slug_unique",
           "nullsNotDistinct": false,
-          "columns": ["slug"]
+          "columns": [
+            "slug"
+          ]
         }
       },
       "policies": {},
@@ -614,8 +666,12 @@
           "name": "passkeys_user_id_users_id_fk",
           "tableFrom": "passkeys",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -648,20 +704,6 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
         },
         "ord_date": {
           "name": "ord_date",
@@ -709,6 +751,20 @@
           "primaryKey": false,
           "notNull": false,
           "default": "'{\"notify_on_duty_reminder\":true,\"notify_on_swap_requests\":true,\"notify_on_rosters_published\":true}'::jsonb"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
         }
       },
       "indexes": {
@@ -750,8 +806,12 @@
           "name": "profiles_user_id_users_id_fk",
           "tableFrom": "profiles",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -759,8 +819,12 @@
           "name": "profiles_organization_id_organizations_id_fk",
           "tableFrom": "profiles",
           "tableTo": "organizations",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -847,8 +911,12 @@
           "name": "push_subscriptions_user_id_users_id_fk",
           "tableFrom": "push_subscriptions",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -858,7 +926,9 @@
         "push_subscriptions_user_id_unique": {
           "name": "push_subscriptions_user_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["user_id"]
+          "columns": [
+            "user_id"
+          ]
         }
       },
       "policies": {},
@@ -969,26 +1039,38 @@
           "name": "rosters_organization_id_organizations_id_fk",
           "tableFrom": "rosters",
           "tableTo": "organizations",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
-        "rosters_duty_personnel_id_users_id_fk": {
-          "name": "rosters_duty_personnel_id_users_id_fk",
+        "rosters_duty_personnel_id_profiles_id_fk": {
+          "name": "rosters_duty_personnel_id_profiles_id_fk",
           "tableFrom": "rosters",
-          "tableTo": "users",
-          "columnsFrom": ["duty_personnel_id"],
-          "columnsTo": ["id"],
+          "tableTo": "profiles",
+          "columnsFrom": [
+            "duty_personnel_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
-        "rosters_reserve_duty_personnel_id_users_id_fk": {
-          "name": "rosters_reserve_duty_personnel_id_users_id_fk",
+        "rosters_reserve_duty_personnel_id_profiles_id_fk": {
+          "name": "rosters_reserve_duty_personnel_id_profiles_id_fk",
           "tableFrom": "rosters",
-          "tableTo": "users",
-          "columnsFrom": ["reserve_duty_personnel_id"],
-          "columnsTo": ["id"],
+          "tableTo": "profiles",
+          "columnsFrom": [
+            "reserve_duty_personnel_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -998,7 +1080,9 @@
         "rosters_duty_date_unique": {
           "name": "rosters_duty_date_unique",
           "nullsNotDistinct": false,
-          "columns": ["duty_date"]
+          "columns": [
+            "duty_date"
+          ]
         }
       },
       "policies": {},
@@ -1110,8 +1194,12 @@
           "name": "sessions_user_id_users_id_fk",
           "tableFrom": "sessions",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1121,7 +1209,9 @@
         "sessions_token_unique": {
           "name": "sessions_token_unique",
           "nullsNotDistinct": false,
-          "columns": ["token"]
+          "columns": [
+            "token"
+          ]
         }
       },
       "policies": {},
@@ -1148,20 +1238,6 @@
             "cache": "1",
             "cycle": false
           }
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
         },
         "receiver_id": {
           "name": "receiver_id",
@@ -1198,6 +1274,20 @@
           "type": "bigint",
           "primaryKey": false,
           "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
         }
       },
       "indexes": {
@@ -1247,21 +1337,29 @@
         }
       },
       "foreignKeys": {
-        "swap_requests_receiver_id_users_id_fk": {
-          "name": "swap_requests_receiver_id_users_id_fk",
+        "swap_requests_receiver_id_profiles_id_fk": {
+          "name": "swap_requests_receiver_id_profiles_id_fk",
           "tableFrom": "swap_requests",
-          "tableTo": "users",
-          "columnsFrom": ["receiver_id"],
-          "columnsTo": ["id"],
+          "tableTo": "profiles",
+          "columnsFrom": [
+            "receiver_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
-        "swap_requests_requester_id_users_id_fk": {
-          "name": "swap_requests_requester_id_users_id_fk",
+        "swap_requests_requester_id_profiles_id_fk": {
+          "name": "swap_requests_requester_id_profiles_id_fk",
           "tableFrom": "swap_requests",
-          "tableTo": "users",
-          "columnsFrom": ["requester_id"],
-          "columnsTo": ["id"],
+          "tableTo": "profiles",
+          "columnsFrom": [
+            "requester_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1269,8 +1367,12 @@
           "name": "swap_requests_organization_id_organizations_id_fk",
           "tableFrom": "swap_requests",
           "tableTo": "organizations",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1278,8 +1380,12 @@
           "name": "swap_requests_receiver_roster_id_rosters_id_fk",
           "tableFrom": "swap_requests",
           "tableTo": "rosters",
-          "columnsFrom": ["receiver_roster_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "receiver_roster_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1287,8 +1393,12 @@
           "name": "swap_requests_requester_roster_id_rosters_id_fk",
           "tableFrom": "swap_requests",
           "tableTo": "rosters",
-          "columnsFrom": ["requester_roster_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "requester_roster_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1298,12 +1408,20 @@
         "swap_requests_group_id_requester_id_receiver_roster_id_key": {
           "name": "swap_requests_group_id_requester_id_receiver_roster_id_key",
           "nullsNotDistinct": false,
-          "columns": ["requester_id", "organization_id", "receiver_roster_id"]
+          "columns": [
+            "requester_id",
+            "organization_id",
+            "receiver_roster_id"
+          ]
         },
         "swap_requests_group_id_requester_id_requester_roster_id_key": {
           "name": "swap_requests_group_id_requester_id_requester_roster_id_key",
           "nullsNotDistinct": false,
-          "columns": ["requester_id", "organization_id", "requester_roster_id"]
+          "columns": [
+            "requester_id",
+            "organization_id",
+            "requester_roster_id"
+          ]
         }
       },
       "policies": {},
@@ -1420,8 +1538,12 @@
           "name": "users_initial_organization_id_organizations_id_fk",
           "tableFrom": "users",
           "tableTo": "organizations",
-          "columnsFrom": ["initial_organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "initial_organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1431,7 +1553,9 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": ["email"]
+          "columns": [
+            "email"
+          ]
         }
       },
       "policies": {},

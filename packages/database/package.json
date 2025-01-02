@@ -6,7 +6,7 @@
     "build": "drizzle-kit generate",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
-    "db:seed": "tsx ./seed.ts"
+    "seed": "tsx ./seed.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
