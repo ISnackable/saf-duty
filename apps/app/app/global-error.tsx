@@ -15,7 +15,9 @@ type GlobalErrorProperties = {
 
 const GlobalError = ({ error, reset }: GlobalErrorProperties) => {
   useEffect(() => {
-    log.error(error);
+    if (error?.digest) {
+      log.error('500', error);
+    }
   }, [error]);
 
   return (

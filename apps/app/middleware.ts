@@ -1,10 +1,17 @@
 import { isDemoUser } from '@repo/auth/lib/utils';
 import { getSession } from '@repo/auth/middleware';
-import { noseconeConfig, noseconeMiddleware } from '@repo/security/middleware';
+import {
+  noseconeMiddleware,
+  noseconeOptions,
+  noseconeOptionsWithToolbar,
+} from '@repo/security/middleware';
 import { trustedOrigins } from '@repo/site-config';
 import { type NextRequest, NextResponse } from 'next/server';
+import { env } from './env';
 
-const securityHeaders = noseconeMiddleware(noseconeConfig);
+const securityHeaders = env.FLAGS_SECRET
+  ? noseconeMiddleware(noseconeOptionsWithToolbar)
+  : noseconeMiddleware(noseconeOptions);
 
 // Public paths that do not require authentication, /change-password SHOULD be accessible only to authenticated users.
 const PUBLIC_AUTH_PATHS = ['/register', '/login', '/reset-password'];

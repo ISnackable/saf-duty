@@ -4,16 +4,21 @@ import { z } from 'zod';
 export const keys = () =>
   createEnv({
     server: {
-      BETTERSTACK_API_KEY: z.string().min(1).optional(),
-      BETTERSTACK_URL: z.string().min(1).url().optional(),
+      BETTERSTACK_API_KEY: z.string().min(1).optional().or(z.literal('')),
+      BETTERSTACK_URL: z.string().min(1).url().optional().or(z.literal('')),
 
       // Added by Sentry Integration, Vercel Marketplace
-      SENTRY_ORG: z.string().min(1).optional(),
-      SENTRY_PROJECT: z.string().min(1).optional(),
+      SENTRY_ORG: z.string().min(1).optional().or(z.literal('')),
+      SENTRY_PROJECT: z.string().min(1).optional().or(z.literal('')),
     },
     client: {
       // Added by Sentry Integration, Vercel Marketplace
-      NEXT_PUBLIC_SENTRY_DSN: z.string().min(1).url().optional(),
+      NEXT_PUBLIC_SENTRY_DSN: z
+        .string()
+        .min(1)
+        .url()
+        .optional()
+        .or(z.literal('')),
     },
     runtimeEnv: {
       BETTERSTACK_API_KEY: process.env.BETTERSTACK_API_KEY,

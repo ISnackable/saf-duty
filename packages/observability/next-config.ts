@@ -1,3 +1,4 @@
+import { withLogtail as withBetterStackLogtail } from '@logtail/next';
 import { withSentryConfig } from '@sentry/nextjs';
 import { keys } from './keys';
 
@@ -39,7 +40,18 @@ export const sentryConfig: Parameters<typeof withSentryConfig>[1] = {
   automaticVercelMonitors: true,
 };
 
-export const withSentry = (sourceConfig: object): object =>
-  withSentryConfig(sourceConfig, sentryConfig);
+export const withSentry = (sourceConfig: object): object => {
+  if (!keys().SENTRY_ORG || !keys().SENTRY_PROJECT) {
+    return sourceConfig;
+  }
 
-export { withLogtail } from '@logtail/next';
+  const configWithTranspile = {
+    ...sourceConfig,
+    transpilePackages: ['@sentry/nextjs'],
+  };
+
+  return withSentryConfig(configWithTranspile, sentryConfig);
+};
+
+export const withLogtail = (config: object) =>
+  keys().BETTERSTACK_API_KEY ? withBetterStackLogtail(config) : config;

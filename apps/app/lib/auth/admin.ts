@@ -7,8 +7,9 @@ import { type NextRequest, NextResponse } from 'next/server';
 import { isDemoUser } from '@repo/auth/lib/utils';
 import { auth } from '@repo/auth/server';
 import type { Session } from '@repo/auth/types';
-import { ratelimit } from '@repo/rate-limit';
+import { createRateLimiter } from '@repo/rate-limit';
 import { headers as nextHeaders } from 'next/headers';
+import { env } from '../../env';
 
 type WithAdminHandler = ({
   request,
@@ -42,7 +43,6 @@ export function withAdmin(
   return async (
     request: NextRequest,
     segmentData: { params: Promise<Record<string, string> | undefined> }
-    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
   ) => {
     const { searchParams } = new URL(request.url);
     const headers = await nextHeaders();
@@ -52,11 +52,18 @@ export function withAdmin(
     // Rate limit only for POST, PUT, DELETE, PATCH
     if (
       ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method) &&
-      !options?.needNotExceededUsage
+      !options?.needNotExceededUsage &&
+      env.UPSTASH_REDIS_REST_URL &&
+      env.UPSTASH_REDIS_REST_TOKEN
     ) {
+      const rateLimiter = createRateLimiter();
+
       const ip =
         headers.get('x-real-ip') ?? headers.get('X-Forwarded-For') ?? 'unknown';
-      const { success, limit, reset, remaining } = await ratelimit.limit(ip);
+
+      const { success, limit, reset, remaining } = await rateLimiter.limit(
+        `contact_form_${ip}`
+      );
 
       if (!success) {
         return NextResponse.json(

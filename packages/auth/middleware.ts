@@ -4,11 +4,15 @@ import { base64 } from '@better-auth/utils/base64';
 import { binary } from '@better-auth/utils/binary';
 import { createHMAC } from '@better-auth/utils/hmac';
 import { betterFetch } from '@better-fetch/fetch';
-import { env } from '@repo/env';
-import { noseconeConfig, noseconeMiddleware } from '@repo/security/middleware';
+import {
+  noseconeMiddleware,
+  noseconeOptions,
+  noseconeOptionsWithToolbar,
+} from '@repo/security/middleware';
 import { site } from '@repo/site-config';
 import { getCookie, getSignedCookie, parse } from 'better-call';
 import type { NextRequest } from 'next/server';
+import { keys } from './keys';
 import type { Session } from './types';
 
 type SessionDataPayload = {
@@ -26,11 +30,13 @@ export function safeJSONParse<T>(data: string): T | null {
 }
 
 const PREFIX = site.shortName.toLowerCase();
-const SECRET = env.BETTER_AUTH_SECRET;
+const SECRET = keys().BETTER_AUTH_SECRET;
 const SESSION_COOKIE_NAME = `${PREFIX}.session_token`;
-const SESSION_DATA_COOKIE_NAME = `${PREFIX}.session_data`;
-const securityHeaders = noseconeMiddleware(noseconeConfig);
 const isProduction = !!process.env.VERCEL_ENV;
+const SESSION_DATA_COOKIE_NAME = `${PREFIX}.session_data`;
+const securityHeaders = keys().FLAGS_SECRET
+  ? noseconeMiddleware(noseconeOptionsWithToolbar)
+  : noseconeMiddleware(noseconeOptions);
 
 // Most of this code is from the better-auth package
 // We implemented this to avoid making an extra request to the server

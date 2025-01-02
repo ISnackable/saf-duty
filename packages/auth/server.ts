@@ -2,32 +2,17 @@ import 'server-only';
 
 import { database, eq } from '@repo/database';
 import { organizations, users } from '@repo/database/schema';
-import { redis } from '@repo/rate-limit';
 import { site, trustedOrigins } from '@repo/site-config';
 import { type BetterAuthOptions, betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { APIError } from 'better-auth/api';
 import { nextCookies } from 'better-auth/next-js';
 import { admin, organization } from 'better-auth/plugins';
+import { createSecondaryStorage } from './lib/secondary-storage';
 
 export const betterAuthConfig = {
   database: drizzleAdapter(database, { provider: 'pg', usePlural: true }),
-  secondaryStorage: {
-    get: async (key) => {
-      const value = (await redis.get(key)) as string | null;
-      return value ? JSON.parse(JSON.stringify(value)) : null;
-    },
-    set: async (key, value, ttl) => {
-      if (ttl) {
-        await redis.set(key, JSON.stringify(value), { ex: ttl });
-      } else {
-        await redis.set(key, JSON.stringify(value));
-      }
-    },
-    delete: async (key) => {
-      await redis.del(key);
-    },
-  },
+  secondaryStorage: createSecondaryStorage(),
   rateLimit: {
     // Because we are using Free tier, so we try to keep the rate limit low 😢
     storage: 'memory',

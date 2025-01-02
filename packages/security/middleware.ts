@@ -8,7 +8,7 @@ import { host } from '@repo/site-config';
 
 // Nosecone security headers configuration
 // https://docs.arcjet.com/nosecone/quick-start
-const noseconeOptions: NoseconeOptions = {
+export const noseconeOptions: NoseconeOptions = {
   ...noseconeDefaults,
   contentSecurityPolicy: {
     ...noseconeDefaults.contentSecurityPolicy,
@@ -22,10 +22,12 @@ const noseconeOptions: NoseconeOptions = {
         //...noseconeDefaults.contentSecurityPolicy.directives.scriptSrc,
         "'self'",
         "'unsafe-inline'",
+        'https://www.googletagmanager.com',
         'https://va.vercel-scripts.com',
       ],
       connectSrc: [
         ...noseconeDefaults.contentSecurityPolicy.directives.connectSrc,
+        'https://*.google-analytics.com',
         host as 'https:',
       ],
       workerSrc: [

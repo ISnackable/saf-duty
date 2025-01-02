@@ -1,3 +1,4 @@
+import { site } from '@repo/site-config';
 import { Ratelimit, type RatelimitConfig } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import { keys } from './keys';
@@ -7,11 +8,11 @@ export const redis = new Redis({
   token: keys().UPSTASH_REDIS_REST_TOKEN,
 });
 
-export const createRateLimiter = (props: Omit<RatelimitConfig, 'redis'>) =>
+export const createRateLimiter = (props?: Omit<RatelimitConfig, 'redis'>) =>
   new Ratelimit({
     redis,
-    limiter: props.limiter ?? Ratelimit.slidingWindow(10, '10 s'),
-    prefix: props.prefix ?? site.shortName,
+    limiter: props?.limiter ?? Ratelimit.slidingWindow(10, '10 s'),
+    prefix: props?.prefix ?? site.shortName,
   });
 
 export const { slidingWindow } = Ratelimit;

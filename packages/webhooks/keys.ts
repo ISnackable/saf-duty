@@ -9,7 +9,8 @@ export const keys = () =>
           z.string().min(1).startsWith('sk_'),
           z.string().min(1).startsWith('testsk_'),
         ])
-        .optional(),
+        .optional()
+        .or(z.literal('')),
     },
     runtimeEnv: {
       SVIX_TOKEN: process.env.SVIX_TOKEN,

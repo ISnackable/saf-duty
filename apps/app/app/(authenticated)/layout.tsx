@@ -2,7 +2,6 @@ import {
   SidebarInset,
   SidebarProvider,
 } from '@repo/design-system/components/ui/sidebar';
-// import { env } from '@repo/env';
 import type * as React from 'react';
 import { BottomNav } from './components/bottom-nav';
 import { Header } from './components/header';
