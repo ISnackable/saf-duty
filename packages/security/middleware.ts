@@ -38,6 +38,10 @@ export const noseconeOptions: NoseconeOptions = {
         ...noseconeDefaults.contentSecurityPolicy.directives.imgSrc,
         'https://api.dicebear.com',
       ],
+      frameSrc: [
+        ...noseconeDefaults.contentSecurityPolicy.directives.frameSrc,
+        'https://ippt.yctay.com',
+      ],
       // We only set this in production because the server may be started
       // without HTTPS
       upgradeInsecureRequests: process.env.VERCEL_ENV === 'production',
