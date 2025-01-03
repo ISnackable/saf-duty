@@ -1,10 +1,16 @@
+import type { Metadata } from 'next';
+
+import { DashboardOverview } from './components/dashboard-overview';
+
+export const metadata: Metadata = {
+  title: 'Overview',
+  description: 'Dashboard overview for duty personnels',
+};
+
 export default function Index() {
   return (
-    <>
-      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-        <div className="grid auto-rows-min gap-4 md:grid-cols-3">TEST</div>
-        <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-      </div>
-    </>
+    <div className="space-y-4 p-8 pt-4">
+      <DashboardOverview />
+    </div>
   );
 }

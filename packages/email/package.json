@@ -25,6 +25,8 @@
     ".": {
       "node": "./index.node.ts",
       "edge-light": "./index.edge.ts"
-    }
+    },
+    "./key": "./key.ts",
+    "./templates/": "./templates/"
   }
 }
