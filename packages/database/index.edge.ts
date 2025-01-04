@@ -5,6 +5,7 @@ import { drizzle } from 'drizzle-orm/neon-serverless';
 // https://github.com/supabase/supabase/blob/master/apps/docs/content/guides/database/connecting-to-postgres/serverless-drivers.mdx
 // https://github.com/nextauthjs/next-auth/issues/10773
 import { keys } from './keys';
+import * as relations from './relations';
 import * as schema from './schema';
 
 // if we're running locally
@@ -27,6 +28,11 @@ const pool = new Pool({
   // An arbitrary large number to prevent running out of connections
   max: 10_000,
 });
-export const database = drizzle(pool, { schema });
+export const database = drizzle(pool, {
+  schema: {
+    ...schema,
+    ...relations,
+  },
+});
 
 export * from 'drizzle-orm';
