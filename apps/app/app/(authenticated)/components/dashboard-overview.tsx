@@ -6,6 +6,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import * as React from 'react';
 
+import { useSession } from '@repo/auth/client';
+import type { User } from '@repo/auth/types';
 // import useAllProfiles from '@/hooks/use-all-profiles';
 // import { useUpcomingDuties } from '@/hooks/use-upcoming-duties';
 import { useOs } from '@repo/design-system//hooks/use-os';
@@ -30,11 +32,9 @@ import { Separator } from '@repo/design-system/components/ui/separator';
 import { Skeleton } from '@repo/design-system/components/ui/skeleton';
 import { useMediaQuery } from '@repo/design-system/hooks/use-media-query';
 
-import { useSession } from '@repo/auth/client';
-import type { User } from '@repo/auth/types';
-import { getOrdinalSuffix } from '../../../lib/helper';
-import type { Rosters } from '../../../lib/types';
-import svgImage from '../../../public/undraw_happy_music_g6wc.svg';
+import { getOrdinalSuffix } from '@/lib/helper';
+import type { Rosters } from '@/lib/types';
+import svgImage from '@/public/undraw_happy_music_g6wc.svg';
 
 export function DashboardOverview() {
   const os = useOs();
