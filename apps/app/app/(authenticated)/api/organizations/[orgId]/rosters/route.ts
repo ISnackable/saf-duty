@@ -4,6 +4,8 @@ import { withAuth } from '@/lib/auth/session';
 import { getRostersByOrgId } from '@/lib/data';
 import { useMonthYear } from '@/lib/helper';
 
+export const runtime = 'edge';
+
 export const GET = withAuth(
   async ({ searchParams, user }) => {
     const { month, year } = useMonthYear(searchParams);

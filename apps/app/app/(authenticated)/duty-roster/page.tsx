@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
-// import { DutyRoster } from '../components/duty-roster';
 import { Icons } from '@repo/design-system/components/icons';
+import { DutyRoster } from '../components/duty-roster';
 
 export const metadata: Metadata = {
   title: 'Duty Roster',
@@ -24,7 +24,7 @@ export default function DutyRosterPage() {
           date to request for swap duty.
         </p>
       </div>
-      {/* <DutyRoster /> */}
+      <DutyRoster />
     </div>
   );
 }

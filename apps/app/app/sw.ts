@@ -86,5 +86,3 @@ self.addEventListener('notificationclick', (event) => {
       })
   );
 });
-
-serwist.addEventListeners();

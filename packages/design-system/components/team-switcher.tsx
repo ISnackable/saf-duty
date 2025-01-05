@@ -1,6 +1,5 @@
 import { CaretSortIcon, PlusIcon } from '@radix-ui/react-icons';
 import type { Organization } from '@repo/auth/types';
-import { Icons } from '@repo/design-system/components/icons';
 import {
   Avatar,
   AvatarFallback,
@@ -46,14 +45,16 @@ export function TeamSwitcher({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary-700 bg-opacity-60 text-sidebar-primary-foreground">
-                {activeTeam?.logo ? (
-                  <Avatar>
-                    <AvatarImage src={activeTeam.logo} alt="team logo" />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                ) : (
-                  <Icons.logo className="size-8 text-accent-foreground" />
-                )}
+                <Avatar>
+                  <AvatarImage
+                    crossOrigin="anonymous"
+                    src={activeTeam?.logo ?? undefined}
+                    alt="team logo"
+                  />
+                  <AvatarFallback>
+                    {activeTeam?.name?.slice(0, 2).toUpperCase() ?? 'CN'}
+                  </AvatarFallback>
+                </Avatar>
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
@@ -84,14 +85,16 @@ export function TeamSwitcher({
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
-                  {activeTeam?.logo ? (
-                    <Avatar>
-                      <AvatarImage src={activeTeam.logo} alt="team logo" />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                  ) : (
-                    <Icons.logo className="size-4 shrink-0" />
-                  )}
+                  <Avatar>
+                    <AvatarImage
+                      crossOrigin="anonymous"
+                      src={activeTeam?.logo ?? undefined}
+                      alt="team logo"
+                    />
+                    <AvatarFallback>
+                      {activeTeam?.name?.slice(0, 2).toUpperCase() ?? 'CN'}
+                    </AvatarFallback>
+                  </Avatar>
                 </div>
 
                 {team.name}

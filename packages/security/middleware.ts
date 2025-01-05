@@ -22,6 +22,7 @@ export const noseconeOptions: NoseconeOptions = {
         //...noseconeDefaults.contentSecurityPolicy.directives.scriptSrc,
         "'self'",
         "'unsafe-inline'",
+        "'wasm-unsafe-eval'",
         'https://www.googletagmanager.com',
         'https://va.vercel-scripts.com',
       ],
@@ -38,19 +39,26 @@ export const noseconeOptions: NoseconeOptions = {
         ...noseconeDefaults.contentSecurityPolicy.directives.imgSrc,
         'https://api.dicebear.com',
       ],
-      frameSrc: [
-        ...noseconeDefaults.contentSecurityPolicy.directives.frameSrc,
-        'https://ippt.yctay.com',
-      ],
+      frameSrc: ['https://ippt.yctay.com'],
       // We only set this in production because the server may be started
       // without HTTPS
       upgradeInsecureRequests: process.env.VERCEL_ENV === 'production',
     },
   },
   crossOriginEmbedderPolicy: {
-    policy: 'credentialless',
+    policy: 'require-corp',
+  },
+  crossOriginOpenerPolicy: {
+    policy: 'same-origin',
   },
 };
 
-export const noseconeOptionsWithToolbar: NoseconeOptions =
-  withVercelToolbar(noseconeOptions);
+export const noseconeOptionsWithToolbar: NoseconeOptions = {
+  ...withVercelToolbar(noseconeOptions),
+  crossOriginEmbedderPolicy: {
+    policy: 'require-corp',
+  },
+  crossOriginOpenerPolicy: {
+    policy: 'same-origin',
+  },
+};

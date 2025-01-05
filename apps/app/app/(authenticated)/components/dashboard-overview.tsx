@@ -105,7 +105,11 @@ export function DashboardOverview() {
       <div data-tour="home-page">
         <div className="flex w-full items-center space-y-2">
           <Avatar className="mr-3 inline-block h-10 w-10 items-center align-middle">
-            <AvatarImage src={profile?.image ?? ''} className="object-cover" />
+            <AvatarImage
+              crossOrigin="anonymous"
+              src={profile?.image ?? ''}
+              className="object-cover"
+            />
             <AvatarFallback>O</AvatarFallback>
           </Avatar>
           <h1 className="grow scroll-m-20 border-b pb-2 font-extrabold text-2xl tracking-tight sm:text-4xl lg:text-5xl">
@@ -267,6 +271,7 @@ export function DashboardOverview() {
                     >
                       <Avatar>
                         <AvatarImage
+                          crossOrigin="anonymous"
                           className="rounded-xl object-cover"
                           src={profile.image || undefined}
                         />

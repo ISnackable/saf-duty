@@ -31,7 +31,20 @@ import { SidebarMenuButton } from '@repo/design-system/components/ui/sidebar';
 import { Skeleton } from '@repo/design-system/components/ui/skeleton';
 
 const data = {
-  admin: [
+  organization: [
+    {
+      title: 'Duty Panel',
+      url: '#',
+      icon: Icons.layersIntersect,
+      isActive: false,
+      items: [
+        {
+          title: 'Schedule Duty',
+          url: '/organization/schedule-duty',
+          icon: Icons.chessKnight,
+        },
+      ],
+    },
     {
       title: 'Admin Panel',
       url: '#',
@@ -40,13 +53,13 @@ const data = {
       items: [
         {
           title: 'Manage Personnel',
-          url: '/admin/manage-personnel',
+          url: '/organization/manage-personnel',
           icon: Icons.user,
         },
         {
-          title: 'Schedule Duty',
-          url: '/admin/schedule-duty',
-          icon: Icons.chessKnight,
+          title: 'Manage Invites',
+          url: '/organization/manage-invites',
+          icon: Icons.mailForward,
         },
       ],
     },
@@ -142,7 +155,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           {session &&
           session.user.role !== 'admin' &&
           !isDemoUser(session.user?.id) ? null : (
-            <NavCollapsible label="Admin" items={data.admin} />
+            <NavCollapsible label="Organisation" items={data.organization} />
           )}
           <NavOthers label="Dashboard" others={data.dashboard} />
           <NavOthers label="Collections" others={data.collections} />
@@ -157,6 +170,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           >
             <Avatar className="h-8 w-8 rounded-lg">
               <AvatarImage
+                crossOrigin="anonymous"
                 src={profile?.image ?? undefined}
                 alt={`${profile?.name} avatar image`}
               />

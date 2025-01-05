@@ -15,9 +15,23 @@ let nextConfig: NextConfig = withToolbar(
         'add-to-calendar-button-react',
       ],
     },
+    serverExternalPackages: ['z3-solver'],
     // biome-ignore lint/suspicious/useAwait: headers is a Next.js API that must be async
     async headers() {
       return [
+        {
+          source: '/z3-built(.*)',
+          headers: [
+            {
+              key: 'Cross-Origin-Embedder-Policy',
+              value: 'require-corp',
+            },
+            {
+              key: 'Cross-Origin-Opener-Policy',
+              value: 'same-origin',
+            },
+          ],
+        },
         {
           source: '/sw.js',
           headers: [

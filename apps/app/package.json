@@ -41,6 +41,8 @@
     "server-only": "^0.0.1",
     "sonner": "^1.7.1",
     "swr": "^2.3.0",
+    "use-debounce": "^10.0.4",
+    "z3-solver": "^4.13.4",
     "zod": "^3.24.1"
   },
   "devDependencies": {

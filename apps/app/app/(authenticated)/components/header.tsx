@@ -46,6 +46,7 @@ export function Header() {
           <Button variant="ghost" className="relative h-9 w-9 rounded-full">
             <Avatar className="relative h-9 w-9 rounded-full">
               <AvatarImage
+                crossOrigin="anonymous"
                 src={profile?.image ?? undefined}
                 alt={`${profile?.name} avatar image`}
                 className="object-cover"

@@ -16,7 +16,6 @@
 		"3000": { "label": "App" },
 		"3003": { "label": "Email - Web" },
 		"3004": { "label": "Docs - Mintlify" },
-		"3005": { "label": "Studio - Database" },
 		"4983": { "label": "Studio - Server" },
 		"6006": { "label": "Storybook - App" }
 	},

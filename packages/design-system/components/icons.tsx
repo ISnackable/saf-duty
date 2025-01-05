@@ -29,8 +29,10 @@ import {
   IconFingerprint,
   IconHome2,
   IconInfoCircle,
+  IconLayersIntersect,
   IconLoader2,
   IconLogout,
+  IconMailForward,
   IconMenu2,
   IconMessageCircleQuestion,
   IconMoon,
@@ -294,4 +296,6 @@ export const Icons = {
   alertTriangle: IconAlertTriangle,
   exclamationCircle: IconExclamationCircle,
   logOut: IconLogout,
+  layersIntersect: IconLayersIntersect,
+  mailForward: IconMailForward,
 };

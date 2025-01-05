@@ -144,6 +144,7 @@ export function ProfileForm() {
                           {imagePreview ? (
                             <Avatar className="h-32 w-32">
                               <AvatarImage
+                                crossOrigin="anonymous"
                                 src={imagePreview}
                                 alt="preview"
                                 className="object-cover"

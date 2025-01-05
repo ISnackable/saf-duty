@@ -93,21 +93,11 @@ export default async function middleware(request: NextRequest) {
     return redirectToPath(request);
   }
 
-  // Authenticated user should not be able to access /admin routes if not an "admin" role (unless it's a demo user)
+  // Authenticated user should not be able to access /organization routes if not an privileged role (unless it's a demo user)
   if (
-    request.nextUrl.pathname.startsWith('/admin') &&
-    session.user.role !== 'admin' &&
+    request.nextUrl.pathname.startsWith('/organization') &&
     !isDemoUser(session.user.id)
   ) {
-    return redirectToPath(request);
-  }
-
-  // //TODO: Finally, we check whether the user has an active organization, else we redirect them to the onboarding page
-  // if (!session.session.activeOrganizationId) {
-  //   return redirectToPath(request, '/onboarding');
-  // }
-
-  if (request.nextUrl.pathname.startsWith('/organization')) {
     const res = await fetch(
       new URL(
         '/api/auth/organization/get-active-member',
@@ -121,11 +111,7 @@ export default async function middleware(request: NextRequest) {
     );
     const member = res.ok ? await res.json() : null;
 
-    if (!member) {
-      return redirectToPath(request, '/onboarding');
-    }
-
-    if (['owner', 'admin'].includes(member.role)) {
+    if (['owner', 'admin'].includes(member?.role)) {
       return response;
     }
 

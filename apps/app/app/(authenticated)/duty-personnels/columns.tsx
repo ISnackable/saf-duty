@@ -32,7 +32,7 @@
 //     cell: ({ row }) => (
 //       <div className="ml-2 flex items-center align-middle">
 //         <Avatar className="mr-2 size-8">
-//           <AvatarImage
+//           <AvatarImage crossOrigin="anonymous"
 //             loading="lazy"
 //             src={row.original.avatar_url as string}
 //             alt={row.original.name}
