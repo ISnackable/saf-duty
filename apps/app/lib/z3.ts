@@ -8,7 +8,7 @@
 // https://medium.com/@claudefournier/takuzu-puzzle-assistant-with-react-work-in-progress-part-3-56e4db12e238
 // https://github.com/microsoft/z3guide
 
-import type { Context, Z3HighLevel, Z3LowLevel } from 'z3-solver';
+import type { Context, Solver, Z3HighLevel, Z3LowLevel } from 'z3-solver';
 
 declare global {
   interface Window {
@@ -30,27 +30,38 @@ export default async function loadZ3() {
   return z3p;
 }
 
-let z3Context: Context<'main'>;
+let z3Context: Context<'main'> | null;
+let solver: Solver<'main'> | null;
 
 export async function testZ3() {
-  const { Context, em } = await loadZ3();
+  try {
+    const z3 = await loadZ3();
 
-  if (!z3Context) {
-    console.log('Creating new context');
-    z3Context = Context('main');
+    if (!z3Context) {
+      z3Context = z3.Context('main');
+    }
+
+    const { Solver, Int, And } = z3Context;
+
+    const x = Int.const('x');
+
+    if (!solver) {
+      solver = new Solver();
+    }
+    console.log(solver);
+    solver.add(And(x.ge(0), x.le(9)));
+    await solver.check();
+
+    solver.reset();
+    z3.em.PThread.terminateAllThreads();
+  } catch (_error) {
+    // So basically, Z3 is a pain
+    // There's a memory leak in the solver, and the only way to fix it is to reset the solver
+    // and reinitialize the z3 library
+    // @ts-ignore
+    window.z3Promise = null;
+    solver?.release();
+    solver = null;
+    z3Context = null;
   }
-
-  const { Solver, Int, And } = z3Context;
-
-  const x = Int.const('x');
-
-  const solver = new Solver();
-  console.log(solver);
-  solver.add(And(x.ge(0), x.le(9)));
-  console.log(await solver.check());
-
-  // Clean up
-  solver.reset();
-  solver.release();
-  em.PThread.terminateAllThreads();
 }
