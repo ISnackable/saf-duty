@@ -43,8 +43,8 @@ export function Header() {
       <div className="flex grow basis-0 justify-end space-x-2 align-middle">
         {/* <NotificationsPopover /> */}
         <NavUser name={profile?.name ?? 'User'} email={profile?.email ?? ''}>
-          <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-            <Avatar className="relative h-9 w-9 rounded-full">
+          <Button variant="ghost" className="relative rounded-full p-0">
+            <Avatar className="relative size-9 rounded-full">
               <AvatarImage
                 crossOrigin="anonymous"
                 src={profile?.image ?? undefined}
