@@ -30,7 +30,8 @@
     ".": {
       "types": "./index.node.ts",
       "node": "./index.node.ts",
-      "edge-light": "./index.edge.ts"
+      "edge-light": "./index.edge.ts",
+      "workerd": "./index.edge.ts"
     },
     "./schema": {
       "types": "./schema.ts",
