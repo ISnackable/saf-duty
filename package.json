@@ -28,7 +28,7 @@
   "engines": {
     "node": ">=18"
   },
-  "packageManager": "pnpm@9.15.2",
+  "packageManager": "pnpm@9.15.3",
   "dependencies": {
     "@repo/site-config": "workspace:*",
     "chalk": "^5.4.1",
