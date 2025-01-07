@@ -1,9 +1,14 @@
+import { auth } from '@repo/auth/server';
 import {
   SidebarInset,
   SidebarProvider,
 } from '@repo/design-system/components/ui/sidebar';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 import type * as React from 'react';
+
 import { BottomNav } from './components/bottom-nav';
+import { DriverTour } from './components/driver-tour';
 import { Header } from './components/header';
 import { AppSidebar } from './components/sidebar';
 
@@ -14,7 +19,15 @@ type AppLayoutProperties = {
   readonly children: React.ReactNode;
 };
 
-export default function AppLayout({ children }: AppLayoutProperties) {
+export default async function AppLayout({ children }: AppLayoutProperties) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    redirect('/login');
+  }
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -30,7 +43,7 @@ export default function AppLayout({ children }: AppLayoutProperties) {
         </footer>
       </SidebarInset>
 
-      {/* {data?.onboarded ? null : <DriverTour />} */}
+      {session.user.onboarded ? null : <DriverTour />}
     </SidebarProvider>
   );
 }
