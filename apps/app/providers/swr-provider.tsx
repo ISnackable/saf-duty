@@ -2,13 +2,20 @@
 
 import type * as React from 'react';
 import { SWRConfig } from 'swr';
+import type { SWRConfiguration } from 'swr';
 
-export function SWRProvider({ children }: { children: React.ReactNode }) {
+interface SWRProviderProps {
+  value?: SWRConfiguration;
+  readonly children: React.ReactNode;
+}
+
+export function SWRProvider({ value, children }: SWRProviderProps) {
   return (
     <SWRConfig
       value={{
         fetcher: (resource, init) =>
           fetch(resource, init).then((res) => res.json()),
+        ...value,
       }}
     >
       {children}

@@ -1,4 +1,5 @@
-import type { profiles, rosters } from '@repo/database/schema';
+import type * as schema from '@repo/database/schema';
 
-export type Profiles = typeof profiles.$inferSelect;
-export type Rosters = typeof rosters.$inferSelect;
+export type Profiles = typeof schema.profiles.$inferSelect;
+export type Rosters = typeof schema.rosters.$inferSelect;
+export type SwapRequests = typeof schema.swapRequests.$inferSelect;
