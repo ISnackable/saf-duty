@@ -7,35 +7,24 @@
 // So here are some links that I found useful: (for my future self)
 // https://medium.com/@claudefournier/takuzu-puzzle-assistant-with-react-work-in-progress-part-3-56e4db12e238
 // https://github.com/microsoft/z3guide
-
 import type { Context, Solver, Z3HighLevel, Z3LowLevel } from 'z3-solver';
+import { init } from 'z3-solver';
 
 declare global {
-  interface Window {
-    z3Promise: Promise<Z3HighLevel & Z3LowLevel>;
-  } // use any to escape typechecking
+  var initZ3: () => void;
 }
 
-export default async function loadZ3() {
-  const z3 = await import('z3-solver');
-
-  // init z3
-  const z3p: Promise<Z3HighLevel & Z3LowLevel> =
-    window.z3Promise ||
-    (() => {
-      // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
-      return (window.z3Promise = z3.init());
-    })();
-
-  return z3p;
-}
-
+let z3: (Z3HighLevel & Z3LowLevel) | null;
 let z3Context: Context<'main'> | null;
 let solver: Solver<'main'> | null;
 
+// Experimental af, honestly we shouldn't use this at all
+// I'm just testing out the Z3 solver
 export async function testZ3() {
   try {
-    const z3 = await loadZ3();
+    if (!z3 || !global.initZ3) {
+      z3 = await init();
+    }
 
     if (!z3Context) {
       z3Context = z3.Context('main');
@@ -55,13 +44,19 @@ export async function testZ3() {
     solver.reset();
     z3.em.PThread.terminateAllThreads();
   } catch (_error) {
-    // So basically, Z3 is a pain
-    // There's a memory leak in the solver, and the only way to fix it is to reset the solver
-    // and reinitialize the z3 library
-    // @ts-ignore
-    window.z3Promise = null;
-    solver?.release();
-    solver = null;
-    z3Context = null;
+    console.error('Error in Z3', _error);
+    cleanUpZ3();
   }
+}
+
+// So basically, Z3 is a pain
+// There's a memory leak in the solver, and the only way to fix it is to reset the solver
+// and reinitialize the z3 library
+export function cleanUpZ3() {
+  z3?.em.PThread.terminateAllThreads();
+  solver?.release();
+  solver = null;
+  z3Context = null;
+  z3 = null;
+  // WebAssembly.instantiate()
 }
