@@ -2,24 +2,21 @@
 
 import useSWR from 'swr';
 
-import { useUser } from '@/components/session-provider';
-import type { Tables } from '@/types/supabase';
-
-export interface Notifications {
-  notifications: Omit<Tables<'notifications'>, 'user_id'>[];
-  unreadCount: number | null;
-}
+import type { Notifications } from '@/lib/types';
+import { useSession } from '@repo/auth/client';
 
 export function useNotifications() {
-  const user = useUser();
+  const { data: session } = useSession();
+  const activeOrganizationId = session?.session.activeOrganizationId;
 
-  const { data, error, isLoading, mutate } = useSWR<Notifications>(
-    user ? `/api/profiles/${user?.id}/notifications` : null
+  const { data, error, isLoading, mutate } = useSWR<Notifications[]>(
+    session && activeOrganizationId
+      ? `/api/organizations/${activeOrganizationId}/notifications/${session.session.userId}`
+      : null
   );
 
   return {
-    data: data?.notifications,
-    unreadCount: data?.unreadCount,
+    data,
     isLoading,
     error,
     mutate,
