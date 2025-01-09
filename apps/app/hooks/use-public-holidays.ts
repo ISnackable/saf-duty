@@ -2,7 +2,7 @@
 
 import useSWRImmutable from 'swr/immutable';
 
-interface NagerDatePublicHoliday {
+export interface NagerDatePublicHoliday {
   date: string;
   localName: string;
   name: string;

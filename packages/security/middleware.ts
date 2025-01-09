@@ -29,6 +29,7 @@ export const noseconeOptions: NoseconeOptions = {
       connectSrc: [
         ...noseconeDefaults.contentSecurityPolicy.directives.connectSrc,
         'https://*.google-analytics.com',
+        'https://date.nager.at',
         host as 'https:',
       ],
       workerSrc: [
