@@ -26,7 +26,7 @@ type WithAuthHandler = ({
 }) => Promise<NextResponse>;
 
 interface WithAuthOptions {
-  requiredRole?: Roles;
+  requiredRole?: Roles[];
   needNotExceededUsage?: boolean;
   allowDemoUser?: boolean;
 }
@@ -93,28 +93,12 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
     }
 
     const paramsOrgId = params?.orgId;
-    const paramsUserId = params?.userId;
 
     if (paramsOrgId && member.organizationId !== paramsOrgId) {
       return NextResponse.json(
         {
           status: 'error',
           message: 'User is not authorized to access this organization',
-        },
-        { status: 401 }
-      );
-    }
-
-    if (
-      paramsUserId &&
-      member.user.id !== paramsUserId &&
-      member.role !== 'admin' &&
-      member.role !== 'owner'
-    ) {
-      return NextResponse.json(
-        {
-          status: 'error',
-          message: 'User is not authorized',
         },
         { status: 401 }
       );

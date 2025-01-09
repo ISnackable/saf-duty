@@ -20,17 +20,20 @@ export function indexOnceWithKey<T, K extends keyof T>(data: T[], key: K) {
   );
 }
 
-export function getMonthYearParams(params: Record<string, string> | undefined) {
+export function getMonthYearParams(
+  params: { [key: string]: string | string[] | undefined } | undefined
+) {
   const today = new Date();
   const currentYear = today.getFullYear();
 
   // Get month and year from params
   if (
+    typeof params !== 'string' &&
     params?.month &&
     params?.year &&
     isMatch(`${params?.month}-${params?.year}`, 'MMMM-yyyy')
   ) {
-    return { month: params?.month, year: params?.year };
+    return { month: params?.month as string, year: params?.year as string };
   }
 
   return {

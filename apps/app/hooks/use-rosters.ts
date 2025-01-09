@@ -2,7 +2,7 @@
 
 import useSWR from 'swr';
 
-import type { Rosters } from '@/lib/types';
+import type { DutyDate } from '@/lib/generate-roster';
 import { useSession } from '@repo/auth/client';
 
 export function useRosters({ month, year }: { month?: string; year?: string }) {
@@ -14,7 +14,7 @@ export function useRosters({ month, year }: { month?: string; year?: string }) {
   usp.sort();
   const qs = usp.toString();
 
-  const { data, error, isLoading, mutate } = useSWR<Rosters[]>(
+  const { data, error, isLoading, mutate } = useSWR<Record<string, DutyDate>>(
     session && activeOrganizationId && month && year
       ? `/api/organizations/${activeOrganizationId}/rosters?${qs}`
       : null
