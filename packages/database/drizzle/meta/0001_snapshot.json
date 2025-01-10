@@ -1405,17 +1405,17 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "swap_requests_group_id_requester_id_receiver_roster_id_key": {
-          "name": "swap_requests_group_id_requester_id_receiver_roster_id_key",
+        "swap_requests_organization_id_requester_id_receiver_roster_id_key": {
+          "name": "swap_requests_organization_id_requester_id_receiver_roster_id_key",
           "nullsNotDistinct": false,
           "columns": [
-            "requester_id",
+            "receiver_id",
             "organization_id",
             "receiver_roster_id"
           ]
         },
-        "swap_requests_group_id_requester_id_requester_roster_id_key": {
-          "name": "swap_requests_group_id_requester_id_requester_roster_id_key",
+        "swap_requests_organization_id_requester_id_requester_roster_id_key": {
+          "name": "swap_requests_organization_id_requester_id_requester_roster_id_key",
           "nullsNotDistinct": false,
           "columns": [
             "requester_id",

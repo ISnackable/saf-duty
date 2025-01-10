@@ -237,11 +237,18 @@ export const profiles = pgTable(
     weekdayPoints: integer('weekday_points').default(0).notNull(),
     weekendPoints: integer('weekend_points').default(0).notNull(),
     noOfExtras: integer('no_of_extras').default(0),
-    userSettings: jsonb('user_settings').default({
-      notify_on_duty_reminder: true,
-      notify_on_swap_requests: true,
-      notify_on_rosters_published: true,
-    }),
+    userSettings: jsonb('user_settings')
+      .default({
+        notify_on_duty_reminder: true,
+        notify_on_swap_requests: true,
+        notify_on_rosters_published: true,
+      })
+      .notNull()
+      .$type<{
+        notify_on_duty_reminder: boolean;
+        notify_on_swap_requests: boolean;
+        notify_on_rosters_published: boolean;
+      }>(),
     createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
       .defaultNow()
       .notNull(),
@@ -367,16 +374,12 @@ export const swapRequests = pgTable(
       table.receiverRosterId.asc().nullsLast().op('int8_ops'),
       table.requesterRosterId.asc().nullsLast().op('int8_ops')
     ),
-    unique('swap_requests_group_id_requester_id_receiver_roster_id_key').on(
-      table.requesterId,
-      table.organizationId,
-      table.receiverRosterId
-    ),
-    unique('swap_requests_group_id_requester_id_requester_roster_id_key').on(
-      table.requesterId,
-      table.organizationId,
-      table.requesterRosterId
-    ),
+    unique(
+      'swap_requests_organization_id_requester_id_receiver_roster_id_key'
+    ).on(table.receiverId, table.organizationId, table.receiverRosterId),
+    unique(
+      'swap_requests_organization_id_requester_id_requester_roster_id_key'
+    ).on(table.requesterId, table.organizationId, table.requesterRosterId),
   ]
 );
 

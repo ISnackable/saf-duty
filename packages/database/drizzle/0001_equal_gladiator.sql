@@ -56,8 +56,8 @@ CREATE TABLE "swap_requests" (
 	"requester_roster_id" bigint NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now(),
-	CONSTRAINT "swap_requests_group_id_requester_id_receiver_roster_id_key" UNIQUE("requester_id","organization_id","receiver_roster_id"),
-	CONSTRAINT "swap_requests_group_id_requester_id_requester_roster_id_key" UNIQUE("requester_id","organization_id","requester_roster_id")
+	CONSTRAINT "swap_requests_organization_id_requester_id_receiver_roster_id_key" UNIQUE("receiver_id","organization_id","receiver_roster_id"),
+	CONSTRAINT "swap_requests_organization_id_requester_id_requester_roster_id_key" UNIQUE("requester_id","organization_id","requester_roster_id")
 );
 --> statement-breakpoint
 ALTER TABLE "notifications" ADD CONSTRAINT "notifications_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
