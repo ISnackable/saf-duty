@@ -2,10 +2,10 @@ import type { Metadata } from 'next';
 
 import { Highlight } from '@repo/design-system/components/highlight';
 import { Icons } from '@repo/design-system/components/icons';
-// import {
-//   MAXIMUM_BLOCKOUTS,
-//   ManageBlockout,
-// } from '..components/manage-blockout';
+import {
+  MAXIMUM_BLOCKOUTS,
+  ManageBlockout,
+} from '../components/manage-blockout';
 
 export const metadata: Metadata = {
   title: 'Manage Blockouts',
@@ -35,7 +35,7 @@ export default function ManageBlockoutsPage() {
         <li>
           Only a maximum of{' '}
           <u className="font-medium text-primary underline underline-offset-4">
-            {/* {MAXIMUM_BLOCKOUTS ?? 8} */}8
+            {MAXIMUM_BLOCKOUTS ?? 8}
           </u>{' '}
           blockouts date per month (can request for more, but subject to review)
         </li>
@@ -48,7 +48,7 @@ export default function ManageBlockoutsPage() {
         </li>
       </ul>
 
-      {/* <ManageBlockout /> */}
+      <ManageBlockout />
     </div>
   );
 }

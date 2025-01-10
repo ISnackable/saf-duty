@@ -12,10 +12,13 @@ import {
   addMonths,
   endOfMonth,
   format,
+  isWeekend,
   startOfMonth,
   subDays,
 } from 'date-fns';
 import { cache } from 'react';
+import { indexOnceWithKey } from './helper';
+import type { Profiles, Rosters } from './types';
 
 export const getRostersByOrgId = cache(
   async (orgId: string, month: string, year: string) => {
@@ -52,7 +55,20 @@ export const getRostersByOrgId = cache(
       },
     });
 
-    return data;
+    const transformedData: Rosters[] = data.map((item) => ({
+      id: item.id,
+      dutyDate: item.dutyDate,
+      isExtra: item.isExtra,
+      isWeekend: isWeekend(new Date(item.dutyDate)),
+      blockout: [],
+      dutyPersonnel: item.profile_dutyPersonnelId?.user,
+      reserveDutyPersonnel: item.profile_reserveDutyPersonnelId?.user,
+      allocated: false,
+    }));
+
+    const roster = indexOnceWithKey(transformedData, 'dutyDate');
+
+    return JSON.parse(JSON.stringify(roster)) as Record<string, Rosters>;
   }
 );
 
@@ -98,7 +114,18 @@ export const getRostersByUserId = cache(
       },
     });
 
-    return data;
+    const transformedData: Rosters[] = data.map((item) => ({
+      id: item.id,
+      dutyDate: item.dutyDate,
+      isExtra: item.isExtra,
+      isWeekend: isWeekend(new Date(item.dutyDate)),
+      blockout: [],
+      dutyPersonnel: item.profile_dutyPersonnelId?.user,
+      reserveDutyPersonnel: item.profile_reserveDutyPersonnelId?.user,
+      allocated: false,
+    }));
+
+    return transformedData;
   }
 );
 
@@ -106,14 +133,8 @@ export const getProfilesByOrgId = cache(async (orgId: string) => {
   const data = await database.query.profiles.findMany({
     where: (profile, { eq }) => eq(profile.organizationId, orgId),
     columns: {
-      id: true,
-      blockoutDates: true,
-      maxBlockouts: true,
-      weekdayPoints: true,
-      weekendPoints: true,
-      ordDate: true,
-      noOfExtras: true,
-      userSettings: true,
+      createdAt: false,
+      updatedAt: false,
     },
     with: {
       user: {
@@ -126,7 +147,26 @@ export const getProfilesByOrgId = cache(async (orgId: string) => {
     },
   });
 
-  return data;
+  if (!data) {
+    throw new Error('No profiles found');
+  }
+
+  const transformedData = data.map((item) => ({
+    id: item.id,
+    userId: item.userId,
+    organizationId: item.organizationId,
+    blockoutDates: item.blockoutDates,
+    maxBlockouts: item.maxBlockouts,
+    weekdayPoints: item.weekdayPoints,
+    weekendPoints: item.weekendPoints,
+    ordDate: item.ordDate,
+    noOfExtras: item.noOfExtras,
+    userSettings: item.userSettings,
+    name: item.user.name,
+    image: item.user.image,
+  }));
+
+  return transformedData satisfies Profiles[];
 });
 
 export const getProfilesByUserId = cache(
@@ -135,14 +175,8 @@ export const getProfilesByUserId = cache(
       where: (profile, { eq, and }) =>
         and(eq(profile.userId, userId), eq(profile.organizationId, orgId)),
       columns: {
-        id: true,
-        blockoutDates: true,
-        maxBlockouts: true,
-        weekdayPoints: true,
-        weekendPoints: true,
-        ordDate: true,
-        noOfExtras: true,
-        userSettings: true,
+        createdAt: false,
+        updatedAt: false,
       },
       with: {
         user: {
@@ -155,7 +189,26 @@ export const getProfilesByUserId = cache(
       },
     });
 
-    return data;
+    if (!data) {
+      throw new Error('No profiles found');
+    }
+
+    const transformedData = {
+      id: data.id,
+      userId: data.userId,
+      organizationId: data.organizationId,
+      blockoutDates: data.blockoutDates,
+      maxBlockouts: data.maxBlockouts,
+      weekdayPoints: data.weekdayPoints,
+      weekendPoints: data.weekendPoints,
+      ordDate: data.ordDate,
+      noOfExtras: data.noOfExtras,
+      userSettings: data.userSettings,
+      name: data.user.name,
+      image: data.user.image,
+    };
+
+    return transformedData satisfies Profiles;
   }
 );
 

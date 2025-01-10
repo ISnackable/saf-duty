@@ -14,7 +14,9 @@ export function SWRProvider({ value, children }: SWRProviderProps) {
     <SWRConfig
       value={{
         fetcher: (resource, init) =>
-          fetch(resource, init).then((res) => res.json()),
+          fetch(resource, init).then((res) =>
+            res.json().then((data) => data.data)
+          ),
         ...value,
       }}
     >

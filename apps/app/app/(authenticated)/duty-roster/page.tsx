@@ -1,15 +1,60 @@
 import type { Metadata } from 'next';
 
 import { Icons } from '@repo/design-system/components/icons';
+
+// import { SWRProvider } from '@/providers/swr-provider';
+// import { auth } from '@repo/auth/server';
+// import { headers } from 'next/headers';
+// import { redirect } from 'next/navigation';
+
+// import { getRostersByOrgId } from '@/lib/data';
+// import { getMonthYearParams } from '@/lib/helper';
 import { DutyRoster } from '../components/duty-roster';
+
+// interface DutyRosterPageProps {
+//   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+// }
 
 export const metadata: Metadata = {
   title: 'Duty Roster',
   description: 'View the duty roster and request for swap duty.',
 };
 
+// async function getRosters(orgId: string, month: string, year: string) {
+//   const data = await getRostersByOrgId(orgId, month, year);
+
+//   return {
+//     data,
+//     status: 'success',
+//     message: 'Successfully retrieved roster from the server',
+//   };
+// }
+
 export default function DutyRosterPage() {
+  // const { month, year } = getMonthYearParams(await searchParams);
+  // const session = await auth.api.getSession({
+  //   headers: await headers(),
+  // });
+
+  // if (!session) {
+  //   redirect('/login');
+  // }
+
+  // const activeOrganizationId = session.session.activeOrganizationId;
+
+  // if (!activeOrganizationId) {
+  //   redirect('/login');
+  // }
+
   return (
+    // <SWRProvider
+    //   value={{
+    //     fallback: {
+    //       [`/api/organizations/${activeOrganizationId}/rosters?month=${month}&year=${year}`]:
+    //         getRosters(activeOrganizationId, month, year),
+    //     },
+    //   }}
+    // >
     <div className="space-y-4 p-8 pt-4">
       <div data-tour="duty-roster-page">
         <div className="flex w-full items-center space-y-2">
@@ -26,5 +71,6 @@ export default function DutyRosterPage() {
       </div>
       <DutyRoster />
     </div>
+    // </SWRProvider>
   );
 }

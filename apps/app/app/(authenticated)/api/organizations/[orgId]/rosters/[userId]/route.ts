@@ -8,7 +8,7 @@ export const runtime = 'edge';
 export const GET = withAuth(
   async ({ params, user }) => {
     try {
-      if (params.userId !== user.id) {
+      if (params.userId !== user.userId) {
         return NextResponse.json(
           {
             status: 'error',

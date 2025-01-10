@@ -44,7 +44,7 @@ const swapRequestsSchema = z.object({
 export const GET = withAuth(
   async ({ params, user }) => {
     try {
-      if (params.userId !== user.id) {
+      if (params.userId !== user.userId) {
         return NextResponse.json(
           {
             status: 'error',
@@ -79,7 +79,7 @@ export const GET = withAuth(
 
 export const POST = withAuth(async ({ request, params, user }) => {
   try {
-    if (params.userId !== user.id) {
+    if (params.userId !== user.userId) {
       return NextResponse.json(
         {
           status: 'error',
@@ -162,7 +162,7 @@ type UpdateSwapRequest = z.infer<typeof updateSwapRequestSchema>;
 
 export const DELETE = withAuth(async ({ request, params, user }) => {
   try {
-    if (params.userId !== user.id) {
+    if (params.userId !== user.userId) {
       return NextResponse.json(
         {
           status: 'error',
@@ -226,7 +226,7 @@ export const DELETE = withAuth(async ({ request, params, user }) => {
 
 // export const PATCH = withAuth(async ({ request, params, user }) => {
 //   try {
-//     if (params.userId !== user.id) {
+//     if (params.userId !== user.userId) {
 //       return NextResponse.json(
 //         {
 //           status: 'error',

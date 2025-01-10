@@ -12,7 +12,7 @@ export const PATCH = withAuth(
   async ({ request, params, user }) => {
     try {
       // User is not allowed to update their own role
-      if (user.id === params.userId) {
+      if (user.userId === params.userId) {
         return NextResponse.json(
           {
             status: 'error',
