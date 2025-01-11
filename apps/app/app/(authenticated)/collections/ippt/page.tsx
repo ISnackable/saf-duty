@@ -35,6 +35,7 @@ export default function CollectionsIPPTPage() {
         </Link>
       </p>
 
+      {/* TODO: Since iframe credentialess isn't implemented yet in all modern browsers, we shall make our own IPPT component */}
       <iframe
         title="Embeded IPPT Calculator from yctay"
         src="https://ippt.yctay.com/?age=20&situpReps=33&pushupReps=20&runMins=12&runSecs=30"

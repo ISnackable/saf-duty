@@ -126,6 +126,12 @@ const data = {
       url: '/faq',
       icon: Icons.messageCircleQuestion,
     },
+    {
+      name: 'GitHub',
+      url: 'https://github.com/ISnackable/saf-duty',
+      icon: Icons.brandGithub,
+      blank: true,
+    },
   ],
 };
 
@@ -158,8 +164,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <NavCollapsible label="Organisation" items={data.organization} />
           )}
           <NavOthers label="Dashboard" others={data.dashboard} />
-          <NavOthers label="Collections" others={data.collections} />
-          <NavOthers label="Others" others={data.others} />
+          <NavOthers
+            label="Collections"
+            others={data.collections}
+            prefetch={false}
+          />
+          <NavOthers label="Others" others={data.others} prefetch={false} />
         </ScrollArea>
       </SidebarContent>
       <SidebarFooter className="border-t">

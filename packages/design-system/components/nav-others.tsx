@@ -13,17 +13,18 @@ import {
   SidebarMenuItem,
 } from './ui/sidebar';
 
-export function NavOthers({
-  label,
-  others,
-}: {
+interface NavOthersProps {
   label: string;
   others: {
     name: string;
     url: string;
     icon?: Icon;
+    blank?: boolean;
   }[];
-}) {
+  prefetch?: boolean;
+}
+
+export function NavOthers({ label, others, prefetch = true }: NavOthersProps) {
   const pathName = usePathname();
 
   return (
@@ -40,10 +41,17 @@ export function NavOthers({
                 'text-primary hover:text-primary': item.url === pathName,
               })}
             >
-              <ProgressBarLink href={item.url} prefetch={false}>
-                {item.icon && <item.icon className="h-4 w-4" />}
-                <span>{item.name}</span>
-              </ProgressBarLink>
+              {item.blank ? (
+                <a href={item.url} target="_blank" rel="noopener noreferrer">
+                  {item.icon && <item.icon className="h-4 w-4" />}
+                  <span>{item.name}</span>
+                </a>
+              ) : (
+                <ProgressBarLink href={item.url} prefetch={prefetch}>
+                  {item.icon && <item.icon className="h-4 w-4" />}
+                  <span>{item.name}</span>
+                </ProgressBarLink>
+              )}
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}

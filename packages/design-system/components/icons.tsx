@@ -6,6 +6,7 @@ import {
   IconArrowsExchange,
   IconArrowsSort,
   IconBell,
+  IconBrandGithub,
   IconCalendar,
   IconCalendarEvent,
   IconCalendarStats,
@@ -298,4 +299,5 @@ export const Icons = {
   logOut: IconLogout,
   layersIntersect: IconLayersIntersect,
   mailForward: IconMailForward,
+  brandGithub: IconBrandGithub,
 };
