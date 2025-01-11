@@ -3,6 +3,10 @@
 import { log } from '@repo/observability/log';
 import { useEffect, useState } from 'react';
 
+import {
+  deleteSubscription,
+  insertSubscription,
+} from '@/app/(authenticated)/actions';
 import { useMediaQuery } from '@repo/design-system/hooks/use-media-query';
 
 const WEB_PUSH_PUBLIC_KEY = process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY || '';
@@ -32,7 +36,9 @@ function urlBase64ToUint8Array(base64String: string) {
  * checks if Push notification and service workers are supported by your browser
  */
 function isPushNotificationSupported() {
-  if (typeof window === 'undefined') return false;
+  if (typeof window === 'undefined') {
+    return false;
+  }
 
   return (
     'serviceWorker' in navigator &&
@@ -69,7 +75,7 @@ async function createNotificationSubscription() {
       applicationServerKey: convertedVapidKey,
     })
     .catch((_e) => {
-      console.error('Could not subscribe to push service');
+      log.error('Could not subscribe to push service');
       throw new Error('Could not subscribe to push service');
     });
 }
@@ -149,61 +155,69 @@ export default function usePushNotifications() {
     return consent;
   };
 
-  // const onClickSubscribeToPushNotification = async () => {
-  //   if (!userConsent || Notification.permission !== 'granted') {
-  //     console.error(
-  //       `You have to grant push notifications permissions. Permission: ${Notification.permission}`
-  //     );
-  //     return null;
-  //   }
+  const onClickSubscribeToPushNotification = async () => {
+    if (!userConsent || Notification.permission !== 'granted') {
+      log.error(
+        `You have to grant push notifications permissions. Permission: ${Notification.permission}`
+      );
+      return null;
+    }
 
-  //   try {
-  //     const subscription = await createNotificationSubscription();
-  //     const result = await insertSubscription(subscription?.toJSON() as any);
+    try {
+      const subscription = await createNotificationSubscription();
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      const result = await insertSubscription(subscription?.toJSON() as any);
 
-  //     if (result?.serverError || result?.validationErrors) {
-  //       console.error('Failed to save the subscription to the server');
-  //       throw new Error('Failed to save the subscription to the server');
-  //     }
-  //     setUserSubscription(subscription);
+      if (result?.serverError || result?.validationErrors) {
+        log.error('Failed to save the subscription to the server');
+        throw new Error('Failed to save the subscription to the server');
+      }
+      setUserSubscription(subscription);
 
-  //     return subscription;
-  //   } catch (error) {
-  //     console.error('Failed to subscribe the user: ', error);
+      return subscription;
+    } catch (error) {
+      if (error instanceof Error) {
+        log.error('Failed to subscribe the user: ', error);
+      }
 
-  //     return null;
-  //   }
-  // };
+      return null;
+    }
+  };
 
-  // const onClickUnsubscribeToPushNotification = async () => {
-  //   if (!userSubscription) return null;
+  const onClickUnsubscribeToPushNotification = async () => {
+    if (!userSubscription) {
+      return null;
+    }
 
-  //   if (!userConsent || Notification.permission !== 'granted') {
-  //     // Attempting to unsubscribe when the user hasn't granted permissions, or the user has denied permissions
-  //     // However, the user can still unsubscribe even if they haven't granted permissions provided they have a subscription
-  //     console.warn(
-  //       `You have to grant push notifications permissions. Permission: ${Notification.permission}`
-  //     );
-  //   }
+    if (!userConsent || Notification.permission !== 'granted') {
+      // Attempting to unsubscribe when the user hasn't granted permissions, or the user has denied permissions
+      // However, the user can still unsubscribe even if they haven't granted permissions provided they have a subscription
+      log.warn(
+        `You have to grant push notifications permissions. Permission: ${Notification.permission}`
+      );
+    }
 
-  //   try {
-  //     await Promise.allSettled([
-  //       removeNotificationSubscription(),
-  //       deleteSubscription(userSubscription?.toJSON() as any),
-  //     ]);
+    try {
+      await Promise.allSettled([
+        removeNotificationSubscription(),
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        deleteSubscription(userSubscription?.toJSON() as any),
+      ]);
 
-  //     setUserSubscription(null);
-  //   } catch (error) {
-  //     console.error('Failed to unsubscribe the user: ', error);
-  //   }
+      setUserSubscription(null);
+    } catch (error) {
+      if (error instanceof Error) {
+        log.error('Failed to unsubscribe the user: ', [error.message]);
+      }
+    }
 
-  //   return null;
-  // };
+    return null;
+  };
 
   return {
     onClickAskUserPermission,
-    // onClickSubscribeToPushNotification,
-    // onClickUnsubscribeToPushNotification,
+    onClickSubscribeToPushNotification,
+    onClickUnsubscribeToPushNotification,
     userConsent,
     pushNotificationSupported,
     isPWAInstalled,
