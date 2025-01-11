@@ -42,9 +42,9 @@ const swapRequestsSchema = z.object({
 });
 
 export const GET = withAuth(
-  async ({ params, user }) => {
+  async ({ params, member }) => {
     try {
-      if (params.userId !== user.userId) {
+      if (params.userId !== member.userId) {
         return NextResponse.json(
           {
             status: 'error',
@@ -54,7 +54,10 @@ export const GET = withAuth(
         );
       }
 
-      const data = await getSwapRequestsByUserId(user.organizationId, user.id);
+      const data = await getSwapRequestsByUserId(
+        member.userId,
+        member.organizationId
+      );
 
       return NextResponse.json(
         {
@@ -77,9 +80,9 @@ export const GET = withAuth(
   { allowDemoUser: true }
 );
 
-export const POST = withAuth(async ({ request, params, user }) => {
+export const POST = withAuth(async ({ request, params, member }) => {
   try {
-    if (params.userId !== user.userId) {
+    if (params.userId !== member.userId) {
       return NextResponse.json(
         {
           status: 'error',
@@ -101,7 +104,7 @@ export const POST = withAuth(async ({ request, params, user }) => {
     //   reason: data.reason,
     //   receiver_id: data.receiver.id,
     //   receiver_roster_id: data.receiverRoster.id,
-    //   requester_id: user.id,
+    //   requester_id: member.userId,
     //   requester_roster_id: data.requesterRoster.id,
     // });
 
@@ -160,9 +163,9 @@ const updateSwapRequestSchema = z.object({
 
 type UpdateSwapRequest = z.infer<typeof updateSwapRequestSchema>;
 
-export const DELETE = withAuth(async ({ request, params, user }) => {
+export const DELETE = withAuth(async ({ request, params, member }) => {
   try {
-    if (params.userId !== user.userId) {
+    if (params.userId !== member.userId) {
       return NextResponse.json(
         {
           status: 'error',

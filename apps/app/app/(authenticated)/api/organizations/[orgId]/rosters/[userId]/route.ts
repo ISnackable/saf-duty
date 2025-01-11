@@ -6,9 +6,9 @@ import { getRostersByUserId } from '@/lib/data';
 export const runtime = 'edge';
 
 export const GET = withAuth(
-  async ({ params, user }) => {
+  async ({ params, member }) => {
     try {
-      if (params.userId !== user.userId) {
+      if (params.userId !== member.userId) {
         return NextResponse.json(
           {
             status: 'error',
@@ -18,7 +18,10 @@ export const GET = withAuth(
         );
       }
 
-      const data = await getRostersByUserId(user.organizationId, user.id);
+      const data = await getRostersByUserId(
+        member.userId,
+        member.organizationId
+      );
 
       return NextResponse.json(
         {

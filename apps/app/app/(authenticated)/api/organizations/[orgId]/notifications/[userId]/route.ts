@@ -6,9 +6,9 @@ import { getNotificationsByUserId } from '@/lib/data';
 export const runtime = 'edge';
 
 export const GET = withAuth(
-  async ({ params, user }) => {
+  async ({ params, member }) => {
     try {
-      if (params.userId !== user.userId) {
+      if (params.userId !== member.userId) {
         return NextResponse.json(
           {
             status: 'error',
@@ -19,8 +19,8 @@ export const GET = withAuth(
       }
 
       const data = await getNotificationsByUserId(
-        user.userId,
-        user.organizationId
+        member.userId,
+        member.organizationId
       );
       const count = data.filter((notification) => !notification.isRead).length;
 
@@ -45,9 +45,9 @@ export const GET = withAuth(
   { allowDemoUser: true }
 );
 
-export const DELETE = withAuth(async ({ request, params, user }) => {
+export const DELETE = withAuth(async ({ request, params, member }) => {
   try {
-    if (params.userId !== user.userId) {
+    if (params.userId !== member.userId) {
       return NextResponse.json(
         {
           status: 'error',
@@ -89,9 +89,9 @@ export const DELETE = withAuth(async ({ request, params, user }) => {
   }
 });
 
-export const PATCH = withAuth(async ({ request, params, user }) => {
+export const PATCH = withAuth(async ({ request, params, member }) => {
   try {
-    if (params.userId !== user.userId) {
+    if (params.userId !== member.userId) {
       return NextResponse.json(
         {
           status: 'error',

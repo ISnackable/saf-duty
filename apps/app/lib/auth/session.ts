@@ -16,13 +16,13 @@ type WithAuthHandler = ({
   params,
   searchParams,
   headers,
-  user,
+  member,
 }: {
   request: Request;
   params: Record<string, string>;
   searchParams: URLSearchParams;
   headers: Headers;
-  user: ActiveMember;
+  member: ActiveMember;
 }) => Promise<NextResponse>;
 
 interface WithAuthOptions {
@@ -111,7 +111,7 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
           params: params || {},
           searchParams,
           headers,
-          user: member,
+          member,
         });
       }
 
@@ -139,7 +139,7 @@ export function withAuth(handler: WithAuthHandler, options?: WithAuthOptions) {
       params: params || {},
       searchParams,
       headers,
-      user: member,
+      member,
     });
   };
 }

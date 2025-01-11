@@ -6,9 +6,9 @@ import { getProfilesByOrgId } from '@/lib/data';
 export const runtime = 'edge';
 
 export const GET = withAuth(
-  async ({ user }) => {
+  async ({ member }) => {
     try {
-      const data = await getProfilesByOrgId(user.organizationId);
+      const data = await getProfilesByOrgId(member.organizationId);
 
       return NextResponse.json(
         {

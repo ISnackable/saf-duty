@@ -9,10 +9,10 @@ const updateRoleSchema = z.object({
 });
 
 export const PATCH = withAuth(
-  async ({ request, params, user }) => {
+  async ({ request, params, member }) => {
     try {
       // User is not allowed to update their own role
-      if (user.userId === params.userId) {
+      if (member.userId === params.userId) {
         return NextResponse.json(
           {
             status: 'error',

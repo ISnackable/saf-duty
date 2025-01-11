@@ -31,11 +31,15 @@ const personnelSchema = z.array(
 );
 
 export const GET = withAuth(
-  async ({ searchParams, user }) => {
+  async ({ searchParams, member }) => {
     const { month, year } = useMonthYear(searchParams);
 
     try {
-      const roster = await getRostersByOrgId(user.organizationId, month, year);
+      const roster = await getRostersByOrgId(
+        member.organizationId,
+        month,
+        year
+      );
 
       return NextResponse.json(
         {

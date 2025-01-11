@@ -49,9 +49,12 @@ const updateProfilesSchema = z.object({
 });
 
 export const GET = withAuth(
-  async ({ user }) => {
+  async ({ member }) => {
     try {
-      const data = await getProfilesByUserId(user.userId, user.organizationId);
+      const data = await getProfilesByUserId(
+        member.userId,
+        member.organizationId
+      );
 
       return NextResponse.json(
         {
@@ -74,13 +77,13 @@ export const GET = withAuth(
   { allowDemoUser: true }
 );
 
-export const PATCH = withAuth(async ({ request, params, user }) => {
+export const PATCH = withAuth(async ({ request, params, member }) => {
   try {
-    const userRole = user.role;
+    const userRole = member.role;
 
     // Only allow users with the role of 'admin' or 'owner' to update other users' profiles
     if (
-      params.userId !== user.userId &&
+      params.userId !== member.userId &&
       !['admin', 'owner'].includes(userRole)
     ) {
       return NextResponse.json(
@@ -139,10 +142,10 @@ export const PATCH = withAuth(async ({ request, params, user }) => {
 });
 
 export const DELETE = withAuth(
-  async ({ params, user }) => {
+  async ({ params, member }) => {
     try {
       // Check if user is trying to delete their own profile (only admins can delete other profiles)
-      if (params.userId === user.userId) {
+      if (params.userId === member.userId) {
         return NextResponse.json(
           {
             status: 'error',
