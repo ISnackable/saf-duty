@@ -20,7 +20,7 @@ let nextConfig: NextConfig = withToolbar(
     async headers() {
       return [
         {
-          source: '/z3-built(.*)',
+          source: '/:path*',
           headers: [
             {
               key: 'Cross-Origin-Embedder-Policy',

@@ -6,8 +6,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import type * as z from 'zod';
 
-import { useSession } from '@repo/auth/client';
-// import { deleteAccount, updateAccount } from '@/app/(auth)/actions';
+import { client, useSession } from '@repo/auth/client';
 import { PasswordInput } from '@repo/design-system/components/password-input';
 import {
   AlertDialog,
@@ -49,12 +48,11 @@ type AccountFormValues = z.infer<typeof accountFormSchema>;
 export function AccountForm() {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = React.useState(false);
-  const profile = session?.user;
 
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
     values: {
-      email: profile?.email || '',
+      email: session?.user?.email || '',
       oldPassword: '',
       newPassword: '',
     },
@@ -64,26 +62,42 @@ export function AccountForm() {
   });
 
   async function onSubmit(data: AccountFormValues) {
-    if (!profile) return;
+    if (!session) {
+      return;
+    }
     setIsLoading(true);
 
-    if (data.email === profile.email && !data.newPassword) {
+    if (data.email === session.user.email && !data.newPassword) {
       toast.info('No changes detected');
       setIsLoading(false);
       return;
     }
 
-    // const result = await updateAccount(data);
+    if (data.email !== session.user.email) {
+      const { error } = await client.changeEmail({
+        newEmail: data.email,
+      });
 
-    // if (result?.data) {
-    //   toast.success('Account updated successfully');
-    //   customNotifyEvent('USER_UPDATED', result.data.session);
-    //   mutate({ ...profile, email: data.email });
-    // }
+      if (error) {
+        toast.error('Failed to update email');
+      } else {
+        toast.success('Sent a verification email to your new email address');
+      }
+    }
 
-    // if (result?.serverError) {
-    //   toast.error(result.serverError);
-    // }
+    if (data.newPassword) {
+      const { error } = await client.changePassword({
+        newPassword: data.newPassword,
+        currentPassword: data.oldPassword,
+        revokeOtherSessions: true,
+      });
+
+      if (error) {
+        toast.error('Failed to update password');
+      } else {
+        toast.success('Password updated');
+      }
+    }
 
     setIsLoading(false);
   }

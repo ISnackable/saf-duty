@@ -1,11 +1,7 @@
 'use client';
 
+import { useProfiles } from '@/hooks/use-profiles';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as React from 'react';
-import { useForm, useWatch } from 'react-hook-form';
-import * as z from 'zod';
-
-import { useSession } from '@repo/auth/client';
 import { DatePicker } from '@repo/design-system/components/date-picker';
 import { Icons } from '@repo/design-system/components/icons';
 import { LoadingButton } from '@repo/design-system/components/loading-button';
@@ -25,6 +21,9 @@ import {
   FormMessage,
 } from '@repo/design-system/components/ui/form';
 import { Input } from '@repo/design-system/components/ui/input';
+import * as React from 'react';
+import { useForm, useWatch } from 'react-hook-form';
+import * as z from 'zod';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = [
@@ -68,9 +67,8 @@ const profileFormSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export function ProfileForm() {
-  const { data: session } = useSession();
+  const { data: profile } = useProfiles();
 
-  const profile = session?.user;
   const [isLoading, setIsLoading] = React.useState(false);
 
   const refImageInput = React.useRef<React.ComponentRef<'input'> | null>(null);
@@ -79,7 +77,7 @@ export function ProfileForm() {
     values: {
       avatar: undefined,
       name: profile?.name || '',
-      ord_date: undefined,
+      ord_date: profile?.ordDate ? new Date(profile.ordDate) : undefined,
     },
     resetOptions: {
       keepDirtyValues: true,

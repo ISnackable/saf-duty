@@ -2,15 +2,14 @@
 
 import Link from 'next/link';
 
-import { useSession } from '@repo/auth/client';
+import { useProfiles } from '@/hooks/use-profiles';
 import { BackgroundGradient } from '@repo/design-system/components/background-gradient';
 import { Gauge } from '@repo/design-system/components/ui/gauge';
 
 const TODAY = new Date();
 
 export function ORD() {
-  const { data: session } = useSession();
-  const profiles = session?.user;
+  const { data: profiles } = useProfiles();
 
   if (profiles) {
     // @ts-ignore
@@ -46,7 +45,7 @@ export function ORD() {
           </p>
 
           <blockquote className="mt-6 border-l-2 pl-6 italic">
-            ORD loh!! 🎉 — {profiles?.name}
+            ORD loh!! 🎉 — {profiles.name}
           </blockquote>
         </BackgroundGradient>
       </div>
