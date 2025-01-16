@@ -99,16 +99,18 @@ export function ManageBlockout() {
           ),
         }),
       }
-    ).then(() => {
-      if (profile) {
-        mutate({
-          ...profile,
-          blockoutDates: selectedDays.map((date) =>
-            formatISO(date, { representation: 'date' })
-          ),
-        });
-      }
-    });
+    )
+      .then(() => {
+        if (profile) {
+          mutate({
+            ...profile,
+            blockoutDates: selectedDays.map((date) =>
+              formatISO(date, { representation: 'date' })
+            ),
+          });
+        }
+      })
+      .finally(() => setLoading(false));
 
     toast.promise(resPromise, {
       loading: 'Loading...',
@@ -121,8 +123,6 @@ export function ManageBlockout() {
         return 'You can now close this page.';
       },
     });
-
-    setLoading(false);
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>

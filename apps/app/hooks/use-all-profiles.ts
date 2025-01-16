@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import type { Profiles } from '@/lib/types';
 import { useSession } from '@repo/auth/client';
 
-export default function useAllProfiles() {
+export function useAllProfiles() {
   const { data: session } = useSession();
   const activeOrganizationId = session?.session.activeOrganizationId;
 
