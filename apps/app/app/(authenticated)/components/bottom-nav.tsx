@@ -44,7 +44,6 @@ export function BottomNav() {
           <ProgressBarLink
             key={item.label}
             href={item.link}
-            prefetch={false}
             style={{
               maxWidth: 'calc(25% - 0.75rem)',
               transformStyle: 'preserve-3d',

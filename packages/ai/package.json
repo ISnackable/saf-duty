@@ -7,9 +7,9 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^1.0.15",
+    "@ai-sdk/openai": "^1.0.20",
     "@t3-oss/env-nextjs": "^0.11.1",
-    "ai": "^4.0.30",
+    "ai": "^4.0.39",
     "react": "^19.0.0",
     "react-markdown": "^9.0.3",
     "tailwind-merge": "^2.6.0",
@@ -17,8 +17,8 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/node": "22.10.5",
-    "@types/react": "19.0.4",
-    "@types/react-dom": "^19.0.2"
+    "@types/node": "22.10.7",
+    "@types/react": "19.0.7",
+    "@types/react-dom": "^19.0.3"
   }
 }

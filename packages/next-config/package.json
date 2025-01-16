@@ -8,8 +8,8 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "babel-plugin-react-compiler": "19.0.0-beta-b2e8e9c-20241220",
-    "eslint-plugin-react-compiler": "19.0.0-beta-b2e8e9c-20241220",
+    "babel-plugin-react-compiler": "19.0.0-beta-e552027-20250112",
+    "eslint-plugin-react-compiler": "19.0.0-beta-e552027-20250112",
     "next": "15.1.4"
   },
   "dependencies": {
