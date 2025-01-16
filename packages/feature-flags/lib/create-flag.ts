@@ -1,5 +1,5 @@
 import { auth } from '@repo/auth/server';
-import { unstable_flag as flag } from '@vercel/flags/next';
+import { flag } from '@vercel/flags/next';
 import { headers } from 'next/headers';
 
 export const createFlag = (key: string) =>

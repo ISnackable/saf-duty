@@ -749,7 +749,7 @@
           "name": "user_settings",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "'{\"notify_on_duty_reminder\":true,\"notify_on_swap_requests\":true,\"notify_on_rosters_published\":true}'::jsonb"
         },
         "created_at": {

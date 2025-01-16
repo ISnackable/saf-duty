@@ -19,7 +19,7 @@ CREATE TABLE "profiles" (
 	"weekday_points" integer DEFAULT 0 NOT NULL,
 	"weekend_points" integer DEFAULT 0 NOT NULL,
 	"no_of_extras" integer DEFAULT 0,
-	"user_settings" jsonb DEFAULT '{"notify_on_duty_reminder":true,"notify_on_swap_requests":true,"notify_on_rosters_published":true}'::jsonb,
+	"user_settings" jsonb DEFAULT '{"notify_on_duty_reminder":true,"notify_on_swap_requests":true,"notify_on_rosters_published":true}'::jsonb NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now(),
 	CONSTRAINT "max_blockouts" CHECK (max_blockouts > 0)
