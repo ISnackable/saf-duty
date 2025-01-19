@@ -49,6 +49,7 @@ export function BottomNav() {
               transformStyle: 'preserve-3d',
             }}
             className={cn('grow')}
+            prefetch={true}
           >
             {pathname === item.link && (
               <motion.div

@@ -142,7 +142,7 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
-    columnResizeMode: 'onChange',
+    // columnResizeMode: 'onChange',
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: setSorting,
@@ -185,86 +185,84 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          {/* Filter by name or email */}
-          <div className="relative">
-            <Input
-              id={`${id}-input`}
-              ref={inputRef}
-              className={cn(
-                'peer min-w-60 ps-9',
-                Boolean(table.getColumn('name')?.getFilterValue()) && 'pe-9'
-              )}
-              value={
-                (table.getColumn('name')?.getFilterValue() ?? '') as string
-              }
-              onChange={(e) =>
-                table.getColumn('name')?.setFilterValue(e.target.value)
-              }
-              placeholder="Filter by name..."
-              type="text"
-              aria-label="Filter by name..."
-            />
-            <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50">
-              <Icons.listTree size={16} strokeWidth={2} aria-hidden="true" />
-            </div>
-            {Boolean(table.getColumn('name')?.getFilterValue()) && (
-              <button
-                type="button"
-                className="absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg text-muted-foreground/80 outline-offset-2 transition-colors hover:text-foreground focus:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring/70 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-                aria-label="Clear filter"
-                onClick={() => {
-                  table.getColumn('name')?.setFilterValue('');
-                  if (inputRef.current) {
-                    inputRef.current.focus();
-                  }
-                }}
-              >
-                <Icons.circleX size={16} strokeWidth={2} aria-hidden="true" />
-              </button>
+      <div className="flex items-center justify-between gap-3">
+        {/* Filter by name or email */}
+        <div className="relative">
+          <Input
+            id={`${id}-input`}
+            ref={inputRef}
+            className={cn(
+              'peer max-w-sm ps-9',
+              Boolean(table.getColumn('name')?.getFilterValue()) && 'pe-9'
             )}
+            value={(table.getColumn('name')?.getFilterValue() ?? '') as string}
+            onChange={(e) =>
+              table.getColumn('name')?.setFilterValue(e.target.value)
+            }
+            placeholder="Filter by name..."
+            type="text"
+            aria-label="Filter by name..."
+          />
+          <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50">
+            <Icons.listTree size={16} strokeWidth={2} aria-hidden="true" />
           </div>
-
-          {/* Toggle columns visibility */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                <Icons.columns3
-                  className="-ms-1 me-2 opacity-60"
-                  size={16}
-                  strokeWidth={2}
-                  aria-hidden="true"
-                />
-                View
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                      onSelect={(event) => event.preventDefault()}
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {/* Toolbar */}
-          {ToolbarBar && <ToolbarBar table={table} className="ml-auto" />}
+          {Boolean(table.getColumn('name')?.getFilterValue()) && (
+            <button
+              type="button"
+              className="absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg text-muted-foreground/80 outline-offset-2 transition-colors hover:text-foreground focus:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring/70 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+              aria-label="Clear filter"
+              onClick={() => {
+                table.getColumn('name')?.setFilterValue('');
+                if (inputRef.current) {
+                  inputRef.current.focus();
+                }
+              }}
+            >
+              <Icons.circleX size={16} strokeWidth={2} aria-hidden="true" />
+            </button>
+          )}
         </div>
+
+        {/* Toggle columns visibility */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">
+              <Icons.columns3
+                className="-ms-1 me-2 opacity-60"
+                size={16}
+                strokeWidth={2}
+                aria-hidden="true"
+              />
+              View
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                    onSelect={(event) => event.preventDefault()}
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* Toolbar */}
+        {ToolbarBar && (
+          <ToolbarBar table={table} className="justify-self-end" />
+        )}
       </div>
 
       {/* Table */}
@@ -412,7 +410,7 @@ export function DataTable<TData, TValue>({
                               </DropdownMenuContent>
                             </DropdownMenu>
                           ))}
-                        {header.column.getCanResize() && (
+                        {/* {header.column.getCanResize() && (
                           <div
                             {...{
                               onDoubleClick: () => header.column.resetSize(),
@@ -422,7 +420,7 @@ export function DataTable<TData, TValue>({
                                 'absolute top-0 h-full w-4 cursor-col-resize user-select-none touch-none -right-2 z-10 flex justify-center before:absolute before:w-px before:inset-y-0 before:bg-border before:-translate-x-px',
                             }}
                           />
-                        )}
+                        )} */}
                       </div>
                     </TableHead>
                   );
