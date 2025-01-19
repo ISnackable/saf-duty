@@ -242,6 +242,7 @@ export function getColumns({
         </div>
       ),
       enableHiding: false,
+      size: 120,
     },
     {
       accessorKey: 'email',

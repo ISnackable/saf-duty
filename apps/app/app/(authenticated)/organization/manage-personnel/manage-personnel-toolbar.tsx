@@ -19,16 +19,18 @@ export function ManagePersonnelToolbar({
 }: ManagePersonnelToolbarProps) {
   'use no memo';
 
+  if (table.getFilteredSelectedRowModel().rows.length <= 0) {
+    return null;
+  }
+
   return (
-    <div className={cn('flex items-center gap-2', className)}>
-      {table.getFilteredSelectedRowModel().rows.length > 0 ? (
-        <DeleteProfileDialog
-          profile={table
-            .getFilteredSelectedRowModel()
-            .rows.map((row) => row.original)}
-          onSuccess={() => table.toggleAllRowsSelected(false)}
-        />
-      ) : null}
+    <div className={cn('flex items-center', className)}>
+      <DeleteProfileDialog
+        profile={table
+          .getFilteredSelectedRowModel()
+          .rows.map((row) => row.original)}
+        onSuccess={() => table.toggleAllRowsSelected(false)}
+      />
     </div>
   );
 }
