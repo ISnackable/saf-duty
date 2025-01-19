@@ -7,6 +7,9 @@
         "useForOf": "off",
         "noParameterAssign": "off"
       },
+      "nursery": {
+        "noNestedTernary": "off"
+      },
       "complexity": {
         "noForEach": "off",
         "noExcessiveCognitiveComplexity": "off"

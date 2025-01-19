@@ -8,6 +8,7 @@ export type Profiles = Omit<
 > & {
   name: User['name'];
   image: User['image'];
+  email: User['email'];
 };
 export type Rosters = Pick<
   typeof schema.rosters.$inferSelect,

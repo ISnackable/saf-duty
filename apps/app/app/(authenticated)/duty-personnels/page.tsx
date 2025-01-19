@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
-// import { DutyPersonnelsTable } from '@/components/duty-personnels-table';
 import { Icons } from '@repo/design-system/components/icons';
+import { DutyPersonnelsTable } from '../components/duty-personnels-table';
 
-// import { columns } from './columns';
+import { columns } from './columns';
 
 export const metadata: Metadata = {
   title: 'Duty Personnels',
@@ -20,7 +20,7 @@ export default function DutyPersonnelsPage() {
         </h1>
       </div>
 
-      {/* <DutyPersonnelsTable columns={columns} /> */}
+      <DutyPersonnelsTable columns={columns} />
     </div>
   );
 }

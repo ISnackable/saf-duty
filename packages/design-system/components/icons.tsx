@@ -1,8 +1,11 @@
 import {
   IconAdjustments,
+  IconAlertCircle,
   IconAlertTriangle,
   IconArrowBadgeLeft,
   IconArrowBadgeRight,
+  IconArrowBarToLeft,
+  IconArrowBarToRight,
   IconArrowsExchange,
   IconArrowsSort,
   IconBell,
@@ -15,11 +18,17 @@ import {
   IconCheck,
   IconChessKnight,
   IconChevronDown,
+  IconChevronLeft,
+  IconChevronRight,
   IconChevronUp,
+  IconChevronsLeft,
+  IconChevronsRight,
   IconCircleDashedCheck,
+  IconCircleX,
   IconClock,
   IconCloudLock,
   IconCoin,
+  IconColumns3,
   IconDeviceDesktop,
   IconDots,
   IconDownload,
@@ -27,19 +36,23 @@ import {
   IconExclamationCircle,
   IconEye,
   IconEyeOff,
+  IconFilter,
   IconFingerprint,
   IconHome2,
   IconInfoCircle,
   IconLayersIntersect,
+  IconListTree,
   IconLoader2,
   IconLogout,
   IconMailForward,
   IconMenu2,
   IconMessageCircleQuestion,
   IconMoon,
+  IconPlus,
   IconSettings,
   IconSparkles,
   IconSun,
+  IconTrash,
   IconUser,
   IconUsers,
   IconX,
@@ -54,7 +67,7 @@ export type TablerIcon = React.ForwardRefExoticComponent<
   Omit<IconProps, 'ref'> & React.RefAttributes<Icon>
 >;
 
-type SVGIconProps = React.HTMLAttributes<SVGElement>;
+type SVGIconProps = React.SVGAttributes<SVGElement>;
 
 export const Icons = {
   logo: (props: SVGIconProps) => (
@@ -256,6 +269,27 @@ export const Icons = {
       <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
     </svg>
   ),
+  pinOff: (props: SVGIconProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={cn('h-6 w-6', props.className)}
+      {...props}
+    >
+      <title>Pin off Icon</title>
+      <path d="M12 17v5" />
+      <path d="M15 9.34V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H7.89" />
+      <path d="m2 2 20 20" />
+      <path d="M9 9v1.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h11" />
+    </svg>
+  ),
   menu: IconMenu2,
   close: IconX,
   spinner: IconLoader2,
@@ -300,4 +334,17 @@ export const Icons = {
   layersIntersect: IconLayersIntersect,
   mailForward: IconMailForward,
   brandGithub: IconBrandGithub,
+  chevronsLeft: IconChevronsLeft,
+  chevronsRight: IconChevronsRight,
+  chevronLeft: IconChevronLeft,
+  chevronRight: IconChevronRight,
+  alertCircle: IconAlertCircle,
+  circleX: IconCircleX,
+  columns3: IconColumns3,
+  filter: IconFilter,
+  listTree: IconListTree,
+  plus: IconPlus,
+  trash: IconTrash,
+  arrowBarToRight: IconArrowBarToRight,
+  arrowBarToLeft: IconArrowBarToLeft,
 };

@@ -142,6 +142,7 @@ export const getProfilesByOrgId = cache(async (orgId: string) => {
           id: true,
           name: true,
           image: true,
+          email: true,
         },
       },
     },
@@ -164,6 +165,7 @@ export const getProfilesByOrgId = cache(async (orgId: string) => {
     userSettings: item.userSettings,
     name: item.user.name,
     image: item.user.image,
+    email: item.user.email,
   }));
 
   return transformedData satisfies Profiles[];
@@ -184,6 +186,7 @@ export const getProfilesByUserId = cache(
             id: true,
             name: true,
             image: true,
+            email: true,
           },
         },
       },
@@ -206,6 +209,7 @@ export const getProfilesByUserId = cache(
       userSettings: data.userSettings,
       name: data.user.name,
       image: data.user.image,
+      email: data.user.email,
     };
 
     return transformedData satisfies Profiles;

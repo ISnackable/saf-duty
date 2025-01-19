@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import { Icons } from '@repo/design-system/components/icons';
+import { ManagePersonnelTable } from './manage-personnel-table';
 
 export const metadata: Metadata = {
   title: 'Manage Personnel',
@@ -21,7 +22,7 @@ export default function AdminManagePersonnelPage() {
         information such as weekday points, weekend points, extras, etc.
       </p>
 
-      {/* <ManagePersonnelTable /> */}
+      <ManagePersonnelTable />
     </div>
   );
 }

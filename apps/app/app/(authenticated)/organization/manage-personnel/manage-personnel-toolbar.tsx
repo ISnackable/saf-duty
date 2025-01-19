@@ -1,29 +1,34 @@
-// 'use client';
+'use client';
 
-// import { type Table } from '@tanstack/react-table';
+import type { Table } from '@tanstack/react-table';
 
-// import { type Profiles } from '@/lib/supabase/queries';
+import type { Profiles } from '@/lib/types';
 
-// import { DeleteProfileDialog } from './manage-personnel-delete-dialog';
+import { cn } from '@repo/design-system/lib/utils';
+import { DeleteProfileDialog } from './manage-personnel-delete-dialog';
 
-// interface ManagePersonnelToolbarProps {
-//   table: Table<Profiles>;
-// }
+interface ManagePersonnelToolbarProps {
+  table: Table<Profiles>;
+  className?: string;
+}
 
-// // This component is not memoized because it is a toolbar and should always be re-rendered
-// export function ManagePersonnelToolbar({ table }: ManagePersonnelToolbarProps) {
-//   'use no memo';
+// This component is not memoized because it is a toolbar and should always be re-rendered
+export function ManagePersonnelToolbar({
+  table,
+  className,
+}: ManagePersonnelToolbarProps) {
+  'use no memo';
 
-//   return (
-//     <div className='flex items-center gap-2'>
-//       {table.getFilteredSelectedRowModel().rows.length > 0 ? (
-//         <DeleteProfileDialog
-//           profile={table
-//             .getFilteredSelectedRowModel()
-//             .rows.map((row) => row.original)}
-//           onSuccess={() => table.toggleAllRowsSelected(false)}
-//         />
-//       ) : null}
-//     </div>
-//   );
-// }
+  return (
+    <div className={cn('flex items-center gap-2', className)}>
+      {table.getFilteredSelectedRowModel().rows.length > 0 ? (
+        <DeleteProfileDialog
+          profile={table
+            .getFilteredSelectedRowModel()
+            .rows.map((row) => row.original)}
+          onSuccess={() => table.toggleAllRowsSelected(false)}
+        />
+      ) : null}
+    </div>
+  );
+}
