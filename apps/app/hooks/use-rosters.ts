@@ -3,11 +3,12 @@
 import useSWR from 'swr';
 
 import type { Rosters } from '@/lib/types';
-import { useSession } from '@repo/auth/client';
+import { client, useSession } from '@repo/auth/client';
 
 export function useRosters({ month, year }: { month?: string; year?: string }) {
   const { data: session } = useSession();
-  const activeOrganizationId = session?.session.activeOrganizationId;
+  const { data: activeOrganization } = client.useActiveOrganization();
+  const activeOrganizationId = activeOrganization?.id;
 
   // Create a stable key for SWR
   const usp = new URLSearchParams(month && year ? { month, year } : undefined);

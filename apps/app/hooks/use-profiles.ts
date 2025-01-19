@@ -3,11 +3,12 @@
 import useSWR from 'swr';
 
 import type { Profiles } from '@/lib/types';
-import { useSession } from '@repo/auth/client';
+import { client, useSession } from '@repo/auth/client';
 
 export function useProfiles() {
   const { data: session } = useSession();
-  const activeOrganizationId = session?.session.activeOrganizationId;
+  const { data: activeOrganization } = client.useActiveOrganization();
+  const activeOrganizationId = activeOrganization?.id;
 
   const { data, error, isLoading, mutate } = useSWR<Profiles>(
     session && activeOrganizationId

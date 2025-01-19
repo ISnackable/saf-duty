@@ -3,11 +3,12 @@
 import useSWR from 'swr';
 
 import type { Notifications } from '@/lib/types';
-import { useSession } from '@repo/auth/client';
+import { client, useSession } from '@repo/auth/client';
 
 export function useNotifications() {
   const { data: session } = useSession();
-  const activeOrganizationId = session?.session.activeOrganizationId;
+  const { data: activeOrganization } = client.useActiveOrganization();
+  const activeOrganizationId = activeOrganization?.id;
 
   const { data, error, isLoading, mutate } = useSWR<Notifications[]>(
     session && activeOrganizationId
