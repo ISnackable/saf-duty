@@ -13,7 +13,7 @@ services:
     command: sleep infinity
 
   db:
-    image: postgres:latest
+    image: supabase/postgres:15.8.1.026
     network_mode: service:app
     restart: unless-stopped
     volumes:

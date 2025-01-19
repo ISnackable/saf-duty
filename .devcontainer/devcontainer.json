@@ -21,7 +21,9 @@
 	},
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "npm add -g @mintlify/cli",
+	"postCreateCommand": {
+		"app": "npm add -g @mintlify/cli"
+	},
 
 	// Configure tool-specific properties.
 	"customizations": {
