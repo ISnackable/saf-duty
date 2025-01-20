@@ -271,10 +271,10 @@ export function DashboardOverview() {
                       key={profile.id}
                       className="flex basis-[21%] flex-col items-center justify-center border-none p-4 text-center sm:basis-[11%]"
                     >
-                      <Avatar className="size-9">
+                      <Avatar className="size-9 rounded-xl">
                         <AvatarImage
                           crossOrigin="anonymous"
-                          className="rounded-xl object-cover"
+                          className="object-cover"
                           src={profile.image ?? undefined}
                         />
                         <AvatarFallback>CN</AvatarFallback>
@@ -289,7 +289,7 @@ export function DashboardOverview() {
                       key={index}
                       className="flex basis-[21%] flex-col items-center justify-center border-none p-2 sm:basis-[11%]"
                     >
-                      <Skeleton className="h-12 w-12 rounded-full" />
+                      <Skeleton className="mt-2 size-10 rounded-xl" />
 
                       <Skeleton className="mt-2 h-3 w-12" />
                     </CarouselItem>
