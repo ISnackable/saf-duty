@@ -10,9 +10,9 @@ import {
   noseconeOptionsWithToolbar,
 } from '@repo/security/middleware';
 import { site } from '@repo/site-config';
-import { getCookie, getSignedCookie, parse } from 'better-call';
 import type { NextRequest } from 'next/server';
 import { keys } from './keys';
+import { getCookie, getSignedCookie, parseCookies } from './lib/cookies';
 import type { Session } from './types';
 
 type SessionDataPayload = {
@@ -29,10 +29,10 @@ export function safeJSONParse<T>(data: string): T | null {
   }
 }
 
+const isProduction = !!process.env.VERCEL_ENV;
 const PREFIX = site.shortName.toLowerCase();
 const SECRET = keys().BETTER_AUTH_SECRET;
 const SESSION_COOKIE_NAME = `${PREFIX}.session_token`;
-const isProduction = !!process.env.VERCEL_ENV;
 const SESSION_DATA_COOKIE_NAME = `${PREFIX}.session_data`;
 const securityHeaders = keys().FLAGS_SECRET
   ? noseconeMiddleware(noseconeOptionsWithToolbar)
@@ -48,17 +48,19 @@ export async function getSession(
   try {
     const sessionCookieToken = await getSignedCookie(
       request.headers,
-      SECRET,
       SESSION_COOKIE_NAME,
+      SECRET,
       isProduction ? 'secure' : undefined
     );
 
+    // This guarantees that the session token is valid
     if (!sessionCookieToken) {
       throw new Error('Invalid session token');
     }
 
+    // Attempt to fetch the cached session data
     const sessionDataCookie = getCookie(
-      request.headers.get('cookie') || '',
+      request.headers,
       SESSION_DATA_COOKIE_NAME,
       isProduction ? 'secure' : undefined
     );
@@ -70,29 +72,34 @@ export async function getSession(
       : null;
 
     if (sessionDataPayload) {
+      // Make sure the session data is valid by verifying the signature
       const isValid = await createHMAC('SHA-256', 'base64urlnopad').verify(
         SECRET,
-        JSON.stringify(sessionDataPayload.session),
+        JSON.stringify({
+          ...sessionDataPayload.session,
+          expiresAt: sessionDataPayload.expiresAt,
+        }),
         sessionDataPayload.signature
       );
 
+      // Tampered session data, instead of fetching the session, we invalidate the session data
       if (!isValid) {
         throw new Error('Invalid session data');
       }
-    }
 
-    if (sessionDataPayload?.session) {
-      const session = sessionDataPayload.session;
-      const hasExpired =
-        sessionDataPayload.expiresAt < Date.now() ||
-        new Date(session.session.expiresAt) < new Date();
+      if (sessionDataPayload.session) {
+        const session = sessionDataPayload.session;
+        const hasExpired =
+          sessionDataPayload.expiresAt < Date.now() ||
+          new Date(session.session.expiresAt) < new Date();
 
-      if (!hasExpired) {
-        return { data: session, response };
+        if (!hasExpired) {
+          return { data: session, response };
+        }
       }
     }
 
-    // Stale session, fetch the latest session
+    // Stale session or malformed session data, fetch the latest session
     const { data: session } = await betterFetch<Session>(
       '/api/auth/get-session',
       {
@@ -105,7 +112,7 @@ export async function getSession(
           const cookiesToSet = responseContext?.response.headers.getSetCookie();
           // Just to be safe, we set the cookies in the request headers
           cookiesToSet?.forEach((cookie) => {
-            const [name, value] = Object.entries(parse(cookie))[0];
+            const [[name, value]] = parseCookies(cookie);
             request.headers.set(name, value);
           });
           cookiesToSet?.forEach((cookie) =>

@@ -8,14 +8,14 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "@arcjet/next": "1.0.0-beta.1",
-    "@nosecone/next": "1.0.0-beta.1",
+    "@arcjet/next": "1.0.0-beta.3",
+    "@nosecone/next": "1.0.0-beta.3",
     "@repo/database": "workspace:*",
-    "@t3-oss/env-nextjs": "^0.11.1",
-    "zod": "^3.24.1"
+    "@t3-oss/env-nextjs": "^0.12.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.2"
   }
 }

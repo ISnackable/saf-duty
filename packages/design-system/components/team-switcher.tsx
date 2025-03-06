@@ -89,12 +89,12 @@ export function TeamSwitcher({
                   <Avatar className="h-6 w-6 rounded-sm">
                     <AvatarImage
                       crossOrigin="anonymous"
-                      src={activeTeam?.logo ?? undefined}
+                      src={team?.logo ?? undefined}
                       alt="team logo"
                       className="object-cover"
                     />
                     <AvatarFallback>
-                      {activeTeam?.name?.slice(0, 2).toUpperCase() ?? 'CN'}
+                      {team?.name?.slice(0, 2).toUpperCase() ?? 'CN'}
                     </AvatarFallback>
                   </Avatar>
                 </div>

@@ -37,7 +37,7 @@ export const withAnalyzer = (sourceConfig: NextConfig): NextConfig =>
 
 export const withSerwist = (sourceConfig: NextConfig): NextConfig =>
   withSerwistInit({
-    disable: process.env.NODE_ENV === 'development',
+    disable: process.env.NODE_ENV !== 'production',
     swSrc: 'app/sw.ts',
     swDest: 'public/sw.js',
   })(sourceConfig);
