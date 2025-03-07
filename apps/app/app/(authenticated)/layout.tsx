@@ -13,7 +13,7 @@ import { Header } from './components/header';
 import { AppSidebar } from './components/sidebar';
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'edge';
+// export const runtime = 'edge';
 
 type AppLayoutProperties = {
   readonly children: React.ReactNode;
