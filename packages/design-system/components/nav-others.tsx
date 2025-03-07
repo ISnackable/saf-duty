@@ -24,7 +24,7 @@ interface NavOthersProps {
   prefetch?: boolean;
 }
 
-export function NavOthers({ label, others, prefetch = true }: NavOthersProps) {
+export function NavOthers({ label, others, prefetch = false }: NavOthersProps) {
   const pathName = usePathname();
 
   return (

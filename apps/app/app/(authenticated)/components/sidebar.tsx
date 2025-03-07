@@ -163,13 +163,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           !isDemoUser(session.user?.id) ? null : (
             <NavCollapsible label="Organisation" items={data.organization} />
           )}
-          <NavOthers label="Dashboard" others={data.dashboard} />
           <NavOthers
-            label="Collections"
-            others={data.collections}
-            prefetch={false}
+            label="Dashboard"
+            others={data.dashboard}
+            prefetch={true}
           />
-          <NavOthers label="Others" others={data.others} prefetch={false} />
+          <NavOthers label="Collections" others={data.collections} />
+          <NavOthers label="Others" others={data.others} />
         </ScrollArea>
       </SidebarContent>
       <SidebarFooter className="border-t">

@@ -20,6 +20,10 @@ import {
 } from 'react';
 import { useSidebar } from './ui/sidebar';
 
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 const ProgressBarContext = createContext<ReturnType<typeof useProgress> | null>(
   null
 );
@@ -61,15 +65,66 @@ export function ProgressBar({
 export function ProgressBarLink({
   href,
   children,
+  prefetch,
   ...rest
 }: ComponentProps<typeof Link>) {
   const progress = useProgressBar();
   const router = useRouter();
   const { setOpenMobile } = useSidebar();
 
+  const linkRef = useRef<HTMLAnchorElement>(null);
+  let prefetchTimeout: NodeJS.Timeout | null = null;
+
+  // Credits: https://github.com/ethanniser/NextFaster/blob/main/src/components/ui/link.tsx
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (!prefetch) {
+      return;
+    }
+
+    const linkElement = linkRef.current;
+    if (!linkElement) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting) {
+          prefetchTimeout = setTimeout(async () => {
+            router.prefetch(String(href));
+            await sleep(0);
+
+            observer.unobserve(entry.target);
+          }, 300);
+        } else if (prefetchTimeout) {
+          clearTimeout(prefetchTimeout);
+          prefetchTimeout = null;
+        }
+      },
+      { rootMargin: '0px', threshold: 0.1 }
+    );
+
+    observer.observe(linkElement);
+
+    return () => {
+      observer.disconnect();
+      if (prefetchTimeout) {
+        clearTimeout(prefetchTimeout);
+      }
+    };
+  }, [href, prefetch]);
+
   return (
     <Link
+      ref={linkRef}
       href={href}
+      prefetch={false}
+      onMouseEnter={() => {
+        if (prefetch) {
+          router.prefetch(href.toString());
+        }
+      }}
       onClick={(e) => {
         e.preventDefault();
         progress.start();
