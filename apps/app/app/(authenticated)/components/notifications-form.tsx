@@ -24,9 +24,9 @@ import { Switch } from '@repo/design-system/components/ui/switch';
 import { useOs } from '@repo/design-system/hooks/use-os';
 
 const notificationsFormSchema = z.object({
-  notify_on_rosters_published: z.boolean().default(true),
-  notify_on_swap_requests: z.boolean().default(true),
-  notify_on_duty_reminder: z.boolean().default(true),
+  notify_on_rosters_published: z.boolean(),
+  notify_on_swap_requests: z.boolean(),
+  notify_on_duty_reminder: z.boolean(),
 });
 
 type NotificationsFormValues = z.infer<typeof notificationsFormSchema>;

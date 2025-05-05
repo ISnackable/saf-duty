@@ -1,3 +1,6 @@
+// biome-ignore lint/correctness/noUnusedImports: <explanation>
+import * as React from 'react';
+
 import {
   Body,
   Button,

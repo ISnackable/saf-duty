@@ -8,15 +8,15 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "babel-plugin-react-compiler": "19.0.0-beta-e552027-20250112",
-    "eslint-plugin-react-compiler": "19.0.0-beta-e552027-20250112",
-    "next": "15.2.1"
+    "babel-plugin-react-compiler": "19.1.0-rc.1",
+    "eslint-plugin-react-compiler": "19.1.0-rc.1",
+    "next": "15.3.1"
   },
   "dependencies": {
-    "@next/bundle-analyzer": "^15.2.1",
-    "@serwist/next": "^9.0.12",
-    "@t3-oss/env-core": "^0.12.0",
-    "@t3-oss/env-nextjs": "^0.12.0",
-    "zod": "^3.24.2"
+    "@next/bundle-analyzer": "^15.3.1",
+    "@serwist/next": "^9.0.14",
+    "@t3-oss/env-core": "^0.13.4",
+    "@t3-oss/env-nextjs": "^0.13.4",
+    "zod": "^3.24.4"
   }
 }
