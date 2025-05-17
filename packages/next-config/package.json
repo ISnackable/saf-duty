@@ -8,12 +8,12 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "babel-plugin-react-compiler": "19.1.0-rc.1",
-    "eslint-plugin-react-compiler": "19.1.0-rc.1",
-    "next": "15.3.1"
+    "babel-plugin-react-compiler": "19.1.0-rc.2",
+    "eslint-plugin-react-compiler": "19.1.0-rc.2",
+    "next": "15.3.2"
   },
   "dependencies": {
-    "@next/bundle-analyzer": "^15.3.1",
+    "@next/bundle-analyzer": "^15.3.2",
     "@serwist/next": "^9.0.14",
     "@t3-oss/env-core": "^0.13.4",
     "@t3-oss/env-nextjs": "^0.13.4",
