@@ -1,0 +1,71 @@
+import { withAuth } from '@/lib/auth/session';
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
+
+export const runtime = 'edge';
+
+const updateRoleSchema = z.object({
+  role: z.enum(['owner', 'admin', 'member']),
+});
+
+export const PATCH = withAuth(
+  async ({ request, params, member }) => {
+    try {
+      // User is not allowed to update their own role
+      if (member.userId === params.userId) {
+        return NextResponse.json(
+          {
+            status: 'error',
+            message: 'You are not allowed to update your own role',
+          },
+          { status: 403 }
+        );
+      }
+
+      const data = await request.json();
+      const validatedFields = updateRoleSchema.safeParse(data);
+
+      if (!validatedFields.success) {
+        return NextResponse.json(
+          {
+            status: 'error',
+            message: 'Invalid fields provided',
+          },
+          { status: 400 }
+        );
+      }
+
+      //   const { error } = await client
+      //     .from('group_users')
+      //     .update(validatedFields.data)
+      //     .eq('user_id', params.userId);
+
+      //   if (error) {
+      //     return NextResponse.json(
+      //       {
+      //         status: 'error',
+      //         message: 'Failed to update user role',
+      //       },
+      //       { status: 500 }
+      //     );
+      //   }
+
+      return NextResponse.json(
+        {
+          status: 'success',
+          message: 'Successfully updated user role',
+        },
+        { status: 200 }
+      );
+    } catch (_error) {
+      return NextResponse.json(
+        {
+          status: 'error',
+          message: 'Failed to update user role',
+        },
+        { status: 500 }
+      );
+    }
+  },
+  { requiredRole: ['owner', 'admin'] }
+);

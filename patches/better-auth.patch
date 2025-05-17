@@ -1,0 +1,39 @@
+diff --git a/dist/shared/better-auth.Bi8FQwDD.d.cts b/dist/shared/better-auth.Bi8FQwDD.d.cts
+index 5ddfa59823301bfd71bf195ceec8dfdd9c85d18a..4893ac1513822cf49035605055bbdd95255c0ea5 100644
+--- a/dist/shared/better-auth.Bi8FQwDD.d.cts
++++ b/dist/shared/better-auth.Bi8FQwDD.d.cts
+@@ -5,7 +5,7 @@ type LiteralNumber = 0 | (number & Record<never, never>);
+ type OmitId<T extends {
+     id: unknown;
+ }> = Omit<T, "id">;
+-type Prettify<T> = Omit<T, never>;
++type Prettify<T> = PreserveJSDoc<T>;
+ type PreserveJSDoc<T> = {
+     [K in keyof T]: T[K];
+ } & {};
+diff --git a/dist/shared/better-auth.Bi8FQwDD.d.mts b/dist/shared/better-auth.Bi8FQwDD.d.mts
+index 5ddfa59823301bfd71bf195ceec8dfdd9c85d18a..4893ac1513822cf49035605055bbdd95255c0ea5 100644
+--- a/dist/shared/better-auth.Bi8FQwDD.d.mts
++++ b/dist/shared/better-auth.Bi8FQwDD.d.mts
+@@ -5,7 +5,7 @@ type LiteralNumber = 0 | (number & Record<never, never>);
+ type OmitId<T extends {
+     id: unknown;
+ }> = Omit<T, "id">;
+-type Prettify<T> = Omit<T, never>;
++type Prettify<T> = PreserveJSDoc<T>;
+ type PreserveJSDoc<T> = {
+     [K in keyof T]: T[K];
+ } & {};
+diff --git a/dist/shared/better-auth.Bi8FQwDD.d.ts b/dist/shared/better-auth.Bi8FQwDD.d.ts
+index 5ddfa59823301bfd71bf195ceec8dfdd9c85d18a..4893ac1513822cf49035605055bbdd95255c0ea5 100644
+--- a/dist/shared/better-auth.Bi8FQwDD.d.ts
++++ b/dist/shared/better-auth.Bi8FQwDD.d.ts
+@@ -5,7 +5,7 @@ type LiteralNumber = 0 | (number & Record<never, never>);
+ type OmitId<T extends {
+     id: unknown;
+ }> = Omit<T, "id">;
+-type Prettify<T> = Omit<T, never>;
++type Prettify<T> = PreserveJSDoc<T>;
+ type PreserveJSDoc<T> = {
+     [K in keyof T]: T[K];
+ } & {};

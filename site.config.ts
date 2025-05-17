@@ -1,7 +1,6 @@
-import { siteConfig } from '@/lib/site-config';
+import type { SiteConfig } from '@repo/site-config/types';
 
-// TODO: use environment variables
-export default siteConfig({
+export default {
   // basic site info (required)
   name: 'AFPN CDO',
   shortName: 'AFPN',
@@ -13,4 +12,4 @@ export default siteConfig({
     email: 'demo@example.com',
     password: 'Password@1234',
   },
-});
+} satisfies SiteConfig;

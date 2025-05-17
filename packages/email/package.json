@@ -1,0 +1,33 @@
+{
+  "name": "@repo/email",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "dependencies": {
+    "@react-email/components": "0.0.41",
+    "@t3-oss/env-nextjs": "^0.13.4",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "resend": "^4.5.1",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "22.15.18",
+    "@types/react": "19.1.4",
+    "@types/react-dom": "^19.1.5",
+    "typescript": "^5.8.3"
+  },
+  "exports": {
+    ".": {
+      "node": "./index.node.ts",
+      "edge-light": "./index.edge.ts",
+      "workerd": "./index.edge.ts"
+    },
+    "./key": "./key.ts",
+    "./templates/": "./templates/"
+  }
+}

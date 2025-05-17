@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    volumes:
+      - ../..:/workspaces:cached
+
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
+  db:
+    image: supabase/postgres:15.8.1.026
+    network_mode: service:app
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+
+  pg_proxy:
+    image: ghcr.io/neondatabase/wsproxy:latest
+    network_mode: service:app
+    environment:
+      LISTEN_PORT: "localhost:54330"
+      APPEND_PORT: 'localhost:5432'
+      ALLOW_ADDR_REGEX: '.*'
+      LOG_TRAFFIC: 'true'
+    depends_on:
+      - db
+
+  redis:
+    image: redis:latest
+    network_mode: service:app
+    restart: unless-stopped
+
+  serverless-redis-http:
+    image: hiett/serverless-redis-http:latest
+    network_mode: service:app
+    environment:
+      SRH_MODE: env
+      SRH_TOKEN: example_token
+      SRH_CONNECTION_STRING: "redis://localhost:6379"
+      SRH_PORT: 8079
+    depends_on:
+      - redis
+
+volumes:
+  postgres-data:

@@ -1,56 +1,45 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/docker-in-docker
+// README at: https://github.com/devcontainers/templates/tree/main/src/javascript-node-postgres
 {
-  "name": "saf-duty",
-  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-  "image": "mcr.microsoft.com/devcontainers/base:bullseye",
+	"name": "Node.js & PostgreSQL",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 
-  "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {
-      "version": "latest",
-      "enableNonRootDocker": "true",
-      "moby": "true"
-    },
-    "ghcr.io/devcontainers/features/common-utils:2": {},
-    "ghcr.io/devcontainers/features/git-lfs:1": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers/features/node:1": {},
-    "ghcr.io/devcontainers/features/sshd:1": {},
-    "ghcr.io/devcontainers-community/features/deno:1": {}
-  },
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// "features": {},
 
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // Its possible the supabase service locations have moved/changed since this was written
-  "forwardPorts": [3000, 54321, 54322, 54323, 54324, 54325, 54326],
-  "portsAttributes": {
-    "3000": { "label": "App" },
-    "54323": { "label": "Supabase - Studio" },
-    "54321": { "label": "Supabase - API" },
-    "54322": { "label": "Supabase - Postgres DB" },
-    "54324": { "label": "Inbucket - App" }
-  },
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// This can be used to network with other containers or with the host.
+	"forwardPorts": [3000, 3003, 3004, 3005, 4983, 6006],
+	"portsAttributes": {
+		"3000": { "label": "App" },
+		"3003": { "label": "Email - Web" },
+		"3004": { "label": "Docs - Mintlify" },
+		"4983": { "label": "Studio - Server" },
+		"6006": { "label": "Storybook - App" }
+	},
 
-  // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "npx --yes supabase start && pnpm install --silent",
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": {
+		"app": "npm add -g @mintlify/cli"
+	},
 
-  // Configure tool-specific properties.
-  "customizations": {
-    "containerEnv": {
-      "NODE_ENV": "development"
-    },
-    "vscode": {
-      "extensions": [
-        "denoland.vscode-deno",
-        "esbenp.prettier-vscode",
-        "dbaeumer.vscode-eslint",
-        "bradlc.vscode-tailwindcss"
-      ],
-      "settings": {
-        "editor.formatOnSave": true,
-        "deno.enablePaths": ["./supabase/functions"],
-        "deno.importMap": "./supabase/functions/import_map.json"
-      }
-    }
-  }
+	// Configure tool-specific properties.
+	"customizations": {
+		"containerEnv": {
+			"NODE_ENV": "development"
+		},
+		"vscode": {
+			"extensions": [
+				"biomejs.biome",
+				"bradlc.vscode-tailwindcss",
+				"yoavbls.pretty-ts-errors"
+			],
+			"settings": {
+				"editor.formatOnSave": true,
+				"remote.autoForwardPorts": false
+			}
+		}
+	}
 }

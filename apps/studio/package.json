@@ -1,0 +1,16 @@
+{
+  "name": "studio",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "drizzle-kit studio --config ./config.ts --verbose",
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "dependencies": {
+    "@repo/database": "workspace:*",
+    "drizzle-orm": "^0.43.1"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.1"
+  }
+}
